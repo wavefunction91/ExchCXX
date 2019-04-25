@@ -24,21 +24,10 @@ public:
 
   XCKernel() = delete;
   
-  XCKernel( 
-    const int kern, 
-    const int spin_polar
-  ) : polar_(spin_polar) {
-
-    // Initialize XC Kernel using Libxc
-    int info = xc_func_init( &kernel_, kern, spin_polar );
-
-    assert( info == 0 );
-
-  } 
+  XCKernel( const int kern, const int spin_polar );
 
 
-  XCKernel( const XCKernel& other) :
-    XCKernel( other.xc_info()->number, other.polar_ ){ };
+  XCKernel( const XCKernel& );
 
   XCKernel( XCKernel&&      ) = default;
 
@@ -85,12 +74,8 @@ public:
     const int     N, 
     const double* rho, 
     double*       eps 
-  ) const {
-
-    assert( is_lda() );
-    xc_lda_exc( &kernel_, N, rho, eps );
-
-  }
+  ) const; 
+  
 
 
   void eval_exc_vxc( 
@@ -98,12 +83,7 @@ public:
     const double* rho, 
     double*       eps, 
     double*       vxc 
-  ) const {
-
-    assert( is_lda() );
-    xc_lda_exc_vxc( &kernel_, N, rho, eps, vxc );
-
-  }
+  ) const; 
 
   // TODO: LDA kxc interfaces
 
@@ -113,12 +93,7 @@ public:
     const double* rho, 
     const double* sigma, 
     double*       eps
-  ) const {
-
-    assert( is_gga() );
-    xc_gga_exc( &kernel_, N, rho, sigma, eps );
-
-  }
+  ) const; 
 
   
   void eval_exc_vxc( 
@@ -128,12 +103,7 @@ public:
     double*       eps,
     double*       vrho,
     double*       vsigma
-  ) const {
-
-    assert( is_gga() );
-    xc_gga_exc_vxc( &kernel_, N, rho, sigma, eps, vrho, vsigma );
-
-  }
+  ) const;
 
   // TODO: GGA kxc interfaces  
 

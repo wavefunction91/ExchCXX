@@ -1,0 +1,15 @@
+cmake_minimum_required( VERSION 3.11 FATAL_ERROR) # Require CMake 3.11+
+
+get_filename_component(EXCHCXX_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+list(APPEND CMAKE_MODULE_PATH ${EXCHCXX_CMAKE_DIR})
+find_dependency( LibXC REQUIRED )
+
+list(REMOVE_AT CMAKE_MODULE_PATH -1)
+
+if(NOT TARGET ExchCXX::ExchCXX)
+    include("${EXCHCXX_CMAKE_DIR}/ExchCXXTargets.cmake")
+endif()
+
+set(EXCHCXX_LIBRARIES ExchCXX::ExchCXX)
