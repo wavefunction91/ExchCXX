@@ -110,6 +110,7 @@ TEST_CASE( "Unpolarized LDA Kernel Wrappers", "[xc-lda]" ) {
   CHECK( not lda.is_mgga() );
   CHECK( not lda.is_hyb() );
 
+  CHECK( lda.hyb_exx() == Approx(0.0) );
 
   SECTION( "EXC only interface" ) {
     lda.eval_exc( npts, rho.data(), exc.data() );
@@ -142,6 +143,8 @@ TEST_CASE( "Polarized LDA Kernel Wrappers", "[xc-lda]" ) {
   CHECK( not lda.is_gga() );
   CHECK( not lda.is_mgga() );
   CHECK( not lda.is_hyb() );
+
+  CHECK( lda.hyb_exx() == Approx(0.0) );
 
   SECTION( "EXC only interface" ) {
     lda.eval_exc( npts, rho_polarized.data(), exc.data() );
@@ -182,6 +185,7 @@ TEST_CASE( "Unpolarized GGA Kernel Wrappers", "[xc-gga]" ) {
   CHECK( not lyp.is_mgga() );
   CHECK( not lyp.is_hyb() );
 
+  CHECK( lyp.hyb_exx() == Approx(0.0) );
 
   SECTION( "EXC only interface" ) {
     lyp.eval_exc( npts, rho.data(), sigma.data(), exc.data() );
@@ -219,7 +223,7 @@ TEST_CASE( "Polarized GGA Kernel Wrappers", "[xc-gga]" ) {
   CHECK( not lyp.is_mgga() );
   CHECK( not lyp.is_hyb() );
 
-  std::cout << std::setprecision(12) << std::fixed;
+  CHECK( lyp.hyb_exx() == Approx(0.0) );
 
   SECTION( "EXC only interface" ) {
     lyp.eval_exc( npts, rho_polarized.data(), 
@@ -243,5 +247,21 @@ TEST_CASE( "Polarized GGA Kernel Wrappers", "[xc-gga]" ) {
     }
   }
 
+
+}
+
+
+
+TEST_CASE( "Hybrid GGA Kernel Wrappers", "[xc-hyb-gga]" ) {
+
+  XCKernel b3lyp( XC_HYB_GGA_XC_B3LYP, XC_POLARIZED );
+
+  CHECK( b3lyp.is_gga() );
+  CHECK( b3lyp.is_polarized() );
+  CHECK( b3lyp.is_hyb() );
+  CHECK( not b3lyp.is_lda() );
+  CHECK( not b3lyp.is_mgga() );
+
+  CHECK( b3lyp.hyb_exx() == Approx(0.2) );
 
 }
