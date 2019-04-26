@@ -4,20 +4,20 @@
 #
 #   This module will define the following variables:
 #
-#     LIBXC_FOUND         - System has found LibXC installation
-#     LIBXC_INCLUDE_DIR   - Location of LibXC headers
-#     LIBXC_LIBRARIES     - LibXC libraries
+#     LibXC_FOUND         - System has found LibXC installation
+#     LibXC_INCLUDE_DIR   - Location of LibXC headers
+#     LibXC_LIBRARIES     - LibXC libraries
 #
-#   This module will export the following targets if LIBXC_FOUND
+#   This module will export the following targets if LibXC_FOUND
 #
 #     LibXC::libxc
 #
 #    Proper usage:
 #
-#      project( TEST_FIND_LIBXC C )
+#      project( TEST_FIND_LibXC C )
 #      find_package( LibXC )
 #
-#      if( LIBXC_FOUND )
+#      if( LibXC_FOUND )
 #        add_executable( test test.cxx )
 #        target_link_libraries( test LibXC::libxc )
 #      endif()
@@ -99,7 +99,7 @@ endif()
 
 
 # Try to find the header
-find_path( LIBXC_INCLUDE_DIR 
+find_path( LibXC_INCLUDE_DIR 
   NAMES xc.h
   HINTS ${libxc_PREFIX}
   PATHS ${libxc_INCLUDE_DIR}
@@ -112,7 +112,7 @@ find_path( LIBXC_INCLUDE_DIR
 # Try to serial find libraries if not already set
 if( NOT libxc_LIBRARIES )
 
-  find_library( LIBXC_LIBRARIES
+  find_library( LibXC_LIBRARIES
     NAMES xc 
     HINTS ${libxc_PREFIX}
     PATHS ${libxc_LIBRARY_DIR}
@@ -123,32 +123,32 @@ if( NOT libxc_LIBRARIES )
 else()
 
   # fiXME
-  set( LIBXC_LIBRARIES ${libxc_LIBRARIES} )
+  set( LibXC_LIBRARIES ${libxc_LIBRARIES} )
 
 endif()
 
 
 
 # Check version
-if( EXISTS ${LIBXC_INCLUDE_DIR}/xc_version.h )
+if( EXISTS ${LibXC_INCLUDE_DIR}/xc_version.h )
   set( version_pattern 
   "^#define[\t ]+XC_(MAJOR|MINOR|MICRO)_VERSION[\t ]+([0-9\\.]+)$"
   )
-  file( STRINGS ${LIBXC_INCLUDE_DIR}/xc_version.h libxc_version
+  file( STRINGS ${LibXC_INCLUDE_DIR}/xc_version.h libxc_version
         REGEX ${version_pattern} )
   
   foreach( match ${libxc_version} )
   
-    if(LIBXC_VERSION_STRING)
-      set(LIBXC_VERSION_STRING "${LIBXC_VERSION_STRING}.")
+    if(LibXC_VERSION_STRING)
+      set(LibXC_VERSION_STRING "${LibXC_VERSION_STRING}.")
     endif()
   
     string(REGEX REPLACE ${version_pattern} 
-      "${LIBXC_VERSION_STRING}\\2" 
-      LIBXC_VERSION_STRING ${match}
+      "${LibXC_VERSION_STRING}\\2" 
+      LibXC_VERSION_STRING ${match}
     )
   
-    set(LIBXC_VERSION_${CMAKE_MATCH_1} ${CMAKE_MATCH_2})
+    set(LibXC_VERSION_${CMAKE_MATCH_1} ${CMAKE_MATCH_2})
   
   endforeach()
   
@@ -159,21 +159,21 @@ endif()
 
 
 # Determine if we've found LibXC
-mark_as_advanced( LIBXC_FOUND LIBXC_INCLUDE_DIR LIBXC_LIBRARIES )
+mark_as_advanced( LibXC_FOUND LibXC_INCLUDE_DIR LibXC_LIBRARIES )
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args( LIBXC
-  REQUIRED_VARS LIBXC_LIBRARIES LIBXC_INCLUDE_DIR
-  VERSION_VAR LIBXC_VERSION_STRING
+find_package_handle_standard_args( LibXC
+  REQUIRED_VARS LibXC_LIBRARIES LibXC_INCLUDE_DIR
+  VERSION_VAR LibXC_VERSION_STRING
 )
 
 # Export target
-if( LIBXC_FOUND AND NOT TARGET LibXC::libxc )
+if( LibXC_FOUND AND NOT TARGET LibXC::libxc )
 
   add_library( LibXC::libxc INTERFACE IMPORTED )
   set_target_properties( LibXC::libxc PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${LIBXC_INCLUDE_DIR}"
-    INTERFACE_LINK_LIBRARIES      "${LIBXC_LIBRARIES}" 
+    INTERFACE_INCLUDE_DIRECTORIES "${LibXC_INCLUDE_DIR}"
+    INTERFACE_LINK_LIBRARIES      "${LibXC_LIBRARIES}" 
   )
 
 endif()
