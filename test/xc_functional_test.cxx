@@ -84,8 +84,8 @@ TEST_CASE( "Unpolarized LDA XC Functionals", "[xc-lda]" ) {
 
   SECTION( "Two kernel functionals" ) {
 
-    const double alpha = 1.;
-    const double beta  = 1.;
+    const double alpha = dist(gen);
+    const double beta  = dist(gen);
     std::vector<std::pair<double,XCKernel>> ks = {{alpha, slater},{beta, vwn3}};
 
     XCFunctional func(ks);
@@ -189,8 +189,8 @@ TEST_CASE( "Polarized LDA XC Functionals", "[xc-lda]" ) {
 
   SECTION( "Two kernel functionals" ) {
 
-    const double alpha = 1.;
-    const double beta  = 1.;
+    const double alpha = dist(gen);
+    const double beta  = dist(gen);
     std::vector<std::pair<double,XCKernel>> ks = {{alpha, slater},{beta, vwn3}};
 
     XCFunctional func(ks);
@@ -308,8 +308,8 @@ TEST_CASE( "Unpolarized GGA XC Functionals", "[xc-gga]" ) {
 
   SECTION( "Two GGA kernel functionals" ) {
 
-    const double alpha = 1.;
-    const double beta  = 1.;
+    const double alpha = dist(gen);
+    const double beta  = dist(gen);
     std::vector<std::pair<double,XCKernel>> ks = {{alpha, b88},{beta, lyp}};
 
     XCFunctional func(ks);
@@ -345,8 +345,8 @@ TEST_CASE( "Unpolarized GGA XC Functionals", "[xc-gga]" ) {
 
   SECTION( "LDA + GGA kernel functionals" ) {
 
-    const double alpha = 1.;
-    const double beta  = 1.;
+    const double alpha = dist(gen);
+    const double beta  = dist(gen);
     std::vector<std::pair<double,XCKernel>> ks = {{alpha, b88},{beta, vwn}};
 
     XCFunctional func(ks);
@@ -465,8 +465,8 @@ TEST_CASE( "Polarized GGA XC Functionals", "[xc-gga]" ) {
 
   SECTION( "Two GGA kernel functionals" ) {
 
-    const double alpha = 1.;
-    const double beta  = 1.;
+    const double alpha = dist(gen);
+    const double beta  = dist(gen);
     std::vector<std::pair<double,XCKernel>> ks = {{alpha, b88},{beta, lyp}};
 
     XCFunctional func(ks);
@@ -505,8 +505,8 @@ TEST_CASE( "Polarized GGA XC Functionals", "[xc-gga]" ) {
 
   SECTION( "LDA + GGA kernel functionals" ) {
 
-    const double alpha = 1.;
-    const double beta  = 1.;
+    const double alpha = dist(gen);
+    const double beta  = dist(gen);
     std::vector<std::pair<double,XCKernel>> ks = {{alpha, b88},{beta, vwn}};
 
     XCFunctional func(ks);

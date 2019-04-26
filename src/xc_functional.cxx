@@ -41,8 +41,11 @@ void XCFunctional::eval_exc(
     kernels_[i].second.eval_exc(N, rho, eps_eval);
 
     if( i ) 
-    for( auto k = 0ul; k < N; ++k )
-      eps[k] += eps_eval[k];
+      for( auto k = 0ul; k < N; ++k )
+        eps[k] += kernels_[i].first * eps_eval[k];
+    else
+      for( auto k = 0ul; k < N; ++k )
+        eps[k] = kernels_[i].first * eps[k];
   
   }
 
@@ -73,12 +76,20 @@ void XCFunctional::eval_exc_vxc(
 
     if( i ) {
       for( auto k = 0ul; k < N; ++k ) {
-        eps[k] += eps_eval[k];
-        vxc[k] += vxc_eval[k];
+        eps[k] += kernels_[i].first * eps_eval[k];
+        vxc[k] += kernels_[i].first * vxc_eval[k];
       }
       if( is_polarized() )
       for( auto k = N; k < 2*N; ++k ) 
-        vxc[k] += vxc_eval[k];
+        vxc[k] += kernels_[i].first * vxc_eval[k];
+    } else {
+      for( auto k = 0ul; k < N; ++k ) {
+        eps[k] = kernels_[i].first * eps[k];
+        vxc[k] = kernels_[i].first * vxc[k];
+      }
+      if( is_polarized() )
+      for( auto k = N; k < 2*N; ++k ) 
+        vxc[k] = kernels_[i].first * vxc[k];
     }
   
   }
@@ -113,8 +124,11 @@ void XCFunctional::eval_exc(
       kernels_[i].second.eval_exc(N, rho, eps_eval);
 
     if( i ) 
-    for( auto k = 0ul; k < N; ++k )
-      eps[k] += eps_eval[k];
+      for( auto k = 0ul; k < N; ++k )
+        eps[k] += kernels_[i].first * eps_eval[k];
+    else 
+      for( auto k = 0ul; k < N; ++k )
+        eps[k] = kernels_[i].first * eps_eval[k];
   
   }
 
@@ -154,21 +168,41 @@ void XCFunctional::eval_exc_vxc(
     if( i ) {
       for( auto k = 0ul; k < N; ++k ) {
 
-        eps[k] += eps_eval[k];
-        vrho[k] += vrho_eval[k];
+        eps[k] += kernels_[i].first * eps_eval[k];
+        vrho[k] += kernels_[i].first * vrho_eval[k];
 
         if( kernels_[i].second.is_gga() )
-          vsigma[k] += vsigma_eval[k];
+          vsigma[k] += kernels_[i].first * vsigma_eval[k];
 
       }
       if( is_polarized() ) {
 
         for( auto k = N; k < 2*N; ++k ) 
-          vrho[k] += vrho_eval[k];
+          vrho[k] += kernels_[i].first * vrho_eval[k];
 
         if( kernels_[i].second.is_gga() )
         for( auto k = N; k < 3*N; ++k ) 
-          vsigma[k] += vsigma_eval[k];
+          vsigma[k] += kernels_[i].first * vsigma_eval[k];
+
+      }
+    } else {
+      for( auto k = 0ul; k < N; ++k ) {
+
+        eps[k] = kernels_[i].first * eps[k];
+        vrho[k] = kernels_[i].first * vrho[k];
+
+        if( kernels_[i].second.is_gga() )
+          vsigma[k] = kernels_[i].first * vsigma[k];
+
+      }
+      if( is_polarized() ) {
+
+        for( auto k = N; k < 2*N; ++k ) 
+          vrho[k] = kernels_[i].first * vrho[k];
+
+        if( kernels_[i].second.is_gga() )
+        for( auto k = N; k < 3*N; ++k ) 
+          vsigma[k] = kernels_[i].first * vsigma[k];
 
       }
     }
