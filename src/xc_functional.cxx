@@ -2,17 +2,17 @@
 
 namespace ExchCXX {
 
-bool XCFunctional::sanity_check() {
+bool XCFunctional::sanity_check() const {
 
   // Must have one kernel
   if( not kernels_.size() ) return false;
 
   // Polarization is all or nothing
-  bool polar_one = kernels_[0].second.is_polarized();
-  bool polar_all = std::any_of(
+  int polar_one = kernels_[0].second.is_polarized();
+  bool polar_all = std::all_of(
     kernels_.begin(), kernels_.end(),
     [&](const auto& a){ 
-      return a.second.is_polarized() != polar_one; 
+      return (int)a.second.is_polarized() == polar_one; 
     }
   ); 
 
@@ -28,6 +28,7 @@ void XCFunctional::eval_exc(
   double*       eps 
 ) const {
 
+  throw_if_not_sane();
   assert( is_lda() );
 
   std::vector<double> eps_scr;
@@ -59,6 +60,7 @@ void XCFunctional::eval_exc_vxc(
   double*       vxc
 ) const {
 
+  throw_if_not_sane();
   assert( is_lda() );
 
   std::vector<double> eps_scr, vxc_scr;
@@ -107,6 +109,7 @@ void XCFunctional::eval_exc(
   double*       eps 
 ) const {
 
+  throw_if_not_sane();
   assert( is_gga() );
 
   std::vector<double> eps_scr;
@@ -144,6 +147,7 @@ void XCFunctional::eval_exc_vxc(
   double*       vsigma
 ) const {
 
+  throw_if_not_sane();
   assert( is_gga() );
 
   std::vector<double> eps_scr, vrho_scr, vsigma_scr;
@@ -225,6 +229,7 @@ void XCFunctional::eval_exc(
   double*       eps
 ) const {
 
+  throw_if_not_sane();
   assert( is_mgga() );
 
   std::vector<double> eps_scr;
@@ -268,6 +273,7 @@ void XCFunctional::eval_exc_vxc(
   double*       vtau
 ) const {
 
+  throw_if_not_sane();
   assert( is_gga() );
 
   std::vector<double> eps_scr, vrho_scr, vsigma_scr, vlapl_scr, vtau_scr;

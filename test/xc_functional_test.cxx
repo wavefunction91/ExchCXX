@@ -17,6 +17,62 @@ bool check_approx( const T& x, const T& y ) {
 
 using namespace ExchCXX;
 
+TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
+
+  
+
+  SECTION( "Vector copy constructor (copy)" ) {
+
+    // Kernels
+    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
+    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+
+    std::vector< std::pair<double, XCKernel> >
+      kernels = {{ 1., slater}, {1., vwn3}};
+
+    XCFunctional func(kernels);
+
+  }
+
+  SECTION( "Vector copy constructor (move)" ) {
+
+    // Kernels
+    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
+    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+
+    std::vector< std::pair<double, XCKernel> >
+      kernels = {{ 1., std::move(slater)}, {1., std::move(vwn3)}};
+
+    XCFunctional func(kernels);
+
+  }
+
+  SECTION( "Vector copy constructor (inplace)" ) {
+
+    std::vector< std::pair<double, XCKernel> >
+      kernels = {
+        {1., XCKernel(XC_LDA_X, XC_UNPOLARIZED)}, 
+        {1., XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)}
+      };
+
+    XCFunctional func(kernels);
+
+  }
+
+
+  SECTION( "Vector move constructor" ) {
+
+    std::vector< std::pair<double, XCKernel> >
+      kernels = {
+        {1., XCKernel(XC_LDA_X, XC_UNPOLARIZED)}, 
+        {1., XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)}
+      };
+
+    XCFunctional func(std::move(kernels));
+
+  }
+}
+
 TEST_CASE( "Unpolarized LDA XC Functionals", "[xc-lda]" ) {
 
   const int npts = 100;

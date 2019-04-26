@@ -17,8 +17,20 @@ protected:
   const int    polar_;  ///< Spin polarization
   xc_func_type kernel_; ///< Libxc kernel definition
 
+  bool initialized_ = false;
+  void throw_if_uninitialized() const { assert( initialized_ ); }
 
-  inline auto xc_info() const noexcept { return kernel_.info; };
+
+  inline auto xc_info() const { 
+    throw_if_uninitialized();
+    return kernel_.info; 
+  };
+
+  XCKernel( 
+    xc_func_type  kern, 
+    const int     spin_polar, 
+    const bool    init
+  ) : polar_(spin_polar), kernel_(kern), initialized_(init){ }
 
 public:
 
@@ -28,42 +40,47 @@ public:
 
 
   XCKernel( const XCKernel& );
-
-  XCKernel( XCKernel&&      ) = default;
+  XCKernel( XCKernel&&      );
 
   // Destroy interal Libxc data
-  ~XCKernel(){ xc_func_end( &kernel_ ); }
+  ~XCKernel(){ if( initialized_ ) xc_func_end( &kernel_ ); }
 
 
 
-  inline bool is_lda() const noexcept {
+  inline bool is_lda() const {
+    throw_if_uninitialized();
     return kernel_.info->family == XC_FAMILY_LDA;
   }
 
-  inline bool is_gga() const noexcept {
+  inline bool is_gga() const {
+    throw_if_uninitialized();
     return 
       (kernel_.info->family == XC_FAMILY_GGA    ) or
       (kernel_.info->family == XC_FAMILY_HYB_GGA);
   }
 
-  inline bool is_mgga() const noexcept {
+  inline bool is_mgga() const {
+    throw_if_uninitialized();
     return 
       (kernel_.info->family == XC_FAMILY_MGGA    ) or
       (kernel_.info->family == XC_FAMILY_HYB_MGGA);
   }
 
-  inline bool is_hyb() const noexcept {
+  inline bool is_hyb() const {
+    throw_if_uninitialized();
     return
       (kernel_.info->family == XC_FAMILY_HYB_GGA ) or
       (kernel_.info->family == XC_FAMILY_HYB_MGGA);
   }
 
-  inline bool is_polarized() const noexcept {
+  inline bool is_polarized() const {
+    throw_if_uninitialized();
     return polar_ == XC_POLARIZED;
   }
 
 
-  inline double hyb_exx() const noexcept {
+  inline double hyb_exx() const {
+    throw_if_uninitialized();
     return xc_hyb_exx_coef( &kernel_ );
   }
 

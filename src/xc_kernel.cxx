@@ -13,11 +13,16 @@ XCKernel::XCKernel(
 
   assert( info == 0 );
 
+  initialized_ = true;
 } 
 
-XCKernel::XCKernel( const XCKernel& other) :
+XCKernel::XCKernel( const XCKernel& other ) :
   XCKernel( other.xc_info()->number, other.polar_ ){ };
 
+XCKernel::XCKernel( XCKernel&& other ) :
+  XCKernel( other.kernel_, other.polar_, other.initialized_) { 
+  other.initialized_ = false; // Avoid double destruction
+};
 
 
 
@@ -29,6 +34,7 @@ void XCKernel::eval_exc(
   double*       eps 
 ) const {
 
+  throw_if_uninitialized();
   assert( is_lda() );
   xc_lda_exc( &kernel_, N, rho, eps );
 
@@ -42,6 +48,7 @@ void XCKernel::eval_exc_vxc(
   double*       vxc 
 ) const {
 
+  throw_if_uninitialized();
   assert( is_lda() );
   xc_lda_exc_vxc( &kernel_, N, rho, eps, vxc );
 
@@ -57,6 +64,7 @@ void XCKernel::eval_exc(
   double*       eps
 ) const {
 
+  throw_if_uninitialized();
   assert( is_gga() );
   xc_gga_exc( &kernel_, N, rho, sigma, eps );
 
@@ -72,6 +80,7 @@ void XCKernel::eval_exc_vxc(
   double*       vsigma
 ) const {
 
+  throw_if_uninitialized();
   assert( is_gga() );
   xc_gga_exc_vxc( &kernel_, N, rho, sigma, eps, vrho, vsigma );
 
@@ -90,6 +99,7 @@ void XCKernel::eval_exc(
   double*       eps
 ) const {
 
+  throw_if_uninitialized();
   assert( is_mgga() );
   xc_mgga_exc( &kernel_, N, rho, sigma, lapl, tau, eps );
 
@@ -109,6 +119,7 @@ void XCKernel::eval_exc_vxc(
   double*       vtau
 ) const {
 
+  throw_if_uninitialized();
   assert( is_gga() );
   xc_mgga_exc_vxc( &kernel_, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau );
 
