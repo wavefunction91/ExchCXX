@@ -75,8 +75,6 @@ public:
     const double* rho, 
     double*       eps 
   ) const; 
-  
-
 
   void eval_exc_vxc( 
     const int     N, 
@@ -85,6 +83,9 @@ public:
     double*       vxc 
   ) const; 
 
+  // TODO: LDA fxc/kxc interfaces  
+    
+    
   // GGA interface
   void eval_exc( 
     const int     N, 
@@ -103,8 +104,34 @@ public:
     double*       vsigma
   ) const;
 
-  // TODO: GGA kxc interfaces  
+  // TODO: GGA fxc/kxc interfaces  
 
+  // mGGA interface
+  void eval_exc( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps
+  ) const; 
+
+  
+  void eval_exc_vxc( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau
+  ) const;
+
+  // TODO: mGGA fxc/kxc interfaces  
+    
 };
 
 

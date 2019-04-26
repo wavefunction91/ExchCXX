@@ -212,6 +212,157 @@ void XCFunctional::eval_exc_vxc(
 }
 
 
+
+
+// mGGA Interfaces
+
+void XCFunctional::eval_exc( 
+  const int     N, 
+  const double* rho, 
+  const double* sigma, 
+  const double* lapl, 
+  const double* tau, 
+  double*       eps
+) const {
+
+  assert( is_mgga() );
+
+  std::vector<double> eps_scr;
+  if( kernels_.size() > 1 ) 
+    eps_scr.resize( N );
+
+
+  for( auto i = 0ul; i < kernels_.size(); ++i ) {
+
+    double* eps_eval = i ? eps_scr.data() : eps;
+
+    if( kernels_[i].second.is_mgga() )
+      kernels_[i].second.eval_exc(N, rho, sigma, lapl, tau, eps_eval);
+    else if( kernels_[i].second.is_gga() )
+      kernels_[i].second.eval_exc(N, rho, sigma, eps_eval);
+    else
+      kernels_[i].second.eval_exc(N, rho, eps_eval);
+
+    if( i ) 
+      for( auto k = 0ul; k < N; ++k )
+        eps[k] += kernels_[i].first * eps_eval[k];
+    else 
+      for( auto k = 0ul; k < N; ++k )
+        eps[k] = kernels_[i].first * eps_eval[k];
+  
+  }
+
+}
+
+
+void XCFunctional::eval_exc_vxc( 
+  const int     N, 
+  const double* rho, 
+  const double* sigma, 
+  const double* lapl, 
+  const double* tau, 
+  double*       eps,
+  double*       vrho,
+  double*       vsigma,
+  double*       vlapl, 
+  double*       vtau
+) const {
+
+  assert( is_gga() );
+
+  std::vector<double> eps_scr, vrho_scr, vsigma_scr, vlapl_scr, vtau_scr;
+  if( kernels_.size() > 1 ) {
+    eps_scr.resize( N );
+    vrho_scr.resize( is_polarized() ? 2*N : N );
+    vsigma_scr.resize( is_polarized() ? 3*N : N );
+    vlapl_scr.resize( is_polarized() ? 2*N : N );
+    vtau_scr.resize( is_polarized() ? 2*N : N );
+  }
+
+
+  for( auto i = 0ul; i < kernels_.size(); ++i ) {
+
+    double* eps_eval    = i ? eps_scr.data()    : eps;
+    double* vrho_eval   = i ? vrho_scr.data()   : vrho;
+    double* vsigma_eval = i ? vsigma_scr.data() : vsigma;
+    double* vlapl_eval  = i ? vlapl_scr.data()  : vlapl;
+    double* vtau_eval   = i ? vtau_scr.data()   : vtau;
+
+    if( kernels_[i].second.is_mgga() )
+      kernels_[i].second.eval_exc_vxc(N, rho, sigma, lapl, tau, eps_eval, vrho_eval, vsigma_eval, vlapl_eval, vtau_eval );
+    else if( kernels_[i].second.is_gga() )
+      kernels_[i].second.eval_exc_vxc(N, rho, sigma, eps_eval, vrho_eval, vsigma_eval );
+    else
+      kernels_[i].second.eval_exc_vxc(N, rho, eps_eval, vrho_eval);
+
+    if( i ) {
+      for( auto k = 0ul; k < N; ++k ) {
+
+        eps[k] += kernels_[i].first * eps_eval[k];
+        vrho[k] += kernels_[i].first * vrho_eval[k];
+
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+          vsigma[k] += kernels_[i].first * vsigma_eval[k];
+
+        if( kernels_[i].second.is_mgga() ) {
+          vlapl[k] += kernels_[i].first * vlapl_eval[k];
+          vtau[k]  += kernels_[i].first * vtau_eval[k];
+        }
+
+      }
+      if( is_polarized() ) {
+
+        for( auto k = N; k < 2*N; ++k ) 
+          vrho[k] += kernels_[i].first * vrho_eval[k];
+
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        for( auto k = N; k < 3*N; ++k ) 
+          vsigma[k] += kernels_[i].first * vsigma_eval[k];
+
+        if( kernels_[i].second.is_mgga() )
+        for( auto k = N; k < 2*N; ++k ) {
+          vlapl[k] += kernels_[i].first * vlapl_eval[k];
+          vtau[k]  += kernels_[i].first * vtau_eval[k];
+        }
+
+      }
+    } else {
+      for( auto k = 0ul; k < N; ++k ) {
+
+        eps[k] = kernels_[i].first * eps[k];
+        vrho[k] = kernels_[i].first * vrho[k];
+
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+          vsigma[k] = kernels_[i].first * vsigma[k];
+
+        if( kernels_[i].second.is_mgga() ) {
+          vlapl[k] = kernels_[i].first * vlapl[k];
+          vtau[k]  = kernels_[i].first * vtau[k];
+        }
+
+      }
+      if( is_polarized() ) {
+
+        for( auto k = N; k < 2*N; ++k ) 
+          vrho[k] = kernels_[i].first * vrho[k];
+
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        for( auto k = N; k < 3*N; ++k ) 
+          vsigma[k] = kernels_[i].first * vsigma[k];
+
+        if( kernels_[i].second.is_mgga() )
+        for( auto k = N; k < 2*N; ++k ) { 
+          vlapl[k] = kernels_[i].first * vlapl[k];
+          vtau[k]  = kernels_[i].first * vtau[k];
+        }
+
+      }
+    }
+  
+  }
+
+}
+
 }; // ExchCXX
 
 

@@ -105,6 +105,30 @@ public:
     double*       vsigma
   ) const; 
 
+  // mGGA interface
+    
+  void eval_exc( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps
+  ) const; 
+
+  
+  void eval_exc_vxc( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau
+  ) const;
 
 };
 

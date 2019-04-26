@@ -78,4 +78,39 @@ void XCKernel::eval_exc_vxc(
 }
 
 // TODO: GGA kxc interfaces  
+  
+  
+// mGGA interface
+void XCKernel::eval_exc( 
+  const int     N, 
+  const double* rho, 
+  const double* sigma, 
+  const double* lapl, 
+  const double* tau, 
+  double*       eps
+) const {
+
+  assert( is_mgga() );
+  xc_mgga_exc( &kernel_, N, rho, sigma, lapl, tau, eps );
+
+}
+
+
+void XCKernel::eval_exc_vxc( 
+  const int     N, 
+  const double* rho, 
+  const double* sigma, 
+  const double* lapl, 
+  const double* tau, 
+  double*       eps,
+  double*       vrho,
+  double*       vsigma,
+  double*       vlapl, 
+  double*       vtau
+) const {
+
+  assert( is_gga() );
+  xc_mgga_exc_vxc( &kernel_, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau );
+
+}
 };
