@@ -18,8 +18,6 @@ private:
 
 public:
 
-  XCFunctional() = delete;
-
   XCFunctional( const std::initializer_list< std::pair<double, XCKernel> >& list ) : kernels_{ list } { }
 
   XCFunctional( const std::vector< XCKernel >& );
