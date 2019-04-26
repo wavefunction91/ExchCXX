@@ -34,6 +34,8 @@ public:
   XCFunctional( decltype(kernels_)&& ks ) :
     kernels_(std::move(ks)) { }
 
+  XCFunctional( const XCFunctional& ) = default;
+  XCFunctional( XCFunctional&& )      = default;
 
 
 
