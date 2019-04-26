@@ -21,7 +21,7 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
   
 
-  SECTION( "Vector copy constructor (copy)" ) {
+  SECTION( "Pair vector copy constructor (copy)" ) {
 
     // Kernels
     XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
@@ -34,7 +34,7 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
   }
 
-  SECTION( "Vector copy constructor (move)" ) {
+  SECTION( "Pair vector copy constructor (move)" ) {
 
     // Kernels
     XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
@@ -47,7 +47,7 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
   }
 
-  SECTION( "Vector copy constructor (inplace)" ) {
+  SECTION( "Pair vector copy constructor (inplace)" ) {
 
     std::vector< std::pair<double, XCKernel> >
       kernels = {
@@ -60,7 +60,7 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
   }
 
 
-  SECTION( "Vector move constructor" ) {
+  SECTION( "Pair vector move constructor" ) {
 
     std::vector< std::pair<double, XCKernel> >
       kernels = {
@@ -69,6 +69,77 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
       };
 
     XCFunctional func(std::move(kernels));
+
+  }
+
+  SECTION( "Kernel vector copy constructor (copy)" ) {
+
+    // Kernels
+    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
+    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+
+    std::vector< XCKernel > kernels = {slater, vwn3};
+
+    XCFunctional func(kernels);
+
+  }
+
+  SECTION( "Kernel vector copy constructor (move)" ) {
+
+    // Kernels
+    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
+    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+
+    std::vector< XCKernel > kernels = {std::move(slater), std::move(vwn3)};
+
+    XCFunctional func(kernels);
+
+  }
+
+  SECTION( "Kernel vector copy constructor (inplace)" ) {
+
+    std::vector< XCKernel >
+      kernels = {
+        XCKernel(XC_LDA_X, XC_UNPOLARIZED), 
+        XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)
+      };
+
+    XCFunctional func(kernels);
+
+  }
+
+
+  SECTION( "Kernel vector move constructor" ) {
+
+    std::vector< XCKernel >
+      kernels = {
+        XCKernel(XC_LDA_X, XC_UNPOLARIZED), 
+        XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)
+      };
+
+    XCFunctional func(std::move(kernels));
+
+  }
+
+  SECTION( "Pair List constructor" ) {
+
+    XCFunctional func(
+      {
+        {1., XCKernel(XC_LDA_X, XC_UNPOLARIZED)}, 
+        {1., XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)}
+      }
+    );
+
+  }
+
+  SECTION( "Kernel List constructor" ) {
+
+    XCFunctional func(
+      {
+        XCKernel(XC_LDA_X, XC_UNPOLARIZED), 
+        XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)
+      }
+    );
 
   }
 }

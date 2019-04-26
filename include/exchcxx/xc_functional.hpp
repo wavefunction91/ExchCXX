@@ -20,9 +20,20 @@ public:
 
   XCFunctional() = delete;
 
+  XCFunctional( const std::initializer_list< std::pair<double, XCKernel> >& list ) : kernels_{ list } { }
+
+  XCFunctional( const std::vector< XCKernel >& );
+
+/*
   template <typename... Args>
   XCFunctional( Args&&... args ) :
     kernels_( std::forward<Args>(args)... ){ }  
+*/
+  XCFunctional( const decltype(kernels_)& ks ) :
+    kernels_(ks) { }
+  XCFunctional( decltype(kernels_)&& ks ) :
+    kernels_(std::move(ks)) { }
+
 
 
 

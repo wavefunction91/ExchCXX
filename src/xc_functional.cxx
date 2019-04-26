@@ -22,6 +22,19 @@ bool XCFunctional::sanity_check() const {
   return true;
 }
 
+
+
+
+XCFunctional::XCFunctional( const std::vector< XCKernel > &ks ) {
+
+  for(const auto& k : ks )
+    kernels_.push_back( { 1., k } );
+
+}
+
+
+
+
 void XCFunctional::eval_exc( 
   const int     N, 
   const double* rho, 
