@@ -2,7 +2,6 @@
 
 namespace ExchCXX {
 
-
 XCKernel::XCKernel( 
   const int kern, 
   const int spin_polar
@@ -19,11 +18,29 @@ XCKernel::XCKernel(
 XCKernel::XCKernel( const XCKernel& other ) :
   XCKernel( other.xc_info()->number, other.polar_ ){ };
 
-XCKernel::XCKernel( XCKernel&& other ) :
+XCKernel::XCKernel( XCKernel&& other ) noexcept :
   XCKernel( other.kernel_, other.polar_, other.initialized_) { 
   other.initialized_ = false; // Avoid double destruction
 };
 
+XCKernel& XCKernel::operator=( XCKernel&& other ) noexcept {
+  kernel_     = other.kernel_;
+  polar_      = other.polar_;
+  initialized_= other.initialized_;
+
+  other.initialized_ = false; // Avoid double destruction
+
+  return *this;
+}
+
+XCKernel& XCKernel::operator=( const XCKernel& other ) {
+  return *this = std::move( XCKernel(other) );
+}
+
+
+XCKernel::~XCKernel() noexcept {
+  if( initialized_ ) xc_func_end( &kernel_ );
+}
 
 
 

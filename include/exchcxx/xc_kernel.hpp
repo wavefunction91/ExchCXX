@@ -14,7 +14,7 @@ class XCKernel {
 
 protected:
 
-  const int    polar_;  ///< Spin polarization
+  int          polar_;  ///< Spin polarization
   xc_func_type kernel_; ///< Libxc kernel definition
 
   bool initialized_ = false;
@@ -37,13 +37,13 @@ public:
   XCKernel() = delete;
   
   XCKernel( const int kern, const int spin_polar );
-
-
-  XCKernel( const XCKernel& );
-  XCKernel( XCKernel&&      );
+  XCKernel( const XCKernel& )                    ;
+  XCKernel( XCKernel&&      )            noexcept;
+  XCKernel& operator=( const XCKernel& )         ;
+  XCKernel& operator=( XCKernel&&      ) noexcept;
 
   // Destroy interal Libxc data
-  ~XCKernel(){ if( initialized_ ) xc_func_end( &kernel_ ); }
+  ~XCKernel();
 
 
 

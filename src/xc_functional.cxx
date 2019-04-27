@@ -23,7 +23,7 @@ bool XCFunctional::sanity_check() const {
 }
 
 
-
+XCFunctional::XCFunctional() = default;
 
 XCFunctional::XCFunctional( const std::vector< XCKernel > &ks ) {
 
@@ -32,6 +32,20 @@ XCFunctional::XCFunctional( const std::vector< XCKernel > &ks ) {
 
 }
 
+XCFunctional::XCFunctional( const std::initializer_list< value_type >& list ) : kernels_{ list } { }
+
+XCFunctional::XCFunctional( const std::vector<value_type>& ks ) :
+  kernels_(ks) { }
+XCFunctional::XCFunctional( std::vector<value_type>&& ks ) :
+  kernels_(std::move(ks)) { }
+
+
+
+XCFunctional& XCFunctional::operator=( const XCFunctional& ) = default;
+XCFunctional& XCFunctional::operator=( XCFunctional&&      ) noexcept = default;
+
+XCFunctional::XCFunctional( const XCFunctional& )       = default;
+XCFunctional::XCFunctional( XCFunctional&& )  noexcept  = default;
 
 
 

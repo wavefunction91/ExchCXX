@@ -9,31 +9,26 @@ namespace ExchCXX {
 
 class XCFunctional {
 
+  using value_type = std::pair<double, XCKernel>;
 private:
 
-  std::vector< std::pair<double, XCKernel> > kernels_;
+  std::vector< value_type > kernels_;
 
   bool sanity_check() const ; 
   void throw_if_not_sane() const { assert( sanity_check() ); }
 
 public:
 
-  XCFunctional( const std::initializer_list< std::pair<double, XCKernel> >& list ) : kernels_{ list } { }
-
+  XCFunctional();
   XCFunctional( const std::vector< XCKernel >& );
+  XCFunctional( const std::initializer_list< value_type >& list );
+  XCFunctional( const decltype(kernels_)& ks );
+  XCFunctional( decltype(kernels_)&& ks );
 
-/*
-  template <typename... Args>
-  XCFunctional( Args&&... args ) :
-    kernels_( std::forward<Args>(args)... ){ }  
-*/
-  XCFunctional( const decltype(kernels_)& ks ) :
-    kernels_(ks) { }
-  XCFunctional( decltype(kernels_)&& ks ) :
-    kernels_(std::move(ks)) { }
-
-  XCFunctional( const XCFunctional& ) = default;
-  XCFunctional( XCFunctional&& )      = default;
+  XCFunctional( const XCFunctional& )                    ;
+  XCFunctional( XCFunctional&& )                 noexcept;
+  XCFunctional& operator=( const XCFunctional& )         ;
+  XCFunctional& operator=( XCFunctional&&      ) noexcept;
 
 
 
