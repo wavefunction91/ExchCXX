@@ -24,9 +24,23 @@ class XCKernel {
 
 public:
 
+  enum Backend {
+    libxc
+  };
+
+  enum Spin {
+    Polarized,
+    Unpolarized
+  };
+
   // Avoid stateless kernel
   XCKernel() = delete;
   
+  XCKernel( const Backend backend, const std::string& kname, 
+    const Spin polar );
+  XCKernel( const std::string& kname, const Spin polar ) : 
+    XCKernel( Backend::libxc, kname, polar ){ };
+
   XCKernel( impl_ptr&& ptr )                     ;
   XCKernel( const XCKernel& )                    ;
   XCKernel( XCKernel&&      )            noexcept;

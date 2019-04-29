@@ -1,7 +1,15 @@
 #include <exchcxx/xc_kernel.hpp>
 #include <exchcxx/impl/xc_kernel.hpp>
+#include <exchcxx/factory/xc_kernel.hpp>
 
 namespace ExchCXX {
+
+XCKernel::XCKernel( 
+  const Backend backend, 
+  const std::string& kname, 
+  const Spin polar) : 
+XCKernel( std::move(libxc_kernel_factory( kname, polar == Spin::Polarized )) ) { }
+  
 
 XCKernel::XCKernel( impl_ptr&& ptr ) :
   pimpl_(std::move(ptr)) { };
