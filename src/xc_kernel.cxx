@@ -1,47 +1,33 @@
 #include <exchcxx/xc_kernel.hpp>
+#include <exchcxx/impl/xc_kernel.hpp>
 
 namespace ExchCXX {
 
-XCKernel::XCKernel( 
-  const int kern, 
-  const int spin_polar
-) : polar_(spin_polar) {
-
-  // Initialize XC Kernel using Libxc
-  int info = xc_func_init( &kernel_, kern, spin_polar );
-
-  assert( info == 0 );
-
-  initialized_ = true;
-} 
+XCKernel::XCKernel( impl_ptr&& ptr ) :
+  pimpl_(std::move(ptr)) { };
 
 XCKernel::XCKernel( const XCKernel& other ) :
-  XCKernel( other.xc_info()->number, other.polar_ ){ };
+  pimpl_(other.pimpl_->clone()) { };
 
-XCKernel::XCKernel( XCKernel&& other ) noexcept :
-  XCKernel( other.kernel_, other.polar_, other.initialized_) { 
-  other.initialized_ = false; // Avoid double destruction
-};
+XCKernel::XCKernel( XCKernel&& other ) noexcept = default;
 
-XCKernel& XCKernel::operator=( XCKernel&& other ) noexcept {
-  kernel_     = other.kernel_;
-  polar_      = other.polar_;
-  initialized_= other.initialized_;
+XCKernel& XCKernel::operator=( XCKernel&& other ) noexcept =default;
 
-  other.initialized_ = false; // Avoid double destruction
-
-  return *this;
-}
 
 XCKernel& XCKernel::operator=( const XCKernel& other ) {
   return *this = std::move( XCKernel(other) );
 }
 
 
-XCKernel::~XCKernel() noexcept {
-  if( initialized_ ) xc_func_end( &kernel_ );
-}
+XCKernel::~XCKernel() = default;
 
+bool XCKernel::is_lda()       const noexcept { return pimpl_->is_lda();       };
+bool XCKernel::is_gga()       const noexcept { return pimpl_->is_gga();       };
+bool XCKernel::is_mgga()      const noexcept { return pimpl_->is_mgga();      };
+bool XCKernel::is_hyb()       const noexcept { return pimpl_->is_hyb();       };
+bool XCKernel::is_polarized() const noexcept { return pimpl_->is_polarized(); };
+
+double XCKernel::hyb_exx() const noexcept { return pimpl_->hyb_exx(); }
 
 
 // LDA interfaces
@@ -51,9 +37,7 @@ void XCKernel::eval_exc(
   double*       eps 
 ) const {
 
-  throw_if_uninitialized();
-  assert( is_lda() );
-  xc_lda_exc( &kernel_, N, rho, eps );
+  pimpl_->eval_exc( N, rho, eps );  
 
 }
 
@@ -65,9 +49,7 @@ void XCKernel::eval_exc_vxc(
   double*       vxc 
 ) const {
 
-  throw_if_uninitialized();
-  assert( is_lda() );
-  xc_lda_exc_vxc( &kernel_, N, rho, eps, vxc );
+  pimpl_->eval_exc_vxc( N, rho, eps, vxc );  
 
 }
 
@@ -81,9 +63,7 @@ void XCKernel::eval_exc(
   double*       eps
 ) const {
 
-  throw_if_uninitialized();
-  assert( is_gga() );
-  xc_gga_exc( &kernel_, N, rho, sigma, eps );
+  pimpl_->eval_exc( N, rho, sigma, eps );  
 
 }
 
@@ -97,9 +77,7 @@ void XCKernel::eval_exc_vxc(
   double*       vsigma
 ) const {
 
-  throw_if_uninitialized();
-  assert( is_gga() );
-  xc_gga_exc_vxc( &kernel_, N, rho, sigma, eps, vrho, vsigma );
+  pimpl_->eval_exc_vxc( N, rho, sigma, eps, vrho, vsigma );  
 
 }
 
@@ -116,9 +94,7 @@ void XCKernel::eval_exc(
   double*       eps
 ) const {
 
-  throw_if_uninitialized();
-  assert( is_mgga() );
-  xc_mgga_exc( &kernel_, N, rho, sigma, lapl, tau, eps );
+  pimpl_->eval_exc( N, rho, sigma, lapl, tau, eps );  
 
 }
 
@@ -136,9 +112,8 @@ void XCKernel::eval_exc_vxc(
   double*       vtau
 ) const {
 
-  throw_if_uninitialized();
-  assert( is_gga() );
-  xc_mgga_exc_vxc( &kernel_, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau );
+  pimpl_->eval_exc_vxc( N, rho, sigma, lapl, tau, 
+    eps, vrho, vsigma, vlapl, vtau );  
 
 }
 };

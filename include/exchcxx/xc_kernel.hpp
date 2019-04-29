@@ -1,42 +1,33 @@
 #ifndef __INCLUDED_XC_KERNEL_HPP__
 #define __INCLUDED_XC_KERNEL_HPP__
 
-#include <xc.h> // Libxc
+#include "impl/xc_kernel_fwd.hpp" // XCKernelImpl
 
 // Standard Libs
 #include <vector>
 #include <cassert>
 #include <algorithm>
+#include <memory>
 
 namespace ExchCXX {
 
+/**
+ *  \brief A class which manages the lifetime and evaluation
+ *  of exchange-correlation (XC) kernels for density functional
+ *  theory.
+ */
 class XCKernel {
 
-protected:
+  using impl_ptr = std::unique_ptr< detail::XCKernelImpl >;
 
-  int          polar_;  ///< Spin polarization
-  xc_func_type kernel_; ///< Libxc kernel definition
-
-  bool initialized_ = false;
-  void throw_if_uninitialized() const { assert( initialized_ ); }
-
-
-  inline auto xc_info() const { 
-    throw_if_uninitialized();
-    return kernel_.info; 
-  };
-
-  XCKernel( 
-    xc_func_type  kern, 
-    const int     spin_polar, 
-    const bool    init
-  ) : polar_(spin_polar), kernel_(kern), initialized_(init){ }
+  impl_ptr pimpl_; ///< Pointer to implementation
 
 public:
 
+  // Avoid stateless kernel
   XCKernel() = delete;
   
-  XCKernel( const int kern, const int spin_polar );
+  XCKernel( impl_ptr&& ptr )                     ;
   XCKernel( const XCKernel& )                    ;
   XCKernel( XCKernel&&      )            noexcept;
   XCKernel& operator=( const XCKernel& )         ;
@@ -47,58 +38,135 @@ public:
 
 
 
-  inline bool is_lda() const {
-    throw_if_uninitialized();
-    return kernel_.info->family == XC_FAMILY_LDA;
-  }
+  /**
+   *  \brief Determine if kernel uses the local density 
+   *  approximation (LDA).
+   *
+   *  No throw guarantee.
+   *
+   *  \return true if kernel is LDA, false otherwise
+   */ 
+  bool is_lda() const noexcept;
 
-  inline bool is_gga() const {
-    throw_if_uninitialized();
-    return 
-      (kernel_.info->family == XC_FAMILY_GGA    ) or
-      (kernel_.info->family == XC_FAMILY_HYB_GGA);
-  }
+  /**
+   *  \brief Determine if kernel uses the generalized
+   *  gradient approximation (GGA)
+   *
+   *  No throw guarantee.
+   *
+   *  \return true if kernel is GGA, false otherwise
+   */ 
+  bool is_gga() const noexcept;
 
-  inline bool is_mgga() const {
-    throw_if_uninitialized();
-    return 
-      (kernel_.info->family == XC_FAMILY_MGGA    ) or
-      (kernel_.info->family == XC_FAMILY_HYB_MGGA);
-  }
+  /**
+   *  \brief Determine if kernel uses the meta generalized
+   *  gradient approximation (mGGA)
+   *
+   *  No throw guarantee.
+   *
+   *  \return true if kernel is mGGA, false otherwise
+   */ 
+  bool is_mgga() const noexcept;
 
-  inline bool is_hyb() const {
-    throw_if_uninitialized();
-    return
-      (kernel_.info->family == XC_FAMILY_HYB_GGA ) or
-      (kernel_.info->family == XC_FAMILY_HYB_MGGA);
-  }
+  /**
+   *  \brief Determine if kernel is a hybrid kernel. 
+   *
+   *  No throw guarantee.
+   *
+   *  \return true if kernel is hybrid, false otherwise
+   */ 
+  bool is_hyb() const noexcept;
 
-  inline bool is_polarized() const {
-    throw_if_uninitialized();
-    return polar_ == XC_POLARIZED;
-  }
+  /**
+   *  \brief Determine if kernel was initialized as spin
+   *  polarized
+   *
+   *  No throw guarantee.
+   *
+   *  \return true if kernel is spin polarized, false otherwise
+   */ 
+  bool is_polarized() const noexcept;
 
-
-  inline double hyb_exx() const {
-    throw_if_uninitialized();
-    return xc_hyb_exx_coef( &kernel_ );
-  }
+  /**
+   *  \brief Determine the exact (HF) exchange coefficient
+   *  for the kernel
+   *
+   *  No throw guarantee.
+   *
+   *  \return the HF exchange coefficient for hybrid functionals,
+   *  0. otherwise.
+   */ 
+  double hyb_exx() const noexcept;
 
 
 
   // LDA interfaces
+    
+  /**
+   *  \brief Evaluate the XC energy density for an LDA kernel.
+   *
+   *  Only valid for LDA kernels, throws for non-LDA kernels.
+   *  Strong throw guarantee.
+   *
+   *  \param[in]  N    Number of density points to evaluate kernel
+   *  \parap[in]  rho  Density points to evaluate the kernel. An 
+   *                   array of N density evaluations if 
+   *                   initialized as spin unpolarized, 2N if
+   *                   initialized as spin polarized.
+   *  \param[out] eps  Evalaution of the XC energy density for the
+   *                   specified density points. An array of length
+   *                   N.
+   */
   void eval_exc( 
     const int     N, 
     const double* rho, 
     double*       eps 
   ) const; 
 
+  /**
+   *  \brief Evaluate the XC potential for an LDA kernel.
+   *
+   *  Only valid for LDA kernels, throws for non-LDA kernels.
+   *  Strong throw guarantee.
+   *
+   *  \param[in]  N    Number of density points to evaluate kernel
+   *  \parap[in]  rho  Density points to evaluate the kernel. An 
+   *                   array of N density evaluations if 
+   *                   initialized as spin unpolarized, 2N if
+   *                   initialized as spin polarized.
+   *  \param[out] vxc  Evalaution of the XC potential for the
+   *                   specified density points. An array of length
+   *                   N if kernel was initialized as spin 
+   *                   unpolarized, 2N if initialized as spin
+   *                   polarized.
+   */
   void eval_vxc( 
     const int     N, 
     const double* rho, 
     double*       vxc 
   ) const; 
 
+  /**
+   *  \brief Evaluate the XC energy density and the XC potential 
+   *  for an LDA kernel.
+   *
+   *  Only valid for LDA kernels, throws for non-LDA kernels.
+   *  Strong throw guarantee.
+   *
+   *  \param[in]  N    Number of density points to evaluate kernel
+   *  \parap[in]  rho  Density points to evaluate the kernel. An 
+   *                   array of N density evaluations if 
+   *                   initialized as spin unpolarized, 2N if
+   *                   initialized as spin polarized.
+   *  \param[out] eps  Evalaution of the XC energy density for the
+   *                   specified density points. An array of length
+   *                   N.
+   *  \param[out] vxc  Evalaution of the XC potential for the
+   *                   specified density points. An array of length
+   *                   N if kernel was initialized as spin 
+   *                   unpolarized, 2N if initialized as spin
+   *                   polarized.
+   */
   void eval_exc_vxc( 
     const int     N, 
     const double* rho, 
@@ -106,18 +174,91 @@ public:
     double*       vxc 
   ) const; 
 
+  /**
+   *  \brief Evaluate the functional second derivative for
+   *  an LDA XC kernel.
+   *
+   *  Only valid for LDA kernels, throws for non-LDA kernels.
+   *  Strong throw guarantee.
+   *
+   *  \param[in]  N    Number of density points to evaluate kernel
+   *  \parap[in]  rho  Density points to evaluate the kernel. An 
+   *                   array of N density evaluations if 
+   *                   initialized as spin unpolarized, 2N if
+   *                   initialized as spin polarized.
+   *  \param[out] fxc  Evalaution of the functional second 
+   *                   derivative of the XC kernel for the
+   *                   specified density points. An array of length
+   *                   N if kernel was initialized as spin 
+   *                   unpolarized, 3N if initialized as spin
+   *                   polarized.
+   */
   void eval_fxc( 
     const int     N, 
     const double* rho, 
     double*       fxc 
   ) const; 
 
+  /**
+   *  \brief Evaluate the functional third derivative for
+   *  an LDA XC kernel.
+   *
+   *  Only valid for LDA kernels, throws for non-LDA kernels.
+   *  Strong throw guarantee.
+   *
+   *  \param[in]  N    Number of density points to evaluate kernel
+   *  \parap[in]  rho  Density points to evaluate the kernel. An 
+   *                   array of N density evaluations if 
+   *                   initialized as spin unpolarized, 2N if
+   *                   initialized as spin polarized.
+   *  \param[out] kxc  Evalaution of the functional third
+   *                   derivative of the XC kernel for the
+   *                   specified density points. An array of length
+   *                   N if kernel was initialized as spin 
+   *                   unpolarized, 4N if initialized as spin
+   *                   polarized.
+   */
   void eval_kxc( 
     const int     N, 
     const double* rho, 
     double*       kxc 
   ) const; 
 
+
+  /**
+   *  \brief Evaluate the XC energy density, XC potential,
+   *  and the functional second and third derivatives
+   *  for an LDA kernel.
+   *
+   *  Only valid for LDA kernels, throws for non-LDA kernels.
+   *  Strong throw guarantee.
+   *
+   *  \param[in]  N    Number of density points to evaluate kernel
+   *  \parap[in]  rho  Density points to evaluate the kernel. An 
+   *                   array of N density evaluations if 
+   *                   initialized as spin unpolarized, 2N if
+   *                   initialized as spin polarized.
+   *  \param[out] eps  Evalaution of the XC energy density for the
+   *                   specified density points. An array of length
+   *                   N.
+   *  \param[out] vxc  Evalaution of the XC potential for the
+   *                   specified density points. An array of length
+   *                   N if kernel was initialized as spin 
+   *                   unpolarized, 2N if initialized as spin
+   *                   polarized.
+   *  \param[out] fxc  Evalaution of the functional second 
+   *                   derivative of the XC kernel for the
+   *                   specified density points. An array of length
+   *                   N if kernel was initialized as spin 
+   *                   unpolarized, 3N if initialized as spin
+   *                   polarized.
+   *  \param[out] kxc  Evalaution of the functional third
+   *                   derivative of the XC kernel for the
+   *                   specified density points. An array of length
+   *                   N if kernel was initialized as spin 
+   *                   unpolarized, 4N if initialized as spin
+   *                   polarized.
+   */
   void eval( 
     const int     N, 
     const double* rho, 

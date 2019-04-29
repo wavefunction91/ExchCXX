@@ -1,4 +1,4 @@
-add_library( exchcxx STATIC xc_kernel.cxx xc_functional.cxx )
+add_library( exchcxx STATIC xc_kernel.cxx xc_functional.cxx libxc.cxx )
 
 
 # TARGET properties
