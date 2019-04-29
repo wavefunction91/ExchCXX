@@ -43,7 +43,7 @@ public:
   XCKernel& operator=( XCKernel&&      ) noexcept;
 
   // Destroy interal Libxc data
-  ~XCKernel();
+  ~XCKernel() noexcept;
 
 
 
@@ -93,6 +93,12 @@ public:
     double*       eps 
   ) const; 
 
+  void eval_vxc( 
+    const int     N, 
+    const double* rho, 
+    double*       vxc 
+  ) const; 
+
   void eval_exc_vxc( 
     const int     N, 
     const double* rho, 
@@ -100,7 +106,26 @@ public:
     double*       vxc 
   ) const; 
 
-  // TODO: LDA fxc/kxc interfaces  
+  void eval_fxc( 
+    const int     N, 
+    const double* rho, 
+    double*       fxc 
+  ) const; 
+
+  void eval_kxc( 
+    const int     N, 
+    const double* rho, 
+    double*       kxc 
+  ) const; 
+
+  void eval( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc,
+    double*       fxc,
+    double*       kxc 
+  ) const; 
     
     
   // GGA interface
@@ -111,6 +136,13 @@ public:
     double*       eps
   ) const; 
 
+  void eval_vxc( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       vrho,
+    double*       vsigma
+  ) const;
   
   void eval_exc_vxc( 
     const int     N, 
@@ -121,7 +153,27 @@ public:
     double*       vsigma
   ) const;
 
-  // TODO: GGA fxc/kxc interfaces  
+  void eval_fxc( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const;
+
+  void eval( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const;
+
 
   // mGGA interface
   void eval_exc( 
