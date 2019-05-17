@@ -103,7 +103,7 @@ TEST_CASE( "Unpolarized LDA Kernel Wrappers", "[xc-lda]" ) {
   std::vector<double> exc( npts );
   std::vector<double> vxc( npts );
 
-  XCKernel lda( "XC_LDA_X", XCKernel::Spin::Unpolarized );
+  XCKernel lda( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized );
 
   CHECK( lda.is_lda() );
   CHECK( not lda.is_polarized() );
@@ -138,7 +138,7 @@ TEST_CASE( "Polarized LDA Kernel Wrappers", "[xc-lda]" ) {
   std::vector<double> exc( npts );
   std::vector<double> vxc( 2*npts );
 
-  XCKernel lda( "XC_LDA_X", XCKernel::Spin::Polarized );
+  XCKernel lda( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Polarized );
 
   CHECK( lda.is_lda() );
   CHECK( lda.is_polarized() );
@@ -171,7 +171,6 @@ TEST_CASE( "Polarized LDA Kernel Wrappers", "[xc-lda]" ) {
 
 
 
-/*
 
 
 TEST_CASE( "Unpolarized GGA Kernel Wrappers", "[xc-gga]" ) {
@@ -180,7 +179,7 @@ TEST_CASE( "Unpolarized GGA Kernel Wrappers", "[xc-gga]" ) {
   std::vector<double> exc( npts );
   std::vector<double> vrho( npts );
   std::vector<double> vsigma( npts );
-  XCKernel lyp( XC_GGA_C_LYP, XC_UNPOLARIZED );
+  XCKernel lyp( XCKernel::Kernel::LYP, XCKernel::Spin::Unpolarized );
 
   CHECK( lyp.is_gga() );
   CHECK( not lyp.is_polarized() );
@@ -218,7 +217,7 @@ TEST_CASE( "Polarized GGA Kernel Wrappers", "[xc-gga]" ) {
   std::vector<double> exc( npts );
   std::vector<double> vrho( 2*npts );
   std::vector<double> vsigma( 3*npts );
-  XCKernel lyp( XC_GGA_C_LYP, XC_POLARIZED );
+  XCKernel lyp( XCKernel::Kernel::LYP, XCKernel::Spin::Polarized );
 
   CHECK( lyp.is_gga() );
   CHECK( lyp.is_polarized() );
@@ -257,7 +256,7 @@ TEST_CASE( "Polarized GGA Kernel Wrappers", "[xc-gga]" ) {
 
 TEST_CASE( "Hybrid GGA Kernel Wrappers", "[xc-hyb-gga]" ) {
 
-  XCKernel b3lyp( XC_HYB_GGA_XC_B3LYP, XC_POLARIZED );
+  XCKernel b3lyp( XCKernel::Kernel::B3LYP, XCKernel::Spin::Polarized );
 
   CHECK( b3lyp.is_gga() );
   CHECK( b3lyp.is_polarized() );
@@ -268,4 +267,3 @@ TEST_CASE( "Hybrid GGA Kernel Wrappers", "[xc-hyb-gga]" ) {
   CHECK( b3lyp.hyb_exx() == Approx(0.2) );
 
 }
-*/

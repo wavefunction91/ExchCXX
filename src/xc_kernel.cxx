@@ -6,9 +6,9 @@ namespace ExchCXX {
 
 XCKernel::XCKernel( 
   const Backend backend, 
-  const std::string& kname, 
+  const Kernel kern, 
   const Spin polar) : 
-XCKernel( std::move(libxc_kernel_factory( kname, polar )) ) { }
+XCKernel( std::move(libxc_kernel_factory( kern, polar )) ) { }
   
 
 XCKernel::XCKernel( impl_ptr&& ptr ) :

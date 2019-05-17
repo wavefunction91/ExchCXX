@@ -5,7 +5,7 @@
 
 namespace ExchCXX {
 
-XCKernel libxc_kernel_factory(const std::string&, const XCKernel::Spin );
+XCKernel libxc_kernel_factory(const XCKernel::Kernel, const XCKernel::Spin );
 
 }; // namespace ExchCXX
 

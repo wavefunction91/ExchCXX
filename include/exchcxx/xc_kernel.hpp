@@ -33,15 +33,15 @@ public:
     Unpolarized
   };
 
-  //#include "kernels/kernels.hpp"
+  #include "kernels/kernels.hpp"
 
   // Avoid stateless kernel
   XCKernel() = delete;
   
-  XCKernel( const Backend backend, const std::string& kname, 
+  XCKernel( const Backend backend, const Kernel kern, 
     const Spin polar );
-  XCKernel( const std::string& kname, const Spin polar ) : 
-    XCKernel( Backend::libxc, kname, polar ){ };
+  XCKernel( const Kernel kern, const Spin polar ) : 
+    XCKernel( Backend::libxc, kern, polar ){ };
 
   XCKernel( impl_ptr&& ptr )                     ;
   XCKernel( const XCKernel& )                    ;

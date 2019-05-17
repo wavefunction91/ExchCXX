@@ -16,17 +16,46 @@ std::unordered_map< XCKernel::Spin, int > libxc_polar_map {
 template< XCKernel::Kernel Kern >
 struct libxc_supports_kernel : public std::false_type { };
 
-template<>
-struct libxc_supports_kernel< XCKernel::Kernel::SlaterExchange > : public std::true_type { };
+#define add_libxc_support(KERN) \
+template<> \
+struct libxc_supports_kernel< XCKernel::Kernel::KERN > : public std::true_type { };
+
+add_libxc_support( SlaterExchange )
+add_libxc_support( VWN3           )
+add_libxc_support( VWN5           )
 */
 
+std::unordered_map< XCKernel::Kernel, int > libxc_kernel_map {
+  // LDA Functionals
+  { XCKernel::Kernel::SlaterExchange, XC_LDA_X            },
+  { XCKernel::Kernel::VWN3,           XC_LDA_C_VWN_3      },
+  { XCKernel::Kernel::VWN5,           XC_LDA_C_VWN_RPA    },
+
+  // GGA Functionals
+  { XCKernel::Kernel::B88,            XC_GGA_X_B88        },
+  { XCKernel::Kernel::LYP,            XC_GGA_C_LYP        },
+
+  // Hybrid GGA Functionals
+  { XCKernel::Kernel::B3LYP,          XC_HYB_GGA_XC_B3LYP },
+  { XCKernel::Kernel::PBE0,           XC_HYB_GGA_XC_PBEH  },
+};
 
 
-XCKernel libxc_kernel_factory(const std::string& kname, 
+inline bool libxc_supports_kernel( const XCKernel::Kernel kern ) {
+  return libxc_kernel_map.find(kern) != libxc_kernel_map.end();
+}
+
+
+
+
+
+XCKernel libxc_kernel_factory(const XCKernel::Kernel kern, 
   const XCKernel::Spin spin_polar ) {
 
+  assert( libxc_supports_kernel(kern) );
+
   return XCKernel( 
-    std::make_unique< detail::LibxcKernelImpl >( kname, spin_polar ) );
+    std::make_unique< detail::LibxcKernelImpl >( kern, spin_polar ) );
 
 }
 
@@ -34,9 +63,9 @@ XCKernel libxc_kernel_factory(const std::string& kname,
 namespace detail {
 
 LibxcKernelImpl::LibxcKernelImpl(
-  const std::string&    kname,
+  const XCKernel::Kernel    kern,
   const XCKernel::Spin  spin_polar
-) : LibxcKernelImpl( XC_LDA_X, libxc_polar_map[spin_polar] ) { }  
+) : LibxcKernelImpl( libxc_kernel_map[kern], libxc_polar_map[spin_polar] ) { }  
 
 LibxcKernelImpl::LibxcKernelImpl( 
   xc_func_type  kern, 
