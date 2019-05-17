@@ -2,6 +2,51 @@
 
 namespace ExchCXX {
 
+
+std::vector< XCKernel > functional_factory( 
+  const XCKernel::Backend        backend,
+  const XCFunctional::Functional func,
+  const XCKernel::Spin          polar
+) {
+
+  std::vector< XCKernel > kerns;
+
+  using Kernel     = XCKernel::Kernel;
+  using Functional = XCFunctional::Functional;
+
+  if( func == Functional::SVWN3 )
+    kerns = { 
+      XCKernel( backend, Kernel::SlaterExchange, polar ),
+      XCKernel( backend, Kernel::VWN3,           polar )
+    };
+  else if( func == Functional::SVWN5 )
+    kerns = { 
+      XCKernel( backend, Kernel::SlaterExchange, polar ),
+      XCKernel( backend, Kernel::VWN5,           polar )
+    };
+  else if( func == Functional::BLYP )
+    kerns = { 
+      XCKernel( backend, Kernel::B88, polar ),
+      XCKernel( backend, Kernel::LYP, polar )
+    };
+  else if( func == Functional::B3LYP )
+    kerns = { 
+      XCKernel( backend, Kernel::B3LYP, polar )
+    };
+  else if( func == Functional::PBE0 )
+    kerns = { 
+      XCKernel( backend, Kernel::PBE0, polar )
+    };
+  else {
+    assert( false && "FUNCTIONAL NYS" );
+  }
+
+
+  return kerns;
+}
+
+
+
 bool XCFunctional::sanity_check() const {
 
   // Must have one kernel
@@ -38,6 +83,15 @@ XCFunctional::XCFunctional( const std::vector<value_type>& ks ) :
   kernels_(ks) { }
 XCFunctional::XCFunctional( std::vector<value_type>&& ks ) :
   kernels_(std::move(ks)) { }
+
+
+XCFunctional::XCFunctional( 
+  const XCKernel::Backend        backend, 
+  const XCFunctional::Functional func,
+  const XCKernel::Spin           polar
+) :
+  XCFunctional(functional_factory(backend,func,polar)) { }
+
 
 
 
