@@ -24,8 +24,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
   SECTION( "Pair vector copy constructor (copy)" ) {
 
     // Kernels
-    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
-    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+    XCKernel slater( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized );
+    XCKernel vwn3  ( XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized );
 
     std::vector< std::pair<double, XCKernel> >
       kernels = {{ 1., slater}, {1., vwn3}};
@@ -37,8 +37,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
   SECTION( "Pair vector copy constructor (move)" ) {
 
     // Kernels
-    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
-    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+    XCKernel slater( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized );
+    XCKernel vwn3  ( XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized );
 
     std::vector< std::pair<double, XCKernel> >
       kernels = {{ 1., std::move(slater)}, {1., std::move(vwn3)}};
@@ -51,8 +51,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
     std::vector< std::pair<double, XCKernel> >
       kernels = {
-        {1., XCKernel(XC_LDA_X, XC_UNPOLARIZED)}, 
-        {1., XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)}
+        {1., XCKernel(XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized)}, 
+        {1., XCKernel(XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized)}
       };
 
     XCFunctional func(kernels);
@@ -64,8 +64,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
     std::vector< std::pair<double, XCKernel> >
       kernels = {
-        {1., XCKernel(XC_LDA_X, XC_UNPOLARIZED)}, 
-        {1., XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)}
+        {1., XCKernel(XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized)},
+        {1., XCKernel(XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized)}
       };
 
     XCFunctional func(std::move(kernels));
@@ -75,8 +75,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
   SECTION( "Kernel vector copy constructor (copy)" ) {
 
     // Kernels
-    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
-    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+    XCKernel slater( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized );
+    XCKernel vwn3  ( XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized );
 
     std::vector< XCKernel > kernels = {slater, vwn3};
 
@@ -87,8 +87,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
   SECTION( "Kernel vector copy constructor (move)" ) {
 
     // Kernels
-    XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
-    XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+    XCKernel slater( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized );
+    XCKernel vwn3  ( XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized );
 
     std::vector< XCKernel > kernels = {std::move(slater), std::move(vwn3)};
 
@@ -100,8 +100,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
     std::vector< XCKernel >
       kernels = {
-        XCKernel(XC_LDA_X, XC_UNPOLARIZED), 
-        XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)
+        XCKernel(XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized),
+        XCKernel(XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized)
       };
 
     XCFunctional func(kernels);
@@ -113,8 +113,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
     std::vector< XCKernel >
       kernels = {
-        XCKernel(XC_LDA_X, XC_UNPOLARIZED), 
-        XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)
+        XCKernel(XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized),
+        XCKernel(XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized)
       };
 
     XCFunctional func(std::move(kernels));
@@ -125,8 +125,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
     XCFunctional func(
       {
-        {1., XCKernel(XC_LDA_X, XC_UNPOLARIZED)}, 
-        {1., XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)}
+        {1., XCKernel(XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized)},
+        {1., XCKernel(XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized)}
       }
     );
 
@@ -136,8 +136,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
     XCFunctional func(
       {
-        XCKernel(XC_LDA_X, XC_UNPOLARIZED), 
-        XCKernel(XC_LDA_C_VWN_3, XC_UNPOLARIZED)
+        XCKernel(XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized),
+        XCKernel(XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized)
       }
     );
 
@@ -162,8 +162,8 @@ TEST_CASE( "Unpolarized LDA XC Functionals", "[xc-lda]" ) {
   std::vector<double> exc_2( npts );
   std::vector<double> vxc_2( npts );
 
-  XCKernel slater( XC_LDA_X, XC_UNPOLARIZED );
-  XCKernel vwn3( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+  XCKernel slater( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized );
+  XCKernel vwn3  ( XCKernel::Kernel::VWN3,           XCKernel::Spin::Unpolarized );
 
   slater.eval_exc_vxc( npts, rho.data(), exc_1.data(), 
     vxc_1.data() );
@@ -266,8 +266,8 @@ TEST_CASE( "Polarized LDA XC Functionals", "[xc-lda]" ) {
   std::vector<double> exc_2( npts );
   std::vector<double> vxc_2( 2*npts );
 
-  XCKernel slater( XC_LDA_X, XC_POLARIZED );
-  XCKernel vwn3( XC_LDA_C_VWN_3, XC_POLARIZED );
+  XCKernel slater( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Polarized );
+  XCKernel vwn3  ( XCKernel::Kernel::VWN3,           XCKernel::Spin::Polarized );
 
   slater.eval_exc_vxc( npts, rho.data(), exc_1.data(), 
     vxc_1.data() );
@@ -381,9 +381,9 @@ TEST_CASE( "Unpolarized GGA XC Functionals", "[xc-gga]" ) {
   std::vector<double> exc_3( npts );
   std::vector<double> vxc_3( npts );
 
-  XCKernel b88( XC_GGA_X_B88,   XC_UNPOLARIZED );
-  XCKernel lyp( XC_GGA_C_LYP,   XC_UNPOLARIZED );
-  XCKernel vwn( XC_LDA_C_VWN_3, XC_UNPOLARIZED );
+  XCKernel b88( XCKernel::Kernel::B88,  XCKernel::Spin::Unpolarized );
+  XCKernel lyp( XCKernel::Kernel::LYP,  XCKernel::Spin::Unpolarized );
+  XCKernel vwn( XCKernel::Kernel::VWN3, XCKernel::Spin::Unpolarized );
 
   b88.eval_exc_vxc( npts, rho.data(), sigma.data(), 
     exc_1.data(), vrho_1.data(), vsigma_1.data() );
@@ -533,9 +533,9 @@ TEST_CASE( "Polarized GGA XC Functionals", "[xc-gga]" ) {
   std::vector<double> exc_3( npts );
   std::vector<double> vxc_3( 2*npts );
 
-  XCKernel b88( XC_GGA_X_B88,   XC_POLARIZED );
-  XCKernel lyp( XC_GGA_C_LYP,   XC_POLARIZED );
-  XCKernel vwn( XC_LDA_C_VWN_3, XC_POLARIZED );
+  XCKernel b88( XCKernel::Kernel::B88,  XCKernel::Spin::Polarized );
+  XCKernel lyp( XCKernel::Kernel::LYP,  XCKernel::Spin::Polarized );
+  XCKernel vwn( XCKernel::Kernel::VWN3, XCKernel::Spin::Polarized );
 
   b88.eval_exc_vxc( npts, rho.data(), sigma.data(), 
     exc_1.data(), vrho_1.data(), vsigma_1.data() );
