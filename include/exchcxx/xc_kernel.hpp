@@ -33,6 +33,8 @@ public:
     Unpolarized
   };
 
+  //#include "kernels/kernels.hpp"
+
   // Avoid stateless kernel
   XCKernel() = delete;
   

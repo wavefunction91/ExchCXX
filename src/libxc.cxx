@@ -1,10 +1,29 @@
 #include <exchcxx/impl/libxc.hpp>
 #include <exchcxx/factory/xc_kernel.hpp>
 
+#include <unordered_map>
+
 namespace ExchCXX {
 
+
+std::unordered_map< XCKernel::Spin, int > libxc_polar_map {
+  { XCKernel::Spin::Polarized,   XC_POLARIZED   },
+  { XCKernel::Spin::Unpolarized, XC_UNPOLARIZED }
+};
+
+
+/*
+template< XCKernel::Kernel Kern >
+struct libxc_supports_kernel : public std::false_type { };
+
+template<>
+struct libxc_supports_kernel< XCKernel::Kernel::SlaterExchange > : public std::true_type { };
+*/
+
+
+
 XCKernel libxc_kernel_factory(const std::string& kname, 
-  const bool spin_polar ) {
+  const XCKernel::Spin spin_polar ) {
 
   return XCKernel( 
     std::make_unique< detail::LibxcKernelImpl >( kname, spin_polar ) );
@@ -15,9 +34,9 @@ XCKernel libxc_kernel_factory(const std::string& kname,
 namespace detail {
 
 LibxcKernelImpl::LibxcKernelImpl(
-  const std::string& kname,
-  const bool         spin_polar
-) : LibxcKernelImpl( XC_LDA_X, spin_polar ? XC_POLARIZED : XC_UNPOLARIZED ) { }  
+  const std::string&    kname,
+  const XCKernel::Spin  spin_polar
+) : LibxcKernelImpl( XC_LDA_X, libxc_polar_map[spin_polar] ) { }  
 
 LibxcKernelImpl::LibxcKernelImpl( 
   xc_func_type  kern, 

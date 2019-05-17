@@ -103,7 +103,7 @@ TEST_CASE( "Unpolarized LDA Kernel Wrappers", "[xc-lda]" ) {
   std::vector<double> exc( npts );
   std::vector<double> vxc( npts );
 
-  XCKernel lda( XCKernel::Backend::libxc, "XC_LDA_X", XCKernel::Spin::Unpolarized );
+  XCKernel lda( "XC_LDA_X", XCKernel::Spin::Unpolarized );
 
   CHECK( lda.is_lda() );
   CHECK( not lda.is_polarized() );
@@ -138,7 +138,7 @@ TEST_CASE( "Polarized LDA Kernel Wrappers", "[xc-lda]" ) {
   std::vector<double> exc( npts );
   std::vector<double> vxc( 2*npts );
 
-  XCKernel lda( XCKernel::Backend::libxc, "XC_LDA_X", XCKernel::Spin::Polarized );
+  XCKernel lda( "XC_LDA_X", XCKernel::Spin::Polarized );
 
   CHECK( lda.is_lda() );
   CHECK( lda.is_polarized() );

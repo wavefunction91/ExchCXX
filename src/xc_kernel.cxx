@@ -8,7 +8,7 @@ XCKernel::XCKernel(
   const Backend backend, 
   const std::string& kname, 
   const Spin polar) : 
-XCKernel( std::move(libxc_kernel_factory( kname, polar == Spin::Polarized )) ) { }
+XCKernel( std::move(libxc_kernel_factory( kname, polar )) ) { }
   
 
 XCKernel::XCKernel( impl_ptr&& ptr ) :

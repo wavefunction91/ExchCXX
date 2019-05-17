@@ -1,7 +1,7 @@
 #ifndef __INCLUDED_IMPL_XC_KERNEL_HPP__
 #define __INCLUDED_IMPL_XC_KERNEL_HPP__
 
-#include <exchcxx/impl/xc_kernel_fwd.hpp>
+#include <exchcxx/xc_kernel.hpp>
 #include <string>
 #include <memory>
 
@@ -13,7 +13,6 @@ struct XCKernelImpl {
   using unique_me = std::unique_ptr< XCKernelImpl >;
 
   XCKernelImpl() = default;
-  XCKernelImpl( const std::string& kname, const bool polar );
 
   XCKernelImpl( XCKernelImpl&& )                 = delete;
   XCKernelImpl& operator=( const XCKernelImpl& ) = delete;

@@ -165,7 +165,7 @@ public:
 
   LibxcKernelImpl() = delete;
   
-  LibxcKernelImpl( const std::string& kname, const bool spin_polar );
+  LibxcKernelImpl( const std::string& kname, const XCKernel::Spin polar);
   LibxcKernelImpl( const int kern, const int spin_polar );
   LibxcKernelImpl( const LibxcKernelImpl& );
 
