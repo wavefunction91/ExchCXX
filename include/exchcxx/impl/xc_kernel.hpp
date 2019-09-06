@@ -160,6 +160,141 @@ struct XCKernelImpl {
 
   // TODO: mGGA fxc/kxc interfaces  
     
+  // Device Code
+    
+#ifdef EXCHCXX_ENABLE_DEVICE
+
+  // LDA interfaces
+    
+  void eval_exc_device( 
+    const int N, 
+    const double* rho, 
+    double* eps 
+  ) const { eval_exc_device_(N, rho, eps); }
+
+/*
+  void eval_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       vxc 
+  ) const { eval_vxc_device_(N, rho, vxc); }; 
+*/
+
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc 
+  ) const { eval_exc_vxc_device_(N, rho, eps, vxc); }; 
+
+/*
+  void eval_fxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       fxc 
+  ) const { eval_fxc_device_(N, rho, fxc); }; 
+
+  void eval_kxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       kxc 
+  ) const { eval_fxc_device_(N, rho, kxc); }; 
+
+  void eval_device( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc,
+    double*       fxc,
+    double*       kxc 
+  ) const { eval_device_(N,rho,eps,vxc,fxc,kxc); }; 
+*/
+
+ 
+  // GGA Interfaces
+
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps
+  ) const { eval_exc_device_(N,rho,sigma,eps); }; 
+
+/*
+  void eval_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       vrho,
+    double*       vsigma
+  ) const { eval_vxc_device_(N,rho,sigma,vrho,vsigma); }; 
+*/
+  
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma
+  ) const { eval_exc_vxc_device_( N, rho, sigma, eps, vrho, vsigma ); }; 
+
+/*
+  void eval_fxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const { eval_fxc_device_(N,rho,sigma,v2rho2,v2rhosigma,v2sigma2); }; 
+
+  void eval_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const { eval_device_(N,rho,sigma,eps,vrho,vsigma,v2rho2,v2rhosigma,
+                  v2sigma2); }; 
+*/
+
+  // TODO: GGA kxc interface
+       
+  // mGGA interface
+    
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps
+  ) const { eval_exc_device_(N,rho,sigma,lapl,tau,eps); } 
+
+  
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau
+  ) const { eval_exc_vxc_device_(N,rho,sigma,lapl,tau,eps,vrho,vsigma,
+                          vlapl,vtau); } 
+
+  // TODO: mGGA fxc/kxc interfaces  
+
+#endif
+
 protected:
 
   XCKernelImpl( const XCKernelImpl& ) = default;
@@ -298,6 +433,133 @@ private:
   ) const = 0;
 
   // TODO: mGGA fxc/kxc interfaces  
+
+#ifdef EXCHCXX_ENABLE_DEVICE
+
+  // LDA interfaces
+  virtual void eval_exc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       eps 
+  ) const = 0; 
+
+/*
+  virtual void eval_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       vxc 
+  ) const = 0; 
+*/
+
+  virtual void eval_exc_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc 
+  ) const = 0; 
+
+/*
+  virtual void eval_fxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       fxc 
+  ) const = 0; 
+
+  virtual void eval_kxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       kxc 
+  ) const = 0; 
+
+  virtual void eval_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc,
+    double*       fxc,
+    double*       kxc 
+  ) const = 0; 
+*/
+    
+    
+  // GGA interface
+  virtual void eval_exc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps
+  ) const = 0; 
+
+/*
+  virtual void eval_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       vrho,
+    double*       vsigma
+  ) const = 0;
+*/
+  
+  virtual void eval_exc_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma
+  ) const = 0;
+
+/*
+  virtual void eval_fxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const = 0;
+
+  virtual void eval_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const = 0;
+*/
+
+
+  // mGGA interface
+  virtual void eval_exc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps
+  ) const = 0; 
+
+  
+  virtual void eval_exc_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau
+  ) const = 0;
+
+  // TODO: mGGA fxc/kxc interfaces  
+
+#endif
 };
 
 }; // detail

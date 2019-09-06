@@ -250,10 +250,11 @@ void LibxcKernelImpl::eval_exc_vxc_(
 ) const {
 
   throw_if_uninitialized();
-  assert( is_gga() );
+  assert( is_mgga() );
   xc_mgga_exc_vxc( &kernel_, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau );
 
 }
+
 
 };
 };

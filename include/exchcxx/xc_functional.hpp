@@ -155,6 +155,75 @@ public:
     double*       vtau
   ) const;
 
+
+  // Device code
+  //
+#ifdef EXCHCXX_ENABLE_DEVICE
+
+  // LDA Interfaces
+
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       eps 
+  ) const; 
+
+
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc
+  ) const; 
+
+
+
+  // GGA Interfaces
+
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps 
+  ) const; 
+
+
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps, 
+    double*       vrho,
+    double*       vsigma
+  ) const; 
+
+  // mGGA interface
+    
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps
+  ) const; 
+
+  
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau
+  ) const;
+
+#endif
+
 };
 
 }; // namespace ExchCXX

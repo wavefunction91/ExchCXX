@@ -4,7 +4,12 @@ cmake_minimum_required( VERSION 3.11 FATAL_ERROR) # Require CMake 3.11+
 project( ExchCXX VERSION 0.0.1 LANGUAGES C CXX )
 
 # ExchCXX Options
-option( EXCHCXX_ENABLE_TESTS "Enable Unit Tests" ON )
+option( EXCHCXX_ENABLE_TESTS "Enable Unit Tests" ON         )
+option( EXCHCXX_ENABLE_DEVICE "Enable Device Code (GPU)" ON )
+
+if( EXCHCXX_ENABLE_DEVICE )
+  enable_language( CUDA )
+endif()
 
 # Append local cmake directory to find CMAKE Modules
 if( CMAKE_MODULE_PATH )

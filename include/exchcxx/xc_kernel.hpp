@@ -358,6 +358,124 @@ public:
 
   // TODO: mGGA fxc/kxc interfaces  
     
+
+  // Device code
+#ifdef EXCHCXX_ENABLE_DEVICE
+  
+  // LDA interfaces
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       eps 
+  ) const; 
+    
+  void eval_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       vxc 
+  ) const; 
+
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc 
+  ) const; 
+    
+  void eval_fxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       fxc 
+  ) const; 
+
+  void eval_kxc_device( 
+    const int     N, 
+    const double* rho, 
+    double*       kxc 
+  ) const; 
+
+  void eval_device( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc,
+    double*       fxc,
+    double*       kxc 
+  ) const; 
+
+  // GGA interface
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps
+  ) const; 
+
+  void eval_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       vrho,
+    double*       vsigma
+  ) const;
+  
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma
+  ) const;
+
+  void eval_fxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const;
+
+  void eval_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const;
+
+
+  // mGGA interface
+  void eval_exc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps
+  ) const; 
+
+  
+  void eval_exc_vxc_device( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau
+  ) const;
+
+  // TODO: mGGA fxc/kxc interfaces  
+#endif
 };
 
 

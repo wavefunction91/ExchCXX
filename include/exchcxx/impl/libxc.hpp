@@ -144,6 +144,135 @@ class LibxcKernelImpl : public XCKernelImpl {
   ) const override;
 
   // TODO: mGGA fxc/kxc interfaces  
+  //
+
+  // Device code
+#ifdef EXCHCXX_ENABLE_DEVICE
+
+  // LDA interfaces
+  void eval_exc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       eps 
+  ) const override; 
+
+/*
+  void eval_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       vxc 
+  ) const override; 
+*/
+
+  void eval_exc_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc 
+  ) const override; 
+
+/*
+  void eval_fxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       fxc 
+  ) const override; 
+
+  void eval_kxc_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       kxc 
+  ) const override; 
+
+  void eval_device_( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc,
+    double*       fxc,
+    double*       kxc 
+  ) const override; 
+*/
+    
+    
+  // GGA interface
+  void eval_exc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps
+  ) const override; 
+
+/*
+  void eval_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       vrho,
+    double*       vsigma
+  ) const override;
+*/
+  
+  void eval_exc_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma
+  ) const override;
+
+/*
+  void eval_fxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const override;
+
+  void eval_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2
+  ) const override;
+*/
+
+
+  // mGGA interface
+  void eval_exc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps
+  ) const override; 
+
+  
+  void eval_exc_vxc_device_( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau
+  ) const override;
+
+  // TODO: mGGA fxc/kxc interfaces  
+#endif
+
 protected:
 
   int          polar_;  ///< Spin polarization
