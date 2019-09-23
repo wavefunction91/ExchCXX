@@ -2,12 +2,14 @@
 #define __INCLUDED_XC_KERNEL_HPP__
 
 #include "impl/xc_kernel_fwd.hpp" // XCKernelImpl
+#include "device/cuda_type_fwd.hpp" // cuda_stream_t*
 
 // Standard Libs
 #include <vector>
 #include <cassert>
 #include <algorithm>
 #include <memory>
+
 
 namespace ExchCXX {
 
@@ -472,6 +474,134 @@ public:
     double*       vsigma,
     double*       vlapl,
     double*       vtau
+  ) const;
+
+  // TODO: mGGA fxc/kxc interfaces  
+    
+    
+  // LDA interfaces
+  void eval_exc_device_async( 
+    const int     N, 
+    const double* rho, 
+    double*       eps,
+    device::cuda_stream_t* stream
+  ) const; 
+    
+  void eval_vxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    double*       vxc, 
+    device::cuda_stream_t* stream
+  ) const; 
+
+  void eval_exc_vxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc, 
+    device::cuda_stream_t* stream
+  ) const; 
+    
+  void eval_fxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    double*       fxc, 
+    device::cuda_stream_t* stream
+  ) const; 
+
+  void eval_kxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    double*       kxc,
+    device::cuda_stream_t* stream
+  ) const; 
+
+  void eval_device_async( 
+    const int     N, 
+    const double* rho, 
+    double*       eps, 
+    double*       vxc,
+    double*       fxc,
+    double*       kxc, 
+    device::cuda_stream_t* stream
+  ) const; 
+
+  // GGA interface
+  void eval_exc_device_async( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    device::cuda_stream_t* stream
+  ) const; 
+
+  void eval_vxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       vrho,
+    double*       vsigma,
+    device::cuda_stream_t* stream
+  ) const;
+  
+  void eval_exc_vxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    device::cuda_stream_t* stream
+  ) const;
+
+  void eval_fxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2,
+    device::cuda_stream_t* stream
+  ) const;
+
+  void eval_device_async( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       v2rho2, 
+    double*       v2rhosigma, 
+    double*       v2sigma2,
+    device::cuda_stream_t* stream
+  ) const;
+
+
+  // mGGA interface
+  void eval_exc_device_async( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    device::cuda_stream_t* stream
+  ) const; 
+
+  
+  void eval_exc_vxc_device_async( 
+    const int     N, 
+    const double* rho, 
+    const double* sigma, 
+    const double* lapl, 
+    const double* tau, 
+    double*       eps,
+    double*       vrho,
+    double*       vsigma,
+    double*       vlapl,
+    double*       vtau,
+    device::cuda_stream_t* stream
   ) const;
 
   // TODO: mGGA fxc/kxc interfaces  
