@@ -21,6 +21,8 @@ enum Kernel {
   PerdewZungerMod,
 */
   // GGA functionals
+  PBE_X,
+  PBE_C,
   B88,
   LYP,
 

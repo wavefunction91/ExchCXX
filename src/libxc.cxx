@@ -1,15 +1,5 @@
-#include <exchcxx/impl/libxc.hpp>
-#include <exchcxx/factory/xc_kernel.hpp>
-
-#include <unordered_map>
-
+#include "libxc_common.hpp"
 namespace ExchCXX {
-
-
-std::unordered_map< XCKernel::Spin, int > libxc_polar_map {
-  { XCKernel::Spin::Polarized,   XC_POLARIZED   },
-  { XCKernel::Spin::Unpolarized, XC_UNPOLARIZED }
-};
 
 
 /*
@@ -32,6 +22,8 @@ std::unordered_map< XCKernel::Kernel, int > libxc_kernel_map {
   { XCKernel::Kernel::VWN5,           XC_LDA_C_VWN_RPA    },
 
   // GGA Functionals
+  { XCKernel::Kernel::PBE_X,          XC_GGA_X_PBE        },
+  { XCKernel::Kernel::PBE_C,          XC_GGA_C_PBE        },
   { XCKernel::Kernel::B88,            XC_GGA_X_B88        },
   { XCKernel::Kernel::LYP,            XC_GGA_C_LYP        },
 
@@ -89,26 +81,6 @@ LibxcKernelImpl::LibxcKernelImpl(
 LibxcKernelImpl::LibxcKernelImpl( const LibxcKernelImpl& other ) :
   LibxcKernelImpl( other.xc_info()->number, other.polar_ ){ };
 
-/*
-LibxcXCKernel::XCKernel( XCKernel&& other ) noexcept :
-  XCKernel( other.kernel_, other.polar_, other.initialized_) { 
-  other.initialized_ = false; // Avoid double destruction
-};
-
-XCKernel& XCKernel::operator=( XCKernel&& other ) noexcept {
-  kernel_     = other.kernel_;
-  polar_      = other.polar_;
-  initialized_= other.initialized_;
-
-  other.initialized_ = false; // Avoid double destruction
-
-  return *this;
-}
-
-XCKernel& XCKernel::operator=( const XCKernel& other ) {
-  return *this = std::move( XCKernel(other) );
-}
-*/
 
 
 LibxcKernelImpl::~LibxcKernelImpl() noexcept {
@@ -158,11 +130,7 @@ double LibxcKernelImpl::hyb_exx_() const noexcept {
 
 
 // LDA interfaces
-void LibxcKernelImpl::eval_exc_( 
-  const int     N, 
-  const double* rho, 
-  double*       eps 
-) const {
+LDA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 
   throw_if_uninitialized();
   assert( is_lda() );
@@ -171,12 +139,7 @@ void LibxcKernelImpl::eval_exc_(
 }
 
 
-void LibxcKernelImpl::eval_exc_vxc_( 
-  const int     N, 
-  const double* rho, 
-  double*       eps, 
-  double*       vxc 
-) const {
+LDA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
   throw_if_uninitialized();
   assert( is_lda() );
@@ -184,15 +147,9 @@ void LibxcKernelImpl::eval_exc_vxc_(
 
 }
 
-// TODO: LDA kxc interfaces
 
 // GGA interface
-void LibxcKernelImpl::eval_exc_( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps
-) const {
+GGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 
   throw_if_uninitialized();
   assert( is_gga() );
@@ -201,14 +158,7 @@ void LibxcKernelImpl::eval_exc_(
 }
 
 
-void LibxcKernelImpl::eval_exc_vxc_( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps,
-  double*       vrho,
-  double*       vsigma
-) const {
+GGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
   throw_if_uninitialized();
   assert( is_gga() );
@@ -216,18 +166,9 @@ void LibxcKernelImpl::eval_exc_vxc_(
 
 }
 
-// TODO: GGA kxc interfaces  
-  
   
 // mGGA interface
-void LibxcKernelImpl::eval_exc_( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps
-) const {
+MGGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 
   throw_if_uninitialized();
   assert( is_mgga() );
@@ -236,18 +177,7 @@ void LibxcKernelImpl::eval_exc_(
 }
 
 
-void LibxcKernelImpl::eval_exc_vxc_( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps,
-  double*       vrho,
-  double*       vsigma,
-  double*       vlapl, 
-  double*       vtau
-) const {
+MGGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
   throw_if_uninitialized();
   assert( is_mgga() );

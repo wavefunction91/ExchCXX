@@ -2,6 +2,7 @@
 #define __INCLUDED_XC_FUNCTIONAL_HPP__
 
 #include <exchcxx/xc_kernel.hpp>
+#include <exchcxx/util/exchcxx_macros.hpp>
 
 #include <numeric>
 
@@ -94,201 +95,46 @@ public:
   }
 
   // LDA Interfaces
-
-  void eval_exc( 
-    const int     N, 
-    const double* rho, 
-    double*       eps 
-  ) const; 
-
-
-  void eval_exc_vxc( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc
-  ) const; 
-
-
+  LDA_EXC_GENERATOR(     eval_exc     ) const;
+  LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
 
   // GGA Interfaces
-
-  void eval_exc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps 
-  ) const; 
-
-
-  void eval_exc_vxc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps, 
-    double*       vrho,
-    double*       vsigma
-  ) const; 
+  GGA_EXC_GENERATOR(     eval_exc     ) const;
+  GGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
 
   // mGGA interface
-    
-  void eval_exc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const; 
-
-  
-  void eval_exc_vxc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const;
+  MGGA_EXC_GENERATOR(     eval_exc     ) const;
+  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
 
 
   // Device code
-  //
 #ifdef EXCHCXX_ENABLE_DEVICE
 
   // LDA Interfaces
-
-  void eval_exc_device( 
-    const int     N, 
-    const double* rho, 
-    double*       eps 
-  ) const; 
-
-
-  void eval_exc_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc
-  ) const; 
-
-
+  LDA_EXC_GENERATOR(     eval_exc_device     ) const;
+  LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const;
 
   // GGA Interfaces
-
-  void eval_exc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps 
-  ) const; 
-
-
-  void eval_exc_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps, 
-    double*       vrho,
-    double*       vsigma
-  ) const; 
+  GGA_EXC_GENERATOR(     eval_exc_device     ) const;
+  GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const;
 
   // mGGA interface
-    
-  void eval_exc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const; 
+  MGGA_EXC_GENERATOR(     eval_exc_device     ) const;
+  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const;
 
-  
-  void eval_exc_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const;
 
   // LDA Interfaces
-
-  void eval_exc_device_async( 
-    const int     N, 
-    const double* rho, 
-    double*       eps,
-    device::cuda_stream_t*  stream
-  ) const; 
-
-
-  void eval_exc_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    device::cuda_stream_t*  stream
-  ) const; 
-
-
+  LDA_EXC_GENERATOR_DEVICE(     eval_exc_device_async     ) const;
+  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const;
 
   // GGA Interfaces
-
-  void eval_exc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps, 
-    device::cuda_stream_t*  stream
-  ) const; 
-
-
-  void eval_exc_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps, 
-    double*       vrho,
-    double*       vsigma,
-    device::cuda_stream_t*  stream
-  ) const; 
+  GGA_EXC_GENERATOR_DEVICE(     eval_exc_device_async     ) const;
+  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const;
 
   // mGGA interface
-    
-  void eval_exc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    device::cuda_stream_t*  stream
-  ) const; 
+  MGGA_EXC_GENERATOR_DEVICE(     eval_exc_device_async     ) const;
+  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const;
 
-  
-  void eval_exc_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau,
-    device::cuda_stream_t*  stream
-  ) const;
 #endif
 
 };

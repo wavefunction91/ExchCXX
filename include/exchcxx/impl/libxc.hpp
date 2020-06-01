@@ -22,391 +22,38 @@ class LibxcKernelImpl : public XCKernelImpl {
   double hyb_exx_()    const noexcept override;
 
 
-  // LDA interfaces
-  void eval_exc_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps 
-  ) const override; 
+  // LDA interface
+  LDA_EXC_GENERATOR( eval_exc_ )         const override;
+  LDA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const override;
 
-/*
-  void eval_vxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc 
-  ) const override; 
-*/
-
-  void eval_exc_vxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc 
-  ) const override; 
-
-/*
-  void eval_fxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc 
-  ) const override; 
-
-  void eval_kxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc 
-  ) const override; 
-
-  void eval_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc 
-  ) const override; 
-*/
-    
-    
   // GGA interface
-  void eval_exc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps
-  ) const override; 
+  GGA_EXC_GENERATOR( eval_exc_ )         const override;
+  GGA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const override;
 
-/*
-  void eval_vxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma
-  ) const override;
-*/
-  
-  void eval_exc_vxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma
-  ) const override;
+  // MGGA interface
+  MGGA_EXC_GENERATOR( eval_exc_ )         const override;
+  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const override;
 
-/*
-  void eval_fxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const override;
-
-  void eval_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const override;
-*/
-
-
-  // mGGA interface
-  void eval_exc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const override; 
-
-  
-  void eval_exc_vxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const override;
-
-  // TODO: mGGA fxc/kxc interfaces  
-  //
-
-  // Device code
 #ifdef EXCHCXX_ENABLE_DEVICE
 
-  // LDA interfaces
-  void eval_exc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps 
-  ) const override; 
+  // LDA interface
+  LDA_EXC_GENERATOR( eval_exc_device_ )         const override;
+  LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const override;
+  LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const override;
+  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const override;
 
-/*
-  void eval_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc 
-  ) const override; 
-*/
-
-  void eval_exc_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc 
-  ) const override; 
-
-/*
-  void eval_fxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc 
-  ) const override; 
-
-  void eval_kxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc 
-  ) const override; 
-
-  void eval_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc 
-  ) const override; 
-*/
-    
-    
   // GGA interface
-  void eval_exc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps
-  ) const override; 
+  GGA_EXC_GENERATOR( eval_exc_device_ )         const override;
+  GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const override;
+  GGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const override;
+  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const override;
 
-/*
-  void eval_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma
-  ) const override;
-*/
-  
-  void eval_exc_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma
-  ) const override;
+  // MGGA interface
+  MGGA_EXC_GENERATOR( eval_exc_device_ )         const override;
+  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const override;
+  MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const override;
+  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const override;
 
-/*
-  void eval_fxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const override;
-
-  void eval_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const override;
-*/
-
-
-  // mGGA interface
-  void eval_exc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const override; 
-
-  
-  void eval_exc_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const override;
-
-  // TODO: mGGA fxc/kxc interfaces  
-
-  // LDA interfaces
-  void eval_exc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    device::cuda_stream_t* stream
-  ) const override; 
-
-/*
-  void eval_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc,
-    device::cuda_stream_t* stream
-  ) const override; 
-*/
-
-  void eval_exc_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    device::cuda_stream_t* stream
-  ) const override; 
-
-/*
-  void eval_fxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc,
-    device::cuda_stream_t* stream
-  ) const override; 
-
-  void eval_kxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc,
-    device::cuda_stream_t* stream
-  ) const override; 
-
-  void eval_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc, 
-    device::cuda_stream_t* stream
-  ) const override; 
-*/
-    
-    
-  // GGA interface
-  void eval_exc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    device::cuda_stream_t* stream
-  ) const override; 
-
-/*
-  void eval_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma,
-    device::cuda_stream_t* stream
-  ) const override;
-*/
-  
-  void eval_exc_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    device::cuda_stream_t* stream
-  ) const override;
-
-/*
-  void eval_fxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2,
-    device::cuda_stream_t* stream
-  ) const override;
-
-  void eval_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2,
-    device::cuda_stream_t* stream
-  ) const override;
-*/
-
-
-  // mGGA interface
-  void eval_exc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    device::cuda_stream_t* stream
-  ) const override; 
-
-  
-  void eval_exc_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau,
-    device::cuda_stream_t* stream
-  ) const override;
-
-  // TODO: mGGA fxc/kxc interfaces  
 #endif
 
 protected:
@@ -444,6 +91,7 @@ public:
 };
 
 }; // namespace detail
+
 }; // namespace ExchCXX
 
 #endif

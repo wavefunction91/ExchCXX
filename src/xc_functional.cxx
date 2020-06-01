@@ -102,12 +102,7 @@ XCFunctional::XCFunctional( const XCFunctional& )       = default;
 XCFunctional::XCFunctional( XCFunctional&& )  noexcept  = default;
 
 
-
-void XCFunctional::eval_exc( 
-  const int     N, 
-  const double* rho, 
-  double*       eps 
-) const {
+LDA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   throw_if_not_sane();
   assert( is_lda() );
@@ -134,12 +129,7 @@ void XCFunctional::eval_exc(
 }
 
 
-void XCFunctional::eval_exc_vxc( 
-  const int     N, 
-  const double* rho, 
-  double*       eps, 
-  double*       vxc
-) const {
+LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   throw_if_not_sane();
   assert( is_lda() );
@@ -183,12 +173,7 @@ void XCFunctional::eval_exc_vxc(
 
 // GGA Interfaces
 
-void XCFunctional::eval_exc( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps 
-) const {
+GGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   throw_if_not_sane();
   assert( is_gga() );
@@ -219,14 +204,7 @@ void XCFunctional::eval_exc(
 }
 
 
-void XCFunctional::eval_exc_vxc( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps, 
-  double*       vrho,
-  double*       vsigma
-) const {
+GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   throw_if_not_sane();
   assert( is_gga() );
@@ -301,14 +279,7 @@ void XCFunctional::eval_exc_vxc(
 
 // mGGA Interfaces
 
-void XCFunctional::eval_exc( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps
-) const {
+MGGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   throw_if_not_sane();
   assert( is_mgga() );
@@ -341,18 +312,7 @@ void XCFunctional::eval_exc(
 }
 
 
-void XCFunctional::eval_exc_vxc( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps,
-  double*       vrho,
-  double*       vsigma,
-  double*       vlapl, 
-  double*       vtau
-) const {
+MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   throw_if_not_sane();
   assert( is_gga() );

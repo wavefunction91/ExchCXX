@@ -54,11 +54,7 @@ T* safe_cuda_malloc( size_t N ) {
 
 namespace ExchCXX {
 
-void XCFunctional::eval_exc_device( 
-  const int     N, 
-  const double* rho, 
-  double*       eps 
-) const {
+LDA_EXC_GENERATOR( XCFunctional::eval_exc_device ) const {
 
   throw_if_not_sane();
   assert( is_lda() );
@@ -84,12 +80,7 @@ void XCFunctional::eval_exc_device(
 }
 
 
-void XCFunctional::eval_exc_vxc_device( 
-  const int     N, 
-  const double* rho, 
-  double*       eps, 
-  double*       vxc
-) const {
+LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc_device ) const {
 
   throw_if_not_sane();
   assert( is_lda() );
@@ -131,12 +122,7 @@ void XCFunctional::eval_exc_vxc_device(
 
 // GGA Interfaces
 
-void XCFunctional::eval_exc_device( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps 
-) const {
+GGA_EXC_GENERATOR( XCFunctional::eval_exc_device ) const {
 
   throw_if_not_sane();
   assert( is_gga() );
@@ -167,14 +153,7 @@ void XCFunctional::eval_exc_device(
 }
 
 
-void XCFunctional::eval_exc_vxc_device( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps, 
-  double*       vrho,
-  double*       vsigma
-) const {
+GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc_device ) const {
 
   throw_if_not_sane();
   assert( is_gga() );
@@ -229,14 +208,7 @@ void XCFunctional::eval_exc_vxc_device(
 
 // mGGA Interfaces
 
-void XCFunctional::eval_exc_device( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps
-) const {
+MGGA_EXC_GENERATOR( XCFunctional::eval_exc_device ) const {
 
   throw_if_not_sane();
   assert( is_mgga() );
@@ -269,18 +241,7 @@ void XCFunctional::eval_exc_device(
 }
 
 
-void XCFunctional::eval_exc_vxc_device( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps,
-  double*       vrho,
-  double*       vsigma,
-  double*       vlapl, 
-  double*       vtau
-) const {
+MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc_device ) const {
 
   throw_if_not_sane();
   assert( is_gga() );
@@ -368,12 +329,7 @@ void XCFunctional::eval_exc_vxc_device(
 
 
 
-void XCFunctional::eval_exc_device_async( 
-  const int     N, 
-  const double* rho, 
-  double*       eps,
-  device::cuda_stream_t* stream 
-) const {
+LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device_async ) const {
 
   throw_if_not_sane();
   assert( is_lda() );
@@ -400,13 +356,7 @@ void XCFunctional::eval_exc_device_async(
 }
 
 
-void XCFunctional::eval_exc_vxc_device_async( 
-  const int     N, 
-  const double* rho, 
-  double*       eps, 
-  double*       vxc,
-  device::cuda_stream_t* stream
-) const {
+LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device_async ) const {
 
   throw_if_not_sane();
   assert( is_lda() );
@@ -449,13 +399,7 @@ void XCFunctional::eval_exc_vxc_device_async(
 
 // GGA Interfaces
 
-void XCFunctional::eval_exc_device_async( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps, 
-  device::cuda_stream_t* stream
-) const {
+GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device_async ) const {
 
   throw_if_not_sane();
   assert( is_gga() );
@@ -487,15 +431,7 @@ void XCFunctional::eval_exc_device_async(
 }
 
 
-void XCFunctional::eval_exc_vxc_device_async( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  double*       eps, 
-  double*       vrho,
-  double*       vsigma,
-  device::cuda_stream_t* stream
-) const {
+GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device_async ) const {
 
   throw_if_not_sane();
   assert( is_gga() );
@@ -551,15 +487,7 @@ void XCFunctional::eval_exc_vxc_device_async(
 
 // mGGA Interfaces
 
-void XCFunctional::eval_exc_device_async( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps,
-  device::cuda_stream_t* stream
-) const {
+MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device_async ) const {
 
   throw_if_not_sane();
   assert( is_mgga() );
@@ -593,19 +521,7 @@ void XCFunctional::eval_exc_device_async(
 }
 
 
-void XCFunctional::eval_exc_vxc_device_async( 
-  const int     N, 
-  const double* rho, 
-  const double* sigma, 
-  const double* lapl, 
-  const double* tau, 
-  double*       eps,
-  double*       vrho,
-  double*       vsigma,
-  double*       vlapl, 
-  double*       vtau,
-  device::cuda_stream_t* stream
-) const {
+MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device_async ) const {
 
   throw_if_not_sane();
   assert( is_gga() );

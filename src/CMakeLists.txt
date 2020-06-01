@@ -1,6 +1,6 @@
-set( EXCHCXX_SOURCES xc_kernel.cxx xc_functional.cxx libxc.cxx )
+set( EXCHCXX_SOURCES xc_kernel.cxx xc_functional.cxx libxc.cxx boilerplate.cxx builtin.cxx )
 if( EXCHCXX_ENABLE_DEVICE )
-  list( APPEND EXCHCXX_SOURCES xc_kernel_device.cu xc_functional_device.cu libxc_device.cu )
+  list( APPEND EXCHCXX_SOURCES xc_functional_device.cu libxc_device.cu )
 endif()
 
 add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
@@ -9,10 +9,11 @@ add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
 # TARGET properties
 
 target_compile_features( exchcxx PUBLIC cxx_std_14 )
-target_link_libraries( exchcxx PUBLIC LibXC::libxc )
+target_link_libraries( exchcxx PUBLIC Libxc::xc )
 
 if( EXCHCXX_ENABLE_DEVICE )
   target_compile_definitions( exchcxx PUBLIC EXCHCXX_ENABLE_DEVICE=1 )
+  #target_link_libraries( exchcxx PUBLIC Libxc::xc_device )
 endif()
 
 
@@ -22,6 +23,7 @@ target_include_directories( exchcxx
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
+target_compile_options( exchcxx INTERFACE "-Wall" "-Wextra" "-Wpedantic" "-Wnon-virtual-dtor")
 
 
 # INSTALL rules

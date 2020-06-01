@@ -1,7 +1,8 @@
-#ifndef __INCLUDED_IMPL_XC_KERNEL_HPP__
-#define __INCLUDED_IMPL_XC_KERNEL_HPP__
+#pragma once
 
-#include <exchcxx/xc_kernel.hpp>
+#include <exchcxx/device/cuda_type_fwd.hpp> // cuda_stream_t*
+#include <exchcxx/util/exchcxx_macros.hpp>
+//#include <exchcxx/xc_kernel.hpp>
 #include <string>
 #include <memory>
 
@@ -31,409 +32,41 @@ struct XCKernelImpl {
   double hyb_exx() const noexcept { return hyb_exx_(); };
 
 
-  // LDA interfaces
-    
-  void eval_exc( 
-    const int N, 
-    const double* rho, 
-    double* eps 
-  ) const { eval_exc_(N, rho, eps); }
+  template <typename... Args>
+  void eval_exc( Args&&... args ) {
+    eval_exc_( std::forward<Args>(args)... );
+  }
 
-/*
-  void eval_vxc( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc 
-  ) const { eval_vxc_(N, rho, vxc); }; 
-*/
-
-  void eval_exc_vxc( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc 
-  ) const { eval_exc_vxc_(N, rho, eps, vxc); }; 
-
-/*
-  void eval_fxc( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc 
-  ) const { eval_fxc_(N, rho, fxc); }; 
-
-  void eval_kxc( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc 
-  ) const { eval_fxc_(N, rho, kxc); }; 
-
-  void eval( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc 
-  ) const { eval_(N,rho,eps,vxc,fxc,kxc); }; 
-*/
-
+  template <typename... Args>
+  void eval_exc_vxc( Args&&... args ) {
+    eval_exc_vxc_( std::forward<Args>(args)... );
+  }
  
-  // GGA Interfaces
-
-  void eval_exc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps
-  ) const { eval_exc_(N,rho,sigma,eps); }; 
-
-/*
-  void eval_vxc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma
-  ) const { eval_vxc_(N,rho,sigma,vrho,vsigma); }; 
-*/
-  
-  void eval_exc_vxc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma
-  ) const { eval_exc_vxc_( N, rho, sigma, eps, vrho, vsigma ); }; 
-
-/*
-  void eval_fxc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const { eval_fxc_(N,rho,sigma,v2rho2,v2rhosigma,v2sigma2); }; 
-
-  void eval( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const { eval_(N,rho,sigma,eps,vrho,vsigma,v2rho2,v2rhosigma,
-                  v2sigma2); }; 
-*/
-
-  // TODO: GGA kxc interface
        
-  // mGGA interface
-    
-  void eval_exc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const { eval_exc_(N,rho,sigma,lapl,tau,eps); } 
-
-  
-  void eval_exc_vxc( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const { eval_exc_vxc_(N,rho,sigma,lapl,tau,eps,vrho,vsigma,
-                          vlapl,vtau); } 
-
-  // TODO: mGGA fxc/kxc interfaces  
     
   // Device Code
-    
 #ifdef EXCHCXX_ENABLE_DEVICE
 
-  // LDA interfaces
-    
-  void eval_exc_device( 
-    const int N, 
-    const double* rho, 
-    double* eps 
-  ) const { eval_exc_device_(N, rho, eps); }
+  template <typename... Args>
+  void eval_exc_device( Args&&... args ) {
+    eval_exc_device_( std::forward<Args>(args)... );
+  }
 
-/*
-  void eval_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc 
-  ) const { eval_vxc_device_(N, rho, vxc); }; 
-*/
+  template <typename... Args>
+  void eval_exc_vxc_device( Args&&... args ) {
+    eval_exc_vxc_device_( std::forward<Args>(args)... );
+  }
 
-  void eval_exc_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc 
-  ) const { eval_exc_vxc_device_(N, rho, eps, vxc); }; 
+  template <typename... Args>
+  void eval_exc_device_async( Args&&... args ) {
+    eval_exc_device_async_( std::forward<Args>(args)... );
+  }
 
-/*
-  void eval_fxc_device( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc 
-  ) const { eval_fxc_device_(N, rho, fxc); }; 
+  template <typename... Args>
+  void eval_exc_vxc_device_async( Args&&... args ) {
+    eval_exc_vxc_device_async_( std::forward<Args>(args)... );
+  }
 
-  void eval_kxc_device( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc 
-  ) const { eval_fxc_device_(N, rho, kxc); }; 
-
-  void eval_device( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc 
-  ) const { eval_device_(N,rho,eps,vxc,fxc,kxc); }; 
-*/
-
- 
-  // GGA Interfaces
-
-  void eval_exc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps
-  ) const { eval_exc_device_(N,rho,sigma,eps); }; 
-
-/*
-  void eval_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma
-  ) const { eval_vxc_device_(N,rho,sigma,vrho,vsigma); }; 
-*/
-  
-  void eval_exc_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma
-  ) const { eval_exc_vxc_device_( N, rho, sigma, eps, vrho, vsigma ); }; 
-
-/*
-  void eval_fxc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const { eval_fxc_device_(N,rho,sigma,v2rho2,v2rhosigma,v2sigma2); }; 
-
-  void eval_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const { eval_device_(N,rho,sigma,eps,vrho,vsigma,v2rho2,v2rhosigma,
-                  v2sigma2); }; 
-*/
-
-  // TODO: GGA kxc interface
-       
-  // mGGA interface
-    
-  void eval_exc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const { eval_exc_device_(N,rho,sigma,lapl,tau,eps); } 
-
-  
-  void eval_exc_vxc_device( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const { eval_exc_vxc_device_(N,rho,sigma,lapl,tau,eps,vrho,vsigma,
-                          vlapl,vtau); } 
-
-  // TODO: mGGA fxc/kxc interfaces  
-
-  // LDA interfaces
-    
-  void eval_exc_device_async( 
-    const int N, 
-    const double* rho, 
-    double* eps,
-    device::cuda_stream_t* stream
-  ) const { eval_exc_device_async_(N, rho, eps, stream); }
-
-/*
-  void eval_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc,
-    device::cuda_stream_t* stream
-  ) const { eval_vxc_device_async_(N, rho, vxc); }; 
-*/
-
-  void eval_exc_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    device::cuda_stream_t* stream
-  ) const { eval_exc_vxc_device_async_(N, rho, eps, vxc, stream); }; 
-
-/*
-  void eval_fxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc, 
-    device::cuda_stream_t* stream
-  ) const { eval_fxc_device_async_(N, rho, fxc, stream); }; 
-
-  void eval_kxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc, 
-    device::cuda_stream_t* stream
-  ) const { eval_fxc_device_async_(N, rho, kxc, stream); }; 
-
-  void eval_device_async( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc, 
-    device::cuda_stream_t* stream
-  ) const { eval_device_async_(N,rho,eps,vxc,fxc,kxc, stream); }; 
-*/
-
- 
-  // GGA Interfaces
-
-  void eval_exc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    device::cuda_stream_t* stream
-  ) const { eval_exc_device_async_(N,rho,sigma,eps,stream); }; 
-
-/*
-  void eval_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma,
-    device::cuda_stream_t* stream
-  ) const { eval_vxc_device_async_(N,rho,sigma,vrho,vsigma,stream); }; 
-*/
-  
-  void eval_exc_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    device::cuda_stream_t* stream
-  ) const { eval_exc_vxc_device_async_( N, rho, sigma, eps, vrho, vsigma, stream ); }; 
-
-/*
-  void eval_fxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2,
-    device::cuda_stream_t* stream
-  ) const { eval_fxc_device_async_(N,rho,sigma,v2rho2,v2rhosigma,v2sigma2,stream); }; 
-
-  void eval_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2,
-    device::cuda_stream_t* stream
-  ) const { eval_device_async_(N,rho,sigma,eps,vrho,vsigma,v2rho2,v2rhosigma,
-                  v2sigma2,stream); }; 
-*/
-
-  // TODO: GGA kxc interface
-       
-  // mGGA interface
-    
-  void eval_exc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    device::cuda_stream_t* stream
-  ) const { eval_exc_device_async_(N,rho,sigma,lapl,tau,eps,stream); } 
-
-  
-  void eval_exc_vxc_device_async( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau,
-    device::cuda_stream_t* stream
-  ) const { eval_exc_vxc_device_async_(N,rho,sigma,lapl,tau,eps,vrho,vsigma,
-                          vlapl,vtau,stream); } 
-
-  // TODO: mGGA fxc/kxc interfaces  
 #endif
 
 protected:
@@ -452,393 +85,45 @@ private:
 
   virtual double hyb_exx_() const noexcept = 0;
 
-  // LDA interfaces
-  virtual void eval_exc_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps 
-  ) const = 0; 
+  // LDA interface
+  virtual LDA_EXC_GENERATOR( eval_exc_ )         const = 0;
+  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const = 0;
 
-/*
-  virtual void eval_vxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc 
-  ) const = 0; 
-*/
-
-  virtual void eval_exc_vxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc 
-  ) const = 0; 
-
-/*
-  virtual void eval_fxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc 
-  ) const = 0; 
-
-  virtual void eval_kxc_( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc 
-  ) const = 0; 
-
-  virtual void eval_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc 
-  ) const = 0; 
-*/
-    
-    
   // GGA interface
-  virtual void eval_exc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps
-  ) const = 0; 
+  virtual GGA_EXC_GENERATOR( eval_exc_ )         const = 0;
+  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const = 0;
 
-/*
-  virtual void eval_vxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma
-  ) const = 0;
-*/
-  
-  virtual void eval_exc_vxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma
-  ) const = 0;
-
-/*
-  virtual void eval_fxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const = 0;
-
-  virtual void eval_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const = 0;
-*/
-
-
-  // mGGA interface
-  virtual void eval_exc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const = 0; 
-
-  
-  virtual void eval_exc_vxc_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const = 0;
-
-  // TODO: mGGA fxc/kxc interfaces  
+  // MGGA interface
+  virtual MGGA_EXC_GENERATOR( eval_exc_ )         const = 0;
+  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const = 0;
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
-  // LDA interfaces
-  virtual void eval_exc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps 
-  ) const = 0; 
+  // LDA interface
+  virtual LDA_EXC_GENERATOR( eval_exc_device_ )         const = 0;
+  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const = 0;
+  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const = 0;
+  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const = 0;
 
-/*
-  virtual void eval_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc 
-  ) const = 0; 
-*/
-
-  virtual void eval_exc_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc 
-  ) const = 0; 
-
-/*
-  virtual void eval_fxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc 
-  ) const = 0; 
-
-  virtual void eval_kxc_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc 
-  ) const = 0; 
-
-  virtual void eval_device_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc 
-  ) const = 0; 
-*/
-    
-    
   // GGA interface
-  virtual void eval_exc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps
-  ) const = 0; 
+  virtual GGA_EXC_GENERATOR( eval_exc_device_ )         const = 0;
+  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const = 0;
+  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const = 0;
+  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const = 0;
 
-/*
-  virtual void eval_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma
-  ) const = 0;
-*/
-  
-  virtual void eval_exc_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma
-  ) const = 0;
+  // MGGA interface
+  virtual MGGA_EXC_GENERATOR( eval_exc_device_ )         const = 0;
+  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const = 0;
+  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const = 0;
+  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const = 0;
 
-/*
-  virtual void eval_fxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const = 0;
-
-  virtual void eval_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2
-  ) const = 0;
-*/
-
-
-  // mGGA interface
-  virtual void eval_exc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps
-  ) const = 0; 
-
-  
-  virtual void eval_exc_vxc_device_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau
-  ) const = 0;
-
-  // TODO: mGGA fxc/kxc interfaces  
-
-  // LDA interfaces
-  virtual void eval_exc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-
-/*
-  virtual void eval_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       vxc,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-*/
-
-  virtual void eval_exc_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-
-/*
-  virtual void eval_fxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       fxc,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-
-  virtual void eval_kxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       kxc,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-
-  virtual void eval_device_async_( 
-    const int     N, 
-    const double* rho, 
-    double*       eps, 
-    double*       vxc,
-    double*       fxc,
-    double*       kxc,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-*/
-    
-    
-  // GGA interface
-  virtual void eval_exc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-
-/*
-  virtual void eval_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       vrho,
-    double*       vsigma,
-    device::cuda_stream_t* stream
-  ) const = 0;
-*/
-  
-  virtual void eval_exc_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    device::cuda_stream_t* stream
-  ) const = 0;
-
-/*
-  virtual void eval_fxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2,
-    device::cuda_stream_t* stream
-  ) const = 0;
-
-  virtual void eval_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       v2rho2, 
-    double*       v2rhosigma, 
-    double*       v2sigma2,
-    device::cuda_stream_t* stream
-  ) const = 0;
-*/
-
-
-  // mGGA interface
-  virtual void eval_exc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    device::cuda_stream_t* stream
-  ) const = 0; 
-
-  
-  virtual void eval_exc_vxc_device_async_( 
-    const int     N, 
-    const double* rho, 
-    const double* sigma, 
-    const double* lapl, 
-    const double* tau, 
-    double*       eps,
-    double*       vrho,
-    double*       vsigma,
-    double*       vlapl,
-    double*       vtau,
-    device::cuda_stream_t* stream
-  ) const = 0;
-
-  // TODO: mGGA fxc/kxc interfaces  
 #endif
+    
+    
+
+
 };
 
 }; // detail
 }; // ExchCXX
 
-#endif

@@ -19,9 +19,9 @@ else()
 endif()
 
 
-# Find LibXC
-find_package( LibXC REQUIRED )
-
+## Find LibXC
+find_package( Libxc REQUIRED )
+        
 add_subdirectory( src  )
 
 if( EXCHCXX_ENABLE_TESTS )
