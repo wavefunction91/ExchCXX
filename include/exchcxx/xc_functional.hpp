@@ -111,29 +111,16 @@ public:
 #ifdef EXCHCXX_ENABLE_DEVICE
 
   // LDA Interfaces
-  LDA_EXC_GENERATOR(     eval_exc_device     ) const;
-  LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const;
+  LDA_EXC_GENERATOR_DEVICE(     eval_exc_device     ) const;
+  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
 
   // GGA Interfaces
-  GGA_EXC_GENERATOR(     eval_exc_device     ) const;
-  GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const;
+  GGA_EXC_GENERATOR_DEVICE(     eval_exc_device     ) const;
+  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
 
   // mGGA interface
-  MGGA_EXC_GENERATOR(     eval_exc_device     ) const;
-  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const;
-
-
-  // LDA Interfaces
-  LDA_EXC_GENERATOR_DEVICE(     eval_exc_device_async     ) const;
-  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const;
-
-  // GGA Interfaces
-  GGA_EXC_GENERATOR_DEVICE(     eval_exc_device_async     ) const;
-  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const;
-
-  // mGGA interface
-  MGGA_EXC_GENERATOR_DEVICE(     eval_exc_device_async     ) const;
-  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const;
+  MGGA_EXC_GENERATOR_DEVICE(     eval_exc_device     ) const;
+  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
 
 #endif
 

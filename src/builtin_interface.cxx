@@ -93,19 +93,12 @@ FORWARD_FOR_BUILTIN( MGGA, EXC_VXC, eval_exc_vxc );
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
-FORWARD_FOR_BUILTIN( LDA,  EXC,     eval_exc_device     );
-FORWARD_FOR_BUILTIN( LDA,  EXC_VXC, eval_exc_vxc_device );
-FORWARD_FOR_BUILTIN( GGA,  EXC,     eval_exc_device     );
-FORWARD_FOR_BUILTIN( GGA,  EXC_VXC, eval_exc_vxc_device );
-FORWARD_FOR_BUILTIN( MGGA, EXC,     eval_exc_device     );
-FORWARD_FOR_BUILTIN( MGGA, EXC_VXC, eval_exc_vxc_device );
-
-FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC,     eval_exc_device_async     );
-FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC_VXC, eval_exc_vxc_device_async );
-FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC,     eval_exc_device_async     );
-FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC_VXC, eval_exc_vxc_device_async );
-FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC,     eval_exc_device_async     );
-FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_device_async );
+FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC,     eval_exc_device     );
+FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC_VXC, eval_exc_vxc_device );
+FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC,     eval_exc_device     );
+FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC_VXC, eval_exc_vxc_device );
+FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC,     eval_exc_device     );
+FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_device );
 
 
 #endif

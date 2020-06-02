@@ -57,16 +57,6 @@ struct XCKernelImpl {
     eval_exc_vxc_device_( std::forward<Args>(args)... );
   }
 
-  template <typename... Args>
-  void eval_exc_device_async( Args&&... args ) {
-    eval_exc_device_async_( std::forward<Args>(args)... );
-  }
-
-  template <typename... Args>
-  void eval_exc_vxc_device_async( Args&&... args ) {
-    eval_exc_vxc_device_async_( std::forward<Args>(args)... );
-  }
-
 #endif
 
 protected:
@@ -100,22 +90,16 @@ private:
 #ifdef EXCHCXX_ENABLE_DEVICE
 
   // LDA interface
-  virtual LDA_EXC_GENERATOR( eval_exc_device_ )         const = 0;
-  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const = 0;
-  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const = 0;
-  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const = 0;
+  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const = 0;
+  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const = 0;
 
   // GGA interface
-  virtual GGA_EXC_GENERATOR( eval_exc_device_ )         const = 0;
-  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const = 0;
-  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const = 0;
-  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const = 0;
+  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const = 0;
+  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const = 0;
 
   // MGGA interface
-  virtual MGGA_EXC_GENERATOR( eval_exc_device_ )         const = 0;
-  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const = 0;
-  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const = 0;
-  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const = 0;
+  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const = 0;
+  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const = 0;
 
 #endif
     

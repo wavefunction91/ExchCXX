@@ -589,12 +589,6 @@ struct BuiltinPBE0 : detail::BuiltinKernelImpl< BuiltinPBE0 > {
 
 };
 
-//namespace detail {
-//
-//extern template struct BuiltinKernelImpl<BuiltinSlaterExchange>;
-//
-//}
-
 }
 
 #include <exchcxx/impl/builtin/interface.hpp>

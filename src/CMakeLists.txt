@@ -17,12 +17,12 @@ add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
 
 # TARGET properties
 
-target_compile_features( exchcxx PUBLIC cxx_std_14 )
+target_compile_features( exchcxx PUBLIC cxx_std_14 cuda_std_14 )
 target_link_libraries( exchcxx PUBLIC Libxc::xc )
 
 if( EXCHCXX_ENABLE_DEVICE )
+  find_package( CUDAToolkit REQUIRED )
   target_compile_definitions( exchcxx PUBLIC EXCHCXX_ENABLE_DEVICE=1 )
-  #target_link_libraries( exchcxx PUBLIC Libxc::xc_device )
 endif()
 
 

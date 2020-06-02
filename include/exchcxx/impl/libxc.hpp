@@ -37,22 +37,16 @@ class LibxcKernelImpl : public XCKernelImpl {
 #ifdef EXCHCXX_ENABLE_DEVICE
 
   // LDA interface
-  LDA_EXC_GENERATOR( eval_exc_device_ )         const override;
-  LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const override;
-  LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const override;
-  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const override;
+  LDA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const override;
+  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const override;
 
   // GGA interface
-  GGA_EXC_GENERATOR( eval_exc_device_ )         const override;
-  GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const override;
-  GGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const override;
-  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const override;
+  GGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const override;
+  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const override;
 
   // MGGA interface
-  MGGA_EXC_GENERATOR( eval_exc_device_ )         const override;
-  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device_ ) const override;
-  MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_async_ )         const override;
-  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async_ ) const override;
+  MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const override;
+  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const override;
 
 #endif
 

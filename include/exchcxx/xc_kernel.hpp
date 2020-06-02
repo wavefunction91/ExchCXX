@@ -94,16 +94,6 @@ public:
     pimpl_->eval_exc_vxc_device( std::forward<Args>(args)... );
   }
 
-  template <typename... Args>
-  void eval_exc_device_async( Args&&... args ) const {
-    pimpl_->eval_exc_device_async( std::forward<Args>(args)... );
-  }
-
-  template <typename... Args>
-  void eval_exc_vxc_device_async( Args&&... args ) const {
-    pimpl_->eval_exc_vxc_device_async( std::forward<Args>(args)... );
-  }
-
 #endif
 
 
