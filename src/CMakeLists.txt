@@ -9,7 +9,7 @@ set( EXCHCXX_SOURCES
 )
 
 if( EXCHCXX_ENABLE_DEVICE )
-  list( APPEND EXCHCXX_SOURCES xc_functional_device.cu libxc_device.cu )
+  list( APPEND EXCHCXX_SOURCES xc_functional_device.cu libxc_device.cxx )
 endif()
 
 add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
@@ -23,6 +23,7 @@ target_link_libraries( exchcxx PUBLIC Libxc::xc )
 if( EXCHCXX_ENABLE_DEVICE )
   find_package( CUDAToolkit REQUIRED )
   target_compile_definitions( exchcxx PUBLIC EXCHCXX_ENABLE_DEVICE=1 )
+  target_link_libraries( exchcxx PUBLIC CUDA::cudart )
 endif()
 
 

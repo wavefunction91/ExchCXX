@@ -1,7 +1,11 @@
 #pragma once
 
+#ifdef EXCHCXX_ENABLE_DEVICE
+  #include <cuda_runtime.h>
+#endif
+
 // Device params
-#define DEVICE_PARAMS device::cuda_stream_t* stream
+#define DEVICE_PARAMS cudaStream_t stream
 #define DEVICE_PARAMS_NOTYPE stream
 
 

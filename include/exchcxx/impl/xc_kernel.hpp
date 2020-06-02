@@ -1,8 +1,6 @@
 #pragma once
 
-#include <exchcxx/device/cuda_type_fwd.hpp> // cuda_stream_t*
 #include <exchcxx/util/exchcxx_macros.hpp>
-//#include <exchcxx/xc_kernel.hpp>
 #include <string>
 #include <memory>
 

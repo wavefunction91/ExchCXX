@@ -1,5 +1,4 @@
 #include <exchcxx/xc_functional.hpp>
-#include <exchcxx/device/cuda_type_wrappers.hpp>
 
 
 __global__ void scal_kernel( const int N, const double fact, const double* X_device, double* Y_device ) {
@@ -68,16 +67,15 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
   if( kernels_.size() > 1 ) 
     eps_scr = safe_cuda_malloc( N );
 
-  cudaStream_t& st = *stream->stream;
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     double* eps_eval = i ? eps_scr : eps;
     kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
 
     if( i ) 
-      add_scal_device( N, kernels_[i].first, eps_eval, eps, st );
+      add_scal_device( N, kernels_[i].first, eps_eval, eps, stream );
     else
-      scal_device( N, kernels_[i].first, eps_eval, eps, st );
+      scal_device( N, kernels_[i].first, eps_eval, eps, stream );
   
   }
 
@@ -99,7 +97,6 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     vxc_scr = safe_cuda_malloc( len_vxc );
   }
 
-  cudaStream_t& st = *stream->stream;
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     double* eps_eval = i ? eps_scr : eps;
@@ -108,13 +105,13 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
     if( i ) {
 
-      add_scal_device( N,       kernels_[i].first, eps_eval, eps, st );
-      add_scal_device( len_vxc, kernels_[i].first, vxc_eval, vxc, st );
+      add_scal_device( N,       kernels_[i].first, eps_eval, eps, stream );
+      add_scal_device( len_vxc, kernels_[i].first, vxc_eval, vxc, stream );
 
     } else {
 
-      scal_device( N,       kernels_[i].first, eps_eval, eps, st );
-      scal_device( len_vxc, kernels_[i].first, vxc_eval, vxc, st );
+      scal_device( N,       kernels_[i].first, eps_eval, eps, stream );
+      scal_device( len_vxc, kernels_[i].first, vxc_eval, vxc, stream );
 
     }
   
@@ -139,7 +136,6 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     eps_scr = safe_cuda_malloc( N );
 
 
-  cudaStream_t& st = *stream->stream;
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     double* eps_eval = i ? eps_scr : eps;
@@ -150,9 +146,9 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
 
     if( i ) 
-      add_scal_device( N, kernels_[i].first, eps_eval, eps, st );
+      add_scal_device( N, kernels_[i].first, eps_eval, eps, stream );
     else
-      scal_device( N, kernels_[i].first, eps_eval, eps, st );
+      scal_device( N, kernels_[i].first, eps_eval, eps, stream );
   
   }
 
@@ -176,7 +172,6 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     vsigma_scr = safe_cuda_malloc( len_vsigma );
   }
 
-  cudaStream_t& st = *stream->stream;
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     double* eps_eval    = i ? eps_scr    : eps;
@@ -190,17 +185,17 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
     if( i ) {
 
-      add_scal_device( N, kernels_[i].first, eps_eval, eps, st );
-      add_scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, st);
+      add_scal_device( N, kernels_[i].first, eps_eval, eps, stream );
+      add_scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, stream);
       if( kernels_[i].second.is_gga() )
-        add_scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, st );
+        add_scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, stream );
 
     } else {
 
-      scal_device( N, kernels_[i].first, eps_eval, eps, st );
-      scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, st );
+      scal_device( N, kernels_[i].first, eps_eval, eps, stream );
+      scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, stream );
       if( kernels_[i].second.is_gga() )
-        scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, st );
+        scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, stream );
 
     }
   
@@ -227,7 +222,6 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     eps_scr = safe_cuda_malloc( N );
 
 
-  cudaStream_t& st = *stream->stream;
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     double* eps_eval = i ? eps_scr : eps;
@@ -240,9 +234,9 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
 
     if( i ) 
-      add_scal_device( N, kernels_[i].first, eps_eval, eps, st );
+      add_scal_device( N, kernels_[i].first, eps_eval, eps, stream );
     else
-      scal_device( N, kernels_[i].first, eps_eval, eps, st );
+      scal_device( N, kernels_[i].first, eps_eval, eps, stream );
   
   }
 
@@ -270,7 +264,6 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     vtau_scr   = safe_cuda_malloc( len_vtau );
   }
 
-  cudaStream_t& st = *stream->stream;
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     double* eps_eval    = i ? eps_scr    : eps;
@@ -288,28 +281,28 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
     if( i ) {
 
-      add_scal_device( N, kernels_[i].first, eps_eval, eps, st );
-      add_scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, st );
+      add_scal_device( N, kernels_[i].first, eps_eval, eps, stream );
+      add_scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, stream );
 
       if( kernels_[i].second.is_gga() )
-        add_scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, st );
+        add_scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, stream );
 
       if( kernels_[i].second.is_mgga() ) {
-        add_scal_device( len_vlapl, kernels_[i].first, vlapl_eval, vlapl, st );
-        add_scal_device( len_vtau,  kernels_[i].first, vtau_eval,  vtau, st  );
+        add_scal_device( len_vlapl, kernels_[i].first, vlapl_eval, vlapl, stream );
+        add_scal_device( len_vtau,  kernels_[i].first, vtau_eval,  vtau, stream  );
       }
 
     } else {
 
-      scal_device( N, kernels_[i].first, eps_eval, eps, st );
-      scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, st );
+      scal_device( N, kernels_[i].first, eps_eval, eps, stream );
+      scal_device( len_vrho, kernels_[i].first, vrho_eval, vrho, stream );
 
       if( kernels_[i].second.is_gga() )
-        scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, st );
+        scal_device( len_vsigma, kernels_[i].first, vsigma_eval, vsigma, stream );
 
       if( kernels_[i].second.is_mgga() ) {
-        scal_device( len_vlapl, kernels_[i].first, vlapl_eval, vlapl, st );
-        scal_device( len_vtau,  kernels_[i].first, vtau_eval,  vtau, st  );
+        scal_device( len_vlapl, kernels_[i].first, vlapl_eval, vlapl, stream );
+        scal_device( len_vtau,  kernels_[i].first, vtau_eval,  vtau, stream  );
       }
 
     }

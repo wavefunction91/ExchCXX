@@ -1,4 +1,5 @@
 #pragma once
+#include <cuda_runtime.h>
 
 namespace ExchCXX {
 namespace device {

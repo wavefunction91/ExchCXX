@@ -1,10 +1,7 @@
 #ifndef __INCLUDED_XC_KERNEL_HPP__
 #define __INCLUDED_XC_KERNEL_HPP__
 
-//#include "impl/xc_kernel_fwd.hpp" // XCKernelImpl
 #include <exchcxx/impl/xc_kernel.hpp>
-#include <exchcxx/device/cuda_type_fwd.hpp> // cuda_stream_t*
-
 #include <exchcxx/util/exchcxx_macros.hpp>
 
 // Standard Libs

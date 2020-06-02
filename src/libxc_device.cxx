@@ -1,5 +1,4 @@
 #include "libxc_common.hpp"
-#include <exchcxx/device/cuda_type_wrappers.hpp>
 
 //#include <functionals.cuh>
 
@@ -117,7 +116,6 @@ GGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
   throw_if_uninitialized();
   assert( is_gga() );
 
-#if 1
 
   size_t len_rho    = N*sizeof(double);
   size_t len_sigma  = N*sizeof(double);
@@ -127,30 +125,15 @@ GGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 
   std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), vrho_host( N ), vsigma_host( N );
 
-  cudaStream_t& st = *stream->stream;
-  recv_from_device( rho_host.data(),   rho,   len_rho  , st );
-  recv_from_device( sigma_host.data(), sigma, len_sigma, st );
+  recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
+  recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
  
-  stream_sync( st );
+  stream_sync( stream );
   xc_gga_exc_vxc( &kernel_, N, rho_host.data(), sigma_host.data(), eps_host.data(), vrho_host.data(), vsigma_host.data() );
 
   send_to_device( eps,    eps_host.data(),    len_eps    );
   send_to_device( vrho,   vrho_host.data(),   len_vrho   );
   send_to_device( vsigma, vsigma_host.data(), len_vsigma );
-
-#else
-
-  //dim3 threads = 1024;
-  //dim3 blocks  = std::ceil( N / 1024. );
-  //xc_gga_exc_vxc_device<<< blocks, threads >>>( &kernel_, N, rho_device, 
-  //  sigma_device, eps_device, vrho_device, vsigma_device );
-
-  cudaError_t stat;
-  stat = cudaMemsetAsync( eps_device,    0, N*sizeof(double), *stream->stream ); throw_if_fail( stat, "EPS    ZERO" );
-  stat = cudaMemsetAsync( vrho_device,   0, N*sizeof(double), *stream->stream ); throw_if_fail( stat, "VRHO   ZERO" );
-  stat = cudaMemsetAsync( vsigma_device, 0, N*sizeof(double), *stream->stream ); throw_if_fail( stat, "VSIGMA ZERO" );
-
-#endif
 
 }
 
