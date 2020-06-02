@@ -4,6 +4,14 @@ namespace ExchCXX {
 
 class BuiltinKernel;
 
+struct BuiltinSlaterExchange;
+struct BuiltinLYP;
+struct BuiltinPBE_X;
+struct BuiltinPBE_C;
+
+struct BuiltinPBE0;
+
+
 template <typename KernelType>
 struct kernel_traits;
 

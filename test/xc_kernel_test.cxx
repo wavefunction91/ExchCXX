@@ -183,6 +183,32 @@ TEST_CASE("Hard coded", "[xc-builtin]") {
           
   }
 
+  SECTION("PBE0") {
+
+    std::vector<double> exc_ref(npts), vrho_ref(npts), vsigma_ref(npts);
+    XCKernel pbe( XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized );
+
+    pbe.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
+                        vrho_ref.data(), vsigma_ref.data() );
+
+
+    XCKernel pbe_builtin( 
+      XCKernel::Backend::builtin,
+      XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized 
+    );
+
+    pbe_builtin.eval_exc_vxc( npts, rho.data(), sigma.data(), exc.data(), 
+                        vxc.data(), vsigma.data() );
+
+    for( size_t i = 0; i < npts; ++i ) {
+      CHECK( exc[i] == Approx(exc_ref[i]) );
+      CHECK( vxc[i] == Approx(vrho_ref[i]) );
+      CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
+    }
+          
+    CHECK( pbe_builtin.hyb_exx() == Approx( pbe.hyb_exx() ) );
+
+  }
 }
 
 

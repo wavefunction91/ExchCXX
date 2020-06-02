@@ -71,6 +71,20 @@ public:
 namespace detail {
 
 template <typename KernelType>
+LDA_EXC_GENERATOR( host_eval_exc_helper );
+template <typename KernelType>
+LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper );
+
+template <typename KernelType>
+GGA_EXC_GENERATOR( host_eval_exc_helper );
+template <typename KernelType>
+GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper );
+
+
+
+
+
+template <typename KernelType>
 struct BuiltinKernelImpl<
   KernelType,
   std::enable_if_t<kernel_traits<KernelType>::is_lda>
@@ -86,23 +100,14 @@ struct BuiltinKernelImpl<
   inline bool is_gga()  const noexcept override { return traits::is_gga;  }
   inline bool is_mgga() const noexcept override { return traits::is_mgga; }
 
-  double hyb_exx() const noexcept override {
-    return traits::exx_coeff;
+  inline double hyb_exx() const noexcept override {
+    return traits::is_hyb ? traits::exx_coeff : 0.;
   }
 
-  LDA_EXC_GENERATOR( eval_exc ) const override {
-
-    for( size_t i = 0; i < N; ++i )
-      traits::eval_exc_unpolar( rho[i], eps[i] );
-
-  }
-
-  LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override {
-
-    for( size_t i = 0; i < N; ++i )
-      traits::eval_exc_vxc_unpolar( rho[i], eps[i], vxc[i] );
-
-  }
+  inline FORWARD_XC_ARGS( LDA, EXC, eval_exc, 
+    host_eval_exc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc, 
+    host_eval_exc_vxc_helper<KernelType>, const override );
 
 };
 
@@ -124,23 +129,14 @@ struct BuiltinKernelImpl<
   inline bool is_gga()  const noexcept override { return traits::is_gga;  }
   inline bool is_mgga() const noexcept override { return traits::is_mgga; }
 
-  double hyb_exx() const noexcept override {
-    return traits::exx_coeff;
+  inline double hyb_exx() const noexcept override {
+    return traits::is_hyb ? traits::exx_coeff : 0.;
   }
 
-  GGA_EXC_GENERATOR( eval_exc ) const override {
-
-    for( size_t i = 0; i < N; ++i )
-      traits::eval_exc_unpolar( rho[i], sigma[i], eps[i] );
-
-  }
-
-  GGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override {
-
-    for( size_t i = 0; i < N; ++i )
-      traits::eval_exc_vxc_unpolar( rho[i], sigma[i], eps[i], vrho[i], vsigma[i] );
-
-  }
+  inline FORWARD_XC_ARGS( GGA, EXC, eval_exc, 
+    host_eval_exc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc, 
+    host_eval_exc_vxc_helper<KernelType>, const override );
 
 };
 

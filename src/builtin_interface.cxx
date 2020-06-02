@@ -21,6 +21,8 @@ std::unique_ptr<BuiltinKernel>
     return std::make_unique<BuiltinPBE_X>( polar );
   else if( kern == XCKernel::Kernel::PBE_C )
     return std::make_unique<BuiltinPBE_C>( polar );
+  else if( kern == XCKernel::Kernel::PBE0 )
+    return std::make_unique<BuiltinPBE0>( polar );
   else
     throw std::runtime_error("Specified kernel does not have a builtin implementation");
 
