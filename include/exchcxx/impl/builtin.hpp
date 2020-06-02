@@ -4,239 +4,29 @@
 #include <exchcxx/impl/xc_kernel.hpp>
 #include <cmath>
 
+#include <exchcxx/impl/builtin/fwd.hpp>
 #include <exchcxx/impl/builtin/constants.hpp>
+#include <exchcxx/impl/builtin/kernel.hpp>
+#include <exchcxx/impl/builtin/util.hpp>
 
 namespace ExchCXX {
 
 
-inline static void disabled_lda_interface() {
-  throw std::runtime_error("LDA Interface is disabled for the specified kernel");
-}
-
-inline static void disabled_gga_interface() {
-  throw std::runtime_error("GGA Interface is disabled for the specified kernel");
-}
-
-inline static void disabled_mgga_interface() {
-  throw std::runtime_error("MGGA Interface is disabled for the specified kernel");
-}
-
-
-
-
-
-
-
-
-
-
-
-class BuiltinKernel {
-
-  XCKernel::Spin polar_;
-
-public:
-
-  explicit BuiltinKernel( XCKernel::Spin p ) : polar_(p) { }
-  virtual ~BuiltinKernel() = default;
-
-  virtual bool is_lda()       const noexcept = 0;
-  virtual bool is_gga()       const noexcept = 0;
-  virtual bool is_mgga()      const noexcept = 0;
-  virtual bool is_hyb()       const noexcept = 0;
-  virtual double hyb_exx()    const noexcept = 0;
-
-  inline bool is_polarized() const noexcept { 
-    return polar_ == XCKernel::Spin::Polarized; 
-  };
-
-  inline auto polar() const noexcept { return polar_; }
-
-  // LDA interface
-  virtual LDA_EXC_GENERATOR( eval_exc )         const = 0;
-  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const = 0;
-
-  // GGA interface
-  virtual GGA_EXC_GENERATOR( eval_exc )         const = 0;
-  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const = 0;
-
-  // MGGA interface
-  virtual MGGA_EXC_GENERATOR( eval_exc )         const = 0;
-  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const = 0;
-
-#ifdef EXCHCXX_ENABLE_DEVICE
-
-  // LDA interface
-  virtual LDA_EXC_GENERATOR( eval_exc_device )         const = 0;
-  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const = 0;
-  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const = 0;
-  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const = 0;
-
-  // GGA interface
-  virtual GGA_EXC_GENERATOR( eval_exc_device )         const = 0;
-  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const = 0;
-  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const = 0;
-  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const = 0;
-
-  // MGGA interface
-  virtual MGGA_EXC_GENERATOR( eval_exc_device )         const = 0;
-  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const = 0;
-  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const = 0;
-  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const = 0;
-
-#endif
-
-};
-
-
-template <typename T>
-struct PureKernel : virtual T {
-
-  bool is_hyb()     const noexcept override { return false; };
-  double hyb_exx()  const noexcept override { return 0.; };
-
-  virtual ~PureKernel() = default;
-};
-
-
-template <typename T>
-class HybKernel : virtual T {
-
-  double exx_;
-
-public:
-
-  bool is_hyb()     const noexcept override { return true; };
-  double hyb_exx()  const noexcept override { return exx_; };
-
-  HybKernel( double exx ) : exx_(exx) { }
-  virtual ~HybKernel() = default;
-
-};
-
-template <typename T>
-struct LDAKernel : virtual T {
-
-  bool is_lda()  const noexcept override { return true;  };
-  bool is_gga()  const noexcept override { return false; };
-  bool is_mgga() const noexcept override { return false; };
-
-  virtual ~LDAKernel() = default;
-
-  // DISABLE GGA / MGGA interfaces
-
-  // GGA interface
-  GGA_EXC_GENERATOR( eval_exc )         const override { disabled_gga_interface(); };
-  GGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override { disabled_gga_interface(); };
-
-  // MGGA interface
-  MGGA_EXC_GENERATOR( eval_exc )         const override { disabled_mgga_interface(); };
-  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override { disabled_mgga_interface(); };
-
-#ifdef EXCHCXX_ENABLE_DEVICE
-
-  // GGA interface
-  GGA_EXC_GENERATOR( eval_exc_device )         const override { disabled_gga_interface(); }
-  GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const override { disabled_gga_interface(); }
-  GGA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const override { disabled_gga_interface(); }
-  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const override { disabled_gga_interface(); }
-
-  // MGGA interface
-  MGGA_EXC_GENERATOR( eval_exc_device )         const override { disabled_mgga_interface(); }
-  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const override { disabled_mgga_interface(); }
-  MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const override { disabled_mgga_interface(); }
-  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const override { disabled_mgga_interface(); }
-
-#endif
-
-};
-
-template <typename T>
-struct GGAKernel : virtual T {
-
-  bool is_lda()  const noexcept override { return false; };
-  bool is_gga()  const noexcept override { return true;  };
-  bool is_mgga() const noexcept override { return false; };
-
-  virtual ~GGAKernel() = default;
-
-  // DISABLE LDA / MGGA interfaces
-
-  // LDA interface
-  LDA_EXC_GENERATOR( eval_exc )         const override { disabled_lda_interface(); };
-  LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override { disabled_lda_interface(); };
-
-  // MGGA interface
-  MGGA_EXC_GENERATOR( eval_exc )         const override { disabled_mgga_interface(); };
-  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override { disabled_mgga_interface(); };
-
-#ifdef EXCHCXX_ENABLE_DEVICE
-
-  // LDA interface
-  LDA_EXC_GENERATOR( eval_exc_device )         const override { disabled_lda_interface(); }
-  LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const override { disabled_lda_interface(); }
-  LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const override { disabled_lda_interface(); }
-  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const override { disabled_lda_interface(); }
-
-  // MGGA interface
-  MGGA_EXC_GENERATOR( eval_exc_device )         const override { disabled_mgga_interface(); }
-  MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const override { disabled_mgga_interface(); }
-  MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const override { disabled_mgga_interface(); }
-  MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const override { disabled_mgga_interface(); }
-
-#endif
-
-};
-
-template <typename T>
-struct MGGAKernel : virtual T {
-
-  bool is_lda()  const noexcept override { return false; };
-  bool is_gga()  const noexcept override { return false; };
-  bool is_mgga() const noexcept override { return true;  };
-
-  virtual ~MGGAKernel() = default;
-
-  // DISABLE LDA / GGA interfaces
-
-  // LDA interface
-  LDA_EXC_GENERATOR( eval_exc )         const override { disabled_lda_interface(); };
-  LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override { disabled_lda_interface(); };
-
-  // GGA interface
-  GGA_EXC_GENERATOR( eval_exc )         const override { disabled_gga_interface(); };
-  GGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override { disabled_gga_interface(); };
-
-#ifdef EXCHCXX_ENABLE_DEVICE
-
-  // LDA interface
-  LDA_EXC_GENERATOR( eval_exc_device )         const override { disabled_lda_interface(); }
-  LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const override { disabled_lda_interface(); }
-  LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const override { disabled_lda_interface(); }
-  LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const override { disabled_lda_interface(); }
-
-  // GGA interface
-  GGA_EXC_GENERATOR( eval_exc_device )         const override { disabled_gga_interface(); }
-  GGA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const override { disabled_gga_interface(); }
-  GGA_EXC_GENERATOR_DEVICE( eval_exc_device_async )         const override { disabled_gga_interface(); }
-  GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const override { disabled_gga_interface(); }
-
-#endif
-
-};
-
-
-
-template <typename KernelType>
-struct kernel_traits;
-
-
 struct BuiltinSlaterExchange;
+struct BuiltinLYP;
+struct BuiltinPBE_X;
+struct BuiltinPBE_C;
 
 template <>
 struct kernel_traits<BuiltinSlaterExchange> {
 
-  static void eval_exc_unpolar( double rho, double& eps ) {
+  static constexpr bool is_hyb  = false;
+  static constexpr bool is_lda  = true;
+  static constexpr bool is_gga  = false;
+  static constexpr bool is_mgga = false;
+  static constexpr double exx_coeff = 0.;
+
+  static inline constexpr void eval_exc_unpolar( double rho, double& eps ) {
 
     constexpr double alpha = 1.;
 
@@ -258,7 +48,8 @@ struct kernel_traits<BuiltinSlaterExchange> {
 
 
 
-  static void eval_exc_vxc_unpolar( double rho, double& eps, double& vxc ) {
+  static inline constexpr void 
+    eval_exc_vxc_unpolar( double rho, double& eps, double& vxc ) {
 
     constexpr double alpha = 1.;
 
@@ -285,125 +76,472 @@ struct kernel_traits<BuiltinSlaterExchange> {
 
 
 
-struct BuiltinSlaterExchange : 
-  public virtual BuiltinKernel, 
-  public virtual PureKernel<BuiltinKernel>,
-  public virtual LDAKernel<BuiltinKernel> {
 
-  using traits = kernel_traits<BuiltinSlaterExchange>;
+template <>
+struct kernel_traits<BuiltinLYP> {
+
+  static constexpr bool is_hyb  = false;
+  static constexpr bool is_lda  = false;
+  static constexpr bool is_gga  = true;
+  static constexpr bool is_mgga = false;
+  static constexpr double exx_coeff = 0.;
+
+
+  static constexpr double lyp_A = 0.04918;
+  static constexpr double lyp_B = 0.132;
+  static constexpr double lyp_c = 0.2533;
+  static constexpr double lyp_d = 0.349;
+
+
+  static inline constexpr void eval_exc_unpolar( double rho, double sigma, double& eps ) {
+
+      constexpr double t26 = constants::m_cbrt_3;
+      constexpr double t27 = t26 * t26;
+      constexpr double t28 = constants::pi_sq;
+      constexpr double t29 = std::pow(t28, constants::m_third);
+      constexpr double t30 = t29 * t29;
+
+      double t7 = std::pow( rho, constants::m_third );;
+      double t8 = 1. / t7;
+      double t10 = lyp_d * t8 + 1.;
+      double t11 = 1. / t10;
+      double t13 = exp(-lyp_c * t8);
+      double t14 = lyp_B * t13;
+      double t15 = rho * rho;
+      double t16 = t7 * t7;
+      double t18 = 1. / t16 / t15;
+      double t19 = sigma * t18;
+      double t21 = lyp_d * t11 + lyp_c;
+      double t22 = t21 * t8;
+      double t24 = -1. / 72. - 7. / 72. * t22;
+
+      double t34 = 5. / 2. - t22 / 18.;
+      double t35 = t34 * sigma;
+      double t38 = t22 - 11.;
+      double t39 = t38 * sigma;
+      double t43 = -t19 * t24 - 3. / 10. * t27 * t30 + t35 * t18 / 8. + 
+                   t39 * t18 / 144. - 5. / 24. * t19;
+
+      eps = lyp_A * (t14 * t11 * t43 - t11);
+
+  }
+
+
+
+  static inline constexpr void 
+    eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
+      double& vsigma ) {
+
+      constexpr double t26 = constants::m_cbrt_3;
+      constexpr double t27 = t26 * t26;
+      constexpr double t28 = constants::pi_sq;
+      constexpr double t29 = std::pow(t28, constants::m_third);
+      constexpr double t30 = t29 * t29;
+      constexpr double t55 = lyp_B * lyp_c;
+      constexpr double t72 = lyp_d * lyp_d;
+
+      double t7 = std::pow( rho, constants::m_third );;
+      double t8 = 1. / t7;
+      double t10 = lyp_d * t8 + 1.;
+      double t11 = 1. / t10;
+      double t13 = exp(-lyp_c * t8);
+      double t14 = lyp_B * t13;
+      double t15 = rho * rho;
+      double t16 = t7 * t7;
+      double t18 = 1. / t16 / t15;
+      double t19 = sigma * t18;
+      double t21 = lyp_d * t11 + lyp_c;
+      double t22 = t21 * t8;
+      double t24 = -1. / 72. - 7. / 72. * t22;
+      double t34 = 5. / 2. - t22 / 18.;
+      double t35 = t34 * sigma;
+      double t38 = t22 - 11.;
+      double t39 = t38 * sigma;
+      double t43 = -t19 * t24 - 3. / 10. * t27 * t30 + t35 * t18 / 8. + 
+                   t39 * t18 / 144. - 5. / 24. * t19;
+
+      eps = lyp_A * (t14 * t11 * t43 - t11);
+
+      double t47 = rho * lyp_A;
+      double t48 = t10 * t10;
+      double t49 = 1. / t48;
+      double t50 = t49 * lyp_d;
+      double t52 = 1. / t7 / rho;
+      double t56 = t55 * t52;
+      double t57 = t13 * t11;
+      double t58 = t57 * t43;
+      double t61 = t14 * t49;
+      double t62 = t43 * lyp_d;
+      double t66 = t15 * rho;
+      double t68 = 1. / t16 / t66;
+      double t69 = sigma * t68;
+      double t73 = t72 * t49;
+      double t75 = 1. / t16 / rho;
+      double t78 = t21 * t52 - t73 * t75;
+      double t79 = 7. / 216. * t78;
+      double t81 = t78 / 54.;
+      double t82 = t81 * sigma;
+      double t88 = -t78 / 3.;
+      double t89 = t88 * sigma;
+      double t95 = 8. / 3. * t69 * t24 - t19 * t79 + t82 * t18 / 8. - 
+                   t35 * t68 / 3. + t89 * t18 / 144. - t39 * t68 / 54. + 
+                   5. / 9. * t69;
+      double t98 = -t50 * t52 / 3. + t56 * t58 / 3. + t61 * t62 * t52 / 3. + 
+                   t14 * t11 * t95;
+      vrho = t47 * t98 + (lyp_A * (t14 * t11 * t43 - t11));
+
+      double t100 = t47 * lyp_B;
+      double t107 = -t18 * t24 + t34 * t18 / 8. + t38 * t18 / 144. - 
+                    5. / 24. * t18;
+      double t108 = t57 * t107;
+
+      vsigma = t100 * t108;
+  }
+
+};
+
+
+
+
+
+template <>
+struct kernel_traits<BuiltinPBE_X> {
+
+  static constexpr bool is_hyb  = false;
+  static constexpr bool is_lda  = false;
+  static constexpr bool is_gga  = true;
+  static constexpr bool is_mgga = false;
+  static constexpr double exx_coeff = 0.;
+
+  static constexpr double pbe_kappa = 0.8040;
+  static constexpr double pbe_mu    = 0.2195149727645171;
+
+
+  static inline constexpr void 
+    eval_exc_unpolar( double rho, double sigma, double& eps ) {
+
+
+      constexpr double t1 = constants::m_cbrt_3;
+      constexpr double t3 = constants::m_cbrt_one_ov_pi;
+      constexpr double t4 = t1 * t3;
+      constexpr double t5 = constants::m_cbrt_4;
+      constexpr double t6 = t5 * t5;
+      constexpr double t7 = t4 * t6;
+      constexpr double t8 = constants::m_cbrt_2;
+      constexpr double t9 = t8 * t8;
+
+      constexpr double t12 = constants::m_cbrt_6;
+      constexpr double t14 = constants::pi_sq;
+      constexpr double t15 = std::pow(t14,constants::m_third);
+      constexpr double t16 = t15 * t15;
+      constexpr double t17 = 1. / t16;
+      constexpr double t18 = pbe_mu * t12 * t17;
+
+      double t10 = std::pow(rho, constants::m_third); 
+      double t20 = rho * rho;
+      double t21 = t10 * t10;
+      double t23 = 1. / t21 / t20;
+      double t27 = pbe_kappa + t18 * sigma * t9 * t23 / 24.;
+      double t32 = 1. + pbe_kappa * (1. - pbe_kappa / t27);
+      double t34 = t7 * t9 * t10 * t32;
+    
+      eps = -3. / 16. * t34;
+
+  }
+
+  static inline constexpr void 
+    eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
+      double& vsigma ) {
+
+
+      constexpr double t1 = constants::m_cbrt_3;
+      constexpr double t3 = constants::m_cbrt_one_ov_pi;
+      constexpr double t4 = t1 * t3;
+      constexpr double t5 = constants::m_cbrt_4;
+      constexpr double t6 = t5 * t5;
+      constexpr double t7 = t4 * t6;
+      constexpr double t8 = constants::m_cbrt_2;
+      constexpr double t9 = t8 * t8;
+
+      constexpr double t12 = constants::m_cbrt_6;
+      constexpr double t14 = constants::pi_sq;
+      constexpr double t15 = std::pow(t14,constants::m_third);
+      constexpr double t16 = t15 * t15;
+      constexpr double t17 = 1. / t16;
+      constexpr double t18 = pbe_mu * t12 * t17;
+
+      constexpr double t40 = t3 * t6;
+      constexpr double t41 = t40 * t8;
+      constexpr double t43 = pbe_kappa * pbe_kappa;
+
+      double t10 = std::pow(rho, constants::m_third); 
+      double t20 = rho * rho;
+      double t21 = t10 * t10;
+      double t23 = 1. / t21 / t20;
+      double t27 = pbe_kappa + t18 * sigma * t9 * t23 / 24.;
+      double t32 = 1. + pbe_kappa * (1. - pbe_kappa / t27);
+      double t34 = t7 * t9 * t10 * t32;
+    
+      eps = -3. / 16. * t34;
+
+      double t42 = 1. / t10 / t20 * t1 * t41;
+      double t44 = t27 * t27;
+      double t46 = t43 / t44;
+      double t49 = t12 * t17 * sigma;
+      double t50 = t46 * pbe_mu * t49;
+
+      double t57 = t46 * t18;
+
+      vrho   = -t34 / 4. + t42 * t50 / 24.;
+      vsigma = -1. / t10 / rho * t1 * t41 * t57 / 64.;
+  }
+};
+
+
+template <>
+struct kernel_traits<BuiltinPBE_C> {
+
+  static constexpr bool is_hyb  = false;
+  static constexpr bool is_lda  = false;
+  static constexpr bool is_gga  = true;
+  static constexpr bool is_mgga = false;
+  static constexpr double exx_coeff = 0.;
+
+  static constexpr double pbe_beta  = 0.06672455060314922;
+  static constexpr double pbe_gamma = 0.031090690869654895034;
+  static constexpr double pbe_B     = 1.;
+
+  static inline constexpr void 
+    eval_exc_unpolar( double rho, double sigma, double& eps ) {
+
+      constexpr double t1 = constants::m_cbrt_3;
+      constexpr double t3 = constants::m_cbrt_one_ov_pi;
+      constexpr double t4 = t1 * t3;
+      constexpr double t5 = constants::m_cbrt_4;
+      constexpr double t6 = t5 * t5;
+
+      constexpr double t18 = t1 * t1;
+      constexpr double t19 = t3 * t3;
+      constexpr double t20 = t18 * t19;
+      constexpr double t37 = constants::m_cbrt_2;
+      constexpr double t44 = pbe_B * pbe_beta;
+      constexpr double t45 = 1. / pbe_gamma;
+      constexpr double t58 = t37 * t37;
+      constexpr double t60 = 1. / t19;
+      constexpr double t61 = t1 * t60;
+      constexpr double t62 = t61 * t6;
+
+      double t7 = std::pow(rho, constants::m_third);
+      double t10 = t4 * t6 / t7;
+      double t12 = 1. + 0.53425e-1 * t10;
+      double t13 = std::sqrt(t10);
+      double t16 = std::pow(t10,  3. / 2.);
+      double t21 = t7 * t7;
+      double t24 = t20 * t5 / t21;
+      double t26 = 0.379785e1 * t13 + 0.8969 * t10 + 0.204775 * t16 + 
+                   0.123235 * t24;
+      double t29 = 1. + 0.16081979498692535067e2 / t26;
+      double t30 = std::log(t29);
+      double t31 = t12 * t30;
+      double t32 = 0.621814e-1 * t31;
+      double t33 = rho * rho;
+      double t35 = 1. / t7 / t33;
+      double t41 = t18 / t3 * t5;
+      double t48 = std::exp(0.621814e-1 * t31 * t45);
+      double t49 = t48 - 1.;
+      double t50 = 1. / t49;
+      double t51 = t45 * t50;
+      double t52 = sigma * sigma;
+      double t54 = t44 * t51 * t52;
+      double t55 = t33 * t33;
+      double t57 = 1. / t21 / t55;
+      double t59 = t57 * t58;
+      double t63 = t59 * t62;
+      double t66 = sigma * t35 * t37 * t41 / 96. + t54 * t63 / 3072.;
+      double t67 = pbe_beta * t66;
+      double t68 = pbe_beta * t45;
+      double t71 = t68 * t50 * t66 + 1.;
+      double t72 = 1. / t71;
+      double t73 = t45 * t72;
+      double t75 = t67 * t73 + 1.;
+      double t76 = std::log(t75);
+      double t77 = pbe_gamma * t76;
+
+      eps = t77 - t32;
+  }
+
+  static inline constexpr void 
+    eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
+      double& vsigma ) {
+
+      constexpr double t1 = constants::m_cbrt_3;
+      constexpr double t3 = constants::m_cbrt_one_ov_pi;
+      constexpr double t4 = t1 * t3;
+      constexpr double t5 = constants::m_cbrt_4;
+      constexpr double t6 = t5 * t5;
+
+      constexpr double t18 = t1 * t1;
+      constexpr double t19 = t3 * t3;
+      constexpr double t20 = t18 * t19;
+      constexpr double t37 = constants::m_cbrt_2;
+      constexpr double t44 = pbe_B * pbe_beta;
+      constexpr double t45 = 1. / pbe_gamma;
+      constexpr double t58 = t37 * t37;
+      constexpr double t60 = 1. / t19;
+      constexpr double t61 = t1 * t60;
+      constexpr double t62 = t61 * t6;
+
+      constexpr double t177 = pbe_beta * pbe_beta;
+      constexpr double t179 = pbe_gamma * pbe_gamma;
+      constexpr double t180 = 1. / t179;
+
+      double t7 = std::pow(rho, constants::m_third);
+      double t10 = t4 * t6 / t7;
+      double t12 = 1. + 0.53425e-1 * t10;
+      double t13 = std::sqrt(t10);
+      double t16 = std::pow(t10,  3. / 2.);
+      double t21 = t7 * t7;
+      double t24 = t20 * t5 / t21;
+      double t26 = 0.379785e1 * t13 + 0.8969 * t10 + 0.204775 * t16 + 
+                   0.123235 * t24;
+      double t29 = 1. + 0.16081979498692535067e2 / t26;
+      double t30 = std::log(t29);
+      double t31 = t12 * t30;
+      double t32 = 0.621814e-1 * t31;
+      double t33 = rho * rho;
+      double t35 = 1. / t7 / t33;
+      double t41 = t18 / t3 * t5;
+      double t48 = std::exp(0.621814e-1 * t31 * t45);
+      double t49 = t48 - 1.;
+      double t50 = 1. / t49;
+      double t51 = t45 * t50;
+      double t52 = sigma * sigma;
+      double t54 = t44 * t51 * t52;
+      double t55 = t33 * t33;
+      double t57 = 1. / t21 / t55;
+      double t59 = t57 * t58;
+      double t63 = t59 * t62;
+      double t66 = sigma * t35 * t37 * t41 / 96. + t54 * t63 / 3072.;
+      double t67 = pbe_beta * t66;
+      double t68 = pbe_beta * t45;
+      double t71 = t68 * t50 * t66 + 1.;
+      double t72 = 1. / t71;
+      double t73 = t45 * t72;
+      double t75 = t67 * t73 + 1.;
+      double t76 = std::log(t75);
+      double t77 = pbe_gamma * t76;
+
+      eps = t77 - t32;
+
+      double t79 = 1. / t7 / rho;
+      double t80 = t6 * t79;
+      double t82 = t4 * t80 * t30;
+      double t84 = t26 * t26;
+      double t85 = 1. / t84;
+      double t86 = t12 * t85;
+      double t88 = 1. / t13 * t1;
+      double t89 = t3 * t6;
+      double t90 = t89 * t79;
+      double t93 = t4 * t80;
+      double t95 = sqrt(t10);
+      double t96 = t95 * t1;
+      double t104 = -0.632975 * t88 * t90 - 0.29896666666666666667 * t93 - 
+                    0.1023875 * t96 * t90 - 
+                    0.82156666666666666667e-1 * t20 * t5 / t21 / rho;
+      double t105 = 1. / t29;
+      double t106 = t104 * t105;
+      double t107 = t86 * t106;
+      double t109 = t33 * rho;
+      double t111 = 1. / t7 / t109;
+      double t116 = t44 * t45;
+      double t117 = t49 * t49;
+      double t118 = 1. / t117;
+      double t119 = t118 * t52;
+      double t121 = t116 * t119 * t57;
+      double t122 = t58 * t1;
+      double t123 = t122 * t60;
+      double t124 = t4 * t6;
+      double t132 = -0.11073470983333333333e-2 * t124 * t79 * t30 * t45 - 
+                    t86 * t106 * t45;
+      double t133 = t6 * t132;
+      double t135 = t123 * t133 * t48;
+      double t138 = t55 * rho;
+      double t140 = 1. / t21 / t138;
+      double t141 = t140 * t58;
+      double t142 = t141 * t62;
+      double t145 = -7. / 288. * sigma * t111 * t37 * t41 - 
+                    t121 * t135 / 3072 - 7. / 4608 * t54 * t142;
+      double t146 = pbe_beta * t145;
+      double t148 = t71 * t71;
+      double t149 = 1. / t148;
+      double t150 = t45 * t149;
+      double t151 = t68 * t118;
+      double t152 = t66 * t132;
+      double t157 = t68 * t50 * t145 - t151 * t152 * t48;
+      double t158 = t150 * t157;
+      double t160 = t146 * t73 - t67 * t158;
+      double t162 = 1. / t75;
+      double t163 = pbe_gamma * t160 * t162;
+
+      vrho = -t32 + t77 + rho * (0.11073470983333333333e-2 * t82 + 
+             t107 + t163);
+
+
+
+      double t166 = rho * pbe_gamma;
+      double t171 = t44 * t51 * sigma;
+      double t174 = t35 * t37 * t41 / 96. + t171 * t63 / 1536.;
+      double t175 = pbe_beta * t174;
+      double t178 = t177 * t66;
+      double t181 = t178 * t180;
+      double t182 = t149 * t50;
+      double t183 = t182 * t174;
+      double t185 = t175 * t73 - t181 * t183;
+
+      vsigma = t166 * t185 * t162;
+  }
+
+};
+
+
+
+
+struct BuiltinSlaterExchange : detail::BuiltinKernelImpl< BuiltinSlaterExchange > {
 
   BuiltinSlaterExchange( XCKernel::Spin p ) :
-    BuiltinKernel(p) { }
+    detail::BuiltinKernelImpl< BuiltinSlaterExchange >(p) { }
   
   virtual ~BuiltinSlaterExchange() = default;
 
-  inline LDA_EXC_GENERATOR( eval_exc ) const override {
-    for( size_t i = 0; i < N; ++i )
-      traits::eval_exc_unpolar( rho[i], eps[i] );
-  }
-
-  inline LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const override {
-    for( size_t i = 0; i < N; ++i )
-      traits::eval_exc_vxc_unpolar( rho[i], eps[i], vxc[i] );
-  }
-
-
-
-
-
-  inline LDA_EXC_GENERATOR( eval_exc_device ) const override {
-    throw std::runtime_error("NYI");
-  }
-  inline LDA_EXC_VXC_GENERATOR( eval_exc_vxc_device ) const override {
-    throw std::runtime_error("NYI");
-  }
-
-  inline LDA_EXC_GENERATOR_DEVICE( eval_exc_device_async ) const override {
-    throw std::runtime_error("NYI");
-  }
-  inline LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_async ) const override {
-    throw std::runtime_error("NYI");
-  }
 };
 
+struct BuiltinLYP : detail::BuiltinKernelImpl< BuiltinLYP > {
 
-
-namespace detail {
-
-class BuiltinKernelInterface : public XCKernelImpl {
-
-  using unique_me = XCKernelImpl::unique_me;
-
-  unique_me clone_() const override;
-
-  XCKernel::Kernel whatami_;
-
-  std::unique_ptr<BuiltinKernel> impl_;
-
-  inline bool is_lda_()       const noexcept override {
-    return impl_->is_lda();
-  };
-  inline bool is_gga_()       const noexcept override {
-    return impl_->is_gga();
-  }
-  inline bool is_mgga_()      const noexcept override {
-    return impl_->is_mgga();
-  }
-  inline bool is_hyb_()       const noexcept override {
-    return impl_->is_hyb();
-  }
-  inline bool is_polarized_() const noexcept override {
-    return impl_->is_polarized();
-  }
-  inline double hyb_exx_()    const noexcept override {
-    return impl_->hyb_exx();
-  }
-
-  inline FORWARD_XC_ARGS( LDA, EXC, eval_exc_, impl_->eval_exc, const override );
-  inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc_, impl_->eval_exc_vxc, const override );
-
-  inline FORWARD_XC_ARGS( GGA, EXC, eval_exc_, impl_->eval_exc, const override );
-  inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc_, impl_->eval_exc_vxc, const override );
-
-  inline FORWARD_XC_ARGS( MGGA, EXC, eval_exc_, impl_->eval_exc, const override );
-  inline FORWARD_XC_ARGS( MGGA, EXC_VXC, eval_exc_vxc_, impl_->eval_exc_vxc, const override );
-
-#ifdef EXCHCXX_ENABLE_DEVICE
-
-  inline FORWARD_XC_ARGS( LDA, EXC, eval_exc_device_, impl_->eval_exc_device, const override );
-  inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc_device_, impl_->eval_exc_vxc_device, const override );
-
-  inline FORWARD_XC_ARGS( GGA, EXC, eval_exc_device_, impl_->eval_exc_device, const override );
-  inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc_device_, impl_->eval_exc_vxc_device, const override );
-
-  inline FORWARD_XC_ARGS( MGGA, EXC, eval_exc_device_, impl_->eval_exc_device, const override );
-  inline FORWARD_XC_ARGS( MGGA, EXC_VXC, eval_exc_vxc_device_, impl_->eval_exc_vxc_device, const override );
-
-  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC, eval_exc_device_async_, impl_->eval_exc_device_async, const override );
-  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_device_async_, impl_->eval_exc_vxc_device_async, const override );
-
-  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC, eval_exc_device_async_, impl_->eval_exc_device_async, const override );
-  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_device_async_, impl_->eval_exc_vxc_device_async, const override );
-
-  inline FORWARD_XC_ARGS_DEVICE( MGGA, EXC, eval_exc_device_async_, impl_->eval_exc_device_async, const override );
-  inline FORWARD_XC_ARGS_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_device_async_, impl_->eval_exc_vxc_device_async, const override );
-
-#endif
-
-  //BuiltinKernelInterface( std::unique_ptr<BuiltinKernel>&& ptr ) noexcept ;
-
-public:
-
-  BuiltinKernelInterface() = delete;
+  BuiltinLYP( XCKernel::Spin p ) :
+    detail::BuiltinKernelImpl< BuiltinLYP >(p) { }
   
-  BuiltinKernelInterface( XCKernel::Kernel kern, XCKernel::Spin p);
-  BuiltinKernelInterface( const BuiltinKernelInterface& );
-  BuiltinKernelInterface( BuiltinKernelInterface&& ) noexcept = default;
+  virtual ~BuiltinLYP() = default;
 
-  // Destroy interal Builtin data
-  ~BuiltinKernelInterface() noexcept;
-    
+};
+
+struct BuiltinPBE_X : detail::BuiltinKernelImpl< BuiltinPBE_X > {
+
+  BuiltinPBE_X( XCKernel::Spin p ) :
+    detail::BuiltinKernelImpl< BuiltinPBE_X >(p) { }
+  
+  virtual ~BuiltinPBE_X() = default;
+
+};
+
+struct BuiltinPBE_C : detail::BuiltinKernelImpl< BuiltinPBE_C > {
+
+  BuiltinPBE_C( XCKernel::Spin p ) :
+    detail::BuiltinKernelImpl< BuiltinPBE_C >(p) { }
+  
+  virtual ~BuiltinPBE_C() = default;
+
 };
 
 }
-}
+
+#include <exchcxx/impl/builtin/interface.hpp>

@@ -1,4 +1,13 @@
-set( EXCHCXX_SOURCES xc_kernel.cxx xc_functional.cxx libxc.cxx boilerplate.cxx builtin.cxx )
+set( EXCHCXX_SOURCES 
+     xc_kernel.cxx 
+     xc_functional.cxx 
+     libxc.cxx 
+     boilerplate.cxx 
+     builtin.cxx 
+     builtin_interface.cxx 
+     builtin_kernel.cxx 
+)
+
 if( EXCHCXX_ENABLE_DEVICE )
   list( APPEND EXCHCXX_SOURCES xc_functional_device.cu libxc_device.cu )
 endif()

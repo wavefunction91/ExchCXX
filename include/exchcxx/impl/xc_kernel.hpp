@@ -124,6 +124,6 @@ private:
 
 };
 
-}; // detail
-}; // ExchCXX
+} // detail
+} // ExchCXX
 

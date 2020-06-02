@@ -19,6 +19,6 @@ static inline XCKernel kernel_factory(
 
 }
 
-}; // namespace ExchCXX
+} // namespace ExchCXX
 
 #endif

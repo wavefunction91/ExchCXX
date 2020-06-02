@@ -139,6 +139,6 @@ public:
 
 };
 
-}; // namespace ExchCXX
+} // namespace ExchCXX
 
 #endif
