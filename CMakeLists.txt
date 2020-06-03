@@ -20,7 +20,11 @@ endif()
 
 
 ## Find LibXC
-find_package( Libxc REQUIRED )
+find_package( Libxc 5.0.0 CONFIG REQUIRED )
+message( STATUS "Found: Libxc Version ${Libxc_VERSION}" )
+if( Libxc_VERSION VERSION_GREATER_EQUAL "6.0.0" )
+  message( FATAL_ERROR "Libxc version 6+ breaks the API currently used in ExchCXX" )
+endif()
         
 add_subdirectory( src  )
 
