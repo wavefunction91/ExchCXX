@@ -68,7 +68,7 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper ) {
 
   dim3 threads(std::min( 1024, N ));
   dim3 blocks( div_ceil( N, threads.x) );
-  device_eval_exc_helper_kernel<KernelType><<<blocks,threads>>>(
+  device_eval_exc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, eps
   );
 
@@ -79,7 +79,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper ) {
 
   dim3 threads(std::min( 1024, N ));
   dim3 blocks( div_ceil( N, threads.x) );
-  device_eval_exc_vxc_helper_kernel<KernelType><<<blocks,threads>>>(
+  device_eval_exc_vxc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, eps, vxc
   );
 
@@ -93,7 +93,7 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper ) {
 
   dim3 threads(std::min( 1024, N ));
   dim3 blocks( div_ceil( N, threads.x) );
-  device_eval_exc_helper_kernel<KernelType><<<blocks,threads>>>(
+  device_eval_exc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, sigma, eps
   );
 
@@ -104,7 +104,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper ) {
 
   dim3 threads(std::min( 1024, N ));
   dim3 blocks( div_ceil( N, threads.x) );
-  device_eval_exc_vxc_helper_kernel<KernelType><<<blocks,threads>>>(
+  device_eval_exc_vxc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, sigma, eps, vrho, vsigma
   );
 
