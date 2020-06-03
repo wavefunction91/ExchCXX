@@ -1,6 +1,6 @@
-#include <exchcxx/impl/builtin/kernel.hpp>
+#include <exchcxx/impl/builtin/kernel_type.hpp>
 #include <exchcxx/impl/builtin/util.hpp>
-#include <exchcxx/impl/builtin.hpp>
+#include <exchcxx/impl/builtin/kernels.hpp>
 
 namespace ExchCXX {
 

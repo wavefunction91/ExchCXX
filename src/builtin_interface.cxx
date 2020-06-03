@@ -1,7 +1,7 @@
-#include <exchcxx/impl/builtin/kernel.hpp>
+#include <exchcxx/impl/builtin/kernel_type.hpp>
 #include <exchcxx/impl/builtin/interface.hpp>
+#include <exchcxx/impl/builtin/kernels.hpp>
 
-#include <exchcxx/impl/builtin.hpp>
 
 namespace ExchCXX {
 namespace detail  {

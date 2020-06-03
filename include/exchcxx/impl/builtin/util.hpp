@@ -13,5 +13,14 @@ inline static void disabled_mgga_interface() {
   throw std::runtime_error("MGGA Interface is disabled for the specified kernel");
 }
 
+#ifdef __CUDACC__
+
+#define BUILTIN_KERNEL_EVAL_RETURN static inline constexpr void __host__ __device__
+
+#else
+
+#define BUILTIN_KERNEL_EVAL_RETURN static inline constexpr void 
+
+#endif
 
 }

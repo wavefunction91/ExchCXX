@@ -1,5 +1,5 @@
 #include <exchcxx/xc_kernel.hpp>
-#include <exchcxx/impl/builtin.hpp>
+#include <exchcxx/impl/builtin/interface.hpp>
 #include <exchcxx/factory/xc_kernel.hpp>
 
 #include <iostream>
