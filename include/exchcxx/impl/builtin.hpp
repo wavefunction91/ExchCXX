@@ -9,6 +9,16 @@
 #include <exchcxx/impl/builtin/kernel.hpp>
 #include <exchcxx/impl/builtin/util.hpp>
 
+#ifdef __CUDACC__
+
+#define BUILTIN_KERNEL_EVAL_RETURN static inline constexpr void __host__ __device__
+
+#else
+
+#define BUILTIN_KERNEL_EVAL_RETURN static inline constexpr void 
+
+#endif
+
 namespace ExchCXX {
 
 
@@ -21,7 +31,8 @@ struct kernel_traits<BuiltinSlaterExchange> {
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.;
 
-  static inline constexpr void eval_exc_unpolar( double rho, double& eps ) {
+  BUILTIN_KERNEL_EVAL_RETURN 
+    eval_exc_unpolar( double rho, double& eps ) {
 
     constexpr double alpha = 1.;
 
@@ -43,7 +54,7 @@ struct kernel_traits<BuiltinSlaterExchange> {
 
 
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar( double rho, double& eps, double& vxc ) {
 
     constexpr double alpha = 1.;
@@ -88,12 +99,12 @@ struct kernel_traits<BuiltinLYP> {
   static constexpr double lyp_d = 0.349;
 
 
-  static inline constexpr void eval_exc_unpolar( double rho, double sigma, double& eps ) {
+  BUILTIN_KERNEL_EVAL_RETURN
+    eval_exc_unpolar( double rho, double sigma, double& eps ) {
 
       constexpr double t26 = constants::m_cbrt_3;
       constexpr double t27 = t26 * t26;
-      constexpr double t28 = constants::pi_sq;
-      constexpr double t29 = std::pow(t28, constants::m_third);
+      constexpr double t29 = constants::m_cbrt_pi_sq;
       constexpr double t30 = t29 * t29;
 
       double t7 = std::pow( rho, constants::m_third );;
@@ -123,14 +134,13 @@ struct kernel_traits<BuiltinLYP> {
 
 
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
       double& vsigma ) {
 
       constexpr double t26 = constants::m_cbrt_3;
       constexpr double t27 = t26 * t26;
-      constexpr double t28 = constants::pi_sq;
-      constexpr double t29 = std::pow(t28, constants::m_third);
+      constexpr double t29 = constants::m_cbrt_pi_sq;
       constexpr double t30 = t29 * t29;
       constexpr double t55 = lyp_B * lyp_c;
       constexpr double t72 = lyp_d * lyp_d;
@@ -212,7 +222,7 @@ struct kernel_traits<BuiltinPBE_X> {
   static constexpr double pbe_mu    = 0.2195149727645171;
 
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
 
 
@@ -226,8 +236,7 @@ struct kernel_traits<BuiltinPBE_X> {
       constexpr double t9 = t8 * t8;
 
       constexpr double t12 = constants::m_cbrt_6;
-      constexpr double t14 = constants::pi_sq;
-      constexpr double t15 = std::pow(t14,constants::m_third);
+      constexpr double t15 = constants::m_cbrt_pi_sq;
       constexpr double t16 = t15 * t15;
       constexpr double t17 = 1. / t16;
       constexpr double t18 = pbe_mu * t12 * t17;
@@ -244,7 +253,7 @@ struct kernel_traits<BuiltinPBE_X> {
 
   }
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
       double& vsigma ) {
 
@@ -259,8 +268,7 @@ struct kernel_traits<BuiltinPBE_X> {
       constexpr double t9 = t8 * t8;
 
       constexpr double t12 = constants::m_cbrt_6;
-      constexpr double t14 = constants::pi_sq;
-      constexpr double t15 = std::pow(t14,constants::m_third);
+      constexpr double t15 = constants::m_cbrt_pi_sq;
       constexpr double t16 = t15 * t15;
       constexpr double t17 = 1. / t16;
       constexpr double t18 = pbe_mu * t12 * t17;
@@ -306,7 +314,7 @@ struct kernel_traits<BuiltinPBE_C> {
   static constexpr double pbe_gamma = 0.031090690869654895034;
   static constexpr double pbe_B     = 1.;
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
 
       constexpr double t1 = constants::m_cbrt_3;
@@ -365,7 +373,7 @@ struct kernel_traits<BuiltinPBE_C> {
       eps = t77 - t32;
   }
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
       double& vsigma ) {
 
@@ -512,7 +520,7 @@ struct kernel_traits<BuiltinPBE0> {
   using pbe_x_traits = kernel_traits<BuiltinPBE_X>;
   using pbe_c_traits = kernel_traits<BuiltinPBE_C>;
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
 
     pbe_x_traits::eval_exc_unpolar( rho, sigma, eps );
@@ -523,7 +531,7 @@ struct kernel_traits<BuiltinPBE0> {
     eps = (1. - exx_coeff) * eps_x + eps;
   }
 
-  static inline constexpr void 
+  BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
       double& vsigma ) {
 

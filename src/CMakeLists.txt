@@ -9,7 +9,7 @@ set( EXCHCXX_SOURCES
 )
 
 if( EXCHCXX_ENABLE_DEVICE )
-  list( APPEND EXCHCXX_SOURCES xc_functional_device.cu libxc_device.cxx )
+  list( APPEND EXCHCXX_SOURCES xc_functional_device.cu libxc_device.cxx builtin.cu )
 endif()
 
 add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )

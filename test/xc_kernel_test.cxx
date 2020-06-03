@@ -456,17 +456,17 @@ TEST_CASE("Device Kernels", "[xc-device]") {
 
   }
 
-  //SECTION("BUILTIN") {
+  SECTION("BUILTIN") {
 
-  //  XCKernel pbe_builtin( 
-  //    XCKernel::Backend::builtin,
-  //    XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized 
-  //  );
+    XCKernel pbe_builtin( 
+      XCKernel::Backend::builtin,
+      XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized 
+    );
 
-  //  pbe_builtin.eval_exc_vxc_device( npts, rho_device, sigma_device,
-  //    exc_device, vrho_device, vsigma_device, stream ); 
+    pbe_builtin.eval_exc_vxc_device( npts, rho_device, sigma_device,
+      exc_device, vrho_device, vsigma_device, stream ); 
 
-  //}
+  }
 
   device_synchronize();
   

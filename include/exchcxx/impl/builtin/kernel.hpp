@@ -74,6 +74,20 @@ GGA_EXC_GENERATOR( host_eval_exc_helper );
 template <typename KernelType>
 GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper );
 
+#ifdef EXCHCXX_ENABLE_DEVICE
+
+template <typename KernelType>
+LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper );
+template <typename KernelType>
+LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper );
+
+template <typename KernelType>
+GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper );
+template <typename KernelType>
+GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper );
+
+#endif
+
 
 
 
@@ -132,6 +146,12 @@ struct BuiltinKernelImpl<
   inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc, 
     host_eval_exc_vxc_helper<KernelType>, const override );
 
+#ifdef EXCHCXX_ENABLE_DEVICE
+  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC, eval_exc_device, 
+    device_eval_exc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_device, 
+    device_eval_exc_vxc_helper<KernelType>, const override );
+#endif
 };
 
 }
