@@ -4,7 +4,13 @@ get_filename_component(ExchCXX_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
 list(APPEND CMAKE_MODULE_PATH ${ExchCXX_CMAKE_DIR})
 include(CMakeFindDependencyMacro)
-find_dependency( LibXC )
+find_dependency( Libxc @Libxc_VERSION@ EXACT CONFIG )
+
+
+set( EXCHCXX_ENABLE_DEVICE @EXCHCXX_ENABLE_DEVICE@ )
+if( EXCHCXX_ENABLE_DEVICE )
+  find_dependency( CUDAToolkit @CUDAToolkit_VERSION@ EXACT )
+endif()
 
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
