@@ -17,6 +17,7 @@ struct kernel_traits<BuiltinPBE_X> {
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.;
+  static constexpr double dens_tol  = 1e-32;
 
   static constexpr double pbe_kappa = 0.8040;
   static constexpr double pbe_mu    = 0.2195149727645171;
@@ -25,6 +26,18 @@ struct kernel_traits<BuiltinPBE_X> {
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
 
+#ifdef __CUDACC__
+      rho   = fmax( rho, 0. );
+      sigma = fmax( sigma, 1e-40 );
+#else
+      rho   = std::max( rho, 0. );
+      sigma = std::max( sigma, 1e-40 );
+#endif
+      
+      if( rho < dens_tol ) {
+        eps = 0.;
+        return;
+      }
 
       constexpr double t1 = constants::m_cbrt_3;
       constexpr double t3 = constants::m_cbrt_one_ov_pi;
@@ -57,6 +70,20 @@ struct kernel_traits<BuiltinPBE_X> {
     eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
       double& vsigma ) {
 
+#ifdef __CUDACC__
+      rho   = fmax( rho, 0. );
+      sigma = fmax( sigma, 1e-40 );
+#else
+      rho   = std::max( rho, 0. );
+      sigma = std::max( sigma, 1e-40 );
+#endif
+      
+      if( rho < dens_tol ) {
+        eps = 0.;
+        vrho = 0.;
+        vsigma = 0.;
+        return;
+      }
 
       constexpr double t1 = constants::m_cbrt_3;
       constexpr double t3 = constants::m_cbrt_one_ov_pi;

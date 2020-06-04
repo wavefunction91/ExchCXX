@@ -18,10 +18,21 @@ struct kernel_traits<BuiltinSlaterExchange> {
   static constexpr bool is_gga  = false;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.;
+  static constexpr double dens_tol  = 1e-24;
 
   BUILTIN_KERNEL_EVAL_RETURN 
     eval_exc_unpolar( double rho, double& eps ) {
 
+#ifdef __CUDACC__
+      rho   = fmax( rho, 0. );
+#else
+      rho   = std::max( rho, 0. );
+#endif
+
+    if( rho <= dens_tol ) {
+      eps = 0.;
+      return;
+    }
     constexpr double alpha = 1.;
 
     constexpr double t1 = constants::m_cbrt_3;
@@ -44,6 +55,19 @@ struct kernel_traits<BuiltinSlaterExchange> {
 
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar( double rho, double& eps, double& vxc ) {
+
+
+#ifdef __CUDACC__
+      rho   = fmax( rho, 0. );
+#else
+      rho   = std::max( rho, 0. );
+#endif
+
+    if( rho <= dens_tol ) {
+      eps = 0.;
+      vxc = 0.;
+      return;
+    }
 
     constexpr double alpha = 1.;
 

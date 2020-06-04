@@ -19,6 +19,7 @@ struct kernel_traits<BuiltinPBE0> {
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.25;
+  static constexpr double dens_tol  = 1e-32; // not used, delegates to PBE_C/X
 
   using pbe_x_traits = kernel_traits<BuiltinPBE_X>;
   using pbe_c_traits = kernel_traits<BuiltinPBE_C>;
@@ -26,12 +27,12 @@ struct kernel_traits<BuiltinPBE0> {
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
 
-    pbe_x_traits::eval_exc_unpolar( rho, sigma, eps );
-    double eps_x = eps;
+    //pbe_x_traits::eval_exc_unpolar( rho, sigma, eps );
+    //double eps_x = eps;
 
-    pbe_c_traits::eval_exc_unpolar( rho, sigma, eps );
+    //pbe_c_traits::eval_exc_unpolar( rho, sigma, eps );
 
-    eps = (1. - exx_coeff) * eps_x + eps;
+    //eps = (1. - exx_coeff) * eps_x + eps;
   }
 
   BUILTIN_KERNEL_EVAL_RETURN

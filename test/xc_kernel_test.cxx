@@ -8,6 +8,7 @@
 
 using namespace ExchCXX;
 
+
 constexpr std::array rho = {0.1, 0.2, 0.3, 0.4, 0.5};
 constexpr std::array sigma = {0.2, 0.3, 0.4, 0.5, 0.6};
 
@@ -266,126 +267,118 @@ TEST_CASE( "Hybrid GGA Kernel Wrappers", "[xc-hyb-gga]" ) {
 }
 
 
-
-
+#define GENERATE_ALL_EVAL_TYPES \
+    SECTION( "REGULAR EVAL" ) {\
+      std::copy( rho.begin(), rho.end(), std::back_inserter( rho_use ) );\
+      std::copy( sigma.begin(), sigma.end(), std::back_inserter( sigma_use ) );\
+    }\
+\
+    SECTION( "SMALL EVAL" ) {\
+      rho_use = rho_small;\
+      sigma_use = sigma_small;\
+    }\
+\
+    SECTION( "ZERO EVAL" ) {\
+      rho_use = rho_zero;\
+      sigma_use = sigma_zero;\
+    }
 
 
 TEST_CASE("Builtin Kernels", "[xc-builtin]") {
 
+
   const int npts = rho.size();
-  std::vector<double> exc( npts );
-  std::vector<double> vxc( npts );
+  std::vector<double> eps( npts );
+  std::vector<double> vrho( npts );
   std::vector<double> vsigma( npts );
 
+  std::vector<double> eps_ref( npts ); 
+  std::vector<double> vrho_ref( npts );
+  std::vector<double> vsigma_ref( npts );
+
+  std::vector<double> rho_small(npts, 1e-13);
+  std::vector<double> sigma_small(npts, 1e-14);
+
+  std::vector<double> rho_zero(npts, 0.);
+  std::vector<double> sigma_zero(npts, 0.);
+
+  std::vector<double> rho_use, sigma_use;
+
+  XCKernel::Kernel kern;
+  XCKernel::Spin   polar;
 
   SECTION( "SLATER EXCHANGE" ) {
 
-    XCKernel lda_x( XCKernel::Backend::builtin, 
-      XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized ); 
+    kern  = XCKernel::Kernel::SlaterExchange;
+    polar = XCKernel::Spin::Unpolarized;
 
-    lda_x.eval_exc_vxc( npts, rho.data(), exc.data(), vxc.data() );
+    rho_use.clear(), sigma_use.clear();
+    GENERATE_ALL_EVAL_TYPES
+
+  }
+
+  SECTION( "Lee-Yang-Parr" ) {
+
+    kern  = XCKernel::Kernel::LYP;
+    polar = XCKernel::Spin::Unpolarized;
+
+    GENERATE_ALL_EVAL_TYPES
+
+  }
+
+  SECTION( "PBE_X" ) {
+
+    kern  = XCKernel::Kernel::PBE_X;
+    polar = XCKernel::Spin::Unpolarized;
+
+    GENERATE_ALL_EVAL_TYPES
+
+  }
+
+  SECTION( "PBE_C" ) {
+
+    kern  = XCKernel::Kernel::PBE_C;
+    polar = XCKernel::Spin::Unpolarized;
+
+    GENERATE_ALL_EVAL_TYPES
+
+  }
+
+  SECTION( "PBE0" ) {
+
+    kern  = XCKernel::Kernel::PBE0;
+    polar = XCKernel::Spin::Unpolarized;
+
+    GENERATE_ALL_EVAL_TYPES
+
+  }
+
+  XCKernel kern_libxc( kern, polar );
+  XCKernel kern_built( XCKernel::Backend::builtin, kern, polar );
+
+  if( kern_libxc.is_lda() )
+    kern_libxc.eval_exc_vxc( npts, rho_use.data(), eps_ref.data(), vrho_ref.data() );
+  else if( kern_libxc.is_gga() )
+    kern_libxc.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(), eps_ref.data(), 
+      vrho_ref.data(), vsigma_ref.data() );
+
+  if( kern_built.is_lda() )
+    kern_built.eval_exc_vxc( npts, rho_use.data(), eps.data(), vrho.data() );
+  else if( kern_built.is_gga() )
+    kern_built.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(), eps.data(), 
+      vrho.data(), vsigma.data() );
+
+  for( auto i = 0; i < npts; ++i ) {
+    CHECK( eps[i]  == Approx( eps_ref[i] )  );
+    CHECK( vrho[i] == Approx( vrho_ref[i] ) );
+  }
+
+  if( kern_built.is_gga() ) {
     for( auto i = 0; i < npts; ++i ) {
-      CHECK( exc[i] == Approx(exc_xc_lda_x_ref_unp[i]) );
-      CHECK( vxc[i] == Approx(vxc_xc_lda_x_ref_unp[i]) );
+      CHECK( vsigma[i] == Approx( vsigma_ref[i] ) );
     }
-
   }
 
-  SECTION( "LYP CORRELATION" ) {
-    
-    XCKernel lyp( XCKernel::Backend::builtin, 
-      XCKernel::Kernel::LYP, XCKernel::Spin::Unpolarized ); 
-
-    // Make sure LDA interface is disabled
-    CHECK_THROWS( lyp.eval_exc_vxc( npts, rho.data(), exc.data(), vxc.data() ) );
-
-    lyp.eval_exc_vxc( npts, rho.data(), sigma.data(), exc.data(), vxc.data(),
-                      vsigma.data() );
-
-    for( auto i = 0; i < npts; ++i ) {
-      CHECK( exc[i]    == Approx(exc_xc_gga_c_lyp_ref_unp[i]) );
-      CHECK( vxc[i]    == Approx(vrho_xc_gga_c_lyp_ref_unp[i]) );
-      CHECK( vsigma[i] == Approx(vsigma_xc_gga_c_lyp_ref_unp[i]) );
-    }
-
-  }
-
-  SECTION("PBE X") {
-
-    std::vector<double> exc_ref(npts), vrho_ref(npts), vsigma_ref(npts);
-    XCKernel pbe_x( XCKernel::Kernel::PBE_X, XCKernel::Spin::Unpolarized );
-
-    pbe_x.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
-                        vrho_ref.data(), vsigma_ref.data() );
-
-    XCKernel pbe_x_builtin( 
-      XCKernel::Backend::builtin,
-      XCKernel::Kernel::PBE_X, XCKernel::Spin::Unpolarized 
-    );
-
-    pbe_x_builtin.eval_exc_vxc( npts, rho.data(), sigma.data(), exc.data(), 
-                        vxc.data(), vsigma.data() );
-
-    for( size_t i = 0; i < npts; ++i ) {
-      CHECK( exc[i] == Approx(exc_ref[i]) );
-      CHECK( vxc[i] == Approx(vrho_ref[i]) );
-      CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
-    }
-      
-
-  }
-
-  SECTION("PBE C") {
-
-    std::vector<double> exc_ref(npts), vrho_ref(npts), vsigma_ref(npts);
-    XCKernel pbe_c( XCKernel::Kernel::PBE_C, XCKernel::Spin::Unpolarized );
-
-    pbe_c.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
-                        vrho_ref.data(), vsigma_ref.data() );
-
-
-    XCKernel pbe_c_builtin( 
-      XCKernel::Backend::builtin,
-      XCKernel::Kernel::PBE_C, XCKernel::Spin::Unpolarized 
-    );
-
-    pbe_c_builtin.eval_exc_vxc( npts, rho.data(), sigma.data(), exc.data(), 
-                        vxc.data(), vsigma.data() );
-
-    for( size_t i = 0; i < npts; ++i ) {
-      CHECK( exc[i] == Approx(exc_ref[i]) );
-      CHECK( vxc[i] == Approx(vrho_ref[i]) );
-      CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
-    }
-          
-  }
-
-  SECTION("PBE0") {
-
-    std::vector<double> exc_ref(npts), vrho_ref(npts), vsigma_ref(npts);
-    XCKernel pbe( XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized );
-
-    pbe.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
-                        vrho_ref.data(), vsigma_ref.data() );
-
-
-    XCKernel pbe_builtin( 
-      XCKernel::Backend::builtin,
-      XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized 
-    );
-
-    pbe_builtin.eval_exc_vxc( npts, rho.data(), sigma.data(), exc.data(), 
-                        vxc.data(), vsigma.data() );
-
-    for( size_t i = 0; i < npts; ++i ) {
-      CHECK( exc[i] == Approx(exc_ref[i]) );
-      CHECK( vxc[i] == Approx(vrho_ref[i]) );
-      CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
-    }
-          
-    CHECK( pbe_builtin.hyb_exx() == Approx( pbe.hyb_exx() ) );
-
-  }
 }
 
 
@@ -429,6 +422,7 @@ void device_synchronize() {
     throw std::runtime_error(cudaGetErrorString( stat ));
 }
 
+#if 1
 TEST_CASE("Device Kernels", "[xc-device]") {
 
   const int npts = rho.size();
@@ -449,6 +443,7 @@ TEST_CASE("Device Kernels", "[xc-device]") {
   safe_cuda_cpy( sigma_device, sigma.data(), npts );
 
   cudaStream_t stream = 0;
+
   SECTION("LIBXC") {
 
     pbe.eval_exc_vxc_device( npts, rho_device, sigma_device,
@@ -483,6 +478,7 @@ TEST_CASE("Device Kernels", "[xc-device]") {
 
   cuda_free_all( rho_device, sigma_device, exc_device, vrho_device, vsigma_device );
 }
+#endif
 
 
 

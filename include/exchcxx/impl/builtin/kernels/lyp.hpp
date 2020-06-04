@@ -17,6 +17,7 @@ struct kernel_traits<BuiltinLYP> {
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.;
+  static constexpr double dens_tol  = 1e-32;
 
 
   static constexpr double lyp_A = 0.04918;
@@ -27,6 +28,19 @@ struct kernel_traits<BuiltinLYP> {
 
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
+
+#ifdef __CUDACC__
+      rho   = fmax( rho, 0. );
+      sigma = fmax( sigma, 1e-40 );
+#else
+      rho   = std::max( rho, 0. );
+      sigma = std::max( sigma, 1e-40 );
+#endif
+      
+      if( rho < dens_tol ) {
+        eps = 0.;
+        return;
+      }
 
       constexpr double t26 = constants::m_cbrt_3;
       constexpr double t27 = t26 * t26;
@@ -63,6 +77,21 @@ struct kernel_traits<BuiltinLYP> {
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar( double rho, double sigma, double& eps, double& vrho,
       double& vsigma ) {
+
+#ifdef __CUDACC__
+      rho   = fmax( rho, 0. );
+      sigma = fmax( sigma, 1e-40 );
+#else
+      rho   = std::max( rho, 0. );
+      sigma = std::max( sigma, 1e-40 );
+#endif
+      
+      if( rho < dens_tol ) {
+        eps = 0.;
+        vrho = 0.;
+        vsigma = 0.;
+        return;
+      }
 
       constexpr double t26 = constants::m_cbrt_3;
       constexpr double t27 = t26 * t26;
