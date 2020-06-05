@@ -15,7 +15,28 @@ private:
 
   std::vector< value_type > kernels_;
 
-  bool sanity_check() const ; 
+  inline bool sanity_check() const {
+
+    // Must have one kernel
+    if( not kernels_.size() ) return false;
+
+    // Polarization is all or nothing
+    int polar_one = kernels_[0].second.is_polarized();
+    bool polar_all = std::all_of(
+      kernels_.begin(), kernels_.end(),
+      [&](const auto& a){ 
+        return (int)a.second.is_polarized() == polar_one; 
+      }
+    ); 
+
+    if( not polar_all ) return false;
+
+    // If we made it, kernel is sane
+    return true;
+
+  }
+
+
   void throw_if_not_sane() const { assert( sanity_check() ); }
 
 public:

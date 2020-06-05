@@ -8,22 +8,28 @@ set( EXCHCXX_SOURCES
      builtin_kernel.cxx 
 )
 
-if( EXCHCXX_ENABLE_DEVICE )
-  list( APPEND EXCHCXX_SOURCES xc_functional_device.cu libxc_device.cxx builtin.cu )
-endif()
-
 add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
-
 
 # TARGET properties
 
-target_compile_features( exchcxx PUBLIC cxx_std_14 cuda_std_14 )
+target_compile_features( exchcxx PUBLIC cxx_std_14 )
 target_link_libraries( exchcxx PUBLIC Libxc::xc )
 
 if( EXCHCXX_ENABLE_DEVICE )
-  find_package( CUDAToolkit REQUIRED )
-  target_compile_definitions( exchcxx PUBLIC EXCHCXX_ENABLE_DEVICE=1 )
-  target_link_libraries( exchcxx PUBLIC CUDA::cudart )
+  include( cuda/exchcxx_cuda.cmake )
+
+  get_target_property( DEVICE_TARGET_DEPENDS exchcxx_device 
+    INTERFACE_LINK_LIBRARIES ) 
+  get_target_property( DEVICE_TARGET_DEFINITIONS exchcxx_device 
+    INTERFACE_COMPILE_DEFINITIONS ) 
+
+  target_link_libraries( exchcxx PUBLIC 
+    $<TARGET_OBJECTS:exchcxx_device> 
+    ${DEVICE_TARGET_DEPENDS}
+  )
+  target_compile_definitions( exchcxx PUBLIC
+    ${DEVICE_TARGET_DEFINITIONS}
+  )
 endif()
 
 
@@ -36,8 +42,6 @@ target_include_directories( exchcxx
 target_compile_options( exchcxx 
   INTERFACE 
     $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic -Wnon-virtual-dtor>
-  PRIVATE
-    $<$<COMPILE_LANGUAGE:CUDA>: -Xcudafe --diag_suppress=partial_override -Xptxas -v > 
 )
 
 
