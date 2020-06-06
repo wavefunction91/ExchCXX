@@ -7,13 +7,14 @@ set( EXCHCXX_CUDA_SOURCES
 find_package( CUDAToolkit REQUIRED )
 add_library( exchcxx_device OBJECT ${EXCHCXX_CUDA_SOURCES} )
 target_compile_features( exchcxx_device PUBLIC cuda_std_14 cxx_std_14 )
-target_compile_definitions( exchcxx_device PUBLIC EXCHCXX_ENABLE_DEVICE=1 )
+target_compile_definitions( exchcxx_device PUBLIC "EXCHCXX_HAS_CONFIG_H=1" )
 target_link_libraries( exchcxx_device PUBLIC Libxc::xc CUDA::cudart )
 
 target_include_directories( exchcxx_device
   PRIVATE
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
 

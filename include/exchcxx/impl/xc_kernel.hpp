@@ -1,5 +1,10 @@
 #pragma once
 
+#ifdef EXCHCXX_HAS_CONFIG_H
+#include <exchcxx/exchcxx_config.hpp>
+#endif
+
+
 #include <exchcxx/util/exchcxx_macros.hpp>
 #include <string>
 #include <memory>

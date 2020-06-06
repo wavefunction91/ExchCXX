@@ -1,5 +1,9 @@
-#ifndef __INCLUDED_IMPL_XC_KERNEL_FWD_HPP__
-#define __INCLUDED_IMPL_XC_KERNEL_FWD_HPP__
+#pragma once
+
+#ifdef EXCHCXX_HAS_CONFIG_H
+#include <exchcxx/exchcxx_config.hpp>
+#endif
+
 
 namespace ExchCXX {
 namespace detail {

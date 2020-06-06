@@ -1,5 +1,9 @@
-#ifndef __INCLUDED_IMPL_LIBXC_HPP__
-#define __INCLUDED_IMPL_LIBXC_HPP__
+#pragma once
+
+#ifdef EXCHCXX_HAS_CONFIG_H
+#include <exchcxx/exchcxx_config.hpp>
+#endif
+
 
 #include <exchcxx/impl/xc_kernel.hpp>
 #include <cassert>
@@ -88,4 +92,3 @@ public:
 
 }; // namespace ExchCXX
 
-#endif

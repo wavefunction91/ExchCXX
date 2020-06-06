@@ -5,12 +5,26 @@ project( ExchCXX VERSION 0.0.1 LANGUAGES C CXX )
 
 # ExchCXX Options
 option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
-option( EXCHCXX_ENABLE_DEVICE    "Enable Device Code (GPU)"     ON  )
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
+option( EXCHCXX_ENABLE_CUDA    "Enable Device Code (CUDA)"     ON  )
 
-if( EXCHCXX_ENABLE_DEVICE )
+
+# Decided if we're compiling device bindings
+if( EXCHCXX_ENABLE_CUDA )
+  set( EXCHCXX_ENABLE_DEVICE TRUE CACHE BOOL "Enable Device Code" )
+endif()
+
+
+
+# Enable CUDA if desired
+if( EXCHCXX_ENABLE_CUDA )
   enable_language( CUDA )
 endif()
+
+
+
+
+
 
 # Append local cmake directory to find CMAKE Modules
 if( CMAKE_MODULE_PATH )

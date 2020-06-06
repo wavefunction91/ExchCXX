@@ -1,11 +1,16 @@
 #pragma once
 
+#ifdef EXCHCXX_HAS_CONFIG_H
+#include <exchcxx/exchcxx_config.hpp>
+#endif
+
+
 namespace ExchCXX {
 
   using host_buffer_type       = double*;
   using const_host_buffer_type = const double*;
 
-#ifdef EXCHCXX_ENABLE_DEVICE
+#ifdef EXCHCXX_ENABLE_CUDA
   using device_buffer_type       = double*;
   using const_device_buffer_type = const double*;
 #endif

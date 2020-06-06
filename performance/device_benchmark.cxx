@@ -1,6 +1,5 @@
 #include <chrono>
 #include <iostream>
-#include <cuda_runtime.h>
 
 #include <exchcxx/xc_kernel.hpp>
 

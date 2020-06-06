@@ -1,5 +1,9 @@
-#ifndef __INCLUDED_KERNELS_KERNELS_HPP__
-#define __INCLUDED_KERNELS_KERNELS_HPP__
+#pragma once
+
+#ifdef EXCHCXX_HAS_CONFIG_H
+#include <exchcxx/exchcxx_config.hpp>
+#endif
+
 
 // This file is meant to be included only from xc_kernel.hpp
 
@@ -31,4 +35,3 @@ enum Kernel {
   PBE0,
 };
 
-#endif

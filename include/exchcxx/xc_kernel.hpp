@@ -1,5 +1,8 @@
-#ifndef __INCLUDED_XC_KERNEL_HPP__
-#define __INCLUDED_XC_KERNEL_HPP__
+#pragma once
+
+#ifdef EXCHCXX_HAS_CONFIG_H
+#include <exchcxx/exchcxx_config.hpp>
+#endif
 
 #include <exchcxx/impl/xc_kernel.hpp>
 #include <exchcxx/util/exchcxx_macros.hpp>
@@ -107,4 +110,3 @@ public:
 
 }
 
-#endif

@@ -100,7 +100,6 @@ FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC_VXC, eval_exc_vxc_device );
 FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC,     eval_exc_device     );
 FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_device );
 
-
 #endif
 
 

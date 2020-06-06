@@ -1,3 +1,6 @@
+
+
+
 set( EXCHCXX_SOURCES 
      xc_kernel.cxx 
      xc_functional.cxx 
@@ -15,21 +18,27 @@ add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
 target_compile_features( exchcxx PUBLIC cxx_std_14 )
 target_link_libraries( exchcxx PUBLIC Libxc::xc )
 
+# Generate exchcxx_config.hpp
+configure_file(
+  ${PROJECT_SOURCE_DIR}/include/exchcxx/exchcxx_config.hpp.in
+  ${PROJECT_BINARY_DIR}/include/exchcxx/exchcxx_config.hpp
+)
+target_compile_definitions( exchcxx PUBLIC "EXCHCXX_HAS_CONFIG_H=1" )
+
 if( EXCHCXX_ENABLE_DEVICE )
-  include( cuda/exchcxx_cuda.cmake )
+
+  if( EXCHCXX_ENABLE_CUDA )
+    include( cuda/exchcxx_cuda.cmake )
+  endif()
 
   get_target_property( DEVICE_TARGET_DEPENDS exchcxx_device 
     INTERFACE_LINK_LIBRARIES ) 
-  get_target_property( DEVICE_TARGET_DEFINITIONS exchcxx_device 
-    INTERFACE_COMPILE_DEFINITIONS ) 
 
   target_link_libraries( exchcxx PUBLIC 
     $<TARGET_OBJECTS:exchcxx_device> 
     ${DEVICE_TARGET_DEPENDS}
   )
-  target_compile_definitions( exchcxx PUBLIC
-    ${DEVICE_TARGET_DEFINITIONS}
-  )
+
 endif()
 
 
@@ -37,13 +46,13 @@ target_include_directories( exchcxx
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 )
 
 target_compile_options( exchcxx 
   INTERFACE 
     $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic -Wnon-virtual-dtor>
 )
-
 
 # INSTALL rules
 add_library( ExchCXX::exchcxx ALIAS exchcxx )
@@ -59,14 +68,12 @@ install(TARGETS exchcxx
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
+
 set_target_properties( exchcxx PROPERTIES EXPORT_NAME ExchCXX )
 
 # Install Headers
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-
-if( ExchCXX_ENABLE_FORTRAN )
-  install(DIRECTORY ${PROJECT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-endif()
+install(DIRECTORY ${PROJECT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
 # Export target to script
 install(EXPORT exchcxx-targets
@@ -94,11 +101,11 @@ configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/ExchCXXConfig.cmake.in
 )
 
 #Install the config, configversion and custom find modules
-install(DIRECTORY 
-  ${PROJECT_SOURCE_DIR}/cmake/ 
-  DESTINATION ${INSTALL_CONFIGDIR} 
-  FILES_MATCHING PATTERN "*.cmake"
-)
+#install(DIRECTORY 
+#  ${PROJECT_SOURCE_DIR}/cmake/ 
+#  DESTINATION ${INSTALL_CONFIGDIR} 
+#  FILES_MATCHING PATTERN "*.cmake"
+#)
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/ExchCXXConfig.cmake

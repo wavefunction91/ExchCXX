@@ -7,8 +7,10 @@ include(CMakeFindDependencyMacro)
 find_dependency( Libxc @Libxc_VERSION@ EXACT CONFIG )
 
 
+set( EXCHCXX_ENABLE_CUDA   @EXCHCXX_ENABLE_CUDA@   )
 set( EXCHCXX_ENABLE_DEVICE @EXCHCXX_ENABLE_DEVICE@ )
-if( EXCHCXX_ENABLE_DEVICE )
+
+if( EXCHCXX_ENABLE_CUDA )
   find_dependency( CUDAToolkit @CUDAToolkit_VERSION@ EXACT )
 endif()
 
