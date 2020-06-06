@@ -6,7 +6,7 @@ project( ExchCXX VERSION 0.0.1 LANGUAGES C CXX )
 # ExchCXX Options
 option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
-option( EXCHCXX_ENABLE_CUDA    "Enable Device Code (CUDA)"     ON  )
+option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
 
 
 # Decided if we're compiling device bindings

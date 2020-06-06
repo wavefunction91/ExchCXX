@@ -383,6 +383,8 @@ TEST_CASE("Builtin Kernels", "[xc-builtin]") {
 
 
 
+#ifdef EXCHCXX_ENABLE_CUDA
+
 template <typename T>
 T* safe_cuda_malloc( size_t n ) {
 
@@ -422,7 +424,6 @@ void device_synchronize() {
     throw std::runtime_error(cudaGetErrorString( stat ));
 }
 
-#if 1
 TEST_CASE("Device Kernels", "[xc-device]") {
 
   const int npts = rho.size();
@@ -478,6 +479,7 @@ TEST_CASE("Device Kernels", "[xc-device]") {
 
   cuda_free_all( rho_device, sigma_device, exc_device, vrho_device, vsigma_device );
 }
+
 #endif
 
 
