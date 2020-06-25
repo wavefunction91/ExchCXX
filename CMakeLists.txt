@@ -1,7 +1,7 @@
 cmake_minimum_required( VERSION 3.17 FATAL_ERROR ) # Require CMake 3.17+
 
 # Set up project definition + version information
-project( ExchCXX VERSION 0.0.1 LANGUAGES C CXX )
+project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
 
 # ExchCXX Options
 option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
