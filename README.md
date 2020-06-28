@@ -23,7 +23,7 @@ Department of Energy Exascale Computing Project
 
 # License
 
-ExchCXX is made freely available under the terms of the 3-Clause BSD library. See
+ExchCXX is made freely available under the terms of the 3-Clause BSD license. See
 LICENSE.txt for details.
 
 # Acknowledgements
