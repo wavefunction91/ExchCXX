@@ -23,10 +23,11 @@ Department of Energy Exascale Computing Project
 
 # License
 
-ExchCXX is made freely available under the terms of the BSD-v3 library. See
+ExchCXX is made freely available under the terms of the 3-Clause BSD library. See
 LICENSE.txt for details.
 
 # Acknowledgements
 
-The development of ExchCXX has been funded by U.S. Department of Energy Exascale
-Computing Project
+The development of ExchCXX is supported by the Exascale Computing Project
+(17-SC-20-SC), a collaborative effort of the U.S. Department of Energy Office
+of Science and the National Nuclear Security Administration.
