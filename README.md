@@ -21,6 +21,15 @@ Department of Energy Exascale Computing Project
 * Provide a modern C++ wrapper around various XC functional libraries (Libxc, XCFun, etc)
 * Provide stable, portable and high-performance implementations for the evaluation of XC functionals on various accelerator achitectures (GPUs, FPGAs, etc)
 
+# Feature Requests / Contributing
+
+Although ExchCXX may in principle wrap any XC functional implemented by third-party software,
+generating these interfaces must currently be done by hand. As such, if there is a functional
+that you would like to see wrapped in either host or device code, please create a [GitHub issue](https://github.com/wavefunction91/ExchCXX/issues)
+which details your request. Alternatively, I am more than happy to accept [pull-requests](https://github.com/wavefunction91/ExchCXX/pulls) if
+you have made the changes locally and would like to see them integrated in upstream.
+
+
 # License
 
 ExchCXX is made freely available under the terms of the 3-Clause BSD license. See
