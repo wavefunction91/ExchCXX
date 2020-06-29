@@ -47,7 +47,7 @@ b3lyp.eval_exc_vxc( npts, rho.data(), gamma.data(), exc.data(), vrho.data(),
   vgamma.data() );
 
 
-// Evaluate on the device
+// Evaluate on the Device (GPU)
 cudaStream_t stream = ...;
 
 double *rho_device, *gamma_device, *exc_device, *vrho_device, *vgamma_device;
@@ -63,7 +63,7 @@ b3lyp.eval_exc_vxc_device( npts, rho.data(), gamma.data(), exc.data(), vrho.data
 
 # Implemented XC Functional Interfaces
 
-The following XC functionals have interfaces to the Libxc library:
+The following XC functionals have interfaces to the Libxc library (`Backend::libxc`):
 * Slater Exchange (`Kernel::SlaterExchage` -> `XC_LDA_X`)
 * Vosko-Wilk-Nusair III (`Kernel::VWN3` -> `XC_LDA_C_VWN_3`)
 * Vosko-Wilk-Nusair V   (`Kernel::VWN5` -> `XC_LDA_C_VWN_RPA`)
@@ -74,6 +74,13 @@ The following XC functionals have interfaces to the Libxc library:
 * B3LYP (`Kernel::B3LYP` -> `XC_HYB_GGA_XC_B3LYP`)
 * PBE0 (`Kernel::PBE0` -> `XC_HYB_GGA_XC_PBEH`)
 
+The following XC functionals have builtin implementations suitable for GPU
+evaluation (`Backend::builtin`):
+* Slater Exchange (`Kernel::SlaterExchage`)
+* Perdew-Burke-Ernzerhof Exchange    (`Kernel::PBE_X`)
+* Perdew-Burke-Ernzerhof Correlation (`Kernel::PBE_C`)
+* Lee-Yang-Parr Correlation (`Kernel::LYP`)
+* PBE0 (`Kernel::PBE0`)
 
 
 # Feature Requests / Contributing
