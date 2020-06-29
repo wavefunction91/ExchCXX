@@ -18,8 +18,24 @@ Department of Energy Exascale Computing Project
 ([NWChemEx](https://github.com/NWChemEx-Project)).
 
 # Design Goals
+
 * Provide a modern C++ wrapper around various XC functional libraries (Libxc, XCFun, etc)
 * Provide stable, portable and high-performance implementations for the evaluation of XC functionals on various accelerator achitectures (GPUs, FPGAs, etc)
+
+# Implemented XC Functional Interfaces
+
+The following XC functionals have interfaces to the Libxc library:
+* Slater Exchange (`Kernel::SlaterExchage` -> `XC\_LDA\_X`)
+* Vosko-Wilk-Nusair III (`Kernel::VWN3` -> `XC\_LDA\_C\_VWN\_3`)
+* Vosko-Wilk-Nusair V   (`Kernel::VWN5` -> `XC\_LDA\_C\_VWN\_RPA`)
+* Perdew-Burke-Ernzerhof Exchange    (`Kernel::PBE\_X` -> `XC\_GGA\_X\_PBE`)
+* Perdew-Burke-Ernzerhof Correlation (`Kernel::PBE\_C` -> `XC\_GGA\_C\_PBE`)
+* Becke-88 Exchange (`Kernel::B88` -> `XC\_GGA\_X\_B88`)
+* Lee-Yang-Parr Correlation (`Kernel::LYP` -> `XC_GGA_C_LYP`)
+* B3LYP (`Kernel::B3LYP` -> `XC_HYB_GGA_XC_B3LYP`)
+* PBE0 (`Kernel::PBE0` -> `XC_HYB_GGA_XC_PBEH`)
+
+
 
 # Feature Requests / Contributing
 
