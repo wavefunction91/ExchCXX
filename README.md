@@ -55,8 +55,8 @@ double *rho_device, *gamma_device, *exc_device, *vrho_device, *vgamma_device;
 // Allocate device memory
 // Send rho / gamma to device
 
-b3lyp.eval_exc_vxc_device( npts, rho.data(), gamma.data(), exc.data(), vrho.data(),
-  vgamma.data(), stream );
+b3lyp.eval_exc_vxc_device( npts, rho_device, gamma_device, exc_device, vrho_device,
+  vgamma_device, stream );
 
 ```
 
