@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include <exchcxx/factory/xc_kernel.hpp>
+#include <exchcxx/exchcxx.hpp>
 #include <cmath>
 #include <vector>
 #include <array>

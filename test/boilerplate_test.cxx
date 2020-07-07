@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include <exchcxx/boilerplate.hpp>
+#include <exchcxx/exchcxx.hpp>
 
 TEST_CASE( "ExchCXX Initialize / Finalize" ) {
 
