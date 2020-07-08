@@ -64,6 +64,12 @@ public:
   inline size_t sigma_buffer_len( size_t npts ) const noexcept {
     return is_lda() ? 0 : is_polarized() ? 3*npts : npts;
   }
+  inline size_t lapl_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? rho_buffer_len(npts) : 0;
+  }
+  inline size_t tau_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? rho_buffer_len(npts) : 0;
+  }
 
   inline size_t exc_buffer_len( size_t npts ) const noexcept {
     return npts;
@@ -73,6 +79,12 @@ public:
   }
   inline size_t vsigma_buffer_len( size_t npts ) const noexcept {
     return sigma_buffer_len( npts );
+  }
+  inline size_t vlapl_buffer_len( size_t npts ) const noexcept {
+    return lapl_buffer_len( npts );
+  }
+  inline size_t vtau_buffer_len( size_t npts ) const noexcept {
+    return tau_buffer_len( npts );
   }
 
 
