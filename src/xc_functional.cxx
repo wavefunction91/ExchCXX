@@ -79,6 +79,18 @@ XCFunctional::XCFunctional( const XCFunctional& )       = default;
 XCFunctional::XCFunctional( XCFunctional&& )  noexcept  = default;
 
 
+
+
+
+void _scal( size_t len, double alpha, double* v ) {
+  for( auto k = 0ul; k < len; ++k ) v[k] *= alpha;
+}
+void _addscal( size_t len, double alpha, double* v, const double* w ) {
+  for( auto k = 0ul; k < len; ++k ) v[k] += alpha * w[k];
+}
+
+
+
 LDA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   throw_if_not_sane();
@@ -97,12 +109,10 @@ LDA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
     double* eps_eval = i ? eps_scr.data() : eps;
     kernels_[i].second.eval_exc(N, rho, eps_eval);
 
-    if( i )
-      for( auto k = 0ul; k < len_exc_buffer; ++k )
-        eps[k] += kernels_[i].first * eps_eval[k];
+    if( i ) 
+      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
     else
-      for( auto k = 0ul; k < len_exc_buffer; ++k )
-        eps[k] *= kernels_[i].first;
+      _scal( len_exc_buffer, kernels_[i].first, eps );
   
   }
 
@@ -134,17 +144,13 @@ LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
     if( i ) {
 
-      for( auto k = 0ul; k < len_exc_buffer; ++k ) 
-        eps[k] += kernels_[i].first * eps_eval[k];
-      for( auto k = 0ul; k < len_vxc_buffer; ++k ) 
-        vxc[k] += kernels_[i].first * vxc_eval[k];
+      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
+      _addscal( len_vxc_buffer, kernels_[i].first, vxc, vxc_eval );
 
     } else {
 
-      for( auto k = 0ul; k < len_exc_buffer; ++k ) 
-        eps[k] *= kernels_[i].first;
-      for( auto k = 0ul; k < len_vxc_buffer; ++k ) 
-        vxc[k] *= kernels_[i].first;
+      _scal( len_exc_buffer, kernels_[i].first, eps );
+      _scal( len_vxc_buffer, kernels_[i].first, vxc );
 
     }
 
@@ -179,12 +185,10 @@ GGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
     else
       kernels_[i].second.eval_exc(N, rho, eps_eval);
 
-    if( i )
-      for( auto k = 0ul; k < len_exc_buffer; ++k )
-        eps[k] += kernels_[i].first * eps_eval[k];
+    if( i ) 
+      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
     else
-      for( auto k = 0ul; k < len_exc_buffer; ++k )
-        eps[k] *= kernels_[i].first;
+      _scal( len_exc_buffer, kernels_[i].first, eps );
   
   }
 
@@ -225,25 +229,19 @@ GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
     if( i ) {
 
-      for( auto k = 0ul; k < len_exc_buffer; ++k ) 
-        eps[k] += kernels_[i].first * eps_eval[k];
-      for( auto k = 0ul; k < len_vrho_buffer; ++k ) 
-        vrho[k] += kernels_[i].first * vrho_eval[k];
-
+      _addscal( len_exc_buffer,    kernels_[i].first, eps,    eps_eval  );
+      _addscal( len_vrho_buffer,   kernels_[i].first, vrho,   vrho_eval );
+   
       if( kernels_[i].second.is_gga() )
-        for( auto k = 0ul; k < len_vsigma_buffer; ++k ) 
-          vsigma[k] += kernels_[i].first * vsigma_eval[k];
+        _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
 
     } else {
 
-      for( auto k = 0ul; k < len_exc_buffer; ++k ) 
-        eps[k] *= kernels_[i].first;
-      for( auto k = 0ul; k < len_vrho_buffer; ++k ) 
-        vrho[k] *= kernels_[i].first;
+      _scal( len_exc_buffer,    kernels_[i].first, eps  );
+      _scal( len_vrho_buffer,   kernels_[i].first, vrho );
 
       if( kernels_[i].second.is_gga() )
-        for( auto k = 0ul; k < len_vsigma_buffer; ++k ) 
-          vsigma[k] *= kernels_[i].first;
+        _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
 
     }
   
@@ -281,12 +279,10 @@ MGGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
     else
       kernels_[i].second.eval_exc(N, rho, eps_eval);
 
-    if( i )
-      for( auto k = 0ul; k < len_exc_buffer; ++k )
-        eps[k] += kernels_[i].first * eps_eval[k];
+    if( i ) 
+      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
     else
-      for( auto k = 0ul; k < len_exc_buffer; ++k )
-        eps[k] *= kernels_[i].first;
+      _scal( len_exc_buffer, kernels_[i].first, eps );
   
   }
 
@@ -339,38 +335,28 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
     if( i ) {
 
-      for( auto k = 0ul; k < len_exc_buffer; ++k ) 
-        eps[k] += kernels_[i].first * eps_eval[k];
-      for( auto k = 0ul; k < len_vrho_buffer; ++k ) 
-        vrho[k] += kernels_[i].first * vrho_eval[k];
-
-      if( kernels_[i].second.is_mgga() or kernels_[i].second.is_gga() )
-        for( auto k = 0ul; k < len_vsigma_buffer; ++k ) 
-          vsigma[k] += kernels_[i].first * vsigma_eval[k];
+      _addscal( len_exc_buffer,    kernels_[i].first, eps,    eps_eval  );
+      _addscal( len_vrho_buffer,   kernels_[i].first, vrho,   vrho_eval );
+   
+      if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
 
       if( kernels_[i].second.is_mgga() ) {
-        for( auto k = 0ul; k < len_vlapl_buffer; ++k ) 
-          vlapl[k] += kernels_[i].first * vlapl_eval[k];
-        for( auto k = 0ul; k < len_vtau_buffer; ++k ) 
-          vtau[k] += kernels_[i].first * vtau_eval[k];
+        _addscal( len_vlapl_buffer, kernels_[i].first, vlapl, vlapl_eval );
+        _addscal( len_vtau_buffer,  kernels_[i].first, vtau,  vtau_eval  );
       }
 
     } else {
 
-      for( auto k = 0ul; k < len_exc_buffer; ++k ) 
-        eps[k] *= kernels_[i].first;
-      for( auto k = 0ul; k < len_vrho_buffer; ++k ) 
-        vrho[k] *= kernels_[i].first;
+      _scal( len_exc_buffer,    kernels_[i].first, eps  );
+      _scal( len_vrho_buffer,   kernels_[i].first, vrho );
 
-      if( kernels_[i].second.is_mgga() or kernels_[i].second.is_gga() )
-        for( auto k = 0ul; k < len_vsigma_buffer; ++k ) 
-          vsigma[k] *= kernels_[i].first;
+      if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
 
       if( kernels_[i].second.is_mgga() ) {
-        for( auto k = 0ul; k < len_vlapl_buffer; ++k ) 
-          vlapl[k] *= kernels_[i].first;
-        for( auto k = 0ul; k < len_vtau_buffer; ++k ) 
-          vtau[k] *= kernels_[i].first;
+        _scal( len_vlapl_buffer, kernels_[i].first, vlapl );
+        _scal( len_vtau_buffer,  kernels_[i].first, vtau  );
       }
 
     }

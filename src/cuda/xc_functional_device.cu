@@ -179,7 +179,8 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     double* vsigma_eval = i ? vsigma_scr : vsigma;
 
     if( kernels_[i].second.is_gga() )
-      kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, vsigma_eval, stream );
+      kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, 
+        vsigma_eval, stream );
     else
       kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, stream);
 
@@ -255,7 +256,8 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   int len_vlapl  = is_polarized() ? 2*N : N;
   int len_vtau   = is_polarized() ? 2*N : N;
 
-  double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr), *vlapl_scr(nullptr), *vtau_scr(nullptr);
+  double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr), 
+    *vlapl_scr(nullptr), *vtau_scr(nullptr);
   if( kernels_.size() > 1 ) {
     eps_scr    = safe_cuda_malloc( N );
     vrho_scr   = safe_cuda_malloc( len_vrho );
@@ -273,9 +275,11 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     double* vtau_eval   = i ? vtau_scr   : vtau;
 
     if( kernels_[i].second.is_mgga() )
-      kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, lapl, tau, eps_eval, vrho_eval, vsigma_eval, vlapl_eval, vtau_eval, stream );
+      kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, lapl, tau, eps_eval, 
+        vrho_eval, vsigma_eval, vlapl_eval, vtau_eval, stream );
     else if( kernels_[i].second.is_gga() )
-      kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, vsigma_eval, stream );
+      kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, 
+        vsigma_eval, stream );
     else
       kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, stream);
 
