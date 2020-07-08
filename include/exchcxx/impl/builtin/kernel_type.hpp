@@ -15,11 +15,11 @@ namespace ExchCXX {
 
 class BuiltinKernel {
 
-  XCKernel::Spin polar_;
+  Spin polar_;
 
 public:
 
-  explicit BuiltinKernel( XCKernel::Spin p ) : polar_(p) { }
+  explicit BuiltinKernel( Spin p ) : polar_(p) { }
   virtual ~BuiltinKernel() = default;
 
   virtual bool is_lda()       const noexcept = 0;
@@ -29,7 +29,7 @@ public:
   virtual double hyb_exx()    const noexcept = 0;
 
   inline bool is_polarized() const noexcept { 
-    return polar_ == XCKernel::Spin::Polarized; 
+    return polar_ == Spin::Polarized; 
   };
 
   inline auto polar() const noexcept { return polar_; }
@@ -105,7 +105,7 @@ struct BuiltinKernelImpl<
 
   using traits = kernel_traits<KernelType>;
 
-  BuiltinKernelImpl( XCKernel::Spin p ) : BuiltinKernel(p) { }
+  BuiltinKernelImpl( Spin p ) : BuiltinKernel(p) { }
   virtual ~BuiltinKernelImpl() noexcept = default;
 
   inline bool is_hyb()  const noexcept override { return traits::is_hyb;  }
@@ -122,6 +122,12 @@ struct BuiltinKernelImpl<
   inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc, 
     host_eval_exc_vxc_helper<KernelType>, const override );
 
+#ifdef EXCHCXX_ENABLE_DEVICE
+  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC, eval_exc_device, 
+    device_eval_exc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_device, 
+    device_eval_exc_vxc_helper<KernelType>, const override );
+#endif
 };
 
 
@@ -134,7 +140,7 @@ struct BuiltinKernelImpl<
 
   using traits = kernel_traits<KernelType>;
 
-  BuiltinKernelImpl( XCKernel::Spin p ) : BuiltinKernel(p) { }
+  BuiltinKernelImpl( Spin p ) : BuiltinKernel(p) { }
   virtual ~BuiltinKernelImpl() noexcept = default;
 
   inline bool is_hyb()  const noexcept override { return traits::is_hyb;  }

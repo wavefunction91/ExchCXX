@@ -9,14 +9,14 @@
 
 namespace ExchCXX {
 
-XCKernel libxc_kernel_factory(const XCKernel::Kernel, const XCKernel::Spin );
-XCKernel builtin_kernel_factory( XCKernel::Kernel, XCKernel::Spin );
+XCKernel libxc_kernel_factory(const Kernel, const Spin );
+XCKernel builtin_kernel_factory( Kernel, Spin );
 
 static inline XCKernel kernel_factory( 
-  XCKernel::Backend backend, XCKernel::Kernel kern, XCKernel::Spin polar
+  Backend backend, Kernel kern, Spin polar
 ) {
 
-  if( backend == XCKernel::Backend::libxc )
+  if( backend == Backend::libxc )
     return libxc_kernel_factory( kern, polar );
   else
     return builtin_kernel_factory( kern, polar );

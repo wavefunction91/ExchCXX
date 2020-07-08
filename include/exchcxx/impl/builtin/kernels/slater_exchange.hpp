@@ -94,7 +94,7 @@ struct kernel_traits<BuiltinSlaterExchange> {
 
 struct BuiltinSlaterExchange : detail::BuiltinKernelImpl< BuiltinSlaterExchange > {
 
-  BuiltinSlaterExchange( XCKernel::Spin p ) :
+  BuiltinSlaterExchange( Spin p ) :
     detail::BuiltinKernelImpl< BuiltinSlaterExchange >(p) { }
   
   virtual ~BuiltinSlaterExchange() = default;

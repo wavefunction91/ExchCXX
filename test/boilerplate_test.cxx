@@ -7,7 +7,7 @@ TEST_CASE( "ExchCXX Initialize / Finalize" ) {
   REQUIRE( !ExchCXX::is_initialized() );
 
   // Make sure the initialization is toggled
-  ExchCXX::initialize(ExchCXX::XCKernel::Spin::Unpolarized);
+  ExchCXX::initialize(ExchCXX::Spin::Unpolarized);
   REQUIRE( ExchCXX::is_initialized() );
 
   // Make sure the initialiazation is reversable

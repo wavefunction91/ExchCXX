@@ -6,9 +6,9 @@
 #include <unordered_map>
 namespace ExchCXX {
 
-static std::unordered_map< XCKernel::Spin, int > libxc_polar_map {
-  { XCKernel::Spin::Polarized,   XC_POLARIZED   },
-  { XCKernel::Spin::Unpolarized, XC_UNPOLARIZED }
+static std::unordered_map< Spin, int > libxc_polar_map {
+  { Spin::Polarized,   XC_POLARIZED   },
+  { Spin::Unpolarized, XC_UNPOLARIZED }
 };
 
 }

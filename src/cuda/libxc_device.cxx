@@ -58,11 +58,13 @@ LDA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 
   std::vector<double> rho_host( N ), eps_host( N );
 
-  recv_from_device( rho_host.data(), rho, len_rho );
+  recv_from_device( rho_host.data(), rho, len_rho, stream );
 
+  stream_sync( stream );
   xc_lda_exc( &kernel_, N, rho_host.data(), eps_host.data() );
 
-  send_to_device( eps, eps_host.data(), len_eps );
+  send_to_device( eps, eps_host.data(), len_eps, stream );
+  stream_sync( stream ); // Lifetime of host vectors
 
 }
 
@@ -78,12 +80,14 @@ LDA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 
   std::vector<double> rho_host( N ), eps_host( N ), vxc_host( N );
 
-  recv_from_device( rho_host.data(), rho, len_rho );
+  recv_from_device( rho_host.data(), rho, len_rho, stream );
 
+  stream_sync( stream );
   xc_lda_exc_vxc( &kernel_, N, rho_host.data(), eps_host.data(), vxc_host.data() );
 
-  send_to_device( eps, eps_host.data(), len_eps );
-  send_to_device( vxc, vxc_host.data(), len_vxc );
+  send_to_device( eps, eps_host.data(), len_eps, stream );
+  send_to_device( vxc, vxc_host.data(), len_vxc, stream );
+  stream_sync( stream ); // Lifetime of host vectors
 
 }
 
@@ -101,12 +105,14 @@ GGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 
   std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N );
 
-  recv_from_device( rho_host.data(),   rho,   len_rho   );
-  recv_from_device( sigma_host.data(), sigma, len_sigma );
+  recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
+  recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
 
+  stream_sync( stream );
   xc_gga_exc( &kernel_, N, rho_host.data(), sigma_host.data(), eps_host.data() );
 
-  send_to_device( eps, eps_host.data(), len_eps );
+  send_to_device( eps, eps_host.data(), len_eps, stream );
+  stream_sync( stream ); // Lifetime of host vectors
 
 }
 
@@ -123,17 +129,20 @@ GGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
   size_t len_vsigma = N*sizeof(double);
   size_t len_eps    = N*sizeof(double);
 
-  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), vrho_host( N ), vsigma_host( N );
+  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), 
+    vrho_host( N ), vsigma_host( N );
 
   recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
   recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
  
   stream_sync( stream );
-  xc_gga_exc_vxc( &kernel_, N, rho_host.data(), sigma_host.data(), eps_host.data(), vrho_host.data(), vsigma_host.data() );
+  xc_gga_exc_vxc( &kernel_, N, rho_host.data(), sigma_host.data(), eps_host.data(), 
+    vrho_host.data(), vsigma_host.data() );
 
-  send_to_device( eps,    eps_host.data(),    len_eps    );
-  send_to_device( vrho,   vrho_host.data(),   len_vrho   );
-  send_to_device( vsigma, vsigma_host.data(), len_vsigma );
+  send_to_device( eps,    eps_host.data(),    len_eps   , stream);
+  send_to_device( vrho,   vrho_host.data(),   len_vrho  , stream);
+  send_to_device( vsigma, vsigma_host.data(), len_vsigma, stream);
+  stream_sync( stream ); // Lifetime of host vectors
 
 }
 
@@ -152,16 +161,20 @@ MGGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
   size_t len_tau   = N*sizeof(double);
   size_t len_eps   = N*sizeof(double);
 
-  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), lapl_host( N ), tau_host( N );
+  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), 
+    lapl_host( N ), tau_host( N );
 
-  recv_from_device( rho_host.data(),   rho,   len_rho   );
-  recv_from_device( sigma_host.data(), sigma, len_sigma );
-  recv_from_device( lapl_host.data(),  lapl,  len_lapl  );
-  recv_from_device( tau_host.data(),   tau,   len_tau   );
+  recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
+  recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
+  recv_from_device( lapl_host.data(),  lapl,  len_lapl , stream );
+  recv_from_device( tau_host.data(),   tau,   len_tau  , stream );
 
-  xc_mgga_exc( &kernel_, N, rho_host.data(), sigma_host.data(), lapl_host.data(), tau_host.data(), eps_host.data() );
+  stream_sync( stream );
+  xc_mgga_exc( &kernel_, N, rho_host.data(), sigma_host.data(), lapl_host.data(), 
+    tau_host.data(), eps_host.data() );
 
-  send_to_device( eps, eps_host.data(), len_eps );
+  send_to_device( eps, eps_host.data(), len_eps, stream );
+  stream_sync( stream ); // Lifetime of host vectors
 
 }
 
@@ -181,21 +194,28 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
   size_t len_vlapl  = N*sizeof(double);
   size_t len_vtau   = N*sizeof(double);
 
-  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), lapl_host( N ), tau_host( N );
-  std::vector<double> vrho_host( N ), vsigma_host( N ),  vlapl_host( N ), vtau_host( N );
+  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), 
+    lapl_host( N ), tau_host( N );
+  std::vector<double> vrho_host( N ), vsigma_host( N ),  vlapl_host( N ), 
+    vtau_host( N );
 
-  recv_from_device( rho_host.data(),   rho,   len_rho   );
-  recv_from_device( sigma_host.data(), sigma, len_sigma );
-  recv_from_device( lapl_host.data(),  lapl,  len_lapl  );
-  recv_from_device( tau_host.data(),   tau,   len_tau   );
+  recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
+  recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
+  recv_from_device( lapl_host.data(),  lapl,  len_lapl , stream );
+  recv_from_device( tau_host.data(),   tau,   len_tau  , stream );
 
-  xc_mgga_exc_vxc( &kernel_, N, rho_host.data(), sigma_host.data(), lapl_host.data(), tau_host.data(), eps_host.data(), vrho_host.data(), vsigma_host.data(), vlapl_host.data(), vtau_host.data() );
+  stream_sync( stream );
+  xc_mgga_exc_vxc( &kernel_, N, rho_host.data(), sigma_host.data(), 
+    lapl_host.data(), tau_host.data(), eps_host.data(), vrho_host.data(), 
+    vsigma_host.data(), vlapl_host.data(), vtau_host.data() );
 
-  send_to_device( eps, eps_host.data(), len_eps );
-  send_to_device( vrho,   vrho_host.data(),   len_vrho   );
-  send_to_device( vsigma, vsigma_host.data(), len_vsigma );
-  send_to_device( vlapl,  vlapl_host.data(),  len_vlapl  );
-  send_to_device( vtau,   vtau_host.data(),   len_vtau   );
+  send_to_device( eps,    eps_host.data(), len_eps      , stream );
+  send_to_device( vrho,   vrho_host.data(),   len_vrho  , stream );
+  send_to_device( vsigma, vsigma_host.data(), len_vsigma, stream );
+  send_to_device( vlapl,  vlapl_host.data(),  len_vlapl , stream );
+  send_to_device( vtau,   vtau_host.data(),   len_vtau  , stream );
+  stream_sync( stream ); // Lifetime of host vectors
+
 }
 
 }

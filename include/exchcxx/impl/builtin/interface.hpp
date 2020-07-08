@@ -19,7 +19,7 @@ class BuiltinKernelInterface : public XCKernelImpl {
 
   unique_me clone_() const override;
 
-  XCKernel::Kernel whatami_;
+  Kernel whatami_;
 
   std::unique_ptr<BuiltinKernel> impl_;
 
@@ -62,7 +62,7 @@ public:
 
   BuiltinKernelInterface() = delete;
   
-  BuiltinKernelInterface( XCKernel::Kernel kern, XCKernel::Spin p);
+  BuiltinKernelInterface( Kernel kern, Spin p);
   BuiltinKernelInterface( const BuiltinKernelInterface& );
   BuiltinKernelInterface( BuiltinKernelInterface&& ) noexcept = default;
 

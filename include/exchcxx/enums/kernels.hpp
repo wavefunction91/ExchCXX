@@ -4,10 +4,9 @@
 #include <exchcxx/exchcxx_config.hpp>
 #endif
 
+namespace ExchCXX {
 
-// This file is meant to be included only from xc_kernel.hpp
-
-enum Kernel {
+enum class Kernel {
   // LDA Functionals
   SlaterExchange,
 /*
@@ -35,3 +34,4 @@ enum Kernel {
   PBE0,
 };
 
+}

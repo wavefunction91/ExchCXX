@@ -166,7 +166,7 @@ struct kernel_traits<BuiltinLYP> {
 
 struct BuiltinLYP : detail::BuiltinKernelImpl< BuiltinLYP > {
 
-  BuiltinLYP( XCKernel::Spin p ) :
+  BuiltinLYP( Spin p ) :
     detail::BuiltinKernelImpl< BuiltinLYP >(p) { }
   
   virtual ~BuiltinLYP() = default;

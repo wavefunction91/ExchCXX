@@ -4,7 +4,7 @@ namespace ExchCXX {
 
 static bool initialized_ = false;
 
-void initialize(XCKernel::Spin polar) {
+void initialize(Spin polar) {
   initialized_ = true;
 }
 

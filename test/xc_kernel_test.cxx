@@ -6,162 +6,152 @@
 #include <iostream>
 #include <iomanip>
 
+#include "reference_values.hpp"
+
 using namespace ExchCXX;
 
+TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
-constexpr std::array rho = {0.1, 0.2, 0.3, 0.4, 0.5};
-constexpr std::array sigma = {0.2, 0.3, 0.4, 0.5, 0.6};
+  const int npts = 1024;
 
-constexpr std::array rho_polarized =
-  {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-constexpr std::array sigma_polarized =
-  {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
-   1.1, 1.2, 1.3, 1.5, 1.5 };
+  auto lda_kernel_test = Kernel::SlaterExchange;
+  auto gga_kernel_test = Kernel::LYP;
+  auto hyb_kernel_test = Kernel::B3LYP;
 
-constexpr std::array exc_xc_lda_x_ref_unp = {
-  -0.342808612301, -0.431911786723,
-  -0.494415573788, -0.544174751790,
-  -0.586194481348,
-};
+  Backend backend;
 
-constexpr std::array vxc_xc_lda_x_ref_unp = {
-  -0.457078149734, -0.575882382297,
-  -0.659220765051, -0.725566335720,
-  -0.781592641797
-};
+  SECTION( "Pure LDA Unpolarized" ) {
 
-constexpr std::array exc_xc_lda_x_ref_pol = {
-  -0.506753763434, -0.658748952120,
-  -0.763800785778, -0.846274084184,
-  -0.915314307811
-};
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
-constexpr std::array vxc_xc_lda_x_ref_pol = {
--0.575882382297, -0.725566335720,
--0.830566118415, -0.914156299468,
--0.984745021843, -1.046447735921,
--1.101623366705, -1.151764764594,
--1.197883627397, -1.240700981799
-};
+    XCKernel lda( backend, lda_kernel_test, Spin::Unpolarized );
 
+    CHECK( lda.is_lda() );
+    CHECK( not lda.is_polarized() );
+    CHECK( not lda.is_gga() );
+    CHECK( not lda.is_mgga() );
+    CHECK( not lda.is_hyb() );
 
+    CHECK( lda.rho_buffer_len( npts )    == npts );
+    CHECK( lda.sigma_buffer_len( npts )  == 0    );
+    CHECK( lda.exc_buffer_len( npts )    == npts );
+    CHECK( lda.vrho_buffer_len( npts )   == npts );
+    CHECK( lda.vsigma_buffer_len( npts ) == 0    );
 
-constexpr std::array exc_xc_gga_c_lyp_ref_unp = {
-  -0.007040306272, -0.031424640440,
-  -0.037479119388, -0.040429224120,
-  -0.042290563929
-};
-
-constexpr std::array vrho_xc_gga_c_lyp_ref_unp = {
-  -0.081854247031, -0.055198496086,
-  -0.051617025994, -0.050995654065,
-  -0.051084686930
-};
-
-constexpr std::array vsigma_xc_gga_c_lyp_ref_unp = {
-  0.013598460611,
-  0.004629650473,
-  0.002429957976,
-  0.001529632674,
-  0.001065244937
-};
-
-constexpr std::array exc_xc_gga_c_lyp_ref_pol = {
-  -0.031543975366, -0.043113613690,
-  -0.046604883008, -0.048519647105,
-  -0.049799110145
-};
-
-constexpr std::array vrho_xc_gga_c_lyp_ref_pol = {
-  -0.089983823779, -0.035745759262,
-  -0.062361000975, -0.045947114249,
-  -0.059003605615, -0.049400798274,
-  -0.058191535482, -0.051370405717,
-  -0.058037798927, -0.052712179037
-};
-
-constexpr std::array vsigma_xc_gga_c_lyp_ref_pol = {
-0.008447669161 , 0.006467154082,
--0.000638497084, 0.001421914705,
-0.001031651601 , 0.000257537600,
-0.000581699649 , 0.000435910598,
-0.000202132738 , 0.000321427269,
-0.000246773907 , 0.000146744820,
-0.000206495563 , 0.000160996240,
-0.000110118944
-};
-
-
-
-
-
-TEST_CASE( "Unpolarized LDA Kernel Wrappers", "[xc-lda]" ) {
-
-  const int npts = rho.size();
-  std::vector<double> exc( npts );
-  std::vector<double> vxc( npts );
-
-  XCKernel lda( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Unpolarized );
-
-  CHECK( lda.is_lda() );
-  CHECK( not lda.is_polarized() );
-  CHECK( not lda.is_gga() );
-  CHECK( not lda.is_mgga() );
-  CHECK( not lda.is_hyb() );
-
-  CHECK( lda.hyb_exx() == Approx(0.0) );
-
-  SECTION( "EXC only interface" ) {
-    lda.eval_exc( npts, rho.data(), exc.data() );
-    for( auto i = 0; i < npts; ++i )
-      CHECK( exc[i] == Approx(exc_xc_lda_x_ref_unp[i]) );
-  }
-  
-  SECTION( "EXC + VXC interface" ) {
-    lda.eval_exc_vxc( npts, rho.data(), exc.data(), 
-      vxc.data() );
-    for( auto i = 0; i < npts; ++i ) {
-      CHECK( exc[i] == Approx(exc_xc_lda_x_ref_unp[i]) );
-      CHECK( vxc[i] == Approx(vxc_xc_lda_x_ref_unp[i]) );
-    }
   }
 
+  SECTION( "Pure LDA Polarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel lda( backend, lda_kernel_test, Spin::Polarized );
+
+    CHECK( lda.is_lda() );
+    CHECK( lda.is_polarized() );
+    CHECK( not lda.is_gga() );
+    CHECK( not lda.is_mgga() );
+    CHECK( not lda.is_hyb() );
+
+    CHECK( lda.rho_buffer_len( npts )    == 2*npts );
+    CHECK( lda.sigma_buffer_len( npts )  == 0      );
+    CHECK( lda.exc_buffer_len( npts )    == npts   );
+    CHECK( lda.vrho_buffer_len( npts )   == 2*npts );
+    CHECK( lda.vsigma_buffer_len( npts ) == 0      );
+
+  }
+
+
+  SECTION( "Pure GGA Unpolarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel gga( backend, gga_kernel_test, Spin::Unpolarized );
+
+    CHECK( gga.is_gga() );
+    CHECK( not gga.is_polarized() );
+    CHECK( not gga.is_lda() );
+    CHECK( not gga.is_mgga() );
+    CHECK( not gga.is_hyb() );
+
+    CHECK( gga.rho_buffer_len( npts )    == npts );
+    CHECK( gga.sigma_buffer_len( npts )  == npts );
+    CHECK( gga.exc_buffer_len( npts )    == npts );
+    CHECK( gga.vrho_buffer_len( npts )   == npts );
+    CHECK( gga.vsigma_buffer_len( npts ) == npts );
+
+  }
+
+  SECTION( "Pure GGA Polarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel gga( backend, gga_kernel_test, Spin::Polarized );
+
+    CHECK( gga.is_gga() );
+    CHECK( gga.is_polarized() );
+    CHECK( not gga.is_lda() );
+    CHECK( not gga.is_mgga() );
+    CHECK( not gga.is_hyb() );
+
+    CHECK( gga.rho_buffer_len( npts )    == 2*npts );
+    CHECK( gga.sigma_buffer_len( npts )  == 3*npts );
+    CHECK( gga.exc_buffer_len( npts )    == npts   );
+    CHECK( gga.vrho_buffer_len( npts )   == 2*npts );
+    CHECK( gga.vsigma_buffer_len( npts ) == 3*npts );
+
+  }
+
+  SECTION( "Hybrid" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel hyb( backend, hyb_kernel_test, Spin::Unpolarized );
+    CHECK( hyb.is_hyb() );
+
+  }
 
 }
 
+TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
 
-TEST_CASE( "Polarized LDA Kernel Wrappers", "[xc-lda]" ) {
+  Backend backend;
+  SECTION( "LDA Kernels" ) {
 
-  const int npts = rho_polarized.size() / 2;
-  std::vector<double> exc( npts );
-  std::vector<double> vxc( 2*npts );
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
-  XCKernel lda( XCKernel::Kernel::SlaterExchange, XCKernel::Spin::Polarized );
+    for( const auto& kern : lda_kernels ) {
+      XCKernel func( backend, kern, Spin::Unpolarized );
+      auto exx = load_reference_exx( kern );
 
-  CHECK( lda.is_lda() );
-  CHECK( lda.is_polarized() );
-  CHECK( not lda.is_gga() );
-  CHECK( not lda.is_mgga() );
-  CHECK( not lda.is_hyb() );
+      CHECK( func.is_lda() );
+      CHECK( exx == Approx( func.hyb_exx() ) );
 
-  CHECK( lda.hyb_exx() == Approx(0.0) );
-
-  SECTION( "EXC only interface" ) {
-    lda.eval_exc( npts, rho_polarized.data(), exc.data() );
-
-    for( auto i = 0; i < npts; ++i ) 
-      CHECK( exc[i] == Approx(exc_xc_lda_x_ref_pol[i]) );
-  }
-  
-  SECTION( "EXC + VXC interface" ) {
-    lda.eval_exc_vxc( npts, rho_polarized.data(), exc.data(), 
-      vxc.data() );
-    for( auto i = 0; i < npts; ++i ) {
-      CHECK( exc[i] == Approx(exc_xc_lda_x_ref_pol[i]) );
-
-      CHECK( vxc[2*i]   == Approx(vxc_xc_lda_x_ref_pol[2*i])   );
-      CHECK( vxc[2*i+1] == Approx(vxc_xc_lda_x_ref_pol[2*i+1]) );
+      if( std::abs(exx) > 0 ) CHECK( func.is_hyb() );
     }
+
+  }
+
+  SECTION( "GGA Kernels" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    for( const auto& kern : gga_kernels ) {
+      XCKernel func( backend, kern, Spin::Unpolarized );
+      auto exx = load_reference_exx( kern );
+
+      CHECK( func.is_gga() );
+      CHECK( exx == Approx( func.hyb_exx() ) );
+
+      if( std::abs(exx) > 0 ) CHECK( func.is_hyb() );
+    }
+
   }
 
 }
@@ -171,130 +161,121 @@ TEST_CASE( "Polarized LDA Kernel Wrappers", "[xc-lda]" ) {
 
 
 
-TEST_CASE( "Unpolarized GGA Kernel Wrappers", "[xc-gga]" ) {
 
-  const int npts = rho.size();
-  std::vector<double> exc( npts );
-  std::vector<double> vrho( npts );
-  std::vector<double> vsigma( npts );
-  XCKernel lyp( XCKernel::Kernel::LYP, XCKernel::Spin::Unpolarized );
 
-  CHECK( lyp.is_gga() );
-  CHECK( not lyp.is_polarized() );
-  CHECK( not lyp.is_lda() );
-  CHECK( not lyp.is_mgga() );
-  CHECK( not lyp.is_hyb() );
+void kernel_test( Backend backend, Kernel kern, Spin polar ) {
 
-  CHECK( lyp.hyb_exx() == Approx(0.0) );
+  // Create the kernel
+  XCKernel func( backend, kern, polar );
 
-  SECTION( "EXC only interface" ) {
-    lyp.eval_exc( npts, rho.data(), sigma.data(), exc.data() );
-    for( auto i = 0; i < npts; ++i )
-      CHECK( exc[i] == Approx(exc_xc_gga_c_lyp_ref_unp[i]) );
-  }
+  // LDA XC Kernels
+  if( func.is_lda() ) {
 
-  SECTION( "EXC + VXC interface" ) {
-    lyp.eval_exc_vxc( npts, rho.data(), sigma.data(), exc.data(), 
-      vrho.data(), vsigma.data() );
-    for( auto i = 0; i < npts; ++i ) {
-      CHECK( exc[i]    == Approx(exc_xc_gga_c_lyp_ref_unp[i])   );
-      CHECK( vrho[i]   == Approx(vrho_xc_gga_c_lyp_ref_unp[i])  );
-      CHECK( vsigma[i] == Approx(vsigma_xc_gga_c_lyp_ref_unp[i]));
+    // Get reference values
+    auto ref_vals = load_lda_reference_values( kern, polar );
+    const auto& [npts, rho, exc_ref, vrho_ref] = ref_vals;
+
+    // Allocate buffers
+    std::vector<double> exc( func.exc_buffer_len( npts ) );
+    std::vector<double> vrho( func.vrho_buffer_len( npts ) );
+
+    SECTION( "EXC only interface" ) {
+
+      // Evaluate XC kernel
+      func.eval_exc( npts, rho.data(), exc.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(exc_ref[i]) );
+
     }
+
+    SECTION( "EXC + VXC interface" ) {
+
+      // Evaluate XC kernel
+      func.eval_exc_vxc( npts, rho.data(), exc.data(), vrho.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(exc_ref[i]) );
+      for( auto i = 0ul; i < func.vrho_buffer_len(npts); ++i )
+        CHECK( vrho[i] == Approx(vrho_ref[i]) );
+
+    }
+
+  // GGA XC Kernels
+  } else if( func.is_gga() ) {
+
+    // Get reference values
+    auto ref_vals = load_gga_reference_values( kern, polar );
+    const auto& [npts, rho, sigma, exc_ref, vrho_ref, vsigma_ref] = ref_vals;
+
+    // Allocate buffers
+    std::vector<double> exc( func.exc_buffer_len( npts ) );
+    std::vector<double> vrho( func.vrho_buffer_len( npts ) );
+    std::vector<double> vsigma( func.vsigma_buffer_len( npts ) );
+
+    SECTION( "EXC only interface" ) {
+
+      // Evaluate XC kernel
+      func.eval_exc( npts, rho.data(), sigma.data(), exc.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(exc_ref[i]) );
+
+    }
+
+    SECTION( "EXC + VXC interface" ) {
+
+      // Evaluate XC kernel
+      func.eval_exc_vxc( npts, rho.data(), sigma.data(), exc.data(), 
+        vrho.data(), vsigma.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(exc_ref[i]) );
+      for( auto i = 0ul; i < func.vrho_buffer_len(npts); ++i )
+        CHECK( vrho[i] == Approx(vrho_ref[i]) );
+      for( auto i = 0ul; i < func.vsigma_buffer_len(npts); ++i )
+        CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
+
+    }
+    
+
   }
 
+}
+
+TEST_CASE( "Libxc Correctness Check", "[xc-libxc]" ) {
+
+  SECTION( "SlaterExchange Unpolarized" ) {
+    kernel_test( Backend::libxc, Kernel::SlaterExchange, Spin::Unpolarized );
+  }
+
+  SECTION( "SlaterExchange Polarized" ) {
+    kernel_test( Backend::libxc, Kernel::SlaterExchange, Spin::Polarized );
+  }
+
+  SECTION( "LYP Unpolarized" ) {
+    kernel_test( Backend::libxc, Kernel::LYP, Spin::Unpolarized );
+  }
+
+  SECTION( "LYP Polarized" ) {
+    kernel_test( Backend::libxc, Kernel::LYP, Spin::Polarized );
+  }
 
 }
 
 
+TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
 
+  auto [npts_lda, ref_rho]   = load_reference_density( Spin::Unpolarized );
+  auto [npts_gga, ref_sigma] = load_reference_sigma  ( Spin::Unpolarized );
 
-TEST_CASE( "Polarized GGA Kernel Wrappers", "[xc-gga]" ) {
+  REQUIRE( npts_lda == npts_gga );
 
-  const int npts = rho_polarized.size() / 2;
-  std::vector<double> exc( npts );
-  std::vector<double> vrho( 2*npts );
-  std::vector<double> vsigma( 3*npts );
-  XCKernel lyp( XCKernel::Kernel::LYP, XCKernel::Spin::Polarized );
-
-  CHECK( lyp.is_gga() );
-  CHECK( lyp.is_polarized() );
-  CHECK( not lyp.is_lda() );
-  CHECK( not lyp.is_mgga() );
-  CHECK( not lyp.is_hyb() );
-
-  CHECK( lyp.hyb_exx() == Approx(0.0) );
-
-  SECTION( "EXC only interface" ) {
-    lyp.eval_exc( npts, rho_polarized.data(), 
-      sigma_polarized.data(), exc.data() );
-    for( auto i = 0; i < npts; ++i )
-      CHECK( exc[i] == Approx(exc_xc_gga_c_lyp_ref_pol[i]) );
-  }
-
-  SECTION( "EXC + VXC interface" ) {
-    lyp.eval_exc_vxc( npts, rho_polarized.data(), 
-      sigma_polarized.data(), exc.data(), vrho.data(), 
-      vsigma.data() );
-    for( auto i = 0; i < npts; ++i ) {
-      CHECK( exc[i]        == Approx(exc_xc_gga_c_lyp_ref_pol[i])   );
-
-      CHECK( vrho[2*i]     == Approx(vrho_xc_gga_c_lyp_ref_pol[2*i])  );
-      CHECK( vrho[2*i+1]   == Approx(vrho_xc_gga_c_lyp_ref_pol[2*i+1])  );
-      CHECK( vsigma[3*i]   == Approx(vsigma_xc_gga_c_lyp_ref_pol[3*i])  );
-      CHECK( vsigma[3*i+1] == Approx(vsigma_xc_gga_c_lyp_ref_pol[3*i+1])  );
-      CHECK( vsigma[3*i+2] == Approx(vsigma_xc_gga_c_lyp_ref_pol[3*i+2])  );
-    }
-  }
-
-
-}
-
-
-
-TEST_CASE( "Hybrid GGA Kernel Wrappers", "[xc-hyb-gga]" ) {
-
-  XCKernel b3lyp( XCKernel::Kernel::B3LYP, XCKernel::Spin::Polarized );
-
-  CHECK( b3lyp.is_gga() );
-  CHECK( b3lyp.is_polarized() );
-  CHECK( b3lyp.is_hyb() );
-  CHECK( not b3lyp.is_lda() );
-  CHECK( not b3lyp.is_mgga() );
-
-  CHECK( b3lyp.hyb_exx() == Approx(0.2) );
-
-}
-
-
-#define GENERATE_ALL_EVAL_TYPES \
-    SECTION( "REGULAR EVAL" ) {\
-      std::copy( rho.begin(), rho.end(), std::back_inserter( rho_use ) );\
-      std::copy( sigma.begin(), sigma.end(), std::back_inserter( sigma_use ) );\
-    }\
-\
-    SECTION( "SMALL EVAL" ) {\
-      rho_use = rho_small;\
-      sigma_use = sigma_small;\
-    }\
-\
-    SECTION( "ZERO EVAL" ) {\
-      rho_use = rho_zero;\
-      sigma_use = sigma_zero;\
-    }
-
-
-TEST_CASE("Builtin Kernels", "[xc-builtin]") {
-
-
-  const int npts = rho.size();
-  std::vector<double> eps( npts );
-  std::vector<double> vrho( npts );
-  std::vector<double> vsigma( npts );
-
-  std::vector<double> eps_ref( npts ); 
-  std::vector<double> vrho_ref( npts );
-  std::vector<double> vsigma_ref( npts );
+  const int npts = npts_lda;
 
   std::vector<double> rho_small(npts, 1e-13);
   std::vector<double> sigma_small(npts, 1e-14);
@@ -304,79 +285,58 @@ TEST_CASE("Builtin Kernels", "[xc-builtin]") {
 
   std::vector<double> rho_use, sigma_use;
 
-  XCKernel::Kernel kern;
-  XCKernel::Spin   polar;
-
-  SECTION( "SLATER EXCHANGE" ) {
-
-    kern  = XCKernel::Kernel::SlaterExchange;
-    polar = XCKernel::Spin::Unpolarized;
-
-    rho_use.clear(), sigma_use.clear();
-    GENERATE_ALL_EVAL_TYPES
-
+  SECTION( "REGULAR EVAL" ) {
+    rho_use   = ref_rho;
+    sigma_use = ref_sigma;
+  }
+ 
+  SECTION( "SMALL EVAL" ) {
+    rho_use   = rho_small;
+    sigma_use = sigma_small;
+  }
+ 
+  SECTION( "ZERO EVAL" ) {
+    rho_use   = rho_zero;
+    sigma_use = sigma_zero;
   }
 
-  SECTION( "Lee-Yang-Parr" ) {
+  for( const auto& kern : builtin_supported_kernels ) {
 
-    kern  = XCKernel::Kernel::LYP;
-    polar = XCKernel::Spin::Unpolarized;
+    XCKernel func_libxc  ( Backend::libxc,   kern, Spin::Unpolarized );
+    XCKernel func_builtin( Backend::builtin, kern, Spin::Unpolarized );
 
-    GENERATE_ALL_EVAL_TYPES
+    std::vector<double> exc_libxc( func_builtin.exc_buffer_len(npts) );
+    std::vector<double> vrho_libxc( func_builtin.vrho_buffer_len(npts) );
+    std::vector<double> vsigma_libxc( func_builtin.vsigma_buffer_len(npts) );
 
-  }
+    std::vector<double> exc_builtin( func_builtin.exc_buffer_len(npts) );
+    std::vector<double> vrho_builtin( func_builtin.vrho_buffer_len(npts) );
+    std::vector<double> vsigma_builtin( func_builtin.vsigma_buffer_len(npts) );
 
-  SECTION( "PBE_X" ) {
+    if( func_libxc.is_lda() ) {
 
-    kern  = XCKernel::Kernel::PBE_X;
-    polar = XCKernel::Spin::Unpolarized;
+      func_libxc.eval_exc_vxc( npts, rho_use.data(), exc_libxc.data(),
+        vrho_libxc.data() );        
+      func_builtin.eval_exc_vxc( npts, rho_use.data(), exc_builtin.data(),
+        vrho_builtin.data() );        
 
-    GENERATE_ALL_EVAL_TYPES
+    } else if( func_libxc.is_gga() ) {
 
-  }
+      func_libxc.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(),
+        exc_libxc.data(), vrho_libxc.data(), vsigma_libxc.data() );        
+      func_builtin.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(),
+        exc_builtin.data(), vrho_builtin.data(), vsigma_builtin.data() );        
 
-  SECTION( "PBE_C" ) {
-
-    kern  = XCKernel::Kernel::PBE_C;
-    polar = XCKernel::Spin::Unpolarized;
-
-    GENERATE_ALL_EVAL_TYPES
-
-  }
-
-  SECTION( "PBE0" ) {
-
-    kern  = XCKernel::Kernel::PBE0;
-    polar = XCKernel::Spin::Unpolarized;
-
-    GENERATE_ALL_EVAL_TYPES
-
-  }
-
-  XCKernel kern_libxc( kern, polar );
-  XCKernel kern_built( XCKernel::Backend::builtin, kern, polar );
-
-  if( kern_libxc.is_lda() )
-    kern_libxc.eval_exc_vxc( npts, rho_use.data(), eps_ref.data(), vrho_ref.data() );
-  else if( kern_libxc.is_gga() )
-    kern_libxc.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(), eps_ref.data(), 
-      vrho_ref.data(), vsigma_ref.data() );
-
-  if( kern_built.is_lda() )
-    kern_built.eval_exc_vxc( npts, rho_use.data(), eps.data(), vrho.data() );
-  else if( kern_built.is_gga() )
-    kern_built.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(), eps.data(), 
-      vrho.data(), vsigma.data() );
-
-  for( auto i = 0; i < npts; ++i ) {
-    CHECK( eps[i]  == Approx( eps_ref[i] )  );
-    CHECK( vrho[i] == Approx( vrho_ref[i] ) );
-  }
-
-  if( kern_built.is_gga() ) {
-    for( auto i = 0; i < npts; ++i ) {
-      CHECK( vsigma[i] == Approx( vsigma_ref[i] ) );
     }
+
+    // Check correctness
+    for( auto i = 0ul; i < func_libxc.exc_buffer_len(npts); ++i )
+      CHECK( exc_builtin[i] == Approx(exc_libxc[i]) );
+    for( auto i = 0ul; i < func_libxc.vrho_buffer_len(npts); ++i )
+      CHECK( vrho_builtin[i] == Approx(vrho_libxc[i]) );
+    for( auto i = 0ul; i < func_libxc.vsigma_buffer_len(npts); ++i )
+      CHECK( vsigma_builtin[i] == Approx(vsigma_libxc[i]) );
+
   }
 
 }
@@ -388,10 +348,12 @@ TEST_CASE("Builtin Kernels", "[xc-builtin]") {
 template <typename T>
 T* safe_cuda_malloc( size_t n ) {
 
-  T* ptr;
-  auto stat = cudaMalloc( (void**)&ptr, n*sizeof(T) );
-  if( stat != cudaSuccess )
-    throw std::runtime_error(cudaGetErrorString( stat ));
+  T* ptr = nullptr;;
+  if( n ) {
+    auto stat = cudaMalloc( (void**)&ptr, n*sizeof(T) );
+    if( stat != cudaSuccess )
+      throw std::runtime_error(cudaGetErrorString( stat ));
+  }
   return ptr;
 
 }
@@ -409,9 +371,11 @@ void cuda_free_all(){ }
 template <typename T, typename... Args>
 void cuda_free_all( T* ptr, Args&&... args ) {
 
-  auto stat = cudaFree( ptr );
-  if( stat != cudaSuccess )
-    throw std::runtime_error(cudaGetErrorString( stat ));
+  if( ptr ) {
+    auto stat = cudaFree( ptr );
+    if( stat != cudaSuccess )
+      throw std::runtime_error(cudaGetErrorString( stat ));
+  }
 
   cuda_free_all( std::forward<Args>(args)... );
 
@@ -424,65 +388,106 @@ void device_synchronize() {
     throw std::runtime_error(cudaGetErrorString( stat ));
 }
 
-TEST_CASE("Device Kernels", "[xc-device]") {
 
-  const int npts = rho.size();
-  XCKernel pbe( XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized );
+void test_cuda_interface( Backend backend, Kernel kern, Spin polar ) {
 
-  // Get reference data
-  std::vector<double> exc_ref(npts), vrho_ref(npts), vsigma_ref(npts);
-  pbe.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
-                    vrho_ref.data(), vsigma_ref.data() );
+  auto [npts_lda, rho]   = load_reference_density( polar );
+  auto [npts_gga, sigma] = load_reference_sigma  ( polar );
 
-  double* rho_device    = safe_cuda_malloc<double>( npts );
-  double* sigma_device  = safe_cuda_malloc<double>( npts );
-  double* exc_device    = safe_cuda_malloc<double>( npts );
-  double* vrho_device   = safe_cuda_malloc<double>( npts );
-  double* vsigma_device = safe_cuda_malloc<double>( npts );
+  REQUIRE( npts_lda == npts_gga );
 
-  safe_cuda_cpy( rho_device, rho.data(), npts );
-  safe_cuda_cpy( sigma_device, sigma.data(), npts );
+  const int npts = npts_lda;
 
+  XCKernel func( backend, kern, polar ); 
+
+  size_t len_rho_buffer    = func.rho_buffer_len(npts);
+  size_t len_sigma_buffer  = func.sigma_buffer_len(npts);
+  size_t len_exc_buffer    = func.exc_buffer_len(npts);
+  size_t len_vrho_buffer   = func.vrho_buffer_len(npts);
+  size_t len_vsigma_buffer = func.vsigma_buffer_len(npts);
+
+  // Get Reference Values
+  std::vector<double> 
+    exc_ref( len_exc_buffer ),
+    vrho_ref( len_vrho_buffer ),
+    vsigma_ref( len_vsigma_buffer );
+
+  if( func.is_lda() )
+    func.eval_exc_vxc( npts, rho.data(), exc_ref.data(), vrho_ref.data() );
+  else if( func.is_gga() )
+    func.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
+      vrho_ref.data(), vsigma_ref.data() );
+
+
+  // Allocate device memory
+  double* rho_device    = safe_cuda_malloc<double>( len_rho_buffer    );
+  double* sigma_device  = safe_cuda_malloc<double>( len_sigma_buffer  );
+  double* exc_device    = safe_cuda_malloc<double>( len_exc_buffer    );
+  double* vrho_device   = safe_cuda_malloc<double>( len_vrho_buffer   );
+  double* vsigma_device = safe_cuda_malloc<double>( len_vsigma_buffer );
+
+  // H2D Copy of rho / sigma
+  safe_cuda_cpy( rho_device, rho.data(), len_rho_buffer );
+  if( func.is_gga() )
+    safe_cuda_cpy( sigma_device, sigma.data(), len_sigma_buffer );
+
+
+  // Evaluate functional on device
   cudaStream_t stream = 0;
-
-  SECTION("LIBXC") {
-
-    pbe.eval_exc_vxc_device( npts, rho_device, sigma_device,
-      exc_device, vrho_device, vsigma_device, stream ); 
-
-  }
-
-  SECTION("BUILTIN") {
-
-    XCKernel pbe_builtin( 
-      XCKernel::Backend::builtin,
-      XCKernel::Kernel::PBE0, XCKernel::Spin::Unpolarized 
-    );
-
-    pbe_builtin.eval_exc_vxc_device( npts, rho_device, sigma_device,
-      exc_device, vrho_device, vsigma_device, stream ); 
-
-  }
+  if( func.is_lda() )
+    func.eval_exc_vxc_device( npts, rho_device, exc_device, vrho_device, stream );
+  else if( func.is_gga() )
+    func.eval_exc_vxc_device( npts, rho_device, sigma_device, exc_device, 
+      vrho_device, vsigma_device, stream );
 
   device_synchronize();
-  
-  std::vector<double> exc(npts), vrho(npts), vsigma(npts);
-  safe_cuda_cpy( exc.data(), exc_device, npts );
-  safe_cuda_cpy( vrho.data(), vrho_device, npts );
-  safe_cuda_cpy( vsigma.data(), vsigma_device, npts );
 
-  for( size_t i = 0; i < npts; ++i ) {
+
+  // D2H of results
+  std::vector<double> 
+    exc( len_exc_buffer ), vrho( len_vrho_buffer ),
+    vsigma( len_vsigma_buffer );
+
+  safe_cuda_cpy( exc.data(), exc_device, len_exc_buffer );
+  safe_cuda_cpy( vrho.data(), vrho_device, len_vrho_buffer );
+  if(func.is_gga()) 
+    safe_cuda_cpy( vsigma.data(), vsigma_device, len_vsigma_buffer );
+
+  // Check correctness
+  for( auto i = 0ul; i < len_exc_buffer; ++i )
     CHECK( exc[i] == Approx(exc_ref[i]) );
+  for( auto i = 0ul; i < len_vrho_buffer; ++i )
     CHECK( vrho[i] == Approx(vrho_ref[i]) );
+  for( auto i = 0ul; i < len_vsigma_buffer; ++i )
     CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
-  }
 
   cuda_free_all( rho_device, sigma_device, exc_device, vrho_device, vsigma_device );
 }
 
+
+
+TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
+
+  SECTION( "Libxc Functionals" ) {
+
+    SECTION( "LDA Functionals" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "GGA Functionals" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+  }
+
+  SECTION( "Builtin Functionals" ) {
+    for( auto kern : builtin_supported_kernels )
+      test_cuda_interface( Backend::builtin, kern, Spin::Unpolarized );
+  }
+
+
+}
+
 #endif
-
-
-
-
-

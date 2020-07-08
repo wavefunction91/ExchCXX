@@ -4,6 +4,7 @@
 #include <exchcxx/exchcxx_config.hpp>
 #endif
 
+#include <exchcxx/enums/enums.hpp>
 #include <exchcxx/impl/xc_kernel.hpp>
 #include <exchcxx/util/exchcxx_macros.hpp>
 
@@ -28,18 +29,6 @@ class XCKernel {
   impl_ptr pimpl_; ///< Pointer to implementation
 
 public:
-
-  enum Backend {
-    libxc,
-    builtin
-  };
-
-  enum Spin {
-    Polarized,
-    Unpolarized
-  };
-
-  #include "kernels/kernels.hpp"
 
   // Avoid stateless kernel
   XCKernel() = delete;
@@ -68,6 +57,23 @@ public:
   
   double hyb_exx() const noexcept { return pimpl_->hyb_exx(); }
 
+
+  inline size_t rho_buffer_len( size_t npts ) const noexcept {
+    return is_polarized() ? 2*npts : npts;
+  }
+  inline size_t sigma_buffer_len( size_t npts ) const noexcept {
+    return is_lda() ? 0 : is_polarized() ? 3*npts : npts;
+  }
+
+  inline size_t exc_buffer_len( size_t npts ) const noexcept {
+    return npts;
+  }
+  inline size_t vrho_buffer_len( size_t npts ) const noexcept {
+    return rho_buffer_len( npts );
+  }
+  inline size_t vsigma_buffer_len( size_t npts ) const noexcept {
+    return sigma_buffer_len( npts );
+  }
 
 
   template <typename... Args>

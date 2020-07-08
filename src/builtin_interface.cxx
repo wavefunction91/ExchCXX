@@ -11,17 +11,17 @@ namespace detail  {
 
 
 std::unique_ptr<BuiltinKernel> 
-  gen_from_kern( XCKernel::Kernel kern, XCKernel::Spin polar ) {
+  gen_from_kern( Kernel kern, Spin polar ) {
 
-  if( kern == XCKernel::Kernel::SlaterExchange )
+  if( kern == Kernel::SlaterExchange )
     return std::make_unique<BuiltinSlaterExchange>( polar );
-  else if( kern == XCKernel::Kernel::LYP )
+  else if( kern == Kernel::LYP )
     return std::make_unique<BuiltinLYP>( polar );
-  else if( kern == XCKernel::Kernel::PBE_X )
+  else if( kern == Kernel::PBE_X )
     return std::make_unique<BuiltinPBE_X>( polar );
-  else if( kern == XCKernel::Kernel::PBE_C )
+  else if( kern == Kernel::PBE_C )
     return std::make_unique<BuiltinPBE_C>( polar );
-  else if( kern == XCKernel::Kernel::PBE0 )
+  else if( kern == Kernel::PBE0 )
     return std::make_unique<BuiltinPBE0>( polar );
   else
     throw std::runtime_error("Specified kernel does not have a builtin implementation");
@@ -31,8 +31,8 @@ std::unique_ptr<BuiltinKernel>
 
 BuiltinKernelInterface::~BuiltinKernelInterface() noexcept = default;
 
-BuiltinKernelInterface::BuiltinKernelInterface( XCKernel::Kernel kern, 
-  XCKernel::Spin polar ) : 
+BuiltinKernelInterface::BuiltinKernelInterface( Kernel kern, 
+  Spin polar ) : 
     whatami_(kern), impl_(gen_from_kern( kern, polar )) { }
 
 BuiltinKernelInterface::BuiltinKernelInterface( 

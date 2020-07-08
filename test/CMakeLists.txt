@@ -31,7 +31,7 @@ target_link_libraries( catch2_main PUBLIC catch2 )
 #target_link_libraries( boilerplate_test PUBLIC exchcxx catch2_main )
 #target_compile_features( boilerplate_test PRIVATE cxx_std_17 )
 
-add_executable( xc_kernel_test xc_kernel_test.cxx )
+add_executable( xc_kernel_test xc_kernel_test.cxx reference_values.cxx )
 target_link_libraries( xc_kernel_test PUBLIC exchcxx catch2_main )
 target_compile_features( xc_kernel_test PRIVATE cxx_std_17 )
 

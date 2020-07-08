@@ -8,7 +8,7 @@
 
 namespace ExchCXX {
 
-void initialize(XCKernel::Spin);
+void initialize(Spin);
 void finalize();
 
 bool is_initialized();

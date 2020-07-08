@@ -2,6 +2,7 @@
 #include <exchcxx/impl/builtin/util.hpp>
 #include <exchcxx/impl/builtin/kernels.hpp>
 
+
 namespace ExchCXX {
 
 
@@ -33,26 +34,26 @@ MGGA_EXC_VXC_GENERATOR( BuiltinKernel::eval_exc_vxc ) const {
 
 // LDA interface
 LDA_EXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_device ) const {
-  disabled_lda_interface();
+  disabled_lda_device_interface();
 };
 LDA_EXC_VXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_device ) const {
-  disabled_lda_interface();
+  disabled_lda_device_interface();
 };
 
 // GGA interface
 GGA_EXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_device ) const {
-  disabled_gga_interface();
+  disabled_gga_device_interface();
 };
 GGA_EXC_VXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_device ) const {
-  disabled_gga_interface();
+  disabled_gga_device_interface();
 };
 
 // MGGA interface
 MGGA_EXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_device ) const {
-  disabled_mgga_interface();
+  disabled_mgga_device_interface();
 };
 MGGA_EXC_VXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_device ) const {
-  disabled_mgga_interface();
+  disabled_mgga_device_interface();
 };
 
 #endif

@@ -247,7 +247,7 @@ struct kernel_traits<BuiltinPBE_C> {
 
 struct BuiltinPBE_C : detail::BuiltinKernelImpl< BuiltinPBE_C > {
 
-  BuiltinPBE_C( XCKernel::Spin p ) :
+  BuiltinPBE_C( Spin p ) :
     detail::BuiltinKernelImpl< BuiltinPBE_C >(p) { }
   
   virtual ~BuiltinPBE_C() = default;

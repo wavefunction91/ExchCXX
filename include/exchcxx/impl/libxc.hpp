@@ -75,7 +75,7 @@ public:
 
   LibxcKernelImpl() = delete;
   
-  LibxcKernelImpl( const XCKernel::Kernel kern, const XCKernel::Spin polar);
+  LibxcKernelImpl( const Kernel kern, const Spin polar);
   LibxcKernelImpl( const int kern, const int spin_polar );
   LibxcKernelImpl( const LibxcKernelImpl& );
 
@@ -88,7 +88,7 @@ public:
     
 };
 
-}; // namespace detail
+} // namespace detail
 
-}; // namespace ExchCXX
+} // namespace ExchCXX
 

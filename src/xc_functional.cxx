@@ -4,14 +4,14 @@ namespace ExchCXX {
 
 
 std::vector< XCKernel > functional_factory( 
-  const XCKernel::Backend        backend,
+  const Backend        backend,
   const XCFunctional::Functional func,
-  const XCKernel::Spin          polar
+  const Spin          polar
 ) {
 
   std::vector< XCKernel > kerns;
 
-  using Kernel     = XCKernel::Kernel;
+  using Kernel     = Kernel;
   using Functional = XCFunctional::Functional;
 
   if( func == Functional::SVWN3 )
@@ -63,9 +63,9 @@ XCFunctional::XCFunctional( std::vector<value_type>&& ks ) :
 
 
 XCFunctional::XCFunctional( 
-  const XCKernel::Backend        backend, 
+  const Backend        backend, 
   const XCFunctional::Functional func,
-  const XCKernel::Spin           polar
+  const Spin           polar
 ) :
   XCFunctional(functional_factory(backend,func,polar)) { }
 

@@ -58,9 +58,9 @@ public:
   XCFunctional( const decltype(kernels_)& ks );
   XCFunctional( decltype(kernels_)&& ks );
 
-  XCFunctional( const XCKernel::Backend, const Functional, const XCKernel::Spin );
-  XCFunctional( const Functional func, const XCKernel::Spin polar) :
-    XCFunctional( XCKernel::Backend::libxc, func, polar) { };
+  XCFunctional( const Backend, const Functional, const Spin );
+  XCFunctional( const Functional func, const Spin polar) :
+    XCFunctional( Backend::libxc, func, polar) { };
 
   XCFunctional( const XCFunctional& )                    ;
   XCFunctional( XCFunctional&& )                 noexcept;
