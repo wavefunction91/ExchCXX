@@ -1,19 +1,4 @@
-#include "catch2/catch.hpp"
-#include <exchcxx/exchcxx.hpp>
-#include <cmath>
-#include <vector>
-#include <array>
-#include <iostream>
-#include <iomanip>
-#include <random>
-
-
-template <typename T>
-bool check_approx( const T& x, const T& y ) {
-  if( std::isnan(x) )      return std::isnan(y);
-  else if( std::isinf(x) ) return std::isinf(y);
-  else                     return x == Approx(y);
-}
+#include "ut_common.hpp"
 
 using namespace ExchCXX;
 
@@ -255,14 +240,6 @@ auto gen_kern_vector( Backend backend, Spin polar, Args&&... args ) {
 }
 
 
-
-
-
-
-enum class TestInterface {
-  EXC,
-  EXC_VXC
-};
 
 
 

@@ -27,12 +27,12 @@ struct kernel_traits<BuiltinPBE0> {
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
 
-    //pbe_x_traits::eval_exc_unpolar( rho, sigma, eps );
-    //double eps_x = eps;
+    pbe_x_traits::eval_exc_unpolar( rho, sigma, eps );
+    double eps_x = eps;
 
-    //pbe_c_traits::eval_exc_unpolar( rho, sigma, eps );
+    pbe_c_traits::eval_exc_unpolar( rho, sigma, eps );
 
-    //eps = (1. - exx_coeff) * eps_x + eps;
+    eps = (1. - exx_coeff) * eps_x + eps;
   }
 
   BUILTIN_KERNEL_EVAL_RETURN
