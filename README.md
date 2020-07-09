@@ -111,7 +111,7 @@ you have made the changes locally and would like to see them integrated in upstr
 
 # License
 
-ExchCXX is made freely available under the terms of the 3-Clause BSD license. See
+ExchCXX is made freely available under the terms of a modified 3-Clause BSD license. See
 LICENSE.txt for details.
 
 # Acknowledgements
