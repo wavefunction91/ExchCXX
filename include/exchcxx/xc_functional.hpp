@@ -42,6 +42,16 @@ private:
 
   void throw_if_not_sane() const { assert( sanity_check() ); }
 
+
+  inline bool supports_inc_interface() const noexcept {
+    return std::all_of( 
+      kernels_.begin(), kernels_.end(),
+      [&](const auto& a){ 
+        return a.second.supports_inc_interface();
+      }
+    ); 
+  }
+
 public:
 
   enum Functional {
@@ -117,7 +127,6 @@ public:
     );
 
   }
-
 
 
 

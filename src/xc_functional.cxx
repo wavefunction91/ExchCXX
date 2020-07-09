@@ -99,21 +99,30 @@ LDA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
   const size_t len_exc_buffer = exc_buffer_len(N);
 
   std::vector<double> eps_scr;
-  if( kernels_.size() > 1 ) 
+  if( kernels_.size() > 1 and not supports_inc_interface() ) 
     eps_scr.resize( len_exc_buffer );
 
   std::fill_n( eps, len_exc_buffer, 0. );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
-    double* eps_eval = i ? eps_scr.data() : eps;
-    kernels_[i].second.eval_exc(N, rho, eps_eval);
+    if( supports_inc_interface() ) {
 
-    if( i ) 
-      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
-    else
-      _scal( len_exc_buffer, kernels_[i].first, eps );
+      kernels_[i].second.eval_exc_inc( 
+        kernels_[i].first, N, rho, eps
+      );
+
+    } else {
+
+      double* eps_eval = i ? eps_scr.data() : eps;
+      kernels_[i].second.eval_exc(N, rho, eps_eval);
+
+      if( i ) 
+        _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
+      else
+        _scal( len_exc_buffer, kernels_[i].first, eps );
   
+    }
   }
 
 }
@@ -128,7 +137,7 @@ LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
   const size_t len_vxc_buffer = vrho_buffer_len(N);
 
   std::vector<double> eps_scr, vxc_scr;
-  if( kernels_.size() > 1 ) {
+  if( kernels_.size() > 1 and not supports_inc_interface() ) {
     eps_scr.resize( len_exc_buffer );
     vxc_scr.resize( len_vxc_buffer );
   }
@@ -138,19 +147,29 @@ LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
-    double* eps_eval = i ? eps_scr.data() : eps;
-    double* vxc_eval = i ? vxc_scr.data() : vxc;
-    kernels_[i].second.eval_exc_vxc(N, rho, eps_eval, vxc_eval);
+    if( supports_inc_interface() ) {
 
-    if( i ) {
-
-      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
-      _addscal( len_vxc_buffer, kernels_[i].first, vxc, vxc_eval );
+      kernels_[i].second.eval_exc_vxc_inc(
+        kernels_[i].first, N, rho, eps, vxc
+      );
 
     } else {
 
-      _scal( len_exc_buffer, kernels_[i].first, eps );
-      _scal( len_vxc_buffer, kernels_[i].first, vxc );
+      double* eps_eval = i ? eps_scr.data() : eps;
+      double* vxc_eval = i ? vxc_scr.data() : vxc;
+      kernels_[i].second.eval_exc_vxc(N, rho, eps_eval, vxc_eval);
+
+      if( i ) {
+
+        _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
+        _addscal( len_vxc_buffer, kernels_[i].first, vxc, vxc_eval );
+
+      } else {
+
+        _scal( len_exc_buffer, kernels_[i].first, eps );
+        _scal( len_vxc_buffer, kernels_[i].first, vxc );
+
+      }
 
     }
 
@@ -170,7 +189,7 @@ GGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
   const size_t len_exc_buffer = exc_buffer_len(N);
 
   std::vector<double> eps_scr;
-  if( kernels_.size() > 1 ) 
+  if( kernels_.size() > 1 and not supports_inc_interface() ) 
     eps_scr.resize( len_exc_buffer );
 
   std::fill_n( eps, len_exc_buffer, 0. );
@@ -178,17 +197,32 @@ GGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
-    double* eps_eval = i ? eps_scr.data() : eps;
+    if( supports_inc_interface() ) {
 
-    if( kernels_[i].second.is_gga() )
-      kernels_[i].second.eval_exc(N, rho, sigma, eps_eval);
-    else
-      kernels_[i].second.eval_exc(N, rho, eps_eval);
+      if( kernels_[i].second.is_gga() )
+        kernels_[i].second.eval_exc_inc(
+          kernels_[i].first, N, rho, sigma, eps
+        );
+      else
+        kernels_[i].second.eval_exc_inc(
+          kernels_[i].first, N, rho, eps
+        );
 
-    if( i ) 
-      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
-    else
-      _scal( len_exc_buffer, kernels_[i].first, eps );
+    } else {
+
+      double* eps_eval = i ? eps_scr.data() : eps;
+
+      if( kernels_[i].second.is_gga() )
+        kernels_[i].second.eval_exc(N, rho, sigma, eps_eval);
+      else
+        kernels_[i].second.eval_exc(N, rho, eps_eval);
+
+      if( i ) 
+        _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
+      else
+        _scal( len_exc_buffer, kernels_[i].first, eps );
+
+    }
   
   }
 
@@ -205,7 +239,7 @@ GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
   const size_t len_vsigma_buffer = vsigma_buffer_len(N);
 
   std::vector<double> eps_scr, vrho_scr, vsigma_scr;
-  if( kernels_.size() > 1 ) {
+  if( kernels_.size() > 1 and not supports_inc_interface() ) {
     eps_scr.resize( len_exc_buffer );
     vrho_scr.resize( len_vrho_buffer );
     vsigma_scr.resize( len_vsigma_buffer );
@@ -217,31 +251,47 @@ GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
-    double* eps_eval    = i ? eps_scr.data()    : eps;
-    double* vrho_eval   = i ? vrho_scr.data()   : vrho;
-    double* vsigma_eval = i ? vsigma_scr.data() : vsigma;
+    if( supports_inc_interface() ) {
 
-    if( kernels_[i].second.is_gga() )
-      kernels_[i].second.eval_exc_vxc(N, rho, sigma, eps_eval, vrho_eval, 
-        vsigma_eval );
-    else
-      kernels_[i].second.eval_exc_vxc(N, rho, eps_eval, vrho_eval);
-
-    if( i ) {
-
-      _addscal( len_exc_buffer,    kernels_[i].first, eps,    eps_eval  );
-      _addscal( len_vrho_buffer,   kernels_[i].first, vrho,   vrho_eval );
-   
       if( kernels_[i].second.is_gga() )
-        _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
+        kernels_[i].second.eval_exc_vxc_inc(
+          kernels_[i].first, N, rho, sigma, eps, vrho, 
+          vsigma 
+        );
+      else
+        kernels_[i].second.eval_exc_vxc_inc(
+          kernels_[i].first, N, rho, eps, vrho
+        );
 
     } else {
 
-      _scal( len_exc_buffer,    kernels_[i].first, eps  );
-      _scal( len_vrho_buffer,   kernels_[i].first, vrho );
+      double* eps_eval    = i ? eps_scr.data()    : eps;
+      double* vrho_eval   = i ? vrho_scr.data()   : vrho;
+      double* vsigma_eval = i ? vsigma_scr.data() : vsigma;
 
       if( kernels_[i].second.is_gga() )
-        _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
+        kernels_[i].second.eval_exc_vxc(N, rho, sigma, eps_eval, vrho_eval, 
+          vsigma_eval );
+      else
+        kernels_[i].second.eval_exc_vxc(N, rho, eps_eval, vrho_eval);
+
+      if( i ) {
+
+        _addscal( len_exc_buffer,    kernels_[i].first, eps,    eps_eval  );
+        _addscal( len_vrho_buffer,   kernels_[i].first, vrho,   vrho_eval );
+   
+        if( kernels_[i].second.is_gga() )
+          _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
+
+      } else {
+
+        _scal( len_exc_buffer,    kernels_[i].first, eps  );
+        _scal( len_vrho_buffer,   kernels_[i].first, vrho );
+
+        if( kernels_[i].second.is_gga() )
+          _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
+
+      }
 
     }
   
@@ -262,7 +312,7 @@ MGGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
   const size_t len_exc_buffer = exc_buffer_len(N);
 
   std::vector<double> eps_scr;
-  if( kernels_.size() > 1 ) 
+  if( kernels_.size() > 1 and not supports_inc_interface() ) 
     eps_scr.resize( len_exc_buffer );
 
   std::fill_n( eps, len_exc_buffer, 0. );
@@ -270,19 +320,38 @@ MGGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
-    double* eps_eval = i ? eps_scr.data() : eps;
+    if( supports_inc_interface() ) {
 
-    if( kernels_[i].second.is_mgga() )
-      kernels_[i].second.eval_exc(N, rho, sigma, lapl, tau, eps_eval);
-    else if( kernels_[i].second.is_gga() )
-      kernels_[i].second.eval_exc(N, rho, sigma, eps_eval);
-    else
-      kernels_[i].second.eval_exc(N, rho, eps_eval);
+      if( kernels_[i].second.is_mgga() )
+        kernels_[i].second.eval_exc_inc(
+          kernels_[i].first, N, rho, sigma, lapl, tau, eps
+        );
+      else if( kernels_[i].second.is_gga() )
+        kernels_[i].second.eval_exc_inc(
+          kernels_[i].first, N, rho, sigma, eps
+        );
+      else
+        kernels_[i].second.eval_exc_inc(
+          kernels_[i].first, N, rho, eps
+        );
 
-    if( i ) 
-      _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
-    else
-      _scal( len_exc_buffer, kernels_[i].first, eps );
+    } else { 
+
+      double* eps_eval = i ? eps_scr.data() : eps;
+
+      if( kernels_[i].second.is_mgga() )
+        kernels_[i].second.eval_exc(N, rho, sigma, lapl, tau, eps_eval);
+      else if( kernels_[i].second.is_gga() )
+        kernels_[i].second.eval_exc(N, rho, sigma, eps_eval);
+      else
+        kernels_[i].second.eval_exc(N, rho, eps_eval);
+
+      if( i ) 
+        _addscal( len_exc_buffer, kernels_[i].first, eps, eps_eval );
+      else
+        _scal( len_exc_buffer, kernels_[i].first, eps );
+
+    }
   
   }
 
@@ -301,7 +370,7 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
   const size_t len_vtau_buffer   = vtau_buffer_len(N);
 
   std::vector<double> eps_scr, vrho_scr, vsigma_scr, vlapl_scr, vtau_scr;
-  if( kernels_.size() > 1 ) {
+  if( kernels_.size() > 1 and not supports_inc_interface() ) {
     eps_scr.resize( len_exc_buffer );
     vrho_scr.resize( len_vrho_buffer );
     vsigma_scr.resize( len_vsigma_buffer );
@@ -318,45 +387,66 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
-    double* eps_eval    = i ? eps_scr.data()    : eps;
-    double* vrho_eval   = i ? vrho_scr.data()   : vrho;
-    double* vsigma_eval = i ? vsigma_scr.data() : vsigma;
-    double* vlapl_eval  = i ? vlapl_scr.data()  : vlapl;
-    double* vtau_eval   = i ? vtau_scr.data()   : vtau;
+    if( supports_inc_interface() ) {
 
-    if( kernels_[i].second.is_mgga() )
-      kernels_[i].second.eval_exc_vxc(N, rho, sigma, lapl, tau, eps_eval, 
-        vrho_eval, vsigma_eval, vlapl_eval, vtau_eval );
-    else if( kernels_[i].second.is_gga() )
-      kernels_[i].second.eval_exc_vxc(N, rho, sigma, eps_eval, vrho_eval, 
-        vsigma_eval );
-    else
-      kernels_[i].second.eval_exc_vxc(N, rho, eps_eval, vrho_eval);
-
-    if( i ) {
-
-      _addscal( len_exc_buffer,    kernels_[i].first, eps,    eps_eval  );
-      _addscal( len_vrho_buffer,   kernels_[i].first, vrho,   vrho_eval );
-   
-      if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
-        _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
-
-      if( kernels_[i].second.is_mgga() ) {
-        _addscal( len_vlapl_buffer, kernels_[i].first, vlapl, vlapl_eval );
-        _addscal( len_vtau_buffer,  kernels_[i].first, vtau,  vtau_eval  );
-      }
-
+      if( kernels_[i].second.is_mgga() )
+        kernels_[i].second.eval_exc_vxc_inc(
+          kernels_[i].first, N, rho, sigma, lapl, tau, eps, 
+          vrho, vsigma, vlapl, vtau 
+        );
+      else if( kernels_[i].second.is_gga() )
+        kernels_[i].second.eval_exc_vxc_inc(
+          kernels_[i].first, N, rho, sigma, eps, vrho, 
+          vsigma 
+        );
+      else
+        kernels_[i].second.eval_exc_vxc_inc(
+          kernels_[i].first, N, rho, eps, vrho
+        );
+    
     } else {
 
-      _scal( len_exc_buffer,    kernels_[i].first, eps  );
-      _scal( len_vrho_buffer,   kernels_[i].first, vrho );
+      double* eps_eval    = i ? eps_scr.data()    : eps;
+      double* vrho_eval   = i ? vrho_scr.data()   : vrho;
+      double* vsigma_eval = i ? vsigma_scr.data() : vsigma;
+      double* vlapl_eval  = i ? vlapl_scr.data()  : vlapl;
+      double* vtau_eval   = i ? vtau_scr.data()   : vtau;
 
-      if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
-        _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
+      if( kernels_[i].second.is_mgga() )
+        kernels_[i].second.eval_exc_vxc(N, rho, sigma, lapl, tau, eps_eval, 
+          vrho_eval, vsigma_eval, vlapl_eval, vtau_eval );
+      else if( kernels_[i].second.is_gga() )
+        kernels_[i].second.eval_exc_vxc(N, rho, sigma, eps_eval, vrho_eval, 
+          vsigma_eval );
+      else
+        kernels_[i].second.eval_exc_vxc(N, rho, eps_eval, vrho_eval);
 
-      if( kernels_[i].second.is_mgga() ) {
-        _scal( len_vlapl_buffer, kernels_[i].first, vlapl );
-        _scal( len_vtau_buffer,  kernels_[i].first, vtau  );
+      if( i ) {
+
+        _addscal( len_exc_buffer,    kernels_[i].first, eps,    eps_eval  );
+        _addscal( len_vrho_buffer,   kernels_[i].first, vrho,   vrho_eval );
+   
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+          _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
+
+        if( kernels_[i].second.is_mgga() ) {
+          _addscal( len_vlapl_buffer, kernels_[i].first, vlapl, vlapl_eval );
+          _addscal( len_vtau_buffer,  kernels_[i].first, vtau,  vtau_eval  );
+        }
+
+      } else {
+
+        _scal( len_exc_buffer,    kernels_[i].first, eps  );
+        _scal( len_vrho_buffer,   kernels_[i].first, vrho );
+
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+          _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
+
+        if( kernels_[i].second.is_mgga() ) {
+          _scal( len_vlapl_buffer, kernels_[i].first, vlapl );
+          _scal( len_vtau_buffer,  kernels_[i].first, vtau  );
+        }
+
       }
 
     }
