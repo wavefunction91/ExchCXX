@@ -130,6 +130,10 @@ double LibxcKernelImpl::hyb_exx_() const noexcept {
   return xc_hyb_exx_coef( &kernel_ );
 }
 
+bool LibxcKernelImpl::supports_inc_interface_() const noexcept {
+  return false;
+}
+
 
 // LDA interfaces
 LDA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {

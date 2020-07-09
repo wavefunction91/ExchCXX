@@ -57,6 +57,9 @@ public:
   
   double hyb_exx() const noexcept { return pimpl_->hyb_exx(); }
 
+  bool supports_inc_interface() const noexcept {
+    return pimpl_->supports_inc_interface();
+  }
 
   inline size_t rho_buffer_len( size_t npts ) const noexcept {
     return is_polarized() ? 2*npts : npts;

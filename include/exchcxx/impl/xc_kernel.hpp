@@ -34,6 +34,9 @@ struct XCKernelImpl {
 
   double hyb_exx() const noexcept { return hyb_exx_(); };
 
+  bool supports_inc_interface() const noexcept {
+    return supports_inc_interface_();
+  }
 
   template <typename... Args>
   void eval_exc( Args&&... args ) {
@@ -97,6 +100,8 @@ private:
   virtual bool is_polarized_()  const noexcept = 0;
 
   virtual double hyb_exx_() const noexcept = 0;
+
+  virtual bool supports_inc_interface_() const noexcept = 0;
 
   // LDA interface
   virtual LDA_EXC_GENERATOR( eval_exc_ )                 const = 0;

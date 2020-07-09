@@ -68,6 +68,10 @@ double BuiltinKernelInterface::hyb_exx_()    const noexcept {
   return impl_->hyb_exx();
 }
 
+bool BuiltinKernelInterface::supports_inc_interface_() const noexcept {
+  return true;
+}
+
 
 
 #define FORWARD_FOR_BUILTIN( APPROX, TYPE, func ) \

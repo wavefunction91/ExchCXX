@@ -30,6 +30,8 @@ class BuiltinKernelInterface : public XCKernelImpl {
   bool is_polarized_() const noexcept override;
   double hyb_exx_()    const noexcept override;
 
+  bool supports_inc_interface_() const noexcept override;
+
   // LDA interface
   LDA_EXC_GENERATOR( eval_exc_ )                 const override;
   LDA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const override;

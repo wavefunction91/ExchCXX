@@ -568,14 +568,14 @@ void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern,
     vrho_ref( len_vrho_buffer ),
     vsigma_ref( len_vsigma_buffer );
 
-  if( interface == TestInterface::EXC ) {
+  if( interface == TestInterface::EXC or interface == TestInterface::EXC_INC ) {
 
     if( func.is_lda() )
       func.eval_exc( npts, rho.data(), exc_ref.data() );
     else if( func.is_gga() )
       func.eval_exc( npts, rho.data(), sigma.data(), exc_ref.data() ); 
 
-  } else if( interface == TestInterface::EXC_VXC ) {
+  } else if( interface == TestInterface::EXC_VXC or interface == TestInterface::EXC_VXC_INC ) {
 
     if( func.is_lda() )
       func.eval_exc_vxc( npts, rho.data(), exc_ref.data(), vrho_ref.data() );
@@ -602,6 +602,20 @@ void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern,
   if( func.is_gga() )
     safe_cuda_cpy( sigma_device, sigma.data(), len_sigma_buffer );
 
+  const double alpha = 3.14;
+  const double fill_val_e = 2.;
+  const double fill_val_vr = 10.;
+  const double fill_val_vs = 50.;
+  
+  std::vector<double> 
+    exc( len_exc_buffer, fill_val_e ), vrho( len_vrho_buffer, fill_val_vr ),
+    vsigma( len_vsigma_buffer, fill_val_vs );
+
+  // H2D copy of initial values, tests clobber / increment
+  safe_cuda_cpy( exc_device, exc.data(), len_exc_buffer );
+  safe_cuda_cpy( vrho_device, vrho.data(), len_vrho_buffer );
+  if( func.is_gga() )
+    safe_cuda_cpy( vsigma_device, vsigma.data(), len_vsigma_buffer );
 
   // Evaluate functional on device
   cudaStream_t stream = 0;
@@ -613,6 +627,14 @@ void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern,
       func.eval_exc_device( npts, rho_device, sigma_device, exc_device, 
         stream );
 
+  } else if( interface == TestInterface::EXC_INC ) {
+
+    if( func.is_lda() )
+      func.eval_exc_inc_device( alpha, npts, rho_device, exc_device, stream );
+    else if( func.is_gga() )
+      func.eval_exc_inc_device( alpha, npts, rho_device, sigma_device, exc_device, 
+        stream );
+
   } else if( interface == TestInterface::EXC_VXC ) {
 
     if( func.is_lda() )
@@ -621,30 +643,49 @@ void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern,
       func.eval_exc_vxc_device( npts, rho_device, sigma_device, exc_device, 
         vrho_device, vsigma_device, stream );
 
+  } else if( interface == TestInterface::EXC_VXC_INC ) {
+
+    if( func.is_lda() )
+      func.eval_exc_vxc_inc_device( alpha, npts, rho_device, exc_device, 
+        vrho_device, stream );
+    else if( func.is_gga() )
+      func.eval_exc_vxc_inc_device( alpha, npts, rho_device, sigma_device, 
+        exc_device, vrho_device, vsigma_device, stream );
+
   }
 
   device_synchronize();
 
 
   // D2H of results
-  std::vector<double> 
-    exc( len_exc_buffer ), vrho( len_vrho_buffer ),
-    vsigma( len_vsigma_buffer );
-
   safe_cuda_cpy( exc.data(), exc_device, len_exc_buffer );
   safe_cuda_cpy( vrho.data(), vrho_device, len_vrho_buffer );
   if(func.is_gga()) 
     safe_cuda_cpy( vsigma.data(), vsigma_device, len_vsigma_buffer );
 
   // Check correctness
-  for( auto i = 0ul; i < len_exc_buffer; ++i )
-    CHECK( exc[i] == Approx(exc_ref[i]) );
+  if( interface == TestInterface::EXC_INC or interface == TestInterface::EXC_VXC_INC ) {
+    for( auto i = 0ul; i < len_exc_buffer; ++i )
+      CHECK( exc[i] == Approx(fill_val_e + alpha * exc_ref[i]) );
+  } else {
+    for( auto i = 0ul; i < len_exc_buffer; ++i )
+      CHECK( exc[i] == Approx(exc_ref[i]) );
+  }
 
-  if( interface == TestInterface::EXC_VXC ) {
+  if( interface == TestInterface::EXC_VXC_INC ) {
+
+    for( auto i = 0ul; i < len_vrho_buffer; ++i )
+      CHECK( vrho[i] == Approx(fill_val_vr + alpha * vrho_ref[i]) );
+    for( auto i = 0ul; i < len_vsigma_buffer; ++i )
+      CHECK( vsigma[i] == Approx(fill_val_vs + alpha * vsigma_ref[i]) );
+
+  } else if(interface == TestInterface::EXC_VXC)  {
+
     for( auto i = 0ul; i < len_vrho_buffer; ++i )
       CHECK( vrho[i] == Approx(vrho_ref[i]) );
     for( auto i = 0ul; i < len_vsigma_buffer; ++i )
       CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
+
   }
 
   cuda_free_all( rho_device, sigma_device, exc_device, vrho_device, vsigma_device );
@@ -696,6 +737,17 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
           Spin::Unpolarized );
     }
 
+    SECTION("EXC + INC ") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_INC, Backend::builtin, kern, 
+          Spin::Unpolarized );
+    }
+
+    SECTION("EXC + VXC + INC") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC_INC, Backend::builtin, kern, 
+          Spin::Unpolarized );
+    }
   }
 
 
