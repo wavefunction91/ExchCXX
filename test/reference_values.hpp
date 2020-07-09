@@ -23,6 +23,9 @@ struct gga_reference {
 lda_reference load_lda_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
 gga_reference load_gga_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
 
+lda_reference gen_lda_reference_values(ExchCXX::Backend, ExchCXX::Kernel, ExchCXX::Spin);
+gga_reference gen_gga_reference_values(ExchCXX::Backend, ExchCXX::Kernel, ExchCXX::Spin);
+
 std::pair<int,std::vector<double>> load_reference_density(ExchCXX::Spin);
 std::pair<int,std::vector<double>> load_reference_sigma(ExchCXX::Spin);
 

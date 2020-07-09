@@ -14,7 +14,10 @@
 
 enum class TestInterface {
   EXC,
-  EXC_VXC
+  EXC_VXC,
+
+  EXC_INC,
+  EXC_VXC_INC
 };
 
 enum class EvalType {

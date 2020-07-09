@@ -1,4 +1,5 @@
 #include "reference_values.hpp"
+#include <exchcxx/exchcxx.hpp>
 
 constexpr std::array rho = {0.1, 0.2, 0.3, 0.4, 0.5};
 constexpr std::array sigma = {0.2, 0.3, 0.4, 0.5, 0.6};
@@ -176,8 +177,45 @@ gga_reference load_gga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
 
 
 
+lda_reference gen_lda_reference_values(ExchCXX::Backend backend, 
+  ExchCXX::Kernel kern, ExchCXX::Spin polar) {
+  
+  using namespace ExchCXX;
+  lda_reference ref_vals;
+  std::tie( ref_vals.npts, ref_vals.rho ) = load_reference_density( polar );
 
+  XCKernel func( backend, kern, polar );
 
+  ref_vals.exc.resize( func.exc_buffer_len( ref_vals.npts ) );
+  ref_vals.vrho.resize( func.vrho_buffer_len( ref_vals.npts ) );
+
+  func.eval_exc_vxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.exc.data(),
+    ref_vals.vrho.data() );
+
+  return ref_vals;
+
+}
+
+gga_reference gen_gga_reference_values(ExchCXX::Backend backend, 
+  ExchCXX::Kernel kern, ExchCXX::Spin polar) {
+  
+  using namespace ExchCXX;
+  gga_reference ref_vals;
+  std::tie( ref_vals.npts, ref_vals.rho )   = load_reference_density( polar );
+  std::tie( ref_vals.npts, ref_vals.sigma ) = load_reference_sigma( polar );
+
+  XCKernel func( backend, kern, polar );
+
+  ref_vals.exc.resize( func.exc_buffer_len( ref_vals.npts ) );
+  ref_vals.vrho.resize( func.vrho_buffer_len( ref_vals.npts ) );
+  ref_vals.vsigma.resize( func.vsigma_buffer_len( ref_vals.npts ) );
+
+  func.eval_exc_vxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.sigma.data(), 
+    ref_vals.exc.data(), ref_vals.vrho.data(), ref_vals.vsigma.data() );
+
+  return ref_vals;
+
+}
 
 
 

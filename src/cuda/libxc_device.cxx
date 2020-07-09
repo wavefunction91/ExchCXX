@@ -221,9 +221,6 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 
 
 
-
-
-
 LDA_EXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_inc_device_ ) const {
   disabled_inc_interface();
 }

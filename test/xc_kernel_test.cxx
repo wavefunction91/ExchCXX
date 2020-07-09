@@ -161,16 +161,28 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
   // Create the kernel
   XCKernel func( backend, kern, polar );
 
+  const double alpha = 3.14;
+  const double fill_val_e = 2.;
+  const double fill_val_vr = 10.;
+  const double fill_val_vs = 50.;
+
+  const bool use_ref_values = 
+    (interface != TestInterface::EXC_INC) and
+    (interface != TestInterface::EXC_VXC_INC);
+
   // LDA XC Kernels
   if( func.is_lda() ) {
 
     // Get reference values
-    auto ref_vals = load_lda_reference_values( kern, polar );
+    auto ref_vals = use_ref_values ? 
+      load_lda_reference_values( kern, polar ) :
+      gen_lda_reference_values( backend,kern, polar );
+
     const auto& [npts, rho, exc_ref, vrho_ref] = ref_vals;
 
     // Allocate buffers
-    std::vector<double> exc( func.exc_buffer_len( npts ) );
-    std::vector<double> vrho( func.vrho_buffer_len( npts ) );
+    std::vector<double> exc( func.exc_buffer_len( npts ), fill_val_e );
+    std::vector<double> vrho( func.vrho_buffer_len( npts ), fill_val_vr );
 
     if( interface == TestInterface::EXC ) {
 
@@ -180,6 +192,17 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
       // Check correctness
       for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
         CHECK( exc[i] == Approx(exc_ref[i]) );
+
+    }
+
+    if( interface == TestInterface::EXC_INC ) {
+
+      // Evaluate XC kernel
+      func.eval_exc_inc( alpha, npts, rho.data(), exc.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(fill_val_e + alpha * exc_ref[i]) );
 
     }
 
@@ -196,17 +219,33 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
 
     }
 
+    if( interface == TestInterface::EXC_VXC_INC ) {
+
+      // Evaluate XC kernel
+      func.eval_exc_vxc_inc( alpha, npts, rho.data(), exc.data(), vrho.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(fill_val_e + alpha * exc_ref[i]) );
+      for( auto i = 0ul; i < func.vrho_buffer_len(npts); ++i )
+        CHECK( vrho[i] == Approx(fill_val_vr + alpha * vrho_ref[i]) );
+
+    }
+
   // GGA XC Kernels
   } else if( func.is_gga() ) {
 
     // Get reference values
-    auto ref_vals = load_gga_reference_values( kern, polar );
+    auto ref_vals = use_ref_values ? 
+      load_gga_reference_values( kern, polar ) :
+      gen_gga_reference_values( backend,kern, polar );
+
     const auto& [npts, rho, sigma, exc_ref, vrho_ref, vsigma_ref] = ref_vals;
 
     // Allocate buffers
-    std::vector<double> exc( func.exc_buffer_len( npts ) );
-    std::vector<double> vrho( func.vrho_buffer_len( npts ) );
-    std::vector<double> vsigma( func.vsigma_buffer_len( npts ) );
+    std::vector<double> exc( func.exc_buffer_len( npts ), fill_val_e );
+    std::vector<double> vrho( func.vrho_buffer_len( npts ), fill_val_vr );
+    std::vector<double> vsigma( func.vsigma_buffer_len( npts ), fill_val_vs );
 
     if( interface == TestInterface::EXC ) {
 
@@ -216,6 +255,17 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
       // Check correctness
       for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
         CHECK( exc[i] == Approx(exc_ref[i]) );
+
+    }
+
+    if( interface == TestInterface::EXC_INC ) {
+
+      // Evaluate XC kernel
+      func.eval_exc_inc( alpha, npts, rho.data(), sigma.data(), exc.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(fill_val_e + alpha * exc_ref[i]) );
 
     }
 
@@ -235,6 +285,21 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
 
     }
     
+    if( interface == TestInterface::EXC_VXC_INC ) {
+
+      // Evaluate XC kernel
+      func.eval_exc_vxc_inc( alpha, npts, rho.data(), sigma.data(), exc.data(), 
+        vrho.data(), vsigma.data() );
+
+      // Check correctness
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+        CHECK( exc[i] == Approx(fill_val_e + alpha * exc_ref[i]) );
+      for( auto i = 0ul; i < func.vrho_buffer_len(npts); ++i )
+        CHECK( vrho[i] == Approx(fill_val_vr + alpha * vrho_ref[i]) );
+      for( auto i = 0ul; i < func.vsigma_buffer_len(npts); ++i )
+        CHECK( vsigma[i] == Approx(fill_val_vs + alpha * vsigma_ref[i]) );
+
+    }
 
   }
 
@@ -411,6 +476,23 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
     for( auto kern : builtin_supported_kernels )
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Zero,
         kern, Spin::Unpolarized );
+  }
+
+}
+
+
+TEST_CASE( "Scale and Increment Interface", "[xc-inc]" ) { 
+
+  SECTION( "Builtin Unpolarized EXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      kernel_test( TestInterface::EXC_INC, Backend::builtin, kern,
+        Spin::Unpolarized );
+  }
+
+  SECTION( "Builtin Unpolarized EXC + VXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      kernel_test( TestInterface::EXC_VXC_INC, Backend::builtin, kern,
+        Spin::Unpolarized );
   }
 
 }

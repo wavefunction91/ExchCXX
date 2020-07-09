@@ -98,6 +98,15 @@ public:
     pimpl_->eval_exc_vxc( std::forward<Args>(args)... );
   }
 
+  template <typename... Args>
+  void eval_exc_inc( Args&&... args ) const {
+    pimpl_->eval_exc_inc( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc( Args&&... args ) const {
+    pimpl_->eval_exc_vxc_inc( std::forward<Args>(args)... );
+  }
 
   // Device code
 #ifdef EXCHCXX_ENABLE_DEVICE
@@ -110,6 +119,16 @@ public:
   template <typename... Args>
   void eval_exc_vxc_device( Args&&... args ) const {
     pimpl_->eval_exc_vxc_device( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_exc_inc_device( Args&&... args ) const {
+    pimpl_->eval_exc_inc_device( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc_device( Args&&... args ) const {
+    pimpl_->eval_exc_vxc_inc_device( std::forward<Args>(args)... );
   }
 
 #endif
