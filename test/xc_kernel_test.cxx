@@ -462,7 +462,8 @@ void device_synchronize() {
 }
 
 
-void test_cuda_interface( Backend backend, Kernel kern, Spin polar ) {
+void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern, 
+  Spin polar ) {
 
   auto [npts_lda, rho]   = load_reference_density( polar );
   auto [npts_gga, sigma] = load_reference_sigma  ( polar );
@@ -485,11 +486,26 @@ void test_cuda_interface( Backend backend, Kernel kern, Spin polar ) {
     vrho_ref( len_vrho_buffer ),
     vsigma_ref( len_vsigma_buffer );
 
-  if( func.is_lda() )
-    func.eval_exc_vxc( npts, rho.data(), exc_ref.data(), vrho_ref.data() );
-  else if( func.is_gga() )
-    func.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
-      vrho_ref.data(), vsigma_ref.data() );
+  if( interface == TestInterface::EXC ) {
+
+    if( func.is_lda() )
+      func.eval_exc( npts, rho.data(), exc_ref.data() );
+    else if( func.is_gga() )
+      func.eval_exc( npts, rho.data(), sigma.data(), exc_ref.data() ); 
+
+  } else if( interface == TestInterface::EXC_VXC ) {
+
+    if( func.is_lda() )
+      func.eval_exc_vxc( npts, rho.data(), exc_ref.data(), vrho_ref.data() );
+    else if( func.is_gga() )
+      func.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(), 
+        vrho_ref.data(), vsigma_ref.data() );
+  
+  }   
+
+
+
+
 
 
   // Allocate device memory
@@ -507,11 +523,23 @@ void test_cuda_interface( Backend backend, Kernel kern, Spin polar ) {
 
   // Evaluate functional on device
   cudaStream_t stream = 0;
-  if( func.is_lda() )
-    func.eval_exc_vxc_device( npts, rho_device, exc_device, vrho_device, stream );
-  else if( func.is_gga() )
-    func.eval_exc_vxc_device( npts, rho_device, sigma_device, exc_device, 
-      vrho_device, vsigma_device, stream );
+  if( interface == TestInterface::EXC ) {
+  
+    if( func.is_lda() )
+      func.eval_exc_device( npts, rho_device, exc_device, stream );
+    else if( func.is_gga() )
+      func.eval_exc_device( npts, rho_device, sigma_device, exc_device, 
+        stream );
+
+  } else if( interface == TestInterface::EXC_VXC ) {
+
+    if( func.is_lda() )
+      func.eval_exc_vxc_device( npts, rho_device, exc_device, vrho_device, stream );
+    else if( func.is_gga() )
+      func.eval_exc_vxc_device( npts, rho_device, sigma_device, exc_device, 
+        vrho_device, vsigma_device, stream );
+
+  }
 
   device_synchronize();
 
@@ -529,10 +557,13 @@ void test_cuda_interface( Backend backend, Kernel kern, Spin polar ) {
   // Check correctness
   for( auto i = 0ul; i < len_exc_buffer; ++i )
     CHECK( exc[i] == Approx(exc_ref[i]) );
-  for( auto i = 0ul; i < len_vrho_buffer; ++i )
-    CHECK( vrho[i] == Approx(vrho_ref[i]) );
-  for( auto i = 0ul; i < len_vsigma_buffer; ++i )
-    CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
+
+  if( interface == TestInterface::EXC_VXC ) {
+    for( auto i = 0ul; i < len_vrho_buffer; ++i )
+      CHECK( vrho[i] == Approx(vrho_ref[i]) );
+    for( auto i = 0ul; i < len_vsigma_buffer; ++i )
+      CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
+  }
 
   cuda_free_all( rho_device, sigma_device, exc_device, vrho_device, vsigma_device );
 }
@@ -543,21 +574,46 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
 
   SECTION( "Libxc Functionals" ) {
 
-    SECTION( "LDA Functionals" ) {
+    SECTION( "LDA Functionals: EXC" ) {
       for( auto kern : lda_kernels )
-        test_cuda_interface( Backend::libxc, kern, Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC, Backend::libxc, kern, 
+          Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals" ) {
+    SECTION( "LDA Functionals: EXC + VXC" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, Backend::libxc, kern, 
+          Spin::Unpolarized );
+    }
+
+    SECTION( "GGA Functionals: EXC" ) {
       for( auto kern : gga_kernels )
-        test_cuda_interface( Backend::libxc, kern, Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC, Backend::libxc, kern, 
+          Spin::Unpolarized );
+    }
+
+    SECTION( "GGA Functionals: EXC + VXC" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, Backend::libxc, kern, 
+          Spin::Unpolarized );
     }
 
   }
 
   SECTION( "Builtin Functionals" ) {
-    for( auto kern : builtin_supported_kernels )
-      test_cuda_interface( Backend::builtin, kern, Spin::Unpolarized );
+
+    SECTION("EXC") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC, Backend::builtin, kern, 
+          Spin::Unpolarized );
+    }
+
+    SECTION("EXC + VXC") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, Backend::builtin, kern, 
+          Spin::Unpolarized );
+    }
+
   }
 
 
