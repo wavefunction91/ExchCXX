@@ -35,30 +35,42 @@ public:
   inline auto polar() const noexcept { return polar_; }
 
   // LDA interface
-  virtual LDA_EXC_GENERATOR( eval_exc )         const;
-  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
+  virtual LDA_EXC_GENERATOR( eval_exc )                 const;
+  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc )         const;
+  virtual LDA_EXC_INC_GENERATOR( eval_exc_inc )         const;
+  virtual LDA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc ) const;
 
   // GGA interface
-  virtual GGA_EXC_GENERATOR( eval_exc )         const;
-  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
+  virtual GGA_EXC_GENERATOR( eval_exc )                 const;
+  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc )         const;
+  virtual GGA_EXC_INC_GENERATOR( eval_exc_inc )         const;
+  virtual GGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc ) const;
 
   // MGGA interface
-  virtual MGGA_EXC_GENERATOR( eval_exc )         const;
-  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
+  virtual MGGA_EXC_GENERATOR( eval_exc )                 const;
+  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc )         const;
+  virtual MGGA_EXC_INC_GENERATOR( eval_exc_inc )         const;
+  virtual MGGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc ) const;
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
   // LDA interface
-  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device )         const;
-  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
+  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device )                 const;
+  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device )         const;
+  virtual LDA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device )         const;
+  virtual LDA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device ) const;
 
   // GGA interface
-  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device )         const;
-  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
+  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device )                 const;
+  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device )         const;
+  virtual GGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device )         const;
+  virtual GGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device ) const;
 
   // MGGA interface
-  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device )         const;
-  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
+  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device )                 const;
+  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device )         const;
+  virtual MGGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device )         const;
+  virtual MGGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device ) const;
 
 #endif
 
@@ -75,9 +87,19 @@ template <typename KernelType>
 LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper );
 
 template <typename KernelType>
+LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper );
+template <typename KernelType>
+LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper );
+
+template <typename KernelType>
 GGA_EXC_GENERATOR( host_eval_exc_helper );
 template <typename KernelType>
 GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper );
+
+template <typename KernelType>
+GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper );
+template <typename KernelType>
+GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper );
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
@@ -87,9 +109,19 @@ template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper );
 
 template <typename KernelType>
+LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper );
+template <typename KernelType>
+LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper );
+
+template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper );
 template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper );
+
+template <typename KernelType>
+GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper );
+template <typename KernelType>
+GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper );
 
 #endif
 
@@ -122,11 +154,21 @@ struct BuiltinKernelImpl<
   inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc, 
     host_eval_exc_vxc_helper<KernelType>, const override );
 
+  inline FORWARD_XC_INC_ARGS( LDA, EXC, eval_exc_inc, 
+    host_eval_exc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_INC_ARGS( LDA, EXC_VXC, eval_exc_vxc_inc, 
+    host_eval_exc_vxc_inc_helper<KernelType>, const override );
+
 #ifdef EXCHCXX_ENABLE_DEVICE
   inline FORWARD_XC_ARGS_DEVICE( LDA, EXC, eval_exc_device, 
     device_eval_exc_helper<KernelType>, const override );
   inline FORWARD_XC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_device, 
     device_eval_exc_vxc_helper<KernelType>, const override );
+
+  inline FORWARD_XC_INC_ARGS_DEVICE( LDA, EXC, eval_exc_inc_device, 
+    device_eval_exc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_INC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_inc_device, 
+    device_eval_exc_vxc_inc_helper<KernelType>, const override );
 #endif
 };
 
@@ -157,11 +199,21 @@ struct BuiltinKernelImpl<
   inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc, 
     host_eval_exc_vxc_helper<KernelType>, const override );
 
+  inline FORWARD_XC_INC_ARGS( GGA, EXC, eval_exc_inc, 
+    host_eval_exc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_INC_ARGS( GGA, EXC_VXC, eval_exc_vxc_inc, 
+    host_eval_exc_vxc_inc_helper<KernelType>, const override );
+
 #ifdef EXCHCXX_ENABLE_DEVICE
   inline FORWARD_XC_ARGS_DEVICE( GGA, EXC, eval_exc_device, 
     device_eval_exc_helper<KernelType>, const override );
   inline FORWARD_XC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_device, 
     device_eval_exc_vxc_helper<KernelType>, const override );
+
+  inline FORWARD_XC_INC_ARGS_DEVICE( GGA, EXC, eval_exc_inc_device, 
+    device_eval_exc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_INC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_inc_device, 
+    device_eval_exc_vxc_inc_helper<KernelType>, const override );
 #endif
 };
 

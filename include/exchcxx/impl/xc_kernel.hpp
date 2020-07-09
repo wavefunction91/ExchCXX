@@ -41,8 +41,18 @@ struct XCKernelImpl {
   }
 
   template <typename... Args>
+  void eval_exc_inc( Args&&... args ) {
+    eval_exc_inc_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
   void eval_exc_vxc( Args&&... args ) {
     eval_exc_vxc_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc( Args&&... args ) {
+    eval_exc_vxc_inc_( std::forward<Args>(args)... );
   }
  
        
@@ -56,8 +66,18 @@ struct XCKernelImpl {
   }
 
   template <typename... Args>
+  void eval_exc_inc_device( Args&&... args ) {
+    eval_exc_inc_device_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
   void eval_exc_vxc_device( Args&&... args ) {
     eval_exc_vxc_device_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc_device( Args&&... args ) {
+    eval_exc_vxc_inc_device_( std::forward<Args>(args)... );
   }
 
 #endif
@@ -79,30 +99,42 @@ private:
   virtual double hyb_exx_() const noexcept = 0;
 
   // LDA interface
-  virtual LDA_EXC_GENERATOR( eval_exc_ )         const = 0;
-  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const = 0;
+  virtual LDA_EXC_GENERATOR( eval_exc_ )                 const = 0;
+  virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const = 0;
+  virtual LDA_EXC_INC_GENERATOR( eval_exc_inc_ )         const = 0;
+  virtual LDA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const = 0;
 
   // GGA interface
-  virtual GGA_EXC_GENERATOR( eval_exc_ )         const = 0;
-  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const = 0;
+  virtual GGA_EXC_GENERATOR( eval_exc_ )                 const = 0;
+  virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const = 0;
+  virtual GGA_EXC_INC_GENERATOR( eval_exc_inc_ )         const = 0;
+  virtual GGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const = 0;
 
   // MGGA interface
-  virtual MGGA_EXC_GENERATOR( eval_exc_ )         const = 0;
-  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_ ) const = 0;
+  virtual MGGA_EXC_GENERATOR( eval_exc_ )                 const = 0;
+  virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const = 0;
+  virtual MGGA_EXC_INC_GENERATOR( eval_exc_inc_ )         const = 0;
+  virtual MGGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const = 0;
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
   // LDA interface
-  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const = 0;
-  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const = 0;
+  virtual LDA_EXC_GENERATOR_DEVICE( eval_exc_device_ )                 const = 0;
+  virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const = 0;
+  virtual LDA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const = 0;
+  virtual LDA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const = 0;
 
   // GGA interface
-  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const = 0;
-  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const = 0;
+  virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )                 const = 0;
+  virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const = 0;
+  virtual GGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const = 0;
+  virtual GGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const = 0;
 
   // MGGA interface
-  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )         const = 0;
-  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ ) const = 0;
+  virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )                 const = 0;
+  virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const = 0;
+  virtual MGGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const = 0;
+  virtual MGGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const = 0;
 
 #endif
     

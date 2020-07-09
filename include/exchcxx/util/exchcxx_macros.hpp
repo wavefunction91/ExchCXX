@@ -19,10 +19,17 @@
 #define RET_GENERATOR( APPROX, TYPE, func ) \
   func( APPROX ## _IPARAMS , APPROX ## _OPARAMS_ ## TYPE )
 
+#define RET_INC_GENERATOR( APPROX, TYPE, func ) \
+  func( double scal_fact, APPROX ## _IPARAMS , APPROX ## _OPARAMS_ ## TYPE )
+
 #ifdef EXCHCXX_ENABLE_DEVICE
 
   #define RET_GENERATOR_DEVICE( APPROX, TYPE, func ) \
     func( DEV_ ## APPROX ## _IPARAMS , DEV_ ## APPROX ## _OPARAMS_ ## TYPE, \
+          DEVICE_PARAMS )
+
+  #define RET_INC_GENERATOR_DEVICE( APPROX, TYPE, func ) \
+    func( double scal_fact, DEV_ ## APPROX ## _IPARAMS , DEV_ ## APPROX ## _OPARAMS_ ## TYPE, \
           DEVICE_PARAMS )
 
 #endif
@@ -41,6 +48,18 @@
 #define LDA_FXC_GENERATOR(func)            void RET_LDA_FXC_GENERATOR(func)
 #define LDA_KXC_GENERATOR(func)            void RET_LDA_KXC_GENERATOR(func)
 #define LDA_EXC_VXC_GENERATOR(func)        void RET_LDA_EXC_VXC_GENERATOR(func)
+
+#define RET_LDA_EXC_INC_GENERATOR(func)     RET_INC_GENERATOR( LDA, EXC,     func )
+#define RET_LDA_VXC_INC_GENERATOR(func)     RET_INC_GENERATOR( LDA, VXC,     func )
+#define RET_LDA_FXC_INC_GENERATOR(func)     RET_INC_GENERATOR( LDA, FXC,     func )
+#define RET_LDA_KXC_INC_GENERATOR(func)     RET_INC_GENERATOR( LDA, KXC,     func )
+#define RET_LDA_EXC_VXC_INC_GENERATOR(func) RET_INC_GENERATOR( LDA, EXC_VXC, func )
+
+#define LDA_EXC_INC_GENERATOR(func)            void RET_LDA_EXC_INC_GENERATOR(func)
+#define LDA_VXC_INC_GENERATOR(func)            void RET_LDA_VXC_INC_GENERATOR(func)
+#define LDA_FXC_INC_GENERATOR(func)            void RET_LDA_FXC_INC_GENERATOR(func)
+#define LDA_KXC_INC_GENERATOR(func)            void RET_LDA_KXC_INC_GENERATOR(func)
+#define LDA_EXC_VXC_INC_GENERATOR(func)        void RET_LDA_EXC_VXC_INC_GENERATOR(func)
 
 
 #ifdef EXCHCXX_ENABLE_DEVICE
@@ -68,6 +87,29 @@
   #define LDA_EXC_VXC_GENERATOR_DEVICE(func) \
     void RET_LDA_EXC_VXC_GENERATOR_DEVICE(func)
 
+  #define RET_LDA_EXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( LDA, EXC, func )
+  #define RET_LDA_VXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( LDA, VXC, func )
+  #define RET_LDA_FXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( LDA, FXC, func )
+  #define RET_LDA_KXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( LDA, KXC, func )
+  #define RET_LDA_EXC_VXC_INC_GENERATOR_DEVICE(func) \
+    RET_INC_GENERATOR_DEVICE( LDA, EXC_VXC, func )
+  
+
+  #define LDA_EXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_LDA_EXC_INC_GENERATOR_DEVICE(func)
+  #define LDA_VXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_LDA_VXC_INC_GENERATOR_DEVICE(func)
+  #define LDA_FXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_LDA_FXC_INC_GENERATOR_DEVICE(func)
+  #define LDA_KXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_LDA_KXC_INC_GENERATOR_DEVICE(func)
+  #define LDA_EXC_VXC_INC_GENERATOR_DEVICE(func) \
+    void RET_LDA_EXC_VXC_INC_GENERATOR_DEVICE(func)
+
 #endif
 
 
@@ -84,6 +126,18 @@
 #define GGA_FXC_GENERATOR(func)            void RET_GGA_FXC_GENERATOR(func)
 #define GGA_KXC_GENERATOR(func)            void RET_GGA_KXC_GENERATOR(func)
 #define GGA_EXC_VXC_GENERATOR(func)        void RET_GGA_EXC_VXC_GENERATOR(func)
+
+#define RET_GGA_EXC_INC_GENERATOR(func)     RET_INC_GENERATOR( GGA, EXC,     func )
+#define RET_GGA_VXC_INC_GENERATOR(func)     RET_INC_GENERATOR( GGA, VXC,     func )
+#define RET_GGA_FXC_INC_GENERATOR(func)     RET_INC_GENERATOR( GGA, FXC,     func )
+#define RET_GGA_KXC_INC_GENERATOR(func)     RET_INC_GENERATOR( GGA, KXC,     func )
+#define RET_GGA_EXC_VXC_INC_GENERATOR(func) RET_INC_GENERATOR( GGA, EXC_VXC, func )
+
+#define GGA_EXC_INC_GENERATOR(func)            void RET_GGA_EXC_INC_GENERATOR(func)
+#define GGA_VXC_INC_GENERATOR(func)            void RET_GGA_VXC_INC_GENERATOR(func)
+#define GGA_FXC_INC_GENERATOR(func)            void RET_GGA_FXC_INC_GENERATOR(func)
+#define GGA_KXC_INC_GENERATOR(func)            void RET_GGA_KXC_INC_GENERATOR(func)
+#define GGA_EXC_VXC_INC_GENERATOR(func)        void RET_GGA_EXC_VXC_INC_GENERATOR(func)
 
 
 #ifdef EXCHCXX_ENABLE_DEVICE
@@ -111,6 +165,29 @@
   #define GGA_EXC_VXC_GENERATOR_DEVICE(func) \
     void RET_GGA_EXC_VXC_GENERATOR_DEVICE(func)
 
+  #define RET_GGA_EXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( GGA, EXC, func )
+  #define RET_GGA_VXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( GGA, VXC, func )
+  #define RET_GGA_FXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( GGA, FXC, func )
+  #define RET_GGA_KXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( GGA, KXC, func )
+  #define RET_GGA_EXC_VXC_INC_GENERATOR_DEVICE(func) \
+    RET_INC_GENERATOR_DEVICE( GGA, EXC_VXC, func )
+
+
+  #define GGA_EXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_GGA_EXC_INC_GENERATOR_DEVICE(func)
+  #define GGA_VXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_GGA_VXC_INC_GENERATOR_DEVICE(func)
+  #define GGA_FXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_GGA_FXC_INC_GENERATOR_DEVICE(func)
+  #define GGA_KXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_GGA_KXC_INC_GENERATOR_DEVICE(func)
+  #define GGA_EXC_VXC_INC_GENERATOR_DEVICE(func) \
+    void RET_GGA_EXC_VXC_INC_GENERATOR_DEVICE(func)
+
 #endif
 
 
@@ -123,6 +200,14 @@
 #define MGGA_EXC_GENERATOR(func)            void RET_MGGA_EXC_GENERATOR(func)
 #define MGGA_VXC_GENERATOR(func)            void RET_MGGA_VXC_GENERATOR(func)
 #define MGGA_EXC_VXC_GENERATOR(func)        void RET_MGGA_EXC_VXC_GENERATOR(func)
+
+#define RET_MGGA_EXC_INC_GENERATOR(func)     RET_INC_GENERATOR( MGGA, EXC,     func )
+#define RET_MGGA_VXC_INC_GENERATOR(func)     RET_INC_GENERATOR( MGGA, VXC,     func )
+#define RET_MGGA_EXC_VXC_INC_GENERATOR(func) RET_INC_GENERATOR( MGGA, EXC_VXC, func )
+
+#define MGGA_EXC_INC_GENERATOR(func)            void RET_MGGA_EXC_INC_GENERATOR(func)
+#define MGGA_VXC_INC_GENERATOR(func)            void RET_MGGA_VXC_INC_GENERATOR(func)
+#define MGGA_EXC_VXC_INC_GENERATOR(func)        void RET_MGGA_EXC_VXC_INC_GENERATOR(func)
 
 
 #ifdef EXCHCXX_ENABLE_DEVICE
@@ -142,6 +227,22 @@
   #define MGGA_EXC_VXC_GENERATOR_DEVICE(func) \
     void RET_MGGA_EXC_VXC_GENERATOR_DEVICE(func)
 
+
+  #define RET_MGGA_EXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( MGGA, EXC, func )
+  #define RET_MGGA_VXC_INC_GENERATOR_DEVICE(func)     \
+    RET_INC_GENERATOR_DEVICE( MGGA, VXC, func )
+  #define RET_MGGA_EXC_VXC_INC_GENERATOR_DEVICE(func) \
+    RET_INC_GENERATOR_DEVICE( MGGA, EXC_VXC, func )
+
+
+  #define MGGA_EXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_MGGA_EXC_INC_GENERATOR_DEVICE(func)
+  #define MGGA_VXC_INC_GENERATOR_DEVICE(func)     \
+    void RET_MGGA_VXC_INC_GENERATOR_DEVICE(func)
+  #define MGGA_EXC_VXC_INC_GENERATOR_DEVICE(func) \
+    void RET_MGGA_EXC_VXC_INC_GENERATOR_DEVICE(func)
+
 #endif
 
 
@@ -155,6 +256,13 @@
     );                                                             \
   }
 
+#define FORWARD_XC_INC_ARGS(APPROX, TYPE, func, finternal, qualifiers) \
+  APPROX ## _ ## TYPE ## _INC_GENERATOR(func) qualifiers {             \
+    finternal( scal_fact, APPROX ## _IPARAMS_NOTYPE ,                  \
+               APPROX ## _OPARAMS_ ## TYPE ## _NOTYPE                  \
+    );                                                                 \
+  }
+
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
@@ -163,6 +271,13 @@
       finternal( APPROX ## _IPARAMS_NOTYPE ,                                \
                  APPROX ## _OPARAMS_ ## TYPE ## _NOTYPE,                    \
                  DEVICE_PARAMS_NOTYPE );                                    \
+    }
+
+  #define FORWARD_XC_INC_ARGS_DEVICE(APPROX, TYPE, func, finternal, qualifiers) \
+    APPROX ## _ ## TYPE ## _INC_GENERATOR_DEVICE(func) qualifiers {             \
+      finternal( scal_fact, APPROX ## _IPARAMS_NOTYPE ,                         \
+                 APPROX ## _OPARAMS_ ## TYPE ## _NOTYPE,                        \
+                 DEVICE_PARAMS_NOTYPE );                                        \
     }
 
 #endif

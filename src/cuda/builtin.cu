@@ -38,6 +38,35 @@ __global__ LDA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_kernel ) {
 }
 
 template <typename KernelType>
+__global__ LDA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_kernel ) {
+
+  using traits = kernel_traits<KernelType>;
+  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+
+  double e;
+  if( tid < N ) {
+    traits::eval_exc_unpolar( rho[tid], e );
+    eps[tid] += scal_fact * e;
+  }
+
+}
+
+template <typename KernelType>
+__global__ LDA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_kernel ) {
+
+  using traits = kernel_traits<KernelType>;
+  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+
+  double e,v;
+  if( tid < N ) {
+    traits::eval_exc_vxc_unpolar( rho[tid], e, v );
+    eps[tid] += scal_fact * e;
+    vxc[tid] += scal_fact * v;
+  }
+
+}
+
+template <typename KernelType>
 __global__ GGA_EXC_GENERATOR( device_eval_exc_helper_kernel ) {
 
   using traits = kernel_traits<KernelType>;
@@ -61,6 +90,35 @@ __global__ GGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_kernel ) {
 }
 
 
+template <typename KernelType>
+__global__ GGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_kernel ) {
+
+  using traits = kernel_traits<KernelType>;
+  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+
+  double e;
+  if( tid < N ) {
+    traits::eval_exc_unpolar( rho[tid], sigma[tid], e );
+    eps[tid] += scal_fact * e;
+  }
+
+}
+
+template <typename KernelType>
+__global__ GGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_kernel ) {
+
+  using traits = kernel_traits<KernelType>;
+  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+
+  double e, vr, vs;
+  if( tid < N ) {
+    traits::eval_exc_vxc_unpolar( rho[tid], sigma[tid], e, vr, vs );
+    eps[tid]    += scal_fact * e;
+    vrho[tid]   += scal_fact * vr;
+    vsigma[tid] += scal_fact * vs;
+  }
+
+}
 
 
 template <typename KernelType>
@@ -81,6 +139,28 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper ) {
   dim3 blocks( div_ceil( N, threads.x) );
   device_eval_exc_vxc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, eps, vxc
+  );
+
+}
+
+template <typename KernelType>
+LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper ) {
+
+  dim3 threads(32);
+  dim3 blocks( div_ceil( N, threads.x) );
+  device_eval_exc_inc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
+    scal_fact, N, rho, eps
+  );
+
+}
+
+template <typename KernelType>
+LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper ) {
+
+  dim3 threads(32);
+  dim3 blocks( div_ceil( N, threads.x) );
+  device_eval_exc_vxc_inc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
+    scal_fact, N, rho, eps, vxc
   );
 
 }
@@ -111,13 +191,41 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper ) {
 
 }
 
+
+template <typename KernelType>
+GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper ) {
+
+  dim3 threads(32);
+  dim3 blocks( div_ceil( N, threads.x) );
+  device_eval_exc_inc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
+    scal_fact, N, rho, sigma, eps
+  );
+
+}
+
+template <typename KernelType>
+GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper ) {
+
+  dim3 threads(32);
+  dim3 blocks( div_ceil( N, threads.x) );
+
+  device_eval_exc_vxc_inc_helper_kernel<KernelType><<<blocks,threads,0,stream>>>(
+    scal_fact, N, rho, sigma, eps, vrho, vsigma
+  );
+
+}
+
 #define LDA_GENERATE_DEVICE_HELPERS(KERN) \
   template LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper<KERN> ); \
   template LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper<KERN> ); \
+  template LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper<KERN> ); \
+  template LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper<KERN> ); 
 
 #define GGA_GENERATE_DEVICE_HELPERS(KERN) \
   template GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper<KERN> ); \
   template GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper<KERN> ); \
+  template GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper<KERN> ); \
+  template GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper<KERN> ); 
 
 LDA_GENERATE_DEVICE_HELPERS( BuiltinSlaterExchange );
 

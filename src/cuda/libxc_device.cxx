@@ -1,5 +1,5 @@
 #include "libxc_common.hpp"
-
+#include <exchcxx/impl/builtin/util.hpp>
 //#include <functionals.cuh>
 
 void throw_if_fail( cudaError_t stat, std::string msg ) {
@@ -216,6 +216,36 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
   send_to_device( vtau,   vtau_host.data(),   len_vtau  , stream );
   stream_sync( stream ); // Lifetime of host vectors
 
+}
+
+
+
+
+
+
+
+LDA_EXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_inc_device_ ) const {
+  disabled_inc_interface();
+}
+
+LDA_EXC_VXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_inc_device_ ) const {
+  disabled_inc_interface();
+}
+
+GGA_EXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_inc_device_ ) const {
+  disabled_inc_interface();
+}
+
+GGA_EXC_VXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_inc_device_ ) const {
+  disabled_inc_interface();
+}
+
+MGGA_EXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_inc_device_ ) const {
+  disabled_inc_interface();
+}
+
+MGGA_EXC_VXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_inc_device_ ) const {
+  disabled_inc_interface();
 }
 
 }

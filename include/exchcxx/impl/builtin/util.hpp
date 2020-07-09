@@ -18,6 +18,10 @@ inline static void disabled_mgga_interface() {
   throw std::runtime_error("MGGA Interface is disabled for the specified kernel");
 }
 
+inline static void disabled_inc_interface() {
+  throw std::runtime_error("Scale and Increment Interface is disabled for the specified kernel / backend");
+}
+
 #ifdef EXCHCXX_ENABLE_DEVICE 
 inline static void disabled_lda_device_interface() {
   throw std::runtime_error("LDA Device Interface is disabled for the specified kernel");
@@ -29,6 +33,10 @@ inline static void disabled_gga_device_interface() {
 
 inline static void disabled_mgga_device_interface() {
   throw std::runtime_error("MGGA Device Interface is disabled for the specified kernel");
+}
+
+inline static void disabled_inc_device_interface() {
+  throw std::runtime_error("Scale and Increment Interface is disabled for the specified kernel / backend");
 }
 #endif
 

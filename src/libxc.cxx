@@ -1,4 +1,6 @@
 #include "libxc_common.hpp"
+
+#include <exchcxx/impl/builtin/util.hpp>
 namespace ExchCXX {
 
 
@@ -148,6 +150,15 @@ LDA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 }
 
 
+LDA_EXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_inc_ ) const {
+  disabled_inc_interface();
+}
+
+LDA_EXC_VXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_inc_ ) const {
+  disabled_inc_interface();
+}
+
+
 // GGA interface
 GGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 
@@ -164,6 +175,14 @@ GGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
   assert( is_gga() );
   xc_gga_exc_vxc( &kernel_, N, rho, sigma, eps, vrho, vsigma );
 
+}
+
+GGA_EXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_inc_ ) const {
+  disabled_inc_interface();
+}
+
+GGA_EXC_VXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_inc_ ) const {
+  disabled_inc_interface();
 }
 
   
@@ -183,6 +202,15 @@ MGGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
   assert( is_mgga() );
   xc_mgga_exc_vxc( &kernel_, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau );
 
+}
+
+
+MGGA_EXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_inc_ ) const {
+  disabled_inc_interface();
+}
+
+MGGA_EXC_VXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_inc_ ) const {
+  disabled_inc_interface();
 }
 
 
