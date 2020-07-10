@@ -13,10 +13,12 @@ struct BuiltinSlaterExchange;
 struct BuiltinVWN3;
 struct BuiltinVWN_RPA;
 
+struct BuiltinB88;
 struct BuiltinLYP;
 struct BuiltinPBE_X;
 struct BuiltinPBE_C;
 
+struct BuiltinB3LYP;
 struct BuiltinPBE0;
 
 

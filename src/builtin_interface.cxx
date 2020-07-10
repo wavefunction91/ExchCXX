@@ -19,14 +19,24 @@ std::unique_ptr<BuiltinKernel>
     return std::make_unique<BuiltinVWN3>( polar );
   else if( kern == Kernel::VWN5 )
     return std::make_unique<BuiltinVWN_RPA>( polar );
+
+
+  else if( kern == Kernel::B88 )
+    return std::make_unique<BuiltinB88>( polar );
   else if( kern == Kernel::LYP )
     return std::make_unique<BuiltinLYP>( polar );
   else if( kern == Kernel::PBE_X )
     return std::make_unique<BuiltinPBE_X>( polar );
   else if( kern == Kernel::PBE_C )
     return std::make_unique<BuiltinPBE_C>( polar );
+
+
   else if( kern == Kernel::PBE0 )
     return std::make_unique<BuiltinPBE0>( polar );
+  else if( kern == Kernel::B3LYP )
+    return std::make_unique<BuiltinB3LYP>( polar );
+
+
   else
     throw std::runtime_error("Specified kernel does not have a builtin implementation");
 
