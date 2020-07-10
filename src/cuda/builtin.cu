@@ -228,6 +228,8 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper ) {
   template GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper<KERN> ); 
 
 LDA_GENERATE_DEVICE_HELPERS( BuiltinSlaterExchange );
+LDA_GENERATE_DEVICE_HELPERS( BuiltinVWN3 );
+LDA_GENERATE_DEVICE_HELPERS( BuiltinVWN_RPA );
 
 GGA_GENERATE_DEVICE_HELPERS( BuiltinLYP   );
 GGA_GENERATE_DEVICE_HELPERS( BuiltinPBE_X );

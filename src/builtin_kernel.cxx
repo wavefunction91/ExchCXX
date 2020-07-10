@@ -213,6 +213,8 @@ GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper ) {
   template GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper<KERN> ); 
 
 LDA_GENERATE_HOST_HELPERS( BuiltinSlaterExchange );
+LDA_GENERATE_HOST_HELPERS( BuiltinVWN3 );
+LDA_GENERATE_HOST_HELPERS( BuiltinVWN_RPA );
 
 GGA_GENERATE_HOST_HELPERS( BuiltinLYP   );
 GGA_GENERATE_HOST_HELPERS( BuiltinPBE_X );

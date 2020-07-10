@@ -15,6 +15,10 @@ std::unique_ptr<BuiltinKernel>
 
   if( kern == Kernel::SlaterExchange )
     return std::make_unique<BuiltinSlaterExchange>( polar );
+  else if( kern == Kernel::VWN3 )
+    return std::make_unique<BuiltinVWN3>( polar );
+  else if( kern == Kernel::VWN5 )
+    return std::make_unique<BuiltinVWN_RPA>( polar );
   else if( kern == Kernel::LYP )
     return std::make_unique<BuiltinLYP>( polar );
   else if( kern == Kernel::PBE_X )

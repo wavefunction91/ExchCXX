@@ -10,6 +10,9 @@ namespace ExchCXX {
 class BuiltinKernel;
 
 struct BuiltinSlaterExchange;
+struct BuiltinVWN3;
+struct BuiltinVWN_RPA;
+
 struct BuiltinLYP;
 struct BuiltinPBE_X;
 struct BuiltinPBE_C;

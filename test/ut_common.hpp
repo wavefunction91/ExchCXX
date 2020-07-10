@@ -44,6 +44,8 @@ static constexpr std::array gga_kernels = {
 
 static constexpr std::array builtin_supported_kernels = {
   ExchCXX::Kernel::SlaterExchange,
+  ExchCXX::Kernel::VWN3,
+  ExchCXX::Kernel::VWN5,
   ExchCXX::Kernel::PBE_X,
   ExchCXX::Kernel::PBE_C,
   ExchCXX::Kernel::LYP,
