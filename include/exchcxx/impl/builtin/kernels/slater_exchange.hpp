@@ -7,11 +7,14 @@
 #include <exchcxx/impl/builtin/kernel_type.hpp>
 #include <exchcxx/impl/builtin/util.hpp>
 
+#include <exchcxx/impl/builtin/kernels/screening_interface.hpp>
+
 
 namespace ExchCXX {
 
 template <>
-struct kernel_traits<BuiltinSlaterExchange> {
+struct kernel_traits<BuiltinSlaterExchange> :
+  public lda_screening_interface< BuiltinSlaterExchange > {
 
   static constexpr bool is_hyb  = false;
   static constexpr bool is_lda  = true;
@@ -21,18 +24,8 @@ struct kernel_traits<BuiltinSlaterExchange> {
   static constexpr double dens_tol  = 1e-24;
 
   BUILTIN_KERNEL_EVAL_RETURN 
-    eval_exc_unpolar( double rho, double& eps ) {
+    eval_exc_unpolar_impl( double rho, double& eps ) {
 
-#ifdef __CUDACC__
-      rho   = fmax( rho, 0. );
-#else
-      rho   = std::max( rho, 0. );
-#endif
-
-    if( rho <= dens_tol ) {
-      eps = 0.;
-      return;
-    }
     constexpr double alpha = 1.;
 
     constexpr double t1 = constants::m_cbrt_3;
@@ -54,20 +47,8 @@ struct kernel_traits<BuiltinSlaterExchange> {
 
 
   BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_vxc_unpolar( double rho, double& eps, double& vxc ) {
+    eval_exc_vxc_unpolar_impl( double rho, double& eps, double& vxc ) {
 
-
-#ifdef __CUDACC__
-      rho   = fmax( rho, 0. );
-#else
-      rho   = std::max( rho, 0. );
-#endif
-
-    if( rho <= dens_tol ) {
-      eps = 0.;
-      vxc = 0.;
-      return;
-    }
 
     constexpr double alpha = 1.;
 

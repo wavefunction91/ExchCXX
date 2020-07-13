@@ -544,15 +544,38 @@ void device_synchronize() {
 }
 
 
-void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern, 
-  Spin polar ) {
+void test_cuda_interface( TestInterface interface, EvalType evaltype,
+  Backend backend, Kernel kern, Spin polar ) {
 
-  auto [npts_lda, rho]   = load_reference_density( polar );
-  auto [npts_gga, sigma] = load_reference_sigma  ( polar );
+  auto [npts_lda, ref_rho]   = load_reference_density( polar );
+  auto [npts_gga, ref_sigma] = load_reference_sigma  ( polar );
 
   REQUIRE( npts_lda == npts_gga );
 
   const int npts = npts_lda;
+
+  std::vector<double> rho_small(npts, 1e-13);
+  std::vector<double> sigma_small(npts, 1e-14);
+
+  std::vector<double> rho_zero(npts, 0.);
+  std::vector<double> sigma_zero(npts, 0.);
+
+  std::vector<double> rho, sigma;
+
+  if( evaltype == EvalType::Regular ) {
+    rho   = ref_rho;
+    sigma = ref_sigma;
+  }
+ 
+  if( evaltype == EvalType::Small ) {
+    rho   = rho_small;
+    sigma = sigma_small;
+  }
+ 
+  if( evaltype == EvalType::Zero ) {
+    rho   = rho_zero;
+    sigma = sigma_zero;
+  }
 
   XCKernel func( backend, kern, polar ); 
 
@@ -656,7 +679,6 @@ void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern,
 
   device_synchronize();
 
-
   // D2H of results
   safe_cuda_cpy( exc.data(), exc_device, len_exc_buffer );
   safe_cuda_cpy( vrho.data(), vrho_device, len_vrho_buffer );
@@ -683,8 +705,10 @@ void test_cuda_interface( TestInterface interface, Backend backend, Kernel kern,
 
     for( auto i = 0ul; i < len_vrho_buffer; ++i )
       CHECK( vrho[i] == Approx(vrho_ref[i]) );
-    for( auto i = 0ul; i < len_vsigma_buffer; ++i )
+    for( auto i = 0ul; i < len_vsigma_buffer; ++i ) {
+      INFO( "Kernel is " << kern );
       CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
+    }
 
   }
 
@@ -697,57 +721,157 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
 
   SECTION( "Libxc Functionals" ) {
 
-    SECTION( "LDA Functionals: EXC" ) {
+    SECTION( "LDA Functionals: EXC Regular Eval" ) {
       for( auto kern : lda_kernels )
-        test_cuda_interface( TestInterface::EXC, Backend::libxc, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "LDA Functionals: EXC + VXC" ) {
+
+    SECTION( "LDA Functionals: EXC + VXC Regular Eval" ) {
       for( auto kern : lda_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC, Backend::libxc, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC" ) {
+    SECTION( "GGA Functionals: EXC Regular Eval" ) {
       for( auto kern : gga_kernels )
-        test_cuda_interface( TestInterface::EXC, Backend::libxc, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC + VXC" ) {
+    SECTION( "GGA Functionals: EXC + VXC Regular Eval" ) {
       for( auto kern : gga_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC, Backend::libxc, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "LDA Functionals: EXC Small Eval" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+
+    SECTION( "LDA Functionals: EXC + VXC Small Eval" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "GGA Functionals: EXC Small Eval" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "GGA Functionals: EXC + VXC Small Eval" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "LDA Functionals: EXC Zero Eval" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+
+    SECTION( "LDA Functionals: EXC + VXC Zero Eval" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "GGA Functionals: EXC Zero Eval" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "GGA Functionals: EXC + VXC Zero Eval" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Unpolarized );
     }
 
   }
 
   SECTION( "Builtin Functionals" ) {
 
-    SECTION("EXC") {
+    SECTION("EXC Regular") {
       for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC, Backend::builtin, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC") {
+    SECTION("EXC + VXC Regular") {
       for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC, Backend::builtin, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + INC ") {
+    SECTION("EXC + INC Regular") {
       for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_INC, Backend::builtin, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC_INC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC + INC") {
+    SECTION("EXC + VXC + INC Regular") {
       for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC_INC, Backend::builtin, kern, 
-          Spin::Unpolarized );
+        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Unpolarized );
     }
+
+    SECTION("EXC Small") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC + VXC Small") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC + INC Small") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_INC, EvalType::Small,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC + VXC + INC Small") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Small,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC Zero") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC + VXC Zero") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC + INC Zero") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_INC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC + VXC + INC Zero") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
+
   }
 
 

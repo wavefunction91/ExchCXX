@@ -7,11 +7,14 @@
 #include <exchcxx/impl/builtin/kernel_type.hpp>
 #include <exchcxx/impl/builtin/util.hpp>
 
+#include <exchcxx/impl/builtin/kernels/screening_interface.hpp>
+
 
 namespace ExchCXX {
 
 template <>
-struct kernel_traits<BuiltinVWN_RPA> {
+struct kernel_traits<BuiltinVWN_RPA> :
+  public lda_screening_interface< BuiltinVWN_RPA > {
 
   static constexpr bool is_hyb  = false;
   static constexpr bool is_lda  = true;
@@ -21,18 +24,7 @@ struct kernel_traits<BuiltinVWN_RPA> {
   static constexpr double dens_tol  = 1e-24;
 
   BUILTIN_KERNEL_EVAL_RETURN 
-    eval_exc_unpolar( double rho, double& eps ) {
-
-#ifdef __CUDACC__
-      rho   = fmax( rho, 0. );
-#else
-      rho   = std::max( rho, 0. );
-#endif
-
-    if( rho <= dens_tol ) {
-      eps = 0.;
-      return;
-    }
+    eval_exc_unpolar_impl( double rho, double& eps ) {
 
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t5 = constants::m_cbrt_4;
@@ -64,20 +56,7 @@ struct kernel_traits<BuiltinVWN_RPA> {
 
 
   BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_vxc_unpolar( double rho, double& eps, double& vxc ) {
-
-
-#ifdef __CUDACC__
-      rho   = fmax( rho, 0. );
-#else
-      rho   = std::max( rho, 0. );
-#endif
-
-    if( rho <= dens_tol ) {
-      eps = 0.;
-      vxc = 0.;
-      return;
-    }
+    eval_exc_vxc_unpolar_impl( double rho, double& eps, double& vxc ) {
 
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t5 = constants::m_cbrt_4;
@@ -140,7 +119,6 @@ struct kernel_traits<BuiltinVWN_RPA> {
       rho * (0.10363566666666666667e-1 * t61 + 0.15357238326806922974e0 * t72 + 
         0.44313737677495382697e-2 * t83);
       
-
   }
 
 };

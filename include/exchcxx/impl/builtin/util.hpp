@@ -50,4 +50,18 @@ inline static void disabled_inc_device_interface() {
 
 #endif
 
+
+template <typename KernelType, typename... Args>
+struct max_dens_tol {
+  static constexpr double dens_tol = std::max(
+    KernelType::dens_tol, max_dens_tol<Args...>::dens_tol
+  );
+};
+
+template <typename KernelType>
+struct max_dens_tol<KernelType> {
+  static constexpr double dens_tol = KernelType::dens_tol;
+};
+
+
 }

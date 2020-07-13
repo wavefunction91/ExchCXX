@@ -21,8 +21,12 @@ __global__ LDA_EXC_GENERATOR( device_eval_exc_helper_kernel ) {
   using traits = kernel_traits<KernelType>;
   int tid = threadIdx.x + blockIdx.x * blockDim.x; 
 
-  if( tid < N )
-    traits::eval_exc_unpolar( rho[tid], eps[tid] );
+  if( tid < N ) {
+
+    const double rho_use = fmax( rho[tid], 0. );
+    traits::eval_exc_unpolar( rho_use, eps[tid] );
+
+  }
 
 }
 
@@ -32,8 +36,12 @@ __global__ LDA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_kernel ) {
   using traits = kernel_traits<KernelType>;
   int tid = threadIdx.x + blockIdx.x * blockDim.x; 
 
-  if( tid < N )
-    traits::eval_exc_vxc_unpolar( rho[tid], eps[tid], vxc[tid] );
+  if( tid < N ) {
+
+    const double rho_use = fmax( rho[tid], 0. );
+    traits::eval_exc_vxc_unpolar( rho_use, eps[tid], vxc[tid] );
+
+  }
 
 }
 
@@ -45,8 +53,11 @@ __global__ LDA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_kernel ) {
 
   double e;
   if( tid < N ) {
-    traits::eval_exc_unpolar( rho[tid], e );
+
+    const double rho_use = fmax( rho[tid], 0. );
+    traits::eval_exc_unpolar( rho_use, e );
     eps[tid] += scal_fact * e;
+
   }
 
 }
@@ -59,9 +70,12 @@ __global__ LDA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_kernel ) {
 
   double e,v;
   if( tid < N ) {
-    traits::eval_exc_vxc_unpolar( rho[tid], e, v );
+
+    const double rho_use = fmax( rho[tid], 0. );
+    traits::eval_exc_vxc_unpolar( rho_use, e, v );
     eps[tid] += scal_fact * e;
     vxc[tid] += scal_fact * v;
+
   }
 
 }
@@ -72,8 +86,13 @@ __global__ GGA_EXC_GENERATOR( device_eval_exc_helper_kernel ) {
   using traits = kernel_traits<KernelType>;
   int tid = threadIdx.x + blockIdx.x * blockDim.x; 
 
-  if( tid < N )
-    traits::eval_exc_unpolar( rho[tid], sigma[tid], eps[tid] );
+  if( tid < N ) {
+
+    const double rho_use   = fmax( rho[tid],   0.    );
+    const double sigma_use = fmax( sigma[tid], 1e-40 );
+    traits::eval_exc_unpolar( rho_use, sigma_use, eps[tid] );
+
+  }
 
 }
 
@@ -83,9 +102,14 @@ __global__ GGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_kernel ) {
   using traits = kernel_traits<KernelType>;
   int tid = threadIdx.x + blockIdx.x * blockDim.x; 
 
-  if( tid < N )
-    traits::eval_exc_vxc_unpolar( rho[tid], sigma[tid], eps[tid], 
+  if( tid < N ) {
+
+    const double rho_use   = fmax( rho[tid],   0.    );
+    const double sigma_use = fmax( sigma[tid], 1e-40 );
+    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, eps[tid], 
       vrho[tid], vsigma[tid] );
+
+  }
 
 }
 
@@ -98,8 +122,14 @@ __global__ GGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_kernel ) {
 
   double e;
   if( tid < N ) {
-    traits::eval_exc_unpolar( rho[tid], sigma[tid], e );
+
+    const double rho_use   = fmax( rho[tid],   0.    );
+    const double sigma_use = fmax( sigma[tid], 1e-40 );
+                                      
+    traits::eval_exc_unpolar( rho_use, sigma_use, e );
     eps[tid] += scal_fact * e;
+     
+
   }
 
 }
@@ -112,10 +142,15 @@ __global__ GGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_kernel ) {
 
   double e, vr, vs;
   if( tid < N ) {
-    traits::eval_exc_vxc_unpolar( rho[tid], sigma[tid], e, vr, vs );
+
+    const double rho_use   = fmax( rho[tid],   0.    );
+    const double sigma_use = fmax( sigma[tid], 1e-40 );
+
+    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, e, vr, vs );
     eps[tid]    += scal_fact * e;
     vrho[tid]   += scal_fact * vr;
     vsigma[tid] += scal_fact * vs;
+
   }
 
 }

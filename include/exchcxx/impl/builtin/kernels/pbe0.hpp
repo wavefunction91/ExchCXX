@@ -14,15 +14,17 @@ namespace ExchCXX {
 template <>
 struct kernel_traits<BuiltinPBE0> {
 
+  using pbe_x_traits = kernel_traits<BuiltinPBE_X>;
+  using pbe_c_traits = kernel_traits<BuiltinPBE_C>;
+
   static constexpr bool is_hyb  = true;
   static constexpr bool is_lda  = false;
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.25;
-  static constexpr double dens_tol  = 1e-32; // not used, delegates to PBE_C/X
+  static constexpr double dens_tol  = 1e-32;
+    //max_dens_tol< pbe_x_traits, pbe_x_traits >::dens_tol;
 
-  using pbe_x_traits = kernel_traits<BuiltinPBE_X>;
-  using pbe_c_traits = kernel_traits<BuiltinPBE_C>;
 
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double& eps ) {
@@ -33,6 +35,7 @@ struct kernel_traits<BuiltinPBE0> {
     pbe_c_traits::eval_exc_unpolar( rho, sigma, eps );
 
     eps = (1. - exx_coeff) * eps_x + eps;
+
   }
 
   BUILTIN_KERNEL_EVAL_RETURN

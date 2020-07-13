@@ -108,8 +108,12 @@ LDA_EXC_GENERATOR( host_eval_exc_helper ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i )
-    traits::eval_exc_unpolar( rho[i], eps[i] );
+  for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use = std::max( rho[i], 0. );
+    traits::eval_exc_unpolar( rho_use, eps[i] );
+
+  }
 
 }
 
@@ -118,8 +122,12 @@ LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i )
-    traits::eval_exc_vxc_unpolar( rho[i], eps[i], vxc[i] );
+  for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use = std::max( rho[i], 0. );
+    traits::eval_exc_vxc_unpolar( rho_use, eps[i], vxc[i] );
+
+  }
 
 }
 
@@ -129,9 +137,12 @@ LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper ) {
   using traits = kernel_traits<KernelType>;
   
   for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use = std::max( rho[i], 0. );
     double e;
-    traits::eval_exc_unpolar( rho[i], e );
+    traits::eval_exc_unpolar( rho_use, e );
     eps[i] += scal_fact * e;
+
   }
 
 }
@@ -142,10 +153,13 @@ LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper ) {
   using traits = kernel_traits<KernelType>;
   
   for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use = std::max( rho[i], 0. );
     double v,e;
-    traits::eval_exc_vxc_unpolar( rho[i], e, v );
+    traits::eval_exc_vxc_unpolar( rho_use, e, v );
     eps[i] += scal_fact * e;
     vxc[i] += scal_fact * v;
+
   }
 
 }
@@ -155,8 +169,13 @@ GGA_EXC_GENERATOR( host_eval_exc_helper ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i )
-    traits::eval_exc_unpolar( rho[i], sigma[i], eps[i] );
+  for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use   = std::max( rho[i],   0.    );
+    const double sigma_use = std::max( sigma[i], 1e-40 );
+    traits::eval_exc_unpolar( rho_use, sigma_use, eps[i] );
+
+  }
 
 }
 
@@ -165,9 +184,14 @@ GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i )
-    traits::eval_exc_vxc_unpolar( rho[i], sigma[i], eps[i], vrho[i],
-      vsigma[i] );
+  for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use   = std::max( rho[i],   0.    );
+    const double sigma_use = std::max( sigma[i], 1e-40 );
+    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, 
+      eps[i], vrho[i], vsigma[i] );
+
+  }
 
 }
 
@@ -178,9 +202,14 @@ GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper ) {
   using traits = kernel_traits<KernelType>;
   
   for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use   = std::max( rho[i],   0.    );
+    const double sigma_use = std::max( sigma[i], 1e-40 );
+
     double e;
-    traits::eval_exc_unpolar( rho[i], sigma[i], e );
+    traits::eval_exc_unpolar( rho_use, sigma_use, e );
     eps[i] += scal_fact * e;
+
   }
 
 }
@@ -191,11 +220,16 @@ GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper ) {
   using traits = kernel_traits<KernelType>;
   
   for( size_t i = 0; i < N; ++i ) {
+
+    const double rho_use   = std::max( rho[i],   0.    );
+    const double sigma_use = std::max( sigma[i], 1e-40 );
+
     double e, vr, vs;
-    traits::eval_exc_vxc_unpolar( rho[i], sigma[i], e, vr, vs );
+    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, e, vr, vs );
     eps[i]    += scal_fact * e;
     vrho[i]   += scal_fact * vr;
     vsigma[i] += scal_fact * vs;
+
   }
 
 }
