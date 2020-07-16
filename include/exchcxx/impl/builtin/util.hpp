@@ -4,6 +4,8 @@
 #include <exchcxx/exchcxx_config.hpp>
 #endif
 
+#include <cmath>
+
 namespace ExchCXX {
 
 inline static void disabled_lda_interface() {
@@ -42,14 +44,15 @@ inline static void disabled_inc_device_interface() {
 
 #ifdef __CUDACC__
 
-#define BUILTIN_KERNEL_EVAL_RETURN static inline constexpr void __host__ __device__
+#define SAFE_CONSTEXPR_INLINE(TYPE) static inline constexpr TYPE __host__ __device__
 
 #else
 
-#define BUILTIN_KERNEL_EVAL_RETURN static inline constexpr void 
+#define SAFE_CONSTEXPR_INLINE(TYPE) static inline constexpr TYPE
 
 #endif
 
+#define BUILTIN_KERNEL_EVAL_RETURN SAFE_CONSTEXPR_INLINE(void)
 
 template <typename KernelType, typename... Args>
 struct max_dens_tol {
@@ -62,6 +65,12 @@ template <typename KernelType>
 struct max_dens_tol<KernelType> {
   static constexpr double dens_tol = KernelType::dens_tol;
 };
+
+
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) square( F x ) { return x*x; }
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) pow_3_2( F x ) { F y = std::sqrt(x); return y*y*y; }
 
 
 }

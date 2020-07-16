@@ -21,7 +21,6 @@ struct kernel_traits<BuiltinB3LYP> {
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.20;
-  static constexpr double dens_tol  = 1e-32; // not used, delegates to sub kernels
 
   static constexpr double b3lyp_ax = 0.72; // % GGA X
   static constexpr double b3lyp_ac = 0.81; // % GGA C

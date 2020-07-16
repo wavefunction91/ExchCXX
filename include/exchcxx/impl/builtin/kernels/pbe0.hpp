@@ -22,8 +22,6 @@ struct kernel_traits<BuiltinPBE0> {
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.25;
-  static constexpr double dens_tol  = 1e-32;
-    //max_dens_tol< pbe_x_traits, pbe_x_traits >::dens_tol;
 
 
   BUILTIN_KERNEL_EVAL_RETURN
