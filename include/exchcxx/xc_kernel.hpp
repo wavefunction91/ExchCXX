@@ -62,32 +62,32 @@ public:
   }
 
   inline size_t rho_buffer_len( size_t npts ) const noexcept {
-    return is_polarized() ? 2*npts : npts;
+    return pimpl_->rho_buffer_len( npts );
   }
   inline size_t sigma_buffer_len( size_t npts ) const noexcept {
-    return is_lda() ? 0 : is_polarized() ? 3*npts : npts;
+    return pimpl_->sigma_buffer_len( npts );
   }
   inline size_t lapl_buffer_len( size_t npts ) const noexcept {
-    return is_mgga() ? rho_buffer_len(npts) : 0;
+    return pimpl_->lapl_buffer_len( npts );
   }
   inline size_t tau_buffer_len( size_t npts ) const noexcept {
-    return is_mgga() ? rho_buffer_len(npts) : 0;
+    return pimpl_->tau_buffer_len( npts );
   }
 
   inline size_t exc_buffer_len( size_t npts ) const noexcept {
-    return npts;
+    return pimpl_->exc_buffer_len( npts );
   }
   inline size_t vrho_buffer_len( size_t npts ) const noexcept {
-    return rho_buffer_len( npts );
+    return pimpl_->vrho_buffer_len( npts );
   }
   inline size_t vsigma_buffer_len( size_t npts ) const noexcept {
-    return sigma_buffer_len( npts );
+    return pimpl_->vsigma_buffer_len( npts );
   }
   inline size_t vlapl_buffer_len( size_t npts ) const noexcept {
-    return lapl_buffer_len( npts );
+    return pimpl_->vlapl_buffer_len( npts );
   }
   inline size_t vtau_buffer_len( size_t npts ) const noexcept {
-    return tau_buffer_len( npts );
+    return pimpl_->vtau_buffer_len( npts );
   }
 
 

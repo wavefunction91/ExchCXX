@@ -53,10 +53,13 @@ LDA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
   throw_if_uninitialized();
   assert( is_lda() );
 
-  size_t len_rho = N*sizeof(double);
-  size_t len_eps = N*sizeof(double);
+  size_t sz_rho = this->rho_buffer_len(N);
+  size_t sz_exc = this->exc_buffer_len(N);
 
-  std::vector<double> rho_host( N ), eps_host( N );
+  size_t len_rho = sz_rho*sizeof(double);
+  size_t len_eps = sz_exc*sizeof(double);
+
+  std::vector<double> rho_host( sz_rho ), eps_host( sz_exc );
 
   recv_from_device( rho_host.data(), rho, len_rho, stream );
 
@@ -74,11 +77,15 @@ LDA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
   throw_if_uninitialized();
   assert( is_lda() );
 
-  size_t len_rho = N*sizeof(double);
-  size_t len_eps = N*sizeof(double);
-  size_t len_vxc = N*sizeof(double);
+  size_t sz_rho = this->rho_buffer_len(N);
+  size_t sz_exc = this->exc_buffer_len(N);
+  size_t sz_vxc = this->vrho_buffer_len(N);
 
-  std::vector<double> rho_host( N ), eps_host( N ), vxc_host( N );
+  size_t len_rho = sz_rho*sizeof(double);
+  size_t len_eps = sz_exc*sizeof(double);
+  size_t len_vxc = sz_vxc*sizeof(double);
+
+  std::vector<double> rho_host( sz_rho ), eps_host( sz_exc ), vxc_host( sz_vxc );
 
   recv_from_device( rho_host.data(), rho, len_rho, stream );
 
@@ -99,11 +106,15 @@ GGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
   throw_if_uninitialized();
   assert( is_gga() );
 
-  size_t len_rho   = N*sizeof(double);
-  size_t len_eps   = N*sizeof(double);
-  size_t len_sigma = N*sizeof(double);
+  size_t sz_rho   = this->rho_buffer_len(N);
+  size_t sz_sigma = this->sigma_buffer_len(N);
+  size_t sz_eps   = this->exc_buffer_len(N);
 
-  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N );
+  size_t len_rho   = sz_rho   *sizeof(double);
+  size_t len_eps   = sz_eps   *sizeof(double);
+  size_t len_sigma = sz_sigma *sizeof(double);
+
+  std::vector<double> rho_host( sz_rho ), eps_host( sz_eps ), sigma_host( sz_sigma );
 
   recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
   recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
@@ -122,15 +133,20 @@ GGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
   throw_if_uninitialized();
   assert( is_gga() );
 
+  size_t sz_rho    = this->rho_buffer_len(N);
+  size_t sz_sigma  = this->sigma_buffer_len(N);
+  size_t sz_eps    = this->exc_buffer_len(N);
+  size_t sz_vrho   = this->vrho_buffer_len(N);
+  size_t sz_vsigma = this->vsigma_buffer_len(N);
 
-  size_t len_rho    = N*sizeof(double);
-  size_t len_sigma  = N*sizeof(double);
-  size_t len_vrho   = N*sizeof(double);
-  size_t len_vsigma = N*sizeof(double);
-  size_t len_eps    = N*sizeof(double);
+  size_t len_rho    = sz_rho   *sizeof(double);
+  size_t len_sigma  = sz_sigma *sizeof(double);
+  size_t len_vrho   = sz_vrho  *sizeof(double);
+  size_t len_vsigma = sz_vsigma*sizeof(double);
+  size_t len_eps    = sz_eps   *sizeof(double);
 
-  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), 
-    vrho_host( N ), vsigma_host( N );
+  std::vector<double> rho_host( sz_rho ), eps_host( sz_eps ), 
+    sigma_host( sz_sigma ), vrho_host( sz_vrho ), vsigma_host( sz_vsigma );
 
   recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
   recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
@@ -155,14 +171,21 @@ MGGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
   throw_if_uninitialized();
   assert( is_mgga() );
 
-  size_t len_rho   = N*sizeof(double);
-  size_t len_sigma = N*sizeof(double);
-  size_t len_lapl  = N*sizeof(double);
-  size_t len_tau   = N*sizeof(double);
-  size_t len_eps   = N*sizeof(double);
+  size_t sz_rho   = this->rho_buffer_len(N)   ;
+  size_t sz_sigma = this->sigma_buffer_len(N) ;
+  size_t sz_lapl  = this->lapl_buffer_len(N)  ;
+  size_t sz_tau   = this->tau_buffer_len(N)   ;
+  size_t sz_eps   = this->exc_buffer_len(N)   ;
 
-  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), 
-    lapl_host( N ), tau_host( N );
+  size_t len_rho   = sz_rho  *sizeof(double);
+  size_t len_sigma = sz_sigma*sizeof(double);
+  size_t len_lapl  = sz_lapl *sizeof(double);
+  size_t len_tau   = sz_tau  *sizeof(double);
+  size_t len_eps   = sz_eps  *sizeof(double);
+
+  std::vector<double> rho_host( sz_rho ), eps_host( sz_eps ), 
+    sigma_host( sz_sigma ), lapl_host( sz_lapl ), 
+    tau_host( sz_tau );
 
   recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
   recv_from_device( sigma_host.data(), sigma, len_sigma, stream );
@@ -184,20 +207,30 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
   throw_if_uninitialized();
   assert( is_mgga() );
 
-  size_t len_rho    = N*sizeof(double);
-  size_t len_sigma  = N*sizeof(double);
-  size_t len_lapl   = N*sizeof(double);
-  size_t len_tau    = N*sizeof(double);
-  size_t len_eps    = N*sizeof(double);
-  size_t len_vrho   = N*sizeof(double);
-  size_t len_vsigma = N*sizeof(double);
-  size_t len_vlapl  = N*sizeof(double);
-  size_t len_vtau   = N*sizeof(double);
+  size_t sz_rho    = this->rho_buffer_len(N)   ;
+  size_t sz_sigma  = this->sigma_buffer_len(N) ;
+  size_t sz_lapl   = this->lapl_buffer_len(N)  ;
+  size_t sz_tau    = this->tau_buffer_len(N)   ;
+  size_t sz_eps    = this->exc_buffer_len(N)   ;
+  size_t sz_vrho   = this->vrho_buffer_len(N)  ;
+  size_t sz_vsigma = this->vsigma_buffer_len(N);
+  size_t sz_vlapl  = this->vlapl_buffer_len(N) ;
+  size_t sz_vtau   = this->vtau_buffer_len(N)  ;
 
-  std::vector<double> rho_host( N ), eps_host( N ), sigma_host( N ), 
-    lapl_host( N ), tau_host( N );
-  std::vector<double> vrho_host( N ), vsigma_host( N ),  vlapl_host( N ), 
-    vtau_host( N );
+  size_t len_rho    = sz_rho   *sizeof(double);
+  size_t len_sigma  = sz_sigma *sizeof(double);
+  size_t len_lapl   = sz_lapl  *sizeof(double);
+  size_t len_tau    = sz_tau   *sizeof(double);
+  size_t len_eps    = sz_eps   *sizeof(double);
+  size_t len_vrho   = sz_vrho  *sizeof(double);
+  size_t len_vsigma = sz_vsigma*sizeof(double);
+  size_t len_vlapl  = sz_vlapl *sizeof(double);
+  size_t len_vtau   = sz_vtau  *sizeof(double);
+
+  std::vector<double> rho_host( sz_rho ), eps_host( sz_eps ), sigma_host( sz_sigma ), 
+    lapl_host( sz_lapl ), tau_host( sz_tau );
+  std::vector<double> vrho_host( sz_vrho ), vsigma_host( sz_vsigma ),  
+    vlapl_host( sz_vlapl ), vtau_host( sz_vtau );
 
   recv_from_device( rho_host.data(),   rho,   len_rho  , stream );
   recv_from_device( sigma_host.data(), sigma, len_sigma, stream );

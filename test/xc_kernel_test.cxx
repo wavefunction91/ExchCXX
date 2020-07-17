@@ -784,79 +784,161 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
 
   SECTION( "Libxc Functionals" ) {
 
-    SECTION( "LDA Functionals: EXC Regular Eval" ) {
+    SECTION( "LDA Functionals: EXC Regular Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Regular,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
 
-    SECTION( "LDA Functionals: EXC + VXC Regular Eval" ) {
+    SECTION( "LDA Functionals: EXC + VXC Regular Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC Regular Eval" ) {
+    SECTION( "GGA Functionals: EXC Regular Eval Unpolarized" ) {
       for( auto kern : gga_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Regular,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC + VXC Regular Eval" ) {
+    SECTION( "GGA Functionals: EXC + VXC Regular Eval Unpolarized" ) {
       for( auto kern : gga_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "LDA Functionals: EXC Small Eval" ) {
+    SECTION( "LDA Functionals: EXC Small Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
 
-    SECTION( "LDA Functionals: EXC + VXC Small Eval" ) {
+    SECTION( "LDA Functionals: EXC + VXC Small Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC Small Eval" ) {
+    SECTION( "GGA Functionals: EXC Small Eval Unpolarized" ) {
       for( auto kern : gga_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC + VXC Small Eval" ) {
+    SECTION( "GGA Functionals: EXC + VXC Small Eval Unpolarized" ) {
       for( auto kern : gga_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "LDA Functionals: EXC Zero Eval" ) {
+    SECTION( "LDA Functionals: EXC Zero Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Zero,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
 
-    SECTION( "LDA Functionals: EXC + VXC Zero Eval" ) {
+    SECTION( "LDA Functionals: EXC + VXC Zero Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC Zero Eval" ) {
+    SECTION( "GGA Functionals: EXC Zero Eval Unpolarized" ) {
       for( auto kern : gga_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Zero,
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
-    SECTION( "GGA Functionals: EXC + VXC Zero Eval" ) {
+    SECTION( "GGA Functionals: EXC + VXC Zero Eval Unpolarized" ) {
       for( auto kern : gga_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
           Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+
+
+
+
+
+
+
+    SECTION( "LDA Functionals: EXC Regular Eval Polarized" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+
+    SECTION( "LDA Functionals: EXC + VXC Regular Eval Polarized" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "GGA Functionals: EXC Regular Eval Polarized" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "GGA Functionals: EXC + VXC Regular Eval Polarized" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "LDA Functionals: EXC Small Eval Polarized" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+
+    SECTION( "LDA Functionals: EXC + VXC Small Eval Polarized" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "GGA Functionals: EXC Small Eval Polarized" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "GGA Functionals: EXC + VXC Small Eval Polarized" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "LDA Functionals: EXC Zero Eval Polarized" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+
+    SECTION( "LDA Functionals: EXC + VXC Zero Eval Polarized" ) {
+      for( auto kern : lda_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "GGA Functionals: EXC Zero Eval Polarized" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "GGA Functionals: EXC + VXC Zero Eval Polarized" ) {
+      for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Polarized );
     }
 
   }
