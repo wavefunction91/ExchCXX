@@ -82,46 +82,86 @@ public:
 namespace detail {
 
 template <typename KernelType>
-LDA_EXC_GENERATOR( host_eval_exc_helper );
+LDA_EXC_GENERATOR( host_eval_exc_helper_unpolar );
 template <typename KernelType>
-LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper );
+LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar );
 
 template <typename KernelType>
-LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper );
+LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar );
 template <typename KernelType>
-LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper );
+LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar );
 
 template <typename KernelType>
-GGA_EXC_GENERATOR( host_eval_exc_helper );
+GGA_EXC_GENERATOR( host_eval_exc_helper_unpolar );
 template <typename KernelType>
-GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper );
+GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar );
 
 template <typename KernelType>
-GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper );
+GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar );
 template <typename KernelType>
-GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper );
+GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar );
+
+template <typename KernelType>
+LDA_EXC_GENERATOR( host_eval_exc_helper_polar );
+template <typename KernelType>
+LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar );
+
+template <typename KernelType>
+LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar );
+template <typename KernelType>
+LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar );
+
+template <typename KernelType>
+GGA_EXC_GENERATOR( host_eval_exc_helper_polar );
+template <typename KernelType>
+GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar );
+
+template <typename KernelType>
+GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar );
+template <typename KernelType>
+GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar );
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
 template <typename KernelType>
-LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper );
+LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar );
 template <typename KernelType>
-LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper );
+LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar );
 
 template <typename KernelType>
-LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper );
+LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar );
 template <typename KernelType>
-LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper );
+LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar );
 
 template <typename KernelType>
-GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper );
+GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar );
 template <typename KernelType>
-GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper );
+GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar );
 
 template <typename KernelType>
-GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper );
+GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar );
 template <typename KernelType>
-GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper );
+GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar );
+
+template <typename KernelType>
+LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar );
+template <typename KernelType>
+LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar );
+
+template <typename KernelType>
+LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar );
+template <typename KernelType>
+LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar );
+
+template <typename KernelType>
+GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar );
+template <typename KernelType>
+GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar );
+
+template <typename KernelType>
+GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar );
+template <typename KernelType>
+GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar );
 
 #endif
 
@@ -135,6 +175,110 @@ struct BuiltinKernelImpl<
   std::enable_if_t<kernel_traits<KernelType>::is_lda>
 > : public BuiltinKernel {
 
+private:
+
+  template <typename... Args>
+  void eval_exc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_vxc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_vxc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_inc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_vxc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_vxc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+#ifdef EXCHCXX_ENABLE_DEVICE
+
+  template <typename... Args>
+  void eval_exc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_vxc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_vxc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_inc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_vxc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_vxc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+#endif
+
+public:
+
   using traits = kernel_traits<KernelType>;
 
   BuiltinKernelImpl( Spin p ) : BuiltinKernel(p) { }
@@ -149,26 +293,20 @@ struct BuiltinKernelImpl<
     return traits::is_hyb ? traits::exx_coeff : 0.;
   }
 
-  inline FORWARD_XC_ARGS( LDA, EXC, eval_exc, 
-    host_eval_exc_helper<KernelType>, const override );
-  inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc, 
-    host_eval_exc_vxc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS( LDA, EXC, eval_exc, eval_exc_, const override );
+  inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc, eval_exc_vxc_, const override );
 
-  inline FORWARD_XC_INC_ARGS( LDA, EXC, eval_exc_inc, 
-    host_eval_exc_inc_helper<KernelType>, const override );
-  inline FORWARD_XC_INC_ARGS( LDA, EXC_VXC, eval_exc_vxc_inc, 
-    host_eval_exc_vxc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_INC_ARGS( LDA, EXC, eval_exc_inc, eval_exc_inc_, const override );
+  inline FORWARD_XC_INC_ARGS( LDA, EXC_VXC, eval_exc_vxc_inc, eval_exc_vxc_inc_, const override );
 
 #ifdef EXCHCXX_ENABLE_DEVICE
-  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC, eval_exc_device, 
-    device_eval_exc_helper<KernelType>, const override );
-  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_device, 
-    device_eval_exc_vxc_helper<KernelType>, const override );
 
-  inline FORWARD_XC_INC_ARGS_DEVICE( LDA, EXC, eval_exc_inc_device, 
-    device_eval_exc_inc_helper<KernelType>, const override );
-  inline FORWARD_XC_INC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_inc_device, 
-    device_eval_exc_vxc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC, eval_exc_device, eval_exc_device_, const override );
+  inline FORWARD_XC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_device, eval_exc_vxc_device_, const override );
+
+  inline FORWARD_XC_INC_ARGS_DEVICE( LDA, EXC, eval_exc_inc_device, eval_exc_inc_device_, const override );
+  inline FORWARD_XC_INC_ARGS_DEVICE( LDA, EXC_VXC, eval_exc_vxc_inc_device, eval_exc_vxc_inc_device_, const override );
+
 #endif
 };
 
@@ -180,6 +318,110 @@ struct BuiltinKernelImpl<
   std::enable_if_t<kernel_traits<KernelType>::is_gga>
 > : public BuiltinKernel {
 
+private:
+
+  template <typename... Args>
+  void eval_exc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_vxc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_vxc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_inc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc_(Args&&... args) const {
+    if( is_polarized() )
+      host_eval_exc_vxc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      host_eval_exc_vxc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+#ifdef EXCHCXX_ENABLE_DEVICE
+
+  template <typename... Args>
+  void eval_exc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_vxc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_vxc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_inc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+  template <typename... Args>
+  void eval_exc_vxc_inc_device_(Args&&... args) const {
+    if( is_polarized() )
+      device_eval_exc_vxc_inc_helper_polar<KernelType>(
+        std::forward<Args>(args)...
+      );
+    else
+      device_eval_exc_vxc_inc_helper_unpolar<KernelType>(
+        std::forward<Args>(args)...
+      );
+  }
+
+#endif
+
+public:
+
   using traits = kernel_traits<KernelType>;
 
   BuiltinKernelImpl( Spin p ) : BuiltinKernel(p) { }
@@ -194,26 +436,20 @@ struct BuiltinKernelImpl<
     return traits::is_hyb ? traits::exx_coeff : 0.;
   }
 
-  inline FORWARD_XC_ARGS( GGA, EXC, eval_exc, 
-    host_eval_exc_helper<KernelType>, const override );
-  inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc, 
-    host_eval_exc_vxc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS( GGA, EXC, eval_exc, eval_exc_, const override );
+  inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc, eval_exc_vxc_, const override );
 
-  inline FORWARD_XC_INC_ARGS( GGA, EXC, eval_exc_inc, 
-    host_eval_exc_inc_helper<KernelType>, const override );
-  inline FORWARD_XC_INC_ARGS( GGA, EXC_VXC, eval_exc_vxc_inc, 
-    host_eval_exc_vxc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_INC_ARGS( GGA, EXC, eval_exc_inc, eval_exc_inc_, const override );
+  inline FORWARD_XC_INC_ARGS( GGA, EXC_VXC, eval_exc_vxc_inc, eval_exc_vxc_inc_, const override );
 
 #ifdef EXCHCXX_ENABLE_DEVICE
-  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC, eval_exc_device, 
-    device_eval_exc_helper<KernelType>, const override );
-  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_device, 
-    device_eval_exc_vxc_helper<KernelType>, const override );
 
-  inline FORWARD_XC_INC_ARGS_DEVICE( GGA, EXC, eval_exc_inc_device, 
-    device_eval_exc_inc_helper<KernelType>, const override );
-  inline FORWARD_XC_INC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_inc_device, 
-    device_eval_exc_vxc_inc_helper<KernelType>, const override );
+  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC, eval_exc_device, eval_exc_device_, const override );
+  inline FORWARD_XC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_device, eval_exc_vxc_device_, const override );
+
+  inline FORWARD_XC_INC_ARGS_DEVICE( GGA, EXC, eval_exc_inc_device, eval_exc_inc_device_, const override );
+  inline FORWARD_XC_INC_ARGS_DEVICE( GGA, EXC_VXC, eval_exc_vxc_inc_device, eval_exc_vxc_inc_device_, const override );
+
 #endif
 };
 

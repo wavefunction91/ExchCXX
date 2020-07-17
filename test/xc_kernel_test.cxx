@@ -15,7 +15,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   SECTION( "Pure LDA Unpolarized" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     XCKernel lda( backend, lda_kernel_test, Spin::Unpolarized );
 
@@ -36,7 +36,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   SECTION( "Pure LDA Polarized" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     XCKernel lda( backend, lda_kernel_test, Spin::Polarized );
 
@@ -58,7 +58,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   SECTION( "Pure GGA Unpolarized" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     XCKernel gga( backend, gga_kernel_test, Spin::Unpolarized );
 
@@ -79,7 +79,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   SECTION( "Pure GGA Polarized" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     XCKernel gga( backend, gga_kernel_test, Spin::Polarized );
 
@@ -100,7 +100,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   SECTION( "Hybrid" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     XCKernel hyb( backend, hyb_kernel_test, Spin::Unpolarized );
     CHECK( hyb.is_hyb() );
@@ -115,7 +115,7 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
   SECTION( "LDA Kernels" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     for( const auto& kern : lda_kernels ) {
       XCKernel func( backend, kern, Spin::Unpolarized );
@@ -132,7 +132,7 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
   SECTION( "GGA Kernels" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     for( const auto& kern : gga_kernels ) {
       XCKernel func( backend, kern, Spin::Unpolarized );
@@ -356,11 +356,17 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
 
   const int npts = npts_lda;
 
-  std::vector<double> rho_small(npts, 1e-13);
-  std::vector<double> sigma_small(npts, 1e-14);
+  XCKernel func_libxc  ( Backend::libxc,   kern, polar );
+  XCKernel func_builtin( Backend::builtin, kern, polar );
 
-  std::vector<double> rho_zero(npts, 0.);
-  std::vector<double> sigma_zero(npts, 0.);
+  const int len_rho   = func_libxc.rho_buffer_len( npts );
+  const int len_sigma = func_libxc.sigma_buffer_len( npts );
+
+  std::vector<double> rho_small(len_rho, 1e-13);
+  std::vector<double> sigma_small(len_sigma, 1e-14);
+
+  std::vector<double> rho_zero(len_rho, 0.);
+  std::vector<double> sigma_zero(len_sigma, 0.);
 
   std::vector<double> rho_use, sigma_use;
 
@@ -380,8 +386,6 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   }
 
 
-  XCKernel func_libxc  ( Backend::libxc,   kern, polar );
-  XCKernel func_builtin( Backend::builtin, kern, polar );
 
   std::vector<double> exc_libxc( func_builtin.exc_buffer_len(npts) );
   std::vector<double> vrho_libxc( func_builtin.vrho_buffer_len(npts) );
@@ -428,14 +432,20 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   }
 
   // Check correctness
-  for( auto i = 0ul; i < func_libxc.exc_buffer_len(npts); ++i )
+  for( auto i = 0ul; i < func_libxc.exc_buffer_len(npts); ++i ) {
+    INFO( "EXC Fails: Kernel is " << kern );
     CHECK( exc_builtin[i] == Approx(exc_libxc[i]) );
+  }
 
   if( interface == TestInterface::EXC_VXC ) {
-    for( auto i = 0ul; i < func_libxc.vrho_buffer_len(npts); ++i )
+    for( auto i = 0ul; i < func_libxc.vrho_buffer_len(npts); ++i ) {
+      INFO( "VRHO Fails: Kernel is " << kern );
       CHECK( vrho_builtin[i] == Approx(vrho_libxc[i]) );
-    for( auto i = 0ul; i < func_libxc.vsigma_buffer_len(npts); ++i )
+    }
+    for( auto i = 0ul; i < func_libxc.vsigma_buffer_len(npts); ++i ) {
+      INFO( "VSIGMA Fails: Kernel is " << kern );
       CHECK( vsigma_builtin[i] == Approx(vsigma_libxc[i]) );
+    }
   }
 
 }
@@ -478,6 +488,47 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
         kern, Spin::Unpolarized );
   }
 
+
+
+
+
+
+  SECTION( "Polarized Regular Eval : EXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      compare_libxc_builtin( TestInterface::EXC, EvalType::Regular,
+        kern, Spin::Polarized );
+  }
+
+  SECTION( "Polarized Regular Eval : EXC + VXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Regular,
+        kern, Spin::Polarized );
+  }
+
+  SECTION( "Polarized Small Eval : EXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      compare_libxc_builtin( TestInterface::EXC, EvalType::Small,
+        kern, Spin::Polarized );
+  }
+
+  SECTION( "Polarized Small Eval : EXC + VXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Small,
+        kern, Spin::Polarized );
+  }
+
+  SECTION( "Polarized Zero Eval : EXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      compare_libxc_builtin( TestInterface::EXC, EvalType::Zero,
+        kern, Spin::Polarized );
+  }
+
+  SECTION( "Polarized Zero Eval : EXC + VXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Zero,
+        kern, Spin::Polarized );
+  }
+
 }
 
 
@@ -495,6 +546,17 @@ TEST_CASE( "Scale and Increment Interface", "[xc-inc]" ) {
         Spin::Unpolarized );
   }
 
+  SECTION( "Builtin Polarized EXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      kernel_test( TestInterface::EXC_INC, Backend::builtin, kern,
+        Spin::Polarized );
+  }
+
+  SECTION( "Builtin Polarized EXC + VXC" ) {
+    for( auto kern : builtin_supported_kernels )
+      kernel_test( TestInterface::EXC_VXC_INC, Backend::builtin, kern,
+        Spin::Polarized );
+  }
 }
 
 
@@ -554,11 +616,20 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
 
   const int npts = npts_lda;
 
-  std::vector<double> rho_small(npts, 1e-13);
-  std::vector<double> sigma_small(npts, 1e-14);
+  XCKernel func( backend, kern, polar ); 
 
-  std::vector<double> rho_zero(npts, 0.);
-  std::vector<double> sigma_zero(npts, 0.);
+  size_t len_rho_buffer    = func.rho_buffer_len(npts);
+  size_t len_sigma_buffer  = func.sigma_buffer_len(npts);
+  size_t len_exc_buffer    = func.exc_buffer_len(npts);
+  size_t len_vrho_buffer   = func.vrho_buffer_len(npts);
+  size_t len_vsigma_buffer = func.vsigma_buffer_len(npts);
+
+
+  std::vector<double> rho_small(len_rho_buffer, 1e-13);
+  std::vector<double> sigma_small(len_sigma_buffer, 1e-14);
+
+  std::vector<double> rho_zero(len_rho_buffer, 0.);
+  std::vector<double> sigma_zero(len_sigma_buffer, 0.);
 
   std::vector<double> rho, sigma;
 
@@ -576,14 +647,6 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     rho   = rho_zero;
     sigma = sigma_zero;
   }
-
-  XCKernel func( backend, kern, polar ); 
-
-  size_t len_rho_buffer    = func.rho_buffer_len(npts);
-  size_t len_sigma_buffer  = func.sigma_buffer_len(npts);
-  size_t len_exc_buffer    = func.exc_buffer_len(npts);
-  size_t len_vrho_buffer   = func.vrho_buffer_len(npts);
-  size_t len_vsigma_buffer = func.vsigma_buffer_len(npts);
 
   // Get Reference Values
   std::vector<double> 
@@ -800,76 +863,148 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
 
   SECTION( "Builtin Functionals" ) {
 
-    SECTION("EXC Regular") {
+    SECTION("EXC Regular: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC Regular") {
+    SECTION("EXC + VXC Regular: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + INC Regular") {
+    SECTION("EXC + INC Regular: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC + INC Regular") {
+    SECTION("EXC + VXC + INC Regular: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC Small") {
+    SECTION("EXC Small: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC Small") {
+    SECTION("EXC + VXC Small: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + INC Small") {
+    SECTION("EXC + INC Small: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_INC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC + INC Small") {
+    SECTION("EXC + VXC + INC Small: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC Zero") {
+    SECTION("EXC Zero: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Zero,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC Zero") {
+    SECTION("EXC + VXC Zero: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + INC Zero") {
+    SECTION("EXC + INC Zero: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_INC, EvalType::Zero,
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    SECTION("EXC + VXC + INC Zero") {
+    SECTION("EXC + VXC + INC Zero: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
           Backend::builtin, kern, Spin::Unpolarized );
+    }
+
+    SECTION("EXC Regular: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + VXC Regular: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + INC Regular: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_INC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + VXC + INC Regular: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC Small: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + VXC Small: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + INC Small: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_INC, EvalType::Small,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + VXC + INC Small: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Small,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC Zero: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + VXC Zero: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + INC Zero: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_INC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Polarized );
+    }
+
+    SECTION("EXC + VXC + INC Zero: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
+          Backend::builtin, kern, Spin::Polarized );
     }
 
   }
