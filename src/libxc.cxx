@@ -22,6 +22,11 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::SlaterExchange, XC_LDA_X            },
   { Kernel::VWN3,           XC_LDA_C_VWN_3      },
   { Kernel::VWN5,           XC_LDA_C_VWN_RPA    },
+  { Kernel::PZ81,           XC_LDA_C_PZ         },
+  { Kernel::PZ81_MOD,       XC_LDA_C_PZ_MOD     },
+  { Kernel::PW91_LDA,       XC_LDA_C_PW         },
+  { Kernel::PW91_LDA_MOD,   XC_LDA_C_PW_MOD     },
+  { Kernel::PW91_LDA_RPA,   XC_LDA_C_PW_RPA     },
 
   // GGA Functionals
   { Kernel::PBE_X,          XC_GGA_X_PBE        },

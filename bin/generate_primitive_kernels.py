@@ -96,6 +96,8 @@ class XCFunc:
     self.xc_out = self.xc_out.replace('M_PI * M_PI','constants::m_pi_sq')
     self.xc_out = self.xc_out.replace('cbrt( constants::m_one_ov_pi )','constants::m_cbrt_one_ov_pi')
     self.xc_out = self.xc_out.replace('cbrt( constants::m_pi_sq )','constants::m_cbrt_pi_sq')
+    self.xc_out = self.xc_out.replace('my_piecewise3','piecewise_functor_3')
+    self.xc_out = self.xc_out.replace('my_piecewise5','piecewise_functor_5')
 
     xc_lines = self.xc_out.splitlines()
     xc_lines = list(filter( lambda x: not x.startswith('  double'), xc_lines ))
@@ -116,10 +118,10 @@ class XCFunc:
   
 
   def special_cases( self, xc_lines ):
-    one_ov_pi_var = [ line.split('=')[0].strip() for line in xc_lines if 'constants::m_one_ov_pi' in line ]
+    one_ov_pi_var = [ line.split(' = ')[0].strip() for line in xc_lines if 'constants::m_one_ov_pi' in line ]
     if len(one_ov_pi_var) > 0:
       xc_lines = [ x.replace( 'cbrt( ' + one_ov_pi_var[0] + ' )', 'constants::m_cbrt_one_ov_pi' ) for x in xc_lines]
-    pi_sq_var = [ line.split('=')[0].strip() for line in xc_lines if 'constants::m_pi_sq' in line ]
+    pi_sq_var = [ line.split(' = ')[0].strip() for line in xc_lines if 'constants::m_pi_sq' in line ]
     if len(pi_sq_var) > 0:
       xc_lines = [ x.replace( 'cbrt( ' + pi_sq_var[0] + ' )', 'constants::m_cbrt_pi_sq' ) for x in xc_lines]
     return xc_lines
@@ -129,19 +131,24 @@ class XCFunc:
 
     xc_lines = _xc_lines.copy()
     
+    # this replaces the variables to sane text 
     for k,v in xc_vars.items():
       xc_lines = [ x.replace(k,v) for x in xc_lines ]
 
-    res_lines = [ x for x in xc_lines if x.split('=')[0].strip() in xc_output ]
+    # This changes all parameter arrays to fixed values
+    xc_lines = [x.replace('[','_') for x in xc_lines ]
+    xc_lines = [x.replace(']','')  for x in xc_lines ]
+
+    res_lines = [ x for x in xc_lines if x.split(' = ')[0].strip() in xc_output ]
     #print(res_lines)
 
     for line in res_lines: xc_lines.remove( line )
 
     # Remove all output lines that are not in the specified xc_output
-    xc_lines = [x for x in xc_lines if 't' in x.split('=')[0] or x.split('=')[0].strip() in xc_output ]
+    xc_lines = [x for x in xc_lines if 't' in x.split(' = ')[0] or x.split(' = ')[0].strip() in xc_output ]
 
     # TODO: transverse the dependency tree to remove unneeded statements
-    #req_vars = [ x.split('=')[1].strip().replace(';','') for x in res_lines ]
+    #req_vars = [ x.split(' = ')[1].strip().replace(';','') for x in res_lines ]
     #req_vars = " ".join(req_vars)
 
     #for op in self.arith_ops:
@@ -160,7 +167,7 @@ class XCFunc:
     # Get parameter lines
     const_params = []
     for line in const_lines:
-      var, expr = line.split('=')
+      var, expr = line.split(' = ')
       expr.strip()
       for op in self.arith_ops:
         expr = expr.replace(op,'')
@@ -188,9 +195,9 @@ class XCFunc:
     const_lines = [x for x in xc_lines if 'constant' in x ]
     for line in const_lines: xc_lines.remove(line)
 
-    const_vars = [ line.split('=')[0].strip() for line in const_lines ]
+    const_vars = [ line.split(' = ')[0].strip() for line in const_lines ]
     for line in xc_lines:
-      var, expr = line.split('=')
+      var, expr = line.split(' = ')
       var = var.strip()
       expr = expr.strip()
 
@@ -262,6 +269,77 @@ gen_table = {
     kernel_prefix + 'vwn_rpa.hpp',
     'LDA', 1e-24, 0. 
     ),
+
+  'PW91' : GenMetaData( 'BuiltinPW91_LDA',
+     libxc_prefix + 'lda_exc/lda_c_pw.c',
+    kernel_prefix + 'pw91_lda.hpp',
+     'LDA', 1e-24, 0., 
+     { 'pp'     : '{1., 1., 1.}',
+       'a'      : '{0.031091,  0.015545,   0.016887}',
+       'alpha1' : '{0.21370,  0.20548,  0.11125}',
+       'beta1'  : '{7.5957, 14.1189, 10.357}',
+       'beta2'  : '{3.5876, 6.1977, 3.6231}',
+       'beta3'  : '{1.6382, 3.3662, 0.88026}',
+       'beta4'  : '{0.49294, 0.62517, 0.49671}',
+       'fz20'   : '1.709921' }),
+
+  'PW91_MOD' : GenMetaData( 'BuiltinPW91_LDA_MOD',
+     libxc_prefix + 'lda_exc/lda_c_pw.c',
+    kernel_prefix + 'pw91_lda_mod.hpp',
+     'LDA', 1e-24, 0., 
+     { 'pp'     : '{1., 1., 1.}',
+       'a'      : '{0.0310907, 0.01554535, 0.0168869}',
+       'alpha1' : '{0.21370,  0.20548,  0.11125}',
+       'beta1'  : '{7.5957, 14.1189, 10.357}',
+       'beta2'  : '{3.5876, 6.1977, 3.6231}',
+       'beta3'  : '{1.6382, 3.3662, 0.88026}',
+       'beta4'  : '{0.49294, 0.62517, 0.49671}',
+       'fz20'   : '1.709920934161365617563962776245' }),
+
+  'PW91_RPA' : GenMetaData( 'BuiltinPW91_LDA_RPA',
+     libxc_prefix + 'lda_exc/lda_c_pw.c',
+    kernel_prefix + 'pw91_lda_rpa.hpp',
+     'LDA', 1e-24, 0., 
+     { 
+       'pp'     : '{0.75, 0.75, 1.0}',
+       'a'      : '{0.031091,  0.015545,   0.016887}',
+       'alpha1' : '{0.082477, 0.035374, 0.028829}',
+       'beta1'  : '{ 5.1486, 6.4869, 10.357}',
+       'beta2'  : '{1.6483, 1.3083, 3.6231}',
+       'beta3'  : '{0.23647, 0.15180, 0.47990}',
+       'beta4'  : '{0.20614, 0.082349, 0.12279}',
+       'fz20'   : '1.709921' }),
+
+
+  'PZ81' : GenMetaData( 'BuiltinPZ81',
+     libxc_prefix + 'lda_exc/lda_c_pz.c',
+    kernel_prefix + 'pz81.hpp',
+     'LDA', 1e-24, 0., 
+    {
+      'gamma' : '{-0.1423, -0.0843}' ,  
+      'beta1' : '{ 1.0529,  1.3981}' ,  
+      'beta2' : '{ 0.3334,  0.2611}' ,  
+      'a'     : '{ 0.0311,  0.01555}', 
+      'b'     : '{-0.048,  -0.0269}' ,  
+      'c'     : '{ 0.0020,  0.0007}' ,  
+      'd'     : '{-0.0116, -0.0048}'   
+    }),
+       
+
+  'PZ81_MOD' : GenMetaData( 'BuiltinPZ81_MOD',
+     libxc_prefix + 'lda_exc/lda_c_pz.c',
+    kernel_prefix + 'pz81_mod.hpp',
+     'LDA', 1e-24, 0., 
+    {
+      'gamma' : '{-0.1423, -0.0843}'                          , 
+      'beta1' : '{ 1.0529,  1.3981}'                          , 
+      'beta2' : '{ 0.3334,  0.2611}'                          , 
+      'a'     : '{ 0.0311,  0.01555}'                         ,
+      'b'     : '{-0.048,  -0.0269}'                          , 
+      'c'     : '{ 0.0020191519406228,  0.00069255121311694}' , 
+      'd'     : '{-0.0116320663789130, -0.00480126353790614}'   
+    }),
+
 
   'B88' : GenMetaData( 'BuiltinB88', 
     libxc_prefix + 'gga_exc/gga_x_b88.c', 
@@ -390,7 +468,18 @@ for name, meta_data in gen_table.items():
 
   xc_param_lines = []
   for pname, valstr in meta_data.params.items():
-    xc_param_lines.append('  static constexpr double ' + pname + ' = ' + valstr + ";")
+    if '{' in valstr:
+      origvalstr = valstr
+      valstr = valstr.replace('{','')
+      valstr = valstr.replace('}','')
+      valstr = valstr.split(',')
+      valstr = [x.strip() for x in valstr]
+      #nitem = len(valstr)
+      #xc_param_lines.append('  static constexpr std::array<double,' + str(nitem) + '> ' + pname + ' = ' + origvalstr + ";")
+      for i,v in enumerate(valstr):
+        xc_param_lines.append('  static constexpr double ' + pname + '_' + str(i) + ' = ' + v + ';' )
+    else:
+      xc_param_lines.append('  static constexpr double ' + pname + ' = ' + valstr + ";")
   xc_param_lines = '\n'.join(xc_param_lines)
 
   exc_prefix_unpolar = func_prefix.format( 'exc', 'unpolar', 

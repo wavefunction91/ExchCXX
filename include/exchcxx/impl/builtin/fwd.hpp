@@ -12,6 +12,11 @@ class BuiltinKernel;
 struct BuiltinSlaterExchange;
 struct BuiltinVWN3;
 struct BuiltinVWN_RPA;
+struct BuiltinPW91_LDA;
+struct BuiltinPW91_LDA_MOD;
+struct BuiltinPW91_LDA_RPA;
+struct BuiltinPZ81;
+struct BuiltinPZ81_MOD;
 
 struct BuiltinB88;
 struct BuiltinLYP;

@@ -82,5 +82,14 @@ SAFE_CONSTEXPR_INLINE( F ) square( F x ) { return x*x; }
 template <typename F>
 SAFE_CONSTEXPR_INLINE( F ) pow_3_2( F x ) { F y = std::sqrt(x); return y*y*y; }
 
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) piecewise_functor_3( bool b, F x, F y ) {
+  return b ? x : y;
+}
+
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) piecewise_functor_5( bool b, F x, bool c, F y, F z ) {
+  return b ? x : (c ? y : z);
+}
 
 }

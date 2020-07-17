@@ -19,6 +19,16 @@ std::unique_ptr<BuiltinKernel>
     return std::make_unique<BuiltinVWN3>( polar );
   else if( kern == Kernel::VWN5 )
     return std::make_unique<BuiltinVWN_RPA>( polar );
+  else if( kern == Kernel::PW91_LDA )
+    return std::make_unique<BuiltinPW91_LDA>( polar );
+  else if( kern == Kernel::PW91_LDA_MOD )
+    return std::make_unique<BuiltinPW91_LDA_MOD>( polar );
+  else if( kern == Kernel::PW91_LDA_RPA )
+    return std::make_unique<BuiltinPW91_LDA_RPA>( polar );
+  else if( kern == Kernel::PZ81 )
+    return std::make_unique<BuiltinPZ81>( polar );
+  else if( kern == Kernel::PZ81_MOD )
+    return std::make_unique<BuiltinPZ81_MOD>( polar );
 
 
   else if( kern == Kernel::B88 )

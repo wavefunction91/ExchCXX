@@ -11,6 +11,13 @@ namespace ExchCXX {
 enum class Kernel {
   // LDA Functionals
   SlaterExchange,
+  VWN3,
+  VWN5,
+  PZ81,
+  PZ81_MOD,
+  PW91_LDA,
+  PW91_LDA_MOD,
+  PW91_LDA_RPA,
 /*
   Wigner,
   RPA,
@@ -18,8 +25,6 @@ enum class Kernel {
   GunnarsonLundqvist,
   XAlpha,
 */
-  VWN3,
-  VWN5,
 /*
   VWN_RPA,
   PerdewZunger,
