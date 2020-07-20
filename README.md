@@ -46,17 +46,21 @@ Department of Energy Exascale Computing Project
 // Setup the B3LYP Functional
 using namespace ExchCXX;
 
-auto backend = XCKernel::Backend::builtin; // Set to Backend::libxc for Libxc wrapper
-auto func    = XCFunctional::Functional::B3LYP;
-auto polar   = XCKernel::Spin::Polarized; // Set to Unpolarized for unpolaried calculation
+auto backend = Backend::builtin; // Set to Backend::libxc for Libxc wrapper
+auto func    = Functional::B3LYP;
+auto polar   = Spin::Polarized; // Set to Unpolarized for unpolaried calculation
 
 XCFunctional b3lyp( backend, func, polar );
 
 
 // Evaluate on Host (CPU)
 size_t npts = ...;
-std::vector<double> rho(2*npts), gamma(3*npts), exc(npts), vrho(2*npts), 
-  vgamma(3*npts);
+std::vector<double> 
+  rho(b3lyp.rho_buffer_len(npts)), 
+  sigma(b3lyp.sigma_buffer_len(npts)), 
+  exc(b3lyp.exc_buffer_len(npts)), 
+  vrho(b3lyp.vrho_buffer_len(npts)), 
+  vsigma(b3lyp.vsigma_buffer_len(npts));
 
 // Set up rho / gamma
 
@@ -80,24 +84,25 @@ b3lyp.eval_exc_vxc_device( npts, rho_device, gamma_device, exc_device, vrho_devi
 
 # Implemented XC Functional Interfaces
 
-The following XC functionals have interfaces to the Libxc library (`Backend::libxc`):
-* Slater Exchange (`Kernel::SlaterExchage` -> `XC_LDA_X`)
-* Vosko-Wilk-Nusair III (`Kernel::VWN3` -> `XC_LDA_C_VWN_3`)
-* Vosko-Wilk-Nusair V   (`Kernel::VWN5` -> `XC_LDA_C_VWN_RPA`)
-* Perdew-Burke-Ernzerhof Exchange    (`Kernel::PBE_X` -> `XC_GGA_X_PBE`)
-* Perdew-Burke-Ernzerhof Correlation (`Kernel::PBE_C` -> `XC_GGA_C_PBE`)
-* Becke-88 Exchange (`Kernel::B88` -> `XC_GGA_X_B88`)
-* Lee-Yang-Parr Correlation (`Kernel::LYP` -> `XC_GGA_C_LYP`)
-* B3LYP (`Kernel::B3LYP` -> `XC_HYB_GGA_XC_B3LYP`)
-* PBE0 (`Kernel::PBE0` -> `XC_HYB_GGA_XC_PBEH`)
+## `XCKernel`
 
-The following XC functionals have builtin implementations suitable for GPU
-evaluation (`Backend::builtin`):
-* Slater Exchange (`Kernel::SlaterExchage`)
-* Perdew-Burke-Ernzerhof Exchange    (`Kernel::PBE_X`)
-* Perdew-Burke-Ernzerhof Correlation (`Kernel::PBE_C`)
-* Lee-Yang-Parr Correlation (`Kernel::LYP`)
-* PBE0 (`Kernel::PBE0`)
+| Name                                 | Libxc Identifier      | ExchCXX Identifier       | Device? |
+|--------------------------------------|-----------------------|--------------------------|---------|
+| Slater Exchange                      | `XC_LDA_X`            | `Kernel::SlaterExchange` |    Y    |
+| Vosko-Wilk-Nusair III                | `XC_LDA_C_VWN_3`      | `Kernel::VWN3`           |    Y    |
+| Vosko-Wilk-Nusair V                  | `XC_LDA_C_VWN_RPA`    | `Kernel::VWN5`           |    Y    |
+| Perdew-Burke-Ernzerhof (Exchange)    | `XC_GGA_X_PBE`        | `Kernel::PBE_X`          |    Y    |
+| Perdew-Burke-Ernzerhof (Correlation) | `XC_GGA_C_PBE`        | `Kernel::PBE_C`          |    Y    |
+| Perdew-Wang 91 (LDA)                 | `XC_LDA_C_PW`         | `Kernel::PW91_LDA`       |    Y    |
+| Perdew-Wang 91 (LDA) Modified        | `XC_LDA_C_PW_MOD`     | `Kernel::PW91_LDA_MOD`   |    Y    |
+| Perdew-Wang 91 (LDA) RPA             | `XC_LDA_C_PW_RPA`     | `Kernel::PW91_LDA_RPA`   |    Y    |
+| Perdew-Zunger 86                     | `XC_LDA_C_PZ`         | `Kernel::PZ86_LDA`       |    Y    |
+| Perdew-Zunger 86 Modified            | `XC_LDA_C_PZ_MOD`     | `Kernel::PZ86_LDA_MOD`   |    Y    |
+| Becke Exchange 88                    | `XC_GGA_X_B88`        | `Kernel::B88`            |    Y    |
+| Lee-Yang-Parr                        | `XC_GGA_C_LYP`        | `Kernel::LYP`            |    Y    |
+| PBE0                                 | `XC_HYB_GGA_XC_PBEH`  | `Kernel::PBE0`           |    Y    |
+| B3LYP                                | `XC_HYB_GGA_XC_B3LYP` | `Kernel::B3LYP`          |    Y    |
+
 
 
 # Feature Requests / Contributing
