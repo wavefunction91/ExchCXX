@@ -50,7 +50,7 @@ target_include_directories( exchcxx
 )
 
 target_compile_options( exchcxx 
-  INTERFACE 
+  PRIVATE 
     $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic -Wnon-virtual-dtor>
 )
 
