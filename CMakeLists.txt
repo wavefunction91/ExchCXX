@@ -1,4 +1,5 @@
 cmake_minimum_required( VERSION 3.17 FATAL_ERROR ) # Require CMake 3.17+
+include(FetchContent)
 
 # Set up project definition + version information
 project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
@@ -35,10 +36,33 @@ endif()
 
 
 ## Find LibXC
-find_package( Libxc 5.0.0 CONFIG REQUIRED )
-message( STATUS "Found: Libxc Version ${Libxc_VERSION}" )
-if( Libxc_VERSION VERSION_GREATER_EQUAL "6.0.0" )
-  message( FATAL_ERROR "Libxc version 6+ breaks the API currently used in ExchCXX" )
+find_package( Libxc 5.0.0 CONFIG QUIET )
+
+if( ${Libxc_FOUND} )
+
+  message( STATUS "Found: Libxc Version ${Libxc_VERSION}" )
+  if( Libxc_VERSION VERSION_GREATER_EQUAL "6.0.0" )
+    message( FATAL_ERROR "Libxc version 6+ breaks the API currently used in ExchCXX" )
+  endif()
+
+else()
+
+  FetchContent_Declare(
+    libxc
+    GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
+    GIT_TAG        5.0.0
+  )
+
+  FetchContent_MakeAvailable( libxc )
+  add_library( Libxc::xc ALIAS xc )
+  target_include_directories( xc 
+    PUBLIC 
+      $<BUILD_INTERFACE:${libxc_SOURCE_DIR}/src>
+      $<BUILD_INTERFACE:${libxc_BINARY_DIR}/src>
+      $<BUILD_INTERFACE:${libxc_BINARY_DIR}>
+      $<BUILD_INTERFACE:${libxc_BINARY_DIR}/gen_funcidx>
+  )
+
 endif()
         
 add_subdirectory( src  )

@@ -26,6 +26,6 @@ XCKernel& XCKernel::operator=( const XCKernel& other ) {
   return *this = std::move( XCKernel(other) );
 }
 
-XCKernel::~XCKernel() = default;
+XCKernel::~XCKernel() noexcept = default;
 
 };

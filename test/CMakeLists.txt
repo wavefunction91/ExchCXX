@@ -1,6 +1,5 @@
 
-find_package( Catch2 QUIET )
-include( FetchContent )
+find_package( Catch2 CONFIG QUIET )
 if( NOT Catch2_FOUND )
 
   FetchContent_Declare(
@@ -15,17 +14,19 @@ if( NOT Catch2_FOUND )
     add_subdirectory( ${catch2_download_SOURCE_DIR} ${catch2_download_BINARY_DIR} )
   endif()
 
-  add_library( catch2 ALIAS Catch2 )
+  #add_library( catch2 ALIAS Catch2 )
+  set( CATCH2_LIBS Catch2 )
 
 else()
 
-  add_library( catch2 ALIAS Catch2::Catch2 )
+  #add_library( catch2 ALIAS Catch2::Catch2 )
+  set( CATCH2_LIBS Catch2::Catch2 )
 
 endif()
 
 # Global Catch2 executable
 add_library( catch2_main STATIC ut_main.cxx)
-target_link_libraries( catch2_main PUBLIC catch2 )
+target_link_libraries( catch2_main PUBLIC ${CATCH2_LIBS} )
 
 #add_executable( boilerplate_test boilerplate_test.cxx )
 #target_link_libraries( boilerplate_test PUBLIC exchcxx catch2_main )

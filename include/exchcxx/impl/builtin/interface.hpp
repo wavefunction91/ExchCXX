@@ -78,7 +78,7 @@ public:
   
   BuiltinKernelInterface( Kernel kern, Spin p);
   BuiltinKernelInterface( const BuiltinKernelInterface& );
-  BuiltinKernelInterface( BuiltinKernelInterface&& ) noexcept = default;
+  BuiltinKernelInterface( BuiltinKernelInterface&& ) noexcept = delete;
 
   // Destroy interal Builtin data
   ~BuiltinKernelInterface() noexcept;
