@@ -30,8 +30,8 @@ struct kernel_traits< BuiltinVWN3 > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar_impl( double rho, double& eps ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t2 = constants::m_one_ov_pi;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t4 = t1 * t3;
@@ -63,8 +63,8 @@ struct kernel_traits< BuiltinVWN3 > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar_impl( double rho, double& eps, double& vrho ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t2 = constants::m_one_ov_pi;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t4 = t1 * t3;
@@ -127,8 +127,8 @@ struct kernel_traits< BuiltinVWN3 > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_ferr_impl( double rho, double& eps ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t2 = constants::m_one_ov_pi;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t4 = t1 * t3;
@@ -160,8 +160,8 @@ struct kernel_traits< BuiltinVWN3 > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_ferr_impl( double rho, double& eps, double& vrho ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t2 = constants::m_one_ov_pi;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t4 = t1 * t3;
@@ -224,8 +224,8 @@ struct kernel_traits< BuiltinVWN3 > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_polar_impl( double rho_a, double rho_b, double& eps ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t2 = constants::m_one_ov_pi;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t91 = constants::m_pi_sq;
@@ -326,8 +326,8 @@ struct kernel_traits< BuiltinVWN3 > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_polar_impl( double rho_a, double rho_b, double& eps, double& vrho_a, double& vrho_b ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t2 = constants::m_one_ov_pi;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t91 = constants::m_pi_sq;

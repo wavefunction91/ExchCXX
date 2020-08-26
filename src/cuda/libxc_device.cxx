@@ -1,5 +1,6 @@
 #include "libxc_common.hpp"
 #include <exchcxx/impl/builtin/util.hpp>
+#include <exchcxx/util/unused.hpp>
 //#include <functionals.cuh>
 
 void throw_if_fail( cudaError_t stat, std::string msg ) {
@@ -252,31 +253,18 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 }
 
 
-
-
-LDA_EXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_inc_device_ ) const {
-  disabled_inc_interface();
-}
-
-LDA_EXC_VXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_inc_device_ ) const {
-  disabled_inc_interface();
-}
-
-GGA_EXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_inc_device_ ) const {
-  disabled_inc_interface();
-}
-
-GGA_EXC_VXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_inc_device_ ) const {
-  disabled_inc_interface();
-}
-
-MGGA_EXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_inc_device_ ) const {
-  disabled_inc_interface();
-}
-
-MGGA_EXC_VXC_INC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_inc_device_ ) const {
-  disabled_inc_interface();
-}
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( LDA, EXC, 
+  LibxcKernelImpl::eval_exc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( LDA, EXC_VXC, 
+  LibxcKernelImpl::eval_exc_vxc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA, EXC, 
+  LibxcKernelImpl::eval_exc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA, EXC_VXC, 
+  LibxcKernelImpl::eval_exc_vxc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC, 
+  LibxcKernelImpl::eval_exc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC_VXC, 
+  LibxcKernelImpl::eval_exc_vxc_inc_device_, const )
 
 }
 }

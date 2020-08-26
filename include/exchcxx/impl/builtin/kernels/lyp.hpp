@@ -33,8 +33,8 @@ struct kernel_traits< BuiltinLYP > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar_impl( double rho, double sigma, double& eps ) {
 
+    (void)(eps);
     constexpr double t26 = constants::m_cbrt_3;
-    constexpr double t28 = constants::m_pi_sq;
     constexpr double t29 = constants::m_cbrt_pi_sq;
     constexpr double t27 = t26 * t26;
     constexpr double t30 = t29 * t29;
@@ -67,8 +67,8 @@ struct kernel_traits< BuiltinLYP > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar_impl( double rho, double sigma, double& eps, double& vrho, double& vsigma ) {
 
+    (void)(eps);
     constexpr double t26 = constants::m_cbrt_3;
-    constexpr double t28 = constants::m_pi_sq;
     constexpr double t29 = constants::m_cbrt_pi_sq;
     constexpr double t27 = t26 * t26;
     constexpr double t30 = t29 * t29;
@@ -131,6 +131,9 @@ struct kernel_traits< BuiltinLYP > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_ferr_impl( double rho, double sigma, double& eps ) {
 
+    (void)(rho);
+    (void)(sigma);
+    (void)(eps);
 
 
 
@@ -142,6 +145,9 @@ struct kernel_traits< BuiltinLYP > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_ferr_impl( double rho, double sigma, double& eps, double& vrho, double& vsigma ) {
 
+    (void)(rho);
+    (void)(sigma);
+    (void)(eps);
 
 
 
@@ -155,8 +161,8 @@ struct kernel_traits< BuiltinLYP > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_polar_impl( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double& eps ) {
 
+    (void)(eps);
     constexpr double t38 = constants::m_cbrt_3;
-    constexpr double t40 = constants::m_pi_sq;
     constexpr double t41 = constants::m_cbrt_pi_sq;
     constexpr double t60 = constants::m_cbrt_2;
     constexpr double t39 = t38 * t38;
@@ -232,8 +238,8 @@ struct kernel_traits< BuiltinLYP > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_polar_impl( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double& eps, double& vrho_a, double& vrho_b, double& vsigma_aa, double& vsigma_ab, double& vsigma_bb ) {
 
+    (void)(eps);
     constexpr double t38 = constants::m_cbrt_3;
-    constexpr double t40 = constants::m_pi_sq;
     constexpr double t41 = constants::m_cbrt_pi_sq;
     constexpr double t60 = constants::m_cbrt_2;
     constexpr double t39 = t38 * t38;
