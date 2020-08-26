@@ -1,101 +1,55 @@
 #include <exchcxx/impl/builtin/kernel_type.hpp>
 #include <exchcxx/impl/builtin/util.hpp>
 #include <exchcxx/impl/builtin/kernels.hpp>
+#include <exchcxx/util/unused.hpp>
 
 
 namespace ExchCXX {
 
 
 // LDA interface
-LDA_EXC_GENERATOR( BuiltinKernel::eval_exc ) const {
-  disabled_lda_interface();
-};
-LDA_EXC_VXC_GENERATOR( BuiltinKernel::eval_exc_vxc ) const {
-  disabled_lda_interface();
-};
+UNUSED_INTERFACE_GENERATOR( LDA, EXC,     BuiltinKernel::eval_exc,     const )
+UNUSED_INTERFACE_GENERATOR( LDA, EXC_VXC, BuiltinKernel::eval_exc_vxc, const )
 
 // GGA interface
-GGA_EXC_GENERATOR( BuiltinKernel::eval_exc ) const {
-  disabled_gga_interface();
-};
-GGA_EXC_VXC_GENERATOR( BuiltinKernel::eval_exc_vxc ) const {
-  disabled_gga_interface();
-};
+UNUSED_INTERFACE_GENERATOR( GGA, EXC,     BuiltinKernel::eval_exc,     const )
+UNUSED_INTERFACE_GENERATOR( GGA, EXC_VXC, BuiltinKernel::eval_exc_vxc, const )
 
 // MGGA interface
-MGGA_EXC_GENERATOR( BuiltinKernel::eval_exc ) const {
-  disabled_mgga_interface();
-};
-MGGA_EXC_VXC_GENERATOR( BuiltinKernel::eval_exc_vxc ) const {
-  disabled_mgga_interface();
-};
+UNUSED_INTERFACE_GENERATOR( MGGA, EXC,     BuiltinKernel::eval_exc,     const )
+UNUSED_INTERFACE_GENERATOR( MGGA, EXC_VXC, BuiltinKernel::eval_exc_vxc, const )
 
 
 // INC interfaces
-LDA_EXC_INC_GENERATOR( BuiltinKernel::eval_exc_inc ) const {
-  disabled_inc_interface();
-};
-LDA_EXC_VXC_INC_GENERATOR( BuiltinKernel::eval_exc_vxc_inc ) const {
-  disabled_inc_interface();
-};
-GGA_EXC_INC_GENERATOR( BuiltinKernel::eval_exc_inc ) const {
-  disabled_inc_interface();
-};
-GGA_EXC_VXC_INC_GENERATOR( BuiltinKernel::eval_exc_vxc_inc ) const {
-  disabled_inc_interface();
-};
-MGGA_EXC_INC_GENERATOR( BuiltinKernel::eval_exc_inc ) const {
-  disabled_inc_interface();
-};
-MGGA_EXC_VXC_INC_GENERATOR( BuiltinKernel::eval_exc_vxc_inc ) const {
-  disabled_inc_interface();
-};
+UNUSED_INC_INTERFACE_GENERATOR( LDA,  EXC,     BuiltinKernel::eval_exc_inc,     const )
+UNUSED_INC_INTERFACE_GENERATOR( LDA,  EXC_VXC, BuiltinKernel::eval_exc_vxc_inc, const )
+UNUSED_INC_INTERFACE_GENERATOR( GGA,  EXC,     BuiltinKernel::eval_exc_inc,     const )
+UNUSED_INC_INTERFACE_GENERATOR( GGA,  EXC_VXC, BuiltinKernel::eval_exc_vxc_inc, const )
+UNUSED_INC_INTERFACE_GENERATOR( MGGA, EXC,     BuiltinKernel::eval_exc_inc,     const )
+UNUSED_INC_INTERFACE_GENERATOR( MGGA, EXC_VXC, BuiltinKernel::eval_exc_vxc_inc, const )
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
 // LDA interface
-LDA_EXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_device ) const {
-  disabled_lda_device_interface();
-};
-LDA_EXC_VXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_device ) const {
-  disabled_lda_device_interface();
-};
+UNUSED_DEVICE_INTERFACE_GENERATOR( LDA, EXC,     BuiltinKernel::eval_exc_device,     const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( LDA, EXC_VXC, BuiltinKernel::eval_exc_vxc_device, const )
 
 // GGA interface
-GGA_EXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_device ) const {
-  disabled_gga_device_interface();
-};
-GGA_EXC_VXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_device ) const {
-  disabled_gga_device_interface();
-};
+UNUSED_DEVICE_INTERFACE_GENERATOR( GGA, EXC,     BuiltinKernel::eval_exc_device,     const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( GGA, EXC_VXC, BuiltinKernel::eval_exc_vxc_device, const )
 
 // MGGA interface
-MGGA_EXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_device ) const {
-  disabled_mgga_device_interface();
-};
-MGGA_EXC_VXC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_device ) const {
-  disabled_mgga_device_interface();
-};
+UNUSED_DEVICE_INTERFACE_GENERATOR( MGGA, EXC,     BuiltinKernel::eval_exc_device,     const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( MGGA, EXC_VXC, BuiltinKernel::eval_exc_vxc_device, const )
 
-// INC interface
-LDA_EXC_INC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_inc_device ) const {
-  disabled_inc_device_interface();
-};
-LDA_EXC_VXC_INC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_inc_device ) const {
-  disabled_inc_device_interface();
-};
-GGA_EXC_INC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_inc_device ) const {
-  disabled_inc_device_interface();
-};
-GGA_EXC_VXC_INC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_inc_device ) const {
-  disabled_inc_device_interface();
-};
-MGGA_EXC_INC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_inc_device ) const {
-  disabled_inc_device_interface();
-};
-MGGA_EXC_VXC_INC_GENERATOR_DEVICE( BuiltinKernel::eval_exc_vxc_inc_device ) const {
-  disabled_inc_device_interface();
-};
+
+// INC interfaces
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( LDA,  EXC,     BuiltinKernel::eval_exc_inc_device,     const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( LDA,  EXC_VXC, BuiltinKernel::eval_exc_vxc_inc_device, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA,  EXC,     BuiltinKernel::eval_exc_inc_device,     const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA,  EXC_VXC, BuiltinKernel::eval_exc_vxc_inc_device, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC,     BuiltinKernel::eval_exc_inc_device,     const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC_VXC, BuiltinKernel::eval_exc_vxc_inc_device, const )
 
 #endif
 
@@ -108,7 +62,7 @@ LDA_EXC_GENERATOR( host_eval_exc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use = std::max( rho[i], 0. );
     traits::eval_exc_unpolar( rho_use, eps[i] );
@@ -123,7 +77,7 @@ LDA_EXC_GENERATOR( host_eval_exc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto rho_i = rho + 2*i;
 
@@ -141,7 +95,7 @@ LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use = std::max( rho[i], 0. );
     traits::eval_exc_vxc_unpolar( rho_use, eps[i], vxc[i] );
@@ -155,7 +109,7 @@ LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto rho_i = rho + 2*i;
     auto vxc_i = vxc + 2*i;
@@ -175,7 +129,7 @@ LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use = std::max( rho[i], 0. );
     double e;
@@ -192,7 +146,7 @@ LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto rho_i = rho + 2*i;
 
@@ -213,7 +167,7 @@ LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use = std::max( rho[i], 0. );
     double v,e;
@@ -231,7 +185,7 @@ LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto rho_i = rho + 2*i;
     auto vxc_i = vxc + 2*i;
@@ -268,7 +222,7 @@ GGA_EXC_GENERATOR( host_eval_exc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
     const double sigma_use = std::max( sigma[i], 1e-40 );
@@ -283,7 +237,7 @@ GGA_EXC_GENERATOR( host_eval_exc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto* rho_i   = rho   + 2*i;
     auto* sigma_i = sigma + 3*i;
@@ -308,7 +262,7 @@ GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
     const double sigma_use = std::max( sigma[i], 1e-40 );
@@ -324,7 +278,7 @@ GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto* rho_i    = rho   + 2*i;
     auto* sigma_i  = sigma + 3*i;
@@ -355,7 +309,7 @@ GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
     const double sigma_use = std::max( sigma[i], 1e-40 );
@@ -374,7 +328,7 @@ GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto* rho_i   = rho   + 2*i;
     auto* sigma_i = sigma + 3*i;
@@ -401,7 +355,7 @@ GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
     const double sigma_use = std::max( sigma[i], 1e-40 );
@@ -421,7 +375,7 @@ GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar ) {
 
   using traits = kernel_traits<KernelType>;
   
-  for( size_t i = 0; i < N; ++i ) {
+  for( int32_t i = 0; i < N; ++i ) {
 
     auto* rho_i    = rho   + 2*i;
     auto* sigma_i  = sigma + 3*i;
@@ -472,22 +426,22 @@ GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar ) {
   template GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar<KERN> ); \
   template GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar<KERN> ); 
 
-LDA_GENERATE_HOST_HELPERS( BuiltinSlaterExchange );
-LDA_GENERATE_HOST_HELPERS( BuiltinVWN3 );
-LDA_GENERATE_HOST_HELPERS( BuiltinVWN_RPA );
-LDA_GENERATE_HOST_HELPERS( BuiltinPW91_LDA );
-LDA_GENERATE_HOST_HELPERS( BuiltinPW91_LDA_MOD );
-LDA_GENERATE_HOST_HELPERS( BuiltinPW91_LDA_RPA );
-LDA_GENERATE_HOST_HELPERS( BuiltinPZ81 );
-LDA_GENERATE_HOST_HELPERS( BuiltinPZ81_MOD );
+LDA_GENERATE_HOST_HELPERS( BuiltinSlaterExchange )
+LDA_GENERATE_HOST_HELPERS( BuiltinVWN3 )
+LDA_GENERATE_HOST_HELPERS( BuiltinVWN_RPA )
+LDA_GENERATE_HOST_HELPERS( BuiltinPW91_LDA )
+LDA_GENERATE_HOST_HELPERS( BuiltinPW91_LDA_MOD )
+LDA_GENERATE_HOST_HELPERS( BuiltinPW91_LDA_RPA )
+LDA_GENERATE_HOST_HELPERS( BuiltinPZ81 )
+LDA_GENERATE_HOST_HELPERS( BuiltinPZ81_MOD )
 
-GGA_GENERATE_HOST_HELPERS( BuiltinB88   );
-GGA_GENERATE_HOST_HELPERS( BuiltinLYP   );
-GGA_GENERATE_HOST_HELPERS( BuiltinPBE_X );
-GGA_GENERATE_HOST_HELPERS( BuiltinPBE_C );
+GGA_GENERATE_HOST_HELPERS( BuiltinB88   )
+GGA_GENERATE_HOST_HELPERS( BuiltinLYP   )
+GGA_GENERATE_HOST_HELPERS( BuiltinPBE_X )
+GGA_GENERATE_HOST_HELPERS( BuiltinPBE_C )
 
-GGA_GENERATE_HOST_HELPERS( BuiltinB3LYP  );
-GGA_GENERATE_HOST_HELPERS( BuiltinPBE0  );
+GGA_GENERATE_HOST_HELPERS( BuiltinB3LYP  )
+GGA_GENERATE_HOST_HELPERS( BuiltinPBE0  )
 
 }
 
