@@ -458,6 +458,6 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
 
 
-}; // ExchCXX
+} // ExchCXX
 
 
