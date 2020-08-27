@@ -31,13 +31,14 @@ if( EXCHCXX_ENABLE_DEVICE )
     include( cuda/exchcxx_cuda.cmake )
   endif()
 
-  get_target_property( DEVICE_TARGET_DEPENDS exchcxx_device 
-    INTERFACE_LINK_LIBRARIES ) 
 
-  target_link_libraries( exchcxx PUBLIC 
-    $<TARGET_OBJECTS:exchcxx_device> 
-    ${DEVICE_TARGET_DEPENDS}
-  )
+#  get_target_property( DEVICE_TARGET_DEPENDS exchcxx_device 
+#    INTERFACE_LINK_LIBRARIES ) 
+#
+#  target_link_libraries( exchcxx PUBLIC 
+#    $<TARGET_OBJECTS:exchcxx_device> 
+#    ${DEVICE_TARGET_DEPENDS}
+#  )
 
 endif()
 
@@ -47,6 +48,7 @@ target_include_directories( exchcxx
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
 
 target_compile_options( exchcxx 
