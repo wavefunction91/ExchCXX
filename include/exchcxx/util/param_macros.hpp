@@ -10,7 +10,7 @@ namespace ExchCXX {
   using host_buffer_type       = double*;
   using const_host_buffer_type = const double*;
 
-#ifdef EXCHCXX_ENABLE_CUDA
+#ifdef EXCHCXX_ENABLE_DEVICE
   using device_buffer_type       = double*;
   using const_device_buffer_type = const double*;
 #endif

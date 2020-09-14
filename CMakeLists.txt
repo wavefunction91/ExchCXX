@@ -8,11 +8,24 @@ project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
 option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
+option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"    OFF )
 
 
 # Decided if we're compiling device bindings
-if( EXCHCXX_ENABLE_CUDA )
+if( EXCHCXX_ENABLE_CUDA OR EXCHCXX_ENABLE_SYCL )
   set( EXCHCXX_ENABLE_DEVICE TRUE CACHE BOOL "Enable Device Code" )
+endif()
+
+# Die if both CUDA and SYCL are enabled
+if( EXCHCXX_ENABLE_CUDA AND EXCHCXX_ENABLE_SYCL )
+  message( FATAL_ERROR "CUDA / SYCL bindings are mutually exclusive" )
+endif()
+
+# Append local cmake directory to find CMAKE Modules
+if( CMAKE_MODULE_PATH )
+  list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+else()
+  set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 endif()
 
 
@@ -22,16 +35,10 @@ if( EXCHCXX_ENABLE_CUDA )
   enable_language( CUDA )
 endif()
 
-
-
-
-
-
-# Append local cmake directory to find CMAKE Modules
-if( CMAKE_MODULE_PATH )
-  list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-else()
-  set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+# Find SYCL if requested
+if( EXCHCXX_ENABLE_SYCL )
+#  list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/oneAPI" )
+#  find_package( SYCL REQUIRED )
 endif()
 
 
@@ -65,7 +72,7 @@ else()
 
 endif()
         
-add_subdirectory( src  )
+add_subdirectory( src )
 
 if( EXCHCXX_ENABLE_TESTS )
   enable_testing()

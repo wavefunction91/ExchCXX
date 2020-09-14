@@ -38,21 +38,21 @@ struct kernel_traits< BuiltinVWN_RPA > :
     constexpr double t6 = t5 * t5;
 
 
-    const double t7 = cbrt( rho );
+    const double t7 = safe_math::cbrt( rho );
     const double t8 = 0.1e1 / t7;
     const double t9 = t6 * t8;
     const double t10 = t4 * t9;
-    const double t12 = sqrt( t10 );
+    const double t12 = safe_math::sqrt( t10 );
     const double t14 = t10 / 0.4e1 + 0.65360000000000000000e1 * t12 + 0.427198e2;
     const double t15 = 0.1e1 / t14;
-    const double t19 = log( t4 * t9 * t15 / 0.4e1 );
+    const double t19 = safe_math::log( t4 * t9 * t15 / 0.4e1 );
     const double t20 = 0.310907e-1 * t19;
     const double t21 = t12 + 0.130720e2;
-    const double t24 = atan( 0.44899888641287296627e-1 / t21 );
+    const double t24 = safe_math::atan( 0.44899888641287296627e-1 / t21 );
     const double t25 = 0.20521972937837502661e2 * t24;
     const double t27 = t12 / 0.2e1 + 0.409286e0;
     const double t28 = t27 * t27;
-    const double t30 = log( t28 * t15 );
+    const double t30 = safe_math::log( t28 * t15 );
     const double t31 = 0.44313737677495382697e-2 * t30;
 
 
@@ -75,21 +75,21 @@ struct kernel_traits< BuiltinVWN_RPA > :
     constexpr double t57 = 0.1e1 / t3;
 
 
-    const double t7 = cbrt( rho );
+    const double t7 = safe_math::cbrt( rho );
     const double t8 = 0.1e1 / t7;
     const double t9 = t6 * t8;
     const double t10 = t4 * t9;
-    const double t12 = sqrt( t10 );
+    const double t12 = safe_math::sqrt( t10 );
     const double t14 = t10 / 0.4e1 + 0.65360000000000000000e1 * t12 + 0.427198e2;
     const double t15 = 0.1e1 / t14;
-    const double t19 = log( t4 * t9 * t15 / 0.4e1 );
+    const double t19 = safe_math::log( t4 * t9 * t15 / 0.4e1 );
     const double t20 = 0.310907e-1 * t19;
     const double t21 = t12 + 0.130720e2;
-    const double t24 = atan( 0.44899888641287296627e-1 / t21 );
+    const double t24 = safe_math::atan( 0.44899888641287296627e-1 / t21 );
     const double t25 = 0.20521972937837502661e2 * t24;
     const double t27 = t12 / 0.2e1 + 0.409286e0;
     const double t28 = t27 * t27;
-    const double t30 = log( t28 * t15 );
+    const double t30 = safe_math::log( t28 * t15 );
     const double t31 = 0.44313737677495382697e-2 * t30;
     const double t33 = 0.1e1 / t7 / rho;
     const double t34 = t6 * t33;
@@ -135,21 +135,21 @@ struct kernel_traits< BuiltinVWN_RPA > :
     constexpr double t6 = t5 * t5;
 
 
-    const double t7 = cbrt( rho );
+    const double t7 = safe_math::cbrt( rho );
     const double t8 = 0.1e1 / t7;
     const double t9 = t6 * t8;
     const double t10 = t4 * t9;
-    const double t12 = sqrt( t10 );
+    const double t12 = safe_math::sqrt( t10 );
     const double t14 = t10 / 0.4e1 + 0.10061550000000000000e2 * t12 + 0.101578e3;
     const double t15 = 0.1e1 / t14;
-    const double t19 = log( t4 * t9 * t15 / 0.4e1 );
+    const double t19 = safe_math::log( t4 * t9 * t15 / 0.4e1 );
     const double t20 = 0.1554535e-1 * t19;
     const double t21 = t12 + 0.201231e2;
-    const double t24 = atan( 0.11716852777089929792e1 / t21 );
+    const double t24 = safe_math::atan( 0.11716852777089929792e1 / t21 );
     const double t25 = 0.61881802979060631482e0 * t24;
     const double t27 = t12 / 0.2e1 + 0.743294e0;
     const double t28 = t27 * t27;
-    const double t30 = log( t28 * t15 );
+    const double t30 = safe_math::log( t28 * t15 );
     const double t31 = 0.26673100072733151594e-2 * t30;
 
 
@@ -172,21 +172,21 @@ struct kernel_traits< BuiltinVWN_RPA > :
     constexpr double t57 = 0.1e1 / t3;
 
 
-    const double t7 = cbrt( rho );
+    const double t7 = safe_math::cbrt( rho );
     const double t8 = 0.1e1 / t7;
     const double t9 = t6 * t8;
     const double t10 = t4 * t9;
-    const double t12 = sqrt( t10 );
+    const double t12 = safe_math::sqrt( t10 );
     const double t14 = t10 / 0.4e1 + 0.10061550000000000000e2 * t12 + 0.101578e3;
     const double t15 = 0.1e1 / t14;
-    const double t19 = log( t4 * t9 * t15 / 0.4e1 );
+    const double t19 = safe_math::log( t4 * t9 * t15 / 0.4e1 );
     const double t20 = 0.1554535e-1 * t19;
     const double t21 = t12 + 0.201231e2;
-    const double t24 = atan( 0.11716852777089929792e1 / t21 );
+    const double t24 = safe_math::atan( 0.11716852777089929792e1 / t21 );
     const double t25 = 0.61881802979060631482e0 * t24;
     const double t27 = t12 / 0.2e1 + 0.743294e0;
     const double t28 = t27 * t27;
-    const double t30 = log( t28 * t15 );
+    const double t30 = safe_math::log( t28 * t15 );
     const double t31 = 0.26673100072733151594e-2 * t30;
     const double t33 = 0.1e1 / t7 / rho;
     const double t34 = t6 * t33;
@@ -234,41 +234,41 @@ struct kernel_traits< BuiltinVWN_RPA > :
 
 
     const double t7 = rho_a + rho_b;
-    const double t8 = cbrt( t7 );
+    const double t8 = safe_math::cbrt( t7 );
     const double t9 = 0.1e1 / t8;
     const double t10 = t6 * t9;
     const double t11 = t4 * t10;
     const double t12 = t11 / 0.4e1;
-    const double t13 = sqrt( t11 );
+    const double t13 = safe_math::sqrt( t11 );
     const double t15 = t12 + 0.65360000000000000000e1 * t13 + 0.427198e2;
     const double t16 = 0.1e1 / t15;
-    const double t20 = log( t4 * t10 * t16 / 0.4e1 );
+    const double t20 = safe_math::log( t4 * t10 * t16 / 0.4e1 );
     const double t22 = t13 + 0.130720e2;
-    const double t25 = atan( 0.44899888641287296627e-1 / t22 );
+    const double t25 = safe_math::atan( 0.44899888641287296627e-1 / t22 );
     const double t27 = t13 / 0.2e1;
     const double t28 = t27 + 0.409286e0;
     const double t29 = t28 * t28;
-    const double t31 = log( t29 * t16 );
+    const double t31 = safe_math::log( t29 * t16 );
     const double t33 = 0.310907e-1 * t20 + 0.20521972937837502661e2 * t25 + 0.44313737677495382697e-2 * t31;
     const double t34 = rho_a - rho_b;
     const double t35 = 0.1e1 / t7;
     const double t36 = t34 * t35;
     const double t37 = 0.1e1 + t36;
-    const double t38 = cbrt( t37 );
+    const double t38 = safe_math::cbrt( t37 );
     const double t40 = 0.1e1 - t36;
-    const double t41 = cbrt( t40 );
+    const double t41 = safe_math::cbrt( t40 );
     const double t43 = t38 * t37 + t41 * t40 - 0.2e1;
     const double t47 = 0.1e1 / ( 0.2e1 * t44 - 0.2e1 );
     const double t49 = -t43 * t47 + 0.1e1;
     const double t50 = t33 * t49;
     const double t52 = t12 + 0.10061550000000000000e2 * t13 + 0.101578e3;
     const double t53 = 0.1e1 / t52;
-    const double t57 = log( t4 * t10 * t53 / 0.4e1 );
+    const double t57 = safe_math::log( t4 * t10 * t53 / 0.4e1 );
     const double t59 = t13 + 0.201231e2;
-    const double t62 = atan( 0.11716852777089929792e1 / t59 );
+    const double t62 = safe_math::atan( 0.11716852777089929792e1 / t59 );
     const double t64 = t27 + 0.743294e0;
     const double t65 = t64 * t64;
-    const double t67 = log( t65 * t53 );
+    const double t67 = safe_math::log( t65 * t53 );
     const double t69 = 0.1554535e-1 * t57 + 0.61881802979060631482e0 * t62 + 0.26673100072733151594e-2 * t67;
     const double t71 = t69 * t43 * t47;
 
@@ -294,41 +294,41 @@ struct kernel_traits< BuiltinVWN_RPA > :
 
 
     const double t7 = rho_a + rho_b;
-    const double t8 = cbrt( t7 );
+    const double t8 = safe_math::cbrt( t7 );
     const double t9 = 0.1e1 / t8;
     const double t10 = t6 * t9;
     const double t11 = t4 * t10;
     const double t12 = t11 / 0.4e1;
-    const double t13 = sqrt( t11 );
+    const double t13 = safe_math::sqrt( t11 );
     const double t15 = t12 + 0.65360000000000000000e1 * t13 + 0.427198e2;
     const double t16 = 0.1e1 / t15;
-    const double t20 = log( t4 * t10 * t16 / 0.4e1 );
+    const double t20 = safe_math::log( t4 * t10 * t16 / 0.4e1 );
     const double t22 = t13 + 0.130720e2;
-    const double t25 = atan( 0.44899888641287296627e-1 / t22 );
+    const double t25 = safe_math::atan( 0.44899888641287296627e-1 / t22 );
     const double t27 = t13 / 0.2e1;
     const double t28 = t27 + 0.409286e0;
     const double t29 = t28 * t28;
-    const double t31 = log( t29 * t16 );
+    const double t31 = safe_math::log( t29 * t16 );
     const double t33 = 0.310907e-1 * t20 + 0.20521972937837502661e2 * t25 + 0.44313737677495382697e-2 * t31;
     const double t34 = rho_a - rho_b;
     const double t35 = 0.1e1 / t7;
     const double t36 = t34 * t35;
     const double t37 = 0.1e1 + t36;
-    const double t38 = cbrt( t37 );
+    const double t38 = safe_math::cbrt( t37 );
     const double t40 = 0.1e1 - t36;
-    const double t41 = cbrt( t40 );
+    const double t41 = safe_math::cbrt( t40 );
     const double t43 = t38 * t37 + t41 * t40 - 0.2e1;
     const double t47 = 0.1e1 / ( 0.2e1 * t44 - 0.2e1 );
     const double t49 = -t43 * t47 + 0.1e1;
     const double t50 = t33 * t49;
     const double t52 = t12 + 0.10061550000000000000e2 * t13 + 0.101578e3;
     const double t53 = 0.1e1 / t52;
-    const double t57 = log( t4 * t10 * t53 / 0.4e1 );
+    const double t57 = safe_math::log( t4 * t10 * t53 / 0.4e1 );
     const double t59 = t13 + 0.201231e2;
-    const double t62 = atan( 0.11716852777089929792e1 / t59 );
+    const double t62 = safe_math::atan( 0.11716852777089929792e1 / t59 );
     const double t64 = t27 + 0.743294e0;
     const double t65 = t64 * t64;
-    const double t67 = log( t65 * t53 );
+    const double t67 = safe_math::log( t65 * t53 );
     const double t69 = 0.1554535e-1 * t57 + 0.61881802979060631482e0 * t62 + 0.26673100072733151594e-2 * t67;
     const double t71 = t69 * t43 * t47;
     const double t73 = 0.1e1 / t8 / t7;

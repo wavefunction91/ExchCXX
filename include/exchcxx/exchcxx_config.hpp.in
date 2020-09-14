@@ -1,9 +1,14 @@
 #pragma once
 
 #cmakedefine EXCHCXX_ENABLE_CUDA
+#cmakedefine EXCHCXX_ENABLE_SYCL
 #cmakedefine EXCHCXX_ENABLE_DEVICE
 
 
 #ifdef EXCHCXX_ENABLE_CUDA
   #include <cuda_runtime.h>
+#endif
+
+#ifdef EXCHCXX_ENABLE_SYCL
+  #include <CL/sycl.hpp>
 #endif
