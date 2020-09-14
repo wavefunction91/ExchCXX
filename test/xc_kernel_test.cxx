@@ -1486,7 +1486,6 @@ TEST_CASE( "SYCL Interfaces", "[xc-device]" ) {
 
   }
 
-#if 0
   SECTION( "Builtin Functionals" ) {
 
     SECTION("EXC Regular: Unpolarized") {
@@ -1495,6 +1494,7 @@ TEST_CASE( "SYCL Interfaces", "[xc-device]" ) {
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
+#if 0
     SECTION("EXC + VXC Regular: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC, EvalType::Regular,
@@ -1632,9 +1632,9 @@ TEST_CASE( "SYCL Interfaces", "[xc-device]" ) {
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
           Backend::builtin, kern, Spin::Polarized );
     }
+#endif
 
   }
-#endif
 
 
 }
