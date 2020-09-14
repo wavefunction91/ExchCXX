@@ -1116,7 +1116,7 @@ T* safe_sycl_malloc( size_t n, cl::sycl::queue& q ) {
 template <typename T>
 void safe_sycl_cpy( T* dest, const T* src, size_t len, cl::sycl::queue& q ) {
 
-  q.memcpy( dest, src, len*sizeof(T) );
+  q.memcpy( (void*)dest, (const void*)src, len*sizeof(T) );
 
 }
 
@@ -1221,11 +1221,8 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
   double* vrho_device   = safe_sycl_malloc<double>( len_vrho_buffer  , q );
   double* vsigma_device = safe_sycl_malloc<double>( len_vsigma_buffer, q );
 
-  std::cout << rho_device << ", " << len_rho_buffer << std::endl;
-
   // H2D Copy of rho / sigma
   safe_sycl_cpy( rho_device, rho.data(), len_rho_buffer, q );
-#if 0
   if( func.is_gga() )
     safe_sycl_cpy( sigma_device, sigma.data(), len_sigma_buffer, q );
 
@@ -1288,6 +1285,7 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
   if(func.is_gga()) 
     safe_sycl_cpy( vsigma.data(), vsigma_device, len_vsigma_buffer, q );
 
+  device_synchronize( q );
   // Check correctness
   if( interface == TestInterface::EXC_INC or interface == TestInterface::EXC_VXC_INC ) {
     for( auto i = 0ul; i < len_exc_buffer; ++i )
@@ -1315,8 +1313,9 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 
   }
 
-#endif
-  sycl_free_all( q, rho_device, sigma_device, exc_device, vrho_device, vsigma_device );
+  device_synchronize( q );
+  sycl_free_all( q, rho_device, sigma_device, exc_device, vrho_device, 
+		 vsigma_device );
 
   device_synchronize( q );
 }
@@ -1335,7 +1334,6 @@ TEST_CASE( "SYCL Interfaces", "[xc-device]" ) {
     }
 
 
-# if 0
     SECTION( "LDA Functionals: EXC + VXC Regular Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_sycl_interface( TestInterface::EXC_VXC, EvalType::Regular,
@@ -1486,7 +1484,6 @@ TEST_CASE( "SYCL Interfaces", "[xc-device]" ) {
           Backend::libxc, kern, Spin::Polarized );
     }
 
-#endif
   }
 
 #if 0

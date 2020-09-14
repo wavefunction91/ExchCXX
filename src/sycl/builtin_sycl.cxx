@@ -382,18 +382,24 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
   cl::sycl::range<1> threads(32);
   cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
+  try {
+    queue.submit( [&](cl::sycl::handler &cgh) {
+      auto global_range = blocks * threads;
 
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
-        device_eval_exc_helper_unpolar_kernel<KernelType>(
-          N, rho, eps, item_ct
-        );
-      });
+      cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
+        [=](cl::sycl::nd_item<1> item_ct) {
+    //      device_eval_exc_helper_unpolar_kernel<KernelType>(
+    //        N, rho, eps, item_ct
+    //      );
+        });
 
-  });
+    });
 
+    queue.wait_and_throw();
+  } catch( cl::sycl::exception const& ex ) {
+    std::cout << ex.what() << std::endl;
+    throw;
+  }
 }
 
 template <typename KernelType>

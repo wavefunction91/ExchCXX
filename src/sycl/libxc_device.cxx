@@ -59,12 +59,12 @@ LDA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 
   std::vector<double> rho_host( sz_rho ), eps_host( sz_exc );
 
-  //recv_from_device( rho_host.data(), rho, len_rho, queue );
+  recv_from_device( rho_host.data(), rho, len_rho, queue );
 
-  //queue_sync( queue );
-  //xc_lda_exc( &kernel_, N, rho_host.data(), eps_host.data() );
+  queue_sync( queue );
+  xc_lda_exc( &kernel_, N, rho_host.data(), eps_host.data() );
 
-  //send_to_device( eps, eps_host.data(), len_eps, queue );
+  send_to_device( eps, eps_host.data(), len_eps, queue );
   queue_sync( queue ); // Lifetime of host vectors
 
 }
