@@ -1,8 +1,6 @@
 #pragma once
 
-#ifdef EXCHCXX_HAS_CONFIG_H
 #include <exchcxx/exchcxx_config.hpp>
-#endif
 
 #include <cmath>
 
@@ -35,7 +33,7 @@ SAFE_CONSTEXPR_INLINE(F) safe_min(F x, F y) { return std::min(x,y); }
 
 namespace safe_math {
 
-#ifdef  GAUXC_ENABLE_SYCL
+#ifdef EXCHCXX_ENABLE_SYCL
 namespace sm = cl::sycl;
 #else
 namespace sm = std;

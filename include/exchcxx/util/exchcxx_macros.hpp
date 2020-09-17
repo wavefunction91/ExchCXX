@@ -18,10 +18,10 @@
 
 #ifdef EXCHCXX_ENABLE_SYCL
 
-  #define DEVICE_PARAMS cl::sycl::queue& queue
+  #define DEVICE_PARAMS cl::sycl::queue* queue
   #define DEVICE_PARAMS_NOTYPE queue
 
-  #define SYCL_KERNEL_PARAMS cl::sycl::nd_item<1> item_ct
+  #define SYCL_KERNEL_PARAMS cl::sycl::item<1> item_ct
 
 #endif
 

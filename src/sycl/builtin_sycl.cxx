@@ -19,7 +19,7 @@ template <typename KernelType>
 inline LDA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -34,7 +34,7 @@ template <typename KernelType>
 inline LDA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -53,7 +53,7 @@ template <typename KernelType>
 inline LDA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -68,7 +68,7 @@ template <typename KernelType>
 inline LDA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -89,7 +89,7 @@ template <typename KernelType>
 inline LDA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   double e;
   if( tid < N ) {
@@ -106,7 +106,7 @@ template <typename KernelType>
 inline LDA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -128,7 +128,7 @@ template <typename KernelType>
 inline LDA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   double e,v;
   if( tid < N ) {
@@ -146,7 +146,7 @@ template <typename KernelType>
 inline LDA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -170,7 +170,7 @@ template <typename KernelType>
 inline GGA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -186,7 +186,7 @@ template <typename KernelType>
 inline GGA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -212,7 +212,7 @@ template <typename KernelType>
 inline GGA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -229,7 +229,7 @@ template <typename KernelType>
 inline GGA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -260,7 +260,7 @@ template <typename KernelType>
 inline GGA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   double e;
   if( tid < N ) {
@@ -280,7 +280,7 @@ template <typename KernelType>
 inline GGA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -309,7 +309,7 @@ template <typename KernelType>
 inline GGA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   double e, vr, vs;
   if( tid < N ) {
@@ -330,7 +330,7 @@ template <typename KernelType>
 inline GGA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = item_ct.get_group(0) * item_ct.get_local_range().get(0) + item_ct.get_local_id(0); 
+  int tid = item_ct.get_id(); 
 
   if( tid < N ) {
 
@@ -379,23 +379,21 @@ inline GGA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_pol
 template <typename KernelType>
 LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  std::cout << N << ", " << rho << ", " << eps << std::endl;
 
   try {
-    queue.submit( [&](cl::sycl::handler &cgh) {
-      auto global_range = blocks * threads;
+    queue->submit( [&](cl::sycl::handler &cgh) {
 
-      cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-        [=](cl::sycl::nd_item<1> item_ct) {
-    //      device_eval_exc_helper_unpolar_kernel<KernelType>(
-    //        N, rho, eps, item_ct
-    //      );
+      cgh.parallel_for( cl::sycl::range<1>( N ),
+        [=](cl::sycl::item<1> item_ct) {
+          device_eval_exc_helper_unpolar_kernel<KernelType>(
+            N, rho, eps, item_ct
+          );
         });
 
     });
 
-    queue.wait_and_throw();
+    queue->wait_and_throw();
   } catch( cl::sycl::exception const& ex ) {
     std::cout << ex.what() << std::endl;
     throw;
@@ -405,14 +403,10 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 template <typename KernelType>
 LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_helper_polar_kernel<KernelType>(
           N, rho, eps, item_ct
         );
@@ -425,14 +419,10 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
           N, rho, eps, vxc, item_ct
         );
@@ -444,15 +434,11 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
 template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
           N, rho, eps, vxc, item_ct
         );
@@ -473,14 +459,10 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, eps, item_ct
         );
@@ -493,14 +475,10 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, eps, item_ct
         );
@@ -513,14 +491,10 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, eps, vxc, item_ct
         );
@@ -533,14 +507,10 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, eps, vxc, item_ct
         );
@@ -561,35 +531,28 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
 template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_helper_unpolar_kernel<KernelType>(
           N, rho, sigma, eps, item_ct
         );
       });
 
   });
+    
 
 }
 
 template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_helper_polar_kernel<KernelType>(
           N, rho, sigma, eps, item_ct
         );
@@ -602,14 +565,10 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
           N, rho, sigma, eps, vrho, vsigma, item_ct
         );
@@ -621,15 +580,11 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
 template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
           N, rho, sigma, eps, vrho, vsigma, item_ct
         );
@@ -649,15 +604,11 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
 template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, item_ct
         );
@@ -669,15 +620,11 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
 template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, item_ct
         );
@@ -689,15 +636,11 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
 template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, vrho, vsigma, item_ct
         );
@@ -709,21 +652,18 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
 template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
+    
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  cl::sycl::range<1> threads(32);
-  cl::sycl::range<1> blocks( div_ceil( N, threads[0] ) );
-
-  queue.submit( [&](cl::sycl::handler &cgh) {
-    auto global_range = blocks * threads;
-
-    cgh.parallel_for( cl::sycl::nd_range<1>( global_range, threads ),
-      [=](cl::sycl::nd_item<1> item_ct) {
+    cgh.parallel_for( cl::sycl::range<1>( N ),
+      [=](cl::sycl::item<1> item_ct) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, vrho, vsigma, item_ct
         );
       });
 
   });
+    
 
 }
 

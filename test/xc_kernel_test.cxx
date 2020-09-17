@@ -1141,7 +1141,7 @@ q.wait_and_throw();
 void test_sycl_interface( TestInterface interface, EvalType evaltype,
   Backend backend, Kernel kern, Spin polar ) {
 
-  cl::sycl::queue q( cl::sycl::gpu_selector{} );
+  cl::sycl::queue q( cl::sycl::gpu_selector{}, cl::sycl::property_list{cl::sycl::property::queue::in_order{}} );
   std::cout << "Running on "
       << q.get_device().get_info<sycl::info::device::name>()
       << "\n";
@@ -1245,35 +1245,35 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
   if( interface == TestInterface::EXC ) {
   
     if( func.is_lda() )
-      func.eval_exc_device( npts, rho_device, exc_device, q );
+      func.eval_exc_device( npts, rho_device, exc_device, &q );
     else if( func.is_gga() )
       func.eval_exc_device( npts, rho_device, sigma_device, exc_device, 
-        q );
+        &q );
 
   } else if( interface == TestInterface::EXC_INC ) {
 
     if( func.is_lda() )
-      func.eval_exc_inc_device( alpha, npts, rho_device, exc_device, q );
+      func.eval_exc_inc_device( alpha, npts, rho_device, exc_device, &q );
     else if( func.is_gga() )
       func.eval_exc_inc_device( alpha, npts, rho_device, sigma_device, exc_device, 
-        q );
+        &q );
 
   } else if( interface == TestInterface::EXC_VXC ) {
 
     if( func.is_lda() )
-      func.eval_exc_vxc_device( npts, rho_device, exc_device, vrho_device, q );
+      func.eval_exc_vxc_device( npts, rho_device, exc_device, vrho_device, &q );
     else if( func.is_gga() )
       func.eval_exc_vxc_device( npts, rho_device, sigma_device, exc_device, 
-        vrho_device, vsigma_device, q );
+        vrho_device, vsigma_device, &q );
 
   } else if( interface == TestInterface::EXC_VXC_INC ) {
 
     if( func.is_lda() )
       func.eval_exc_vxc_inc_device( alpha, npts, rho_device, exc_device, 
-        vrho_device, q );
+        vrho_device, &q );
     else if( func.is_gga() )
       func.eval_exc_vxc_inc_device( alpha, npts, rho_device, sigma_device, 
-        exc_device, vrho_device, vsigma_device, q );
+        exc_device, vrho_device, vsigma_device, &q );
 
   }
 
