@@ -1878,6 +1878,7 @@ TEST_CASE( "SYCL Interfaces", "[xc-device]" ) {
             << q.get_device().get_info<cl::sycl::info::device::name>()
             << "\n";
 
+#if 0
   SECTION( "Libxc Functionals" ) {
 
     SECTION( "LDA Functionals: EXC Regular Eval Unpolarized" ) {
@@ -2038,6 +2039,7 @@ TEST_CASE( "SYCL Interfaces", "[xc-device]" ) {
     }
 
   }
+  #endif
 
   SECTION( "Builtin Functionals" ) {
 

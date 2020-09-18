@@ -352,7 +352,23 @@ inline GGA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_pol
 
 
 
+template <typename KernelType> class lda_eval_exc_unpolar;
+template <typename KernelType> class lda_eval_exc_polar;
+template <typename KernelType> class lda_eval_exc_vxc_unpolar;
+template <typename KernelType> class lda_eval_exc_vxc_polar;
+template <typename KernelType> class lda_eval_exc_inc_unpolar;
+template <typename KernelType> class lda_eval_exc_inc_polar;
+template <typename KernelType> class lda_eval_exc_vxc_inc_unpolar;
+template <typename KernelType> class lda_eval_exc_vxc_inc_polar;
 
+template <typename KernelType> class gga_eval_exc_unpolar;
+template <typename KernelType> class gga_eval_exc_polar;
+template <typename KernelType> class gga_eval_exc_vxc_unpolar;
+template <typename KernelType> class gga_eval_exc_vxc_polar;
+template <typename KernelType> class gga_eval_exc_inc_unpolar;
+template <typename KernelType> class gga_eval_exc_inc_polar;
+template <typename KernelType> class gga_eval_exc_vxc_inc_unpolar;
+template <typename KernelType> class gga_eval_exc_vxc_inc_polar;
 
 
 
@@ -366,7 +382,7 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
   try {
       queue->submit([&](cl::sycl::handler& cgh) {
-        cgh.parallel_for( cl::sycl::range<1>(N),
+        cgh.parallel_for<lda_eval_exc_unpolar<KernelType>>( cl::sycl::range<1>(N),
           [=](cl::sycl::id<1> idx) {
             device_eval_exc_helper_unpolar_kernel<KernelType>(
                 N, rho, eps, idx
@@ -385,7 +401,7 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<lda_eval_exc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_helper_polar_kernel<KernelType>(
           N, rho, eps, idx
@@ -401,7 +417,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<lda_eval_exc_vxc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
           N, rho, eps, vxc, idx
@@ -417,7 +433,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<lda_eval_exc_vxc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
           N, rho, eps, vxc, idx
@@ -441,7 +457,7 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<lda_eval_exc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, eps, idx
@@ -457,7 +473,7 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<lda_eval_exc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, eps, idx
@@ -473,7 +489,7 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<lda_eval_exc_vxc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, eps, vxc, idx
@@ -489,7 +505,7 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<lda_eval_exc_vxc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, eps, vxc, idx
@@ -514,7 +530,7 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_helper_unpolar_kernel<KernelType>(
           N, rho, sigma, eps, idx
@@ -531,7 +547,7 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_helper_polar_kernel<KernelType>(
           N, rho, sigma, eps, idx
@@ -547,7 +563,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_vxc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
           N, rho, sigma, eps, vrho, vsigma, idx
@@ -563,7 +579,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_vxc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
           N, rho, sigma, eps, vrho, vsigma, idx
@@ -587,7 +603,7 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, idx
@@ -603,7 +619,7 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, idx
@@ -619,7 +635,7 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_vxc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, vrho, vsigma, idx
@@ -635,7 +651,7 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   queue->submit( [&](cl::sycl::handler &cgh) {
 
-    cgh.parallel_for( cl::sycl::range<1>( N ),
+    cgh.parallel_for<gga_eval_exc_vxc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
       [=](cl::sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, vrho, vsigma, idx
