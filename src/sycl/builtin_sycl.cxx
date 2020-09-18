@@ -665,16 +665,16 @@ template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   std::cout << "**GGA EXC VXC INC POLAR" << std::endl;
-  //queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](cl::sycl::handler &cgh) {
 
-  //  cgh.parallel_for<gga_eval_exc_vxc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
-  //    [=](cl::sycl::id<1> idx) {
-  //      device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
-  //        scal_fact, N, rho, sigma, eps, vrho, vsigma, idx
-  //      );
-  //    });
+    cgh.parallel_for<gga_eval_exc_vxc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
+      [=](cl::sycl::id<1> idx) {
+        device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
+          scal_fact, N, rho, sigma, eps, vrho, vsigma, idx
+        );
+      });
 
-  //});
+  });
 
 
 }
