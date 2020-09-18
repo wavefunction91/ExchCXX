@@ -8,11 +8,12 @@ project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
 option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
+option( EXCHCXX_ENABLE_HIP       "Enable Device Code (HIP)"     OFF )
 option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"    OFF )
 
 
 # Decided if we're compiling device bindings
-if( EXCHCXX_ENABLE_CUDA OR EXCHCXX_ENABLE_SYCL )
+if( EXCHCXX_ENABLE_CUDA OR EXCHCXX_ENABLE_SYCL OR EXCHCXX_ENABLE_HIP )
   set( EXCHCXX_ENABLE_DEVICE TRUE CACHE BOOL "Enable Device Code" )
 endif()
 
@@ -20,6 +21,13 @@ endif()
 if( EXCHCXX_ENABLE_CUDA AND EXCHCXX_ENABLE_SYCL )
   message( FATAL_ERROR "CUDA / SYCL bindings are mutually exclusive" )
 endif()
+if( EXCHCXX_ENABLE_CUDA AND EXCHCXX_ENABLE_HIP )
+  message( FATAL_ERROR "CUDA / HIP bindings are mutually exclusive" )
+endif()
+if( EXCHCXX_ENABLE_SYCL AND EXCHCXX_ENABLE_HIP )
+  message( FATAL_ERROR "SYCL / HIP bindings are mutually exclusive" )
+endif()
+
 
 # Append local cmake directory to find CMAKE Modules
 if( CMAKE_MODULE_PATH )

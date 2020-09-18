@@ -16,6 +16,13 @@
 
 #endif
 
+#ifdef EXCHCXX_ENABLE_HIP
+
+  #define DEVICE_PARAMS hipStream_t stream
+  #define DEVICE_PARAMS_NOTYPE stream
+
+#endif
+
 #ifdef EXCHCXX_ENABLE_SYCL
 
   #define DEVICE_PARAMS cl::sycl::queue* queue

@@ -1,12 +1,17 @@
 #pragma once
 
 #cmakedefine EXCHCXX_ENABLE_CUDA
+#cmakedefine EXCHCXX_ENABLE_HIP
 #cmakedefine EXCHCXX_ENABLE_SYCL
 #cmakedefine EXCHCXX_ENABLE_DEVICE
 
 
 #ifdef EXCHCXX_ENABLE_CUDA
   #include <cuda_runtime.h>
+#endif
+
+#ifdef EXCHCXX_ENABLE_HIP
+  #include <hip/hip_runtime.h>
 #endif
 
 #ifdef EXCHCXX_ENABLE_SYCL

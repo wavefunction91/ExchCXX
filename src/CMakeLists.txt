@@ -32,6 +32,10 @@ if( EXCHCXX_ENABLE_CUDA )
   include( cuda/exchcxx_cuda.cmake )
 endif()
 
+if( EXCHCXX_ENABLE_HIP )
+  include( hip/exchcxx_hip.cmake )
+endif()
+
 if( EXCHCXX_ENABLE_SYCL )
   include( sycl/exchcxx_sycl.cmake )
 endif()
@@ -46,10 +50,12 @@ target_include_directories( exchcxx
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
 
+if( NOT EXCHCXX_ENABLE_HIP )
 target_compile_options( exchcxx 
   PRIVATE 
     $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic -Wnon-virtual-dtor>
 )
+endif()
 
 # INSTALL rules
 add_library( ExchCXX::exchcxx ALIAS exchcxx )

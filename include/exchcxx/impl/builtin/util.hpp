@@ -7,7 +7,7 @@
 namespace ExchCXX {
 
 
-#ifdef __CUDACC__
+#if defined(__CUDACC__) || defined(__HIPCC__)
 
 #define SAFE_CONSTEXPR_INLINE(TYPE) static inline constexpr TYPE __host__ __device__
 #define SAFE_INLINE(TYPE)           static inline           TYPE __host__ __device__
