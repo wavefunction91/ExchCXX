@@ -2147,13 +2147,12 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
           Backend::builtin, kern, Spin::Polarized, q );
     }
 
-    // *** THIS IS THE ONE THAT DOESN'T WORK ***
-    //SECTION("EXC + VXC + INC Regular: Polarized") {
-    //  std::cout << "EXC + VXC + INC Regular: Polarized" << std::endl;
-    //  for( auto kern : builtin_supported_kernels )
-    //    test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
-    //      Backend::builtin, kern, Spin::Polarized, q );
-    //}
+    SECTION("EXC + VXC + INC Regular: Polarized") {
+      std::cout << "EXC + VXC + INC Regular: Polarized" << std::endl;
+      for( auto kern : builtin_supported_kernels )
+        test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
+          Backend::builtin, kern, Spin::Polarized, q );
+    }
 
 #if 0
     SECTION("EXC Small: Polarized") {
