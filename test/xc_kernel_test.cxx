@@ -1870,12 +1870,24 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 }
 
 
+#if 0
 struct SYCLTestFeature {
   cl::sycl::queue q;
   SYCLTestFeature() : 
     q( cl::sycl::gpu_selector{}, 
        cl::sycl::property_list{cl::sycl::property::queue::in_order{}} ) { }
 };
+#else
+struct SYCLTestFeature {
+  static cl::sycl::queue q;
+
+  SYCLTestFeature() {} 
+};
+
+cl::sycl::queue SYCLTestFeature::q( 
+       cl::sycl::gpu_selector{}, 
+       cl::sycl::property_list{cl::sycl::property::queue::in_order{}} );
+#endif
 
 TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
 
@@ -1883,7 +1895,6 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
             << q.get_device().get_info<cl::sycl::info::device::name>()
             << "\n";
 
-#if 0
   SECTION( "Libxc Functionals" ) {
 
     SECTION( "LDA Functionals: EXC Regular Eval Unpolarized" ) {
@@ -2044,7 +2055,6 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
     }
 
   }
-#endif
 
   SECTION( "Builtin Functionals" ) {
 
@@ -2076,7 +2086,6 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
           Backend::builtin, kern, Spin::Unpolarized, q );
     }
 
-#if 0
     SECTION("EXC Small: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC, EvalType::Small,
@@ -2124,7 +2133,6 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
           Backend::builtin, kern, Spin::Unpolarized, q );
     }
-#endif
 
     SECTION("EXC Regular: Polarized") {
       std::cout << "EXC Regular: Polarized" << std::endl;
@@ -2154,7 +2162,6 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
           Backend::builtin, kern, Spin::Polarized, q );
     }
 
-#if 0
     SECTION("EXC Small: Polarized") {
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC, EvalType::Small,
@@ -2202,7 +2209,6 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
           Backend::builtin, kern, Spin::Polarized, q );
     }
-#endif
 
   }
 
