@@ -1,63 +1,35 @@
-#if 0
 #include <exchcxx/xc_functional.hpp>
 #include <string>
 
+template <typename T> class scal_device_tag;
+template <typename T> class add_scal_device_tag;
 
-__global__ void scal_kernel( const int N, const double fact, const double* X_device, double* Y_device ) {
 
-  int tid = blockIdx.x * blockDim.x + threadIdx.x;
-  if( tid < N ) Y_device[tid] = X_device[tid] * fact;
-
+void scal_device( const int N, const double fact, const double* X_device, double* Y_device, cl::sycl::queue* queue ) {
+  queue->submit( [&]( cl::sycl::handler &cgh ) {
+    cgh.parallel_for<scal_device_tag<double>>( cl::sycl::range<1>(N), 
+      [=]( cl::sycl::id<1> idx ) { Y_device[idx] = fact * X_device[idx]; }
+    );
+  });
 }
 
-__global__ void add_scal_kernel( const int N, const double fact, const double* X_device, double* Y_device ) {
-
-  int tid = blockIdx.x * blockDim.x + threadIdx.x;
-  if( tid < N ) Y_device[tid] += X_device[tid] * fact;
-
-}
-
-void scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
-  int threads = 1024;
-  int blocks  = std::ceil( N / 1024. );
-  scal_kernel<<< blocks, threads >>>( N, fact, X_device, Y_device );
-}
-
-void scal_device( const int N, const double fact, const double* X_device, double* Y_device, cudaStream_t& stream ) {
-  int threads = 1024;
-  int blocks  = std::ceil( N / 1024. );
-  scal_kernel<<< blocks, threads, 0, stream >>>( N, fact, X_device, Y_device );
-}
-
-void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
-  int threads = 1024;
-  int blocks  = std::ceil( N / 1024. );
-  add_scal_kernel<<< blocks, threads >>>( N, fact, X_device, Y_device );
-}
-
-void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, cudaStream_t& stream ) {
-  int threads = 1024;
-  int blocks  = std::ceil( N / 1024. );
-  add_scal_kernel<<< blocks, threads, 0, stream >>>( N, fact, X_device, Y_device );
+void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, cl::sycl::queue* queue ) {
+  queue->submit( [&]( cl::sycl::handler &cgh ) {
+    cgh.parallel_for<add_scal_device_tag<double>>( cl::sycl::range<1>(N), 
+      [=]( cl::sycl::id<1> idx ) { Y_device[idx] += fact * X_device[idx]; }
+    );
+  });
 }
 
 
 template <typename T = double>
-T* safe_cuda_malloc( size_t N ) {
-
-  T* ptr = nullptr;
-  auto stat = cudaMalloc( &ptr, N*sizeof(T) );
-  if( stat != cudaSuccess ) throw std::runtime_error("Alloc Failed");
-
-  return ptr;
-
+T* safe_sycl_malloc( size_t N, cl::sycl::queue* queue ) {
+  return cl::sycl::malloc_device<T>( N, *queue );
 }
 
 template <typename T>
-void safe_zero( size_t len, T* ptr, cudaStream_t stream ) {
-  auto stat = cudaMemsetAsync( ptr, 0, len*sizeof(T), stream );
-  if( stat != cudaSuccess ) 
-    throw std::runtime_error("Memset Failed : " + std::string(cudaGetErrorString( stat )));
+void safe_zero( size_t len, T* ptr, cl::sycl::queue* queue ) {
+  queue->memset( ptr, 0, len*sizeof(T) );
 }
 
 namespace ExchCXX {
@@ -76,9 +48,9 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() ) 
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
+    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
 
-  safe_zero( len_exc_buffer, eps, stream );
+  safe_zero( len_exc_buffer, eps, queue );
 
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
@@ -86,24 +58,24 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     if( supports_inc_interface() ) {
 
       kernels_[i].second.eval_exc_inc_device(
-        kernels_[i].first, N, rho, eps, stream
+        kernels_[i].first, N, rho, eps, queue
       );
 
     } else {
 
       double* eps_eval = i ? eps_scr : eps;
-      kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
+      kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
 
       if( i ) 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
       else
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
 
     }
   
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
+  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
 
 }
 
@@ -118,36 +90,36 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   double* eps_scr(nullptr), *vxc_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
-    vxc_scr = safe_cuda_malloc( len_vxc_buffer );
+    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
+    vxc_scr = safe_sycl_malloc( len_vxc_buffer, queue );
   }
 
-  safe_zero( len_exc_buffer, eps, stream );
-  safe_zero( len_vxc_buffer, vxc, stream );
+  safe_zero( len_exc_buffer, eps, queue );
+  safe_zero( len_vxc_buffer, vxc, queue );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     if( supports_inc_interface() ) {
 
       kernels_[i].second.eval_exc_vxc_inc_device(
-        kernels_[i].first, N, rho, eps, vxc, stream
+        kernels_[i].first, N, rho, eps, vxc, queue
       );
 
     } else {
 
       double* eps_eval = i ? eps_scr : eps;
       double* vxc_eval = i ? vxc_scr : vxc;
-      kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vxc_eval, stream);
+      kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vxc_eval, queue);
 
       if( i ) {
 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
-        add_scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, stream );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        add_scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, queue );
 
       } else {
 
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
-        scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, stream );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, queue );
 
       }
 
@@ -155,8 +127,8 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
-  if( vxc_scr ) cudaFree( vxc_scr );
+  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
+  if( vxc_scr ) cl::sycl::free( vxc_scr, *queue );
 
 }
 
@@ -173,9 +145,9 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() ) 
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
+    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
 
-  safe_zero( len_exc_buffer, eps, stream );
+  safe_zero( len_exc_buffer, eps, queue );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -183,11 +155,11 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, sigma, eps, stream
+          kernels_[i].first, N, rho, sigma, eps, queue
         );
       else
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, eps, stream
+          kernels_[i].first, N, rho, eps, queue
         );
 
     } else {
@@ -195,19 +167,19 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       double* eps_eval = i ? eps_scr : eps;
 
       if( kernels_[i].second.is_gga() )
-        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, stream);
+        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, queue);
       else
-        kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
+        kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
 
       if( i ) 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
       else
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
   
     }
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
+  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
 
 }
 
@@ -223,14 +195,14 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr    = safe_cuda_malloc( len_exc_buffer );
-    vrho_scr   = safe_cuda_malloc( len_vrho_buffer );
-    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer );
+    eps_scr    = safe_sycl_malloc( len_exc_buffer, queue );
+    vrho_scr   = safe_sycl_malloc( len_vrho_buffer, queue );
+    vsigma_scr = safe_sycl_malloc( len_vsigma_buffer, queue );
   }
 
-  safe_zero( len_exc_buffer,    eps,    stream );
-  safe_zero( len_vrho_buffer,   vrho,   stream );
-  safe_zero( len_vsigma_buffer, vsigma, stream );
+  safe_zero( len_exc_buffer,    eps,    queue );
+  safe_zero( len_vrho_buffer,   vrho,   queue );
+  safe_zero( len_vsigma_buffer, vsigma, queue );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -239,11 +211,11 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
           kernels_[i].first, N, rho, sigma, eps, vrho, 
-          vsigma, stream 
+          vsigma, queue 
         );
       else
         kernels_[i].second.eval_exc_vxc_inc_device(
-          kernels_[i].first, N, rho, eps, vrho, stream
+          kernels_[i].first, N, rho, eps, vrho, queue
         );
 
     } else {
@@ -254,33 +226,32 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, 
-          vsigma_eval, stream );
+          vsigma_eval, queue );
       else
-        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, stream);
+        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, queue);
 
       if( i ) {
 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
-        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream);
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue);
         if( kernels_[i].second.is_gga() )
-          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
 
       } else {
 
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
-        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue );
         if( kernels_[i].second.is_gga() )
-          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
 
       }
 
     }
   }
 
-  if( eps_scr )    cudaFree( eps_scr );
-  if( vrho_scr )   cudaFree( vrho_scr );
-  if( vsigma_scr ) cudaFree( vsigma_scr );
-
+  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
+  if( vrho_scr ) cl::sycl::free( vrho_scr, *queue );
+  if( vsigma_scr ) cl::sycl::free( vsigma_scr, *queue );
 }
 
 
@@ -297,9 +268,9 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() ) 
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
+    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
 
-  safe_zero( len_exc_buffer,    eps,    stream );
+  safe_zero( len_exc_buffer,    eps,    queue );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -307,15 +278,15 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, sigma, lapl, tau, eps, stream
+          kernels_[i].first, N, rho, sigma, lapl, tau, eps, queue
         );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, sigma, eps, stream
+          kernels_[i].first, N, rho, sigma, eps, queue
         );
       else
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, eps, stream
+          kernels_[i].first, N, rho, eps, queue
         );
 
     } else {
@@ -323,21 +294,21 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       double* eps_eval = i ? eps_scr : eps;
 
       if( kernels_[i].second.is_mgga() )
-        kernels_[i].second.eval_exc_device(N, rho, sigma, lapl, tau, eps_eval, stream);
+        kernels_[i].second.eval_exc_device(N, rho, sigma, lapl, tau, eps_eval, queue);
       else if( kernels_[i].second.is_gga() )
-        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, stream);
+        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, queue);
       else
-        kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
+        kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
 
       if( i ) 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
       else
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
   
     }
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
+  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
 
 }
 
@@ -356,18 +327,18 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr), 
     *vlapl_scr(nullptr), *vtau_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr    = safe_cuda_malloc( len_exc_buffer );
-    vrho_scr   = safe_cuda_malloc( len_vrho_buffer );
-    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer );
-    vlapl_scr  = safe_cuda_malloc( len_vlapl_buffer );
-    vtau_scr   = safe_cuda_malloc( len_vtau_buffer );
+    eps_scr    = safe_sycl_malloc( len_exc_buffer, queue );
+    vrho_scr   = safe_sycl_malloc( len_vrho_buffer, queue );
+    vsigma_scr = safe_sycl_malloc( len_vsigma_buffer, queue );
+    vlapl_scr  = safe_sycl_malloc( len_vlapl_buffer, queue );
+    vtau_scr   = safe_sycl_malloc( len_vtau_buffer, queue );
   }
 
-  safe_zero( len_exc_buffer, eps, stream );
-  safe_zero( len_vrho_buffer, vrho, stream );
-  safe_zero( len_vsigma_buffer, vsigma, stream );
-  safe_zero( len_vlapl_buffer, vlapl, stream );
-  safe_zero( len_vtau_buffer, vtau, stream );
+  safe_zero( len_exc_buffer, eps, queue );
+  safe_zero( len_vrho_buffer, vrho, queue );
+  safe_zero( len_vsigma_buffer, vsigma, queue );
+  safe_zero( len_vlapl_buffer, vlapl, queue );
+  safe_zero( len_vtau_buffer, vtau, queue );
   
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
@@ -377,16 +348,16 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
           kernels_[i].first, N, rho, sigma, lapl, tau, eps, 
-          vrho, vsigma, vlapl, vtau, stream 
+          vrho, vsigma, vlapl, vtau, queue 
         );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
           kernels_[i].first, N, rho, sigma, eps, vrho, 
-          vsigma, stream 
+          vsigma, queue 
         );
       else
         kernels_[i].second.eval_exc_vxc_inc_device(
-          kernels_[i].first, N, rho, eps, vrho, stream
+          kernels_[i].first, N, rho, eps, vrho, queue
         );
 
     } else {
@@ -399,49 +370,48 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, lapl, tau, eps_eval, 
-          vrho_eval, vsigma_eval, vlapl_eval, vtau_eval, stream );
+          vrho_eval, vsigma_eval, vlapl_eval, vtau_eval, queue );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, 
-          vsigma_eval, stream );
+          vsigma_eval, queue );
       else
-        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, stream);
+        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, queue);
 
       if( i ) {
 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
-        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue );
 
         if( kernels_[i].second.is_gga() )
-          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
 
         if( kernels_[i].second.is_mgga() ) {
-          add_scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
-          add_scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, stream  );
+          add_scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, queue );
+          add_scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, queue  );
         }
 
       } else {
 
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
-        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue );
 
         if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
-          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
 
         if( kernels_[i].second.is_mgga() ) {
-          scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
-          scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, stream  );
+          scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, queue );
+          scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, queue  );
         }
 
       }
     }
   }
 
-  if( eps_scr )    cudaFree( eps_scr );
-  if( vrho_scr )   cudaFree( vrho_scr );
-  if( vsigma_scr ) cudaFree( vsigma_scr );
-  if( vlapl_scr )  cudaFree( vlapl_scr );
-  if( vtau_scr )   cudaFree( vtau_scr );
+  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
+  if( vrho_scr ) cl::sycl::free( vrho_scr, *queue );
+  if( vsigma_scr ) cl::sycl::free( vsigma_scr, *queue );
+  if( vlapl_scr ) cl::sycl::free( vlapl_scr, *queue );
+  if( vtau_scr ) cl::sycl::free( vtau_scr, *queue );
 }
 
 }
-#endif

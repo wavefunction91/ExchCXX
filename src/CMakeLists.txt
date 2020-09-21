@@ -11,7 +11,7 @@ set( EXCHCXX_SOURCES
      builtin_kernel.cxx 
 )
 
-add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
+add_library( exchcxx ${EXCHCXX_SOURCES} )
 
 # TARGET properties
 

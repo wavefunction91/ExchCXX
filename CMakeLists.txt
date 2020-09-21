@@ -10,6 +10,7 @@ option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
 option( EXCHCXX_ENABLE_HIP       "Enable Device Code (HIP)"     OFF )
 option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"    OFF )
+option( BUILD_SHARED_LIBS        "Build Shared Libs"            OFF )
 
 
 # Decided if we're compiling device bindings
