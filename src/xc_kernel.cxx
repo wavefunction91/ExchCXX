@@ -8,7 +8,7 @@ XCKernel::XCKernel(
   const Backend backend, 
   const Kernel kern, 
   const Spin polar) : 
-XCKernel( std::move(kernel_factory( backend, kern, polar )) ) { }
+XCKernel( kernel_factory( backend, kern, polar ) ) { }
   
 
 XCKernel::XCKernel( impl_ptr&& ptr ) :
@@ -23,7 +23,7 @@ XCKernel& XCKernel::operator=( XCKernel&& other ) noexcept =default;
 
 
 XCKernel& XCKernel::operator=( const XCKernel& other ) {
-  return *this = std::move( XCKernel(other) );
+  return *this = XCKernel(other);
 }
 
 XCKernel::~XCKernel() noexcept = default;
