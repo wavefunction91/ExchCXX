@@ -75,7 +75,7 @@ std::unique_ptr<XCKernelImpl> BuiltinKernelInterface::clone_() const {
 
 bool BuiltinKernelInterface::is_lda_()       const noexcept {
   return impl_->is_lda();
-};
+}
 bool BuiltinKernelInterface::is_gga_()       const noexcept {
   return impl_->is_gga();
 }
@@ -100,16 +100,16 @@ bool BuiltinKernelInterface::supports_inc_interface_() const noexcept {
 
 #define FORWARD_FOR_BUILTIN( APPROX, TYPE, func ) \
   FORWARD_XC_ARGS( APPROX, TYPE, BuiltinKernelInterface:: func ## _, \
-                   impl_->func, const );
+                   impl_->func, const )
 #define FORWARD_FOR_BUILTIN_DEVICE( APPROX, TYPE, func ) \
   FORWARD_XC_ARGS_DEVICE( APPROX, TYPE, BuiltinKernelInterface:: func ## _, \
-                   impl_->func, const );
+                   impl_->func, const )
 #define FORWARD_FOR_BUILTIN_INC( APPROX, TYPE, func ) \
   FORWARD_XC_INC_ARGS( APPROX, TYPE, BuiltinKernelInterface:: func ## _, \
-                   impl_->func, const );
+                   impl_->func, const )
 #define FORWARD_FOR_BUILTIN_INC_DEVICE( APPROX, TYPE, func ) \
   FORWARD_XC_INC_ARGS_DEVICE( APPROX, TYPE, BuiltinKernelInterface:: func ## _, \
-                   impl_->func, const );
+                   impl_->func, const )
 
 
 
@@ -117,36 +117,36 @@ bool BuiltinKernelInterface::supports_inc_interface_() const noexcept {
 
 
 
-FORWARD_FOR_BUILTIN( LDA,  EXC,     eval_exc     );
-FORWARD_FOR_BUILTIN( LDA,  EXC_VXC, eval_exc_vxc );
-FORWARD_FOR_BUILTIN( GGA,  EXC,     eval_exc     );
-FORWARD_FOR_BUILTIN( GGA,  EXC_VXC, eval_exc_vxc );
-FORWARD_FOR_BUILTIN( MGGA, EXC,     eval_exc     );
-FORWARD_FOR_BUILTIN( MGGA, EXC_VXC, eval_exc_vxc );
+FORWARD_FOR_BUILTIN( LDA,  EXC,     eval_exc     )
+FORWARD_FOR_BUILTIN( LDA,  EXC_VXC, eval_exc_vxc )
+FORWARD_FOR_BUILTIN( GGA,  EXC,     eval_exc     )
+FORWARD_FOR_BUILTIN( GGA,  EXC_VXC, eval_exc_vxc )
+FORWARD_FOR_BUILTIN( MGGA, EXC,     eval_exc     )
+FORWARD_FOR_BUILTIN( MGGA, EXC_VXC, eval_exc_vxc )
 
-FORWARD_FOR_BUILTIN_INC( LDA,  EXC,     eval_exc_inc     );
-FORWARD_FOR_BUILTIN_INC( LDA,  EXC_VXC, eval_exc_vxc_inc );
-FORWARD_FOR_BUILTIN_INC( GGA,  EXC,     eval_exc_inc     );
-FORWARD_FOR_BUILTIN_INC( GGA,  EXC_VXC, eval_exc_vxc_inc );
-FORWARD_FOR_BUILTIN_INC( MGGA, EXC,     eval_exc_inc     );
-FORWARD_FOR_BUILTIN_INC( MGGA, EXC_VXC, eval_exc_vxc_inc );
+FORWARD_FOR_BUILTIN_INC( LDA,  EXC,     eval_exc_inc     )
+FORWARD_FOR_BUILTIN_INC( LDA,  EXC_VXC, eval_exc_vxc_inc )
+FORWARD_FOR_BUILTIN_INC( GGA,  EXC,     eval_exc_inc     )
+FORWARD_FOR_BUILTIN_INC( GGA,  EXC_VXC, eval_exc_vxc_inc )
+FORWARD_FOR_BUILTIN_INC( MGGA, EXC,     eval_exc_inc     )
+FORWARD_FOR_BUILTIN_INC( MGGA, EXC_VXC, eval_exc_vxc_inc )
 
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
-FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC,     eval_exc_device     );
-FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC_VXC, eval_exc_vxc_device );
-FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC,     eval_exc_device     );
-FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC_VXC, eval_exc_vxc_device );
-FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC,     eval_exc_device     );
-FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_device );
+FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC,     eval_exc_device     )
+FORWARD_FOR_BUILTIN_DEVICE( LDA,  EXC_VXC, eval_exc_vxc_device )
+FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC,     eval_exc_device     )
+FORWARD_FOR_BUILTIN_DEVICE( GGA,  EXC_VXC, eval_exc_vxc_device )
+FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC,     eval_exc_device     )
+FORWARD_FOR_BUILTIN_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_device )
 
-FORWARD_FOR_BUILTIN_INC_DEVICE( LDA,  EXC,     eval_exc_inc_device     );
-FORWARD_FOR_BUILTIN_INC_DEVICE( LDA,  EXC_VXC, eval_exc_vxc_inc_device );
-FORWARD_FOR_BUILTIN_INC_DEVICE( GGA,  EXC,     eval_exc_inc_device     );
-FORWARD_FOR_BUILTIN_INC_DEVICE( GGA,  EXC_VXC, eval_exc_vxc_inc_device );
-FORWARD_FOR_BUILTIN_INC_DEVICE( MGGA, EXC,     eval_exc_inc_device     );
-FORWARD_FOR_BUILTIN_INC_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_inc_device );
+FORWARD_FOR_BUILTIN_INC_DEVICE( LDA,  EXC,     eval_exc_inc_device     )
+FORWARD_FOR_BUILTIN_INC_DEVICE( LDA,  EXC_VXC, eval_exc_vxc_inc_device )
+FORWARD_FOR_BUILTIN_INC_DEVICE( GGA,  EXC,     eval_exc_inc_device     )
+FORWARD_FOR_BUILTIN_INC_DEVICE( GGA,  EXC_VXC, eval_exc_vxc_inc_device )
+FORWARD_FOR_BUILTIN_INC_DEVICE( MGGA, EXC,     eval_exc_inc_device     )
+FORWARD_FOR_BUILTIN_INC_DEVICE( MGGA, EXC_VXC, eval_exc_vxc_inc_device )
 
 #endif
 

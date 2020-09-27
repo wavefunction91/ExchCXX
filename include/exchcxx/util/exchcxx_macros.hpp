@@ -249,6 +249,7 @@
 
 
 
+
 #define FORWARD_XC_ARGS(APPROX, TYPE, func, finternal, qualifiers) \
   APPROX ## _ ## TYPE ## _GENERATOR(func) qualifiers {             \
     finternal( APPROX ## _IPARAMS_NOTYPE ,                         \

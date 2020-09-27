@@ -31,12 +31,12 @@ struct kernel_traits< BuiltinPBE_X > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar_impl( double rho, double sigma, double& eps ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t8 = constants::m_cbrt_2;
     constexpr double t12 = constants::m_cbrt_6;
-    constexpr double t14 = constants::m_pi_sq;
     constexpr double t15 = constants::m_cbrt_pi_sq;
     constexpr double t4 = t1 * t3;
     constexpr double t6 = t5 * t5;
@@ -63,12 +63,12 @@ struct kernel_traits< BuiltinPBE_X > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar_impl( double rho, double sigma, double& eps, double& vrho, double& vsigma ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t8 = constants::m_cbrt_2;
     constexpr double t12 = constants::m_cbrt_6;
-    constexpr double t14 = constants::m_pi_sq;
     constexpr double t15 = constants::m_cbrt_pi_sq;
     constexpr double t4 = t1 * t3;
     constexpr double t6 = t5 * t5;
@@ -106,11 +106,11 @@ struct kernel_traits< BuiltinPBE_X > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_ferr_impl( double rho, double sigma, double& eps ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t9 = constants::m_cbrt_6;
-    constexpr double t11 = constants::m_pi_sq;
     constexpr double t12 = constants::m_cbrt_pi_sq;
     constexpr double t4 = t1 * t3;
     constexpr double t6 = t5 * t5;
@@ -135,11 +135,11 @@ struct kernel_traits< BuiltinPBE_X > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_ferr_impl( double rho, double sigma, double& eps, double& vrho, double& vsigma ) {
 
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t9 = constants::m_cbrt_6;
-    constexpr double t11 = constants::m_pi_sq;
     constexpr double t12 = constants::m_cbrt_pi_sq;
     constexpr double t4 = t1 * t3;
     constexpr double t6 = t5 * t5;
@@ -175,11 +175,12 @@ struct kernel_traits< BuiltinPBE_X > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_polar_impl( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double& eps ) {
 
+    (void)(sigma_ab);
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t18 = constants::m_cbrt_6;
-    constexpr double t20 = constants::m_pi_sq;
     constexpr double t21 = constants::m_cbrt_pi_sq;
     constexpr double t4 = t1 * t3;
     constexpr double t6 = t5 * t5;
@@ -227,11 +228,12 @@ struct kernel_traits< BuiltinPBE_X > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_polar_impl( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double& eps, double& vrho_a, double& vrho_b, double& vsigma_aa, double& vsigma_ab, double& vsigma_bb ) {
 
+    (void)(sigma_ab);
+    (void)(eps);
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
     constexpr double t18 = constants::m_cbrt_6;
-    constexpr double t20 = constants::m_pi_sq;
     constexpr double t21 = constants::m_cbrt_pi_sq;
     constexpr double t4 = t1 * t3;
     constexpr double t6 = t5 * t5;

@@ -1,6 +1,7 @@
 #include "libxc_common.hpp"
 
 #include <exchcxx/impl/builtin/util.hpp>
+#include <exchcxx/util/unused.hpp>
 namespace ExchCXX {
 
 
@@ -79,14 +80,14 @@ LibxcKernelImpl::LibxcKernelImpl(
 
   // Initialize XC Kernel using Libxc
   int info = xc_func_init( &kernel_, kern, spin_polar );
-
-  assert( info == 0 );
+  if( info )
+    throw std::runtime_error("Libxc Kernel Init Failed");
 
   initialized_ = true;
 } 
 
 LibxcKernelImpl::LibxcKernelImpl( const LibxcKernelImpl& other ) :
-  LibxcKernelImpl( other.xc_info()->number, other.polar_ ){ };
+  LibxcKernelImpl( other.xc_info()->number, other.polar_ ){ }
 
 
 
@@ -159,13 +160,10 @@ LDA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 }
 
 
-LDA_EXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_inc_ ) const {
-  disabled_inc_interface();
-}
-
-LDA_EXC_VXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_inc_ ) const {
-  disabled_inc_interface();
-}
+UNUSED_INC_INTERFACE_GENERATOR( LDA, EXC, LibxcKernelImpl::eval_exc_inc_,     
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( LDA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_, 
+                                const )
 
 
 // GGA interface
@@ -186,13 +184,10 @@ GGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
 }
 
-GGA_EXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_inc_ ) const {
-  disabled_inc_interface();
-}
-
-GGA_EXC_VXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_inc_ ) const {
-  disabled_inc_interface();
-}
+UNUSED_INC_INTERFACE_GENERATOR( GGA, EXC, LibxcKernelImpl::eval_exc_inc_,     
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( GGA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_, 
+                                const )
 
   
 // mGGA interface
@@ -214,14 +209,11 @@ MGGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 }
 
 
-MGGA_EXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_inc_ ) const {
-  disabled_inc_interface();
+UNUSED_INC_INTERFACE_GENERATOR( MGGA, EXC, LibxcKernelImpl::eval_exc_inc_,     
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( MGGA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_, 
+                                const )
+
+
 }
-
-MGGA_EXC_VXC_INC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_inc_ ) const {
-  disabled_inc_interface();
 }
-
-
-};
-};

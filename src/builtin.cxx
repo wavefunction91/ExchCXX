@@ -14,4 +14,4 @@ XCKernel builtin_kernel_factory( Kernel kernel, Spin polar) {
 
 
 
-};
+}

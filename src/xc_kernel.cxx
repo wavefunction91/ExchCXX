@@ -12,10 +12,10 @@ XCKernel( std::move(kernel_factory( backend, kern, polar )) ) { }
   
 
 XCKernel::XCKernel( impl_ptr&& ptr ) :
-  pimpl_(std::move(ptr)) { };
+  pimpl_(std::move(ptr)) { }
 
 XCKernel::XCKernel( const XCKernel& other ) :
-  pimpl_(other.pimpl_->clone()) { };
+  pimpl_(other.pimpl_->clone()) { }
 
 XCKernel::XCKernel( XCKernel&& other ) noexcept = default;
 
@@ -28,4 +28,4 @@ XCKernel& XCKernel::operator=( const XCKernel& other ) {
 
 XCKernel::~XCKernel() noexcept = default;
 
-};
+}

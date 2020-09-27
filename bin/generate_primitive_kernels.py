@@ -19,19 +19,68 @@ class XCFunc:
     'EXC_VXC' : "g++ -P -DXC_DONT_COMPILE_{{F,K,L}}XC -E {}" 
   }
 
-  unpol_vars = {
+  unpol_lda_vars = {
+    'rho[0]' : 'rho',
+    'zk[0]' : 'eps'
+  }
+  unpol_gga_vars = {
     'rho[0]' : 'rho',
     'sigma[0]' : 'sigma',
     'zk[0]' : 'eps'
   }
 
-  unpol_outputs = {
+  #unpol_vars = {
+  #  'rho[0]' : 'rho',
+  #  'sigma[0]' : 'sigma',
+  #  'zk[0]' : 'eps'
+  #}
+  unpol_vars = {
+    'LDA' : unpol_lda_vars, 
+    'GGA' : unpol_gga_vars
+  }
+
+
+
+
+
+
+
+
+  unpol_lda_outputs = {
+    'EXC' : ['eps'],
+    'VXC' : ['vrho'],
+    'EXC_VXC' : ['eps','vrho']
+  }
+
+  unpol_gga_outputs = {
     'EXC' : ['eps'],
     'VXC' : ['vrho', 'vsigma'],
     'EXC_VXC' : ['eps','vrho', 'vsigma']
   }
 
-  pol_vars = {
+
+  #unpol_outputs = {
+  #  'EXC' : ['eps'],
+  #  'VXC' : ['vrho', 'vsigma'],
+  #  'EXC_VXC' : ['eps','vrho', 'vsigma']
+  #}
+  unpol_outputs = {
+    'LDA' : unpol_lda_outputs, 
+    'GGA' : unpol_gga_outputs
+  }
+
+
+
+
+
+
+  pol_lda_vars = {
+    'rho[0]'   : 'rho_a',
+    'rho[1]'   : 'rho_b',
+    'zk[0]' : 'eps'
+  }
+
+  pol_gga_vars = {
     'rho[0]'   : 'rho_a',
     'rho[1]'   : 'rho_b',
     'sigma[0]' : 'sigma_aa',
@@ -40,16 +89,52 @@ class XCFunc:
     'zk[0]' : 'eps'
   }
 
-  pol_outputs = {
+  #pol_vars = {
+  #  'rho[0]'   : 'rho_a',
+  #  'rho[1]'   : 'rho_b',
+  #  'sigma[0]' : 'sigma_aa',
+  #  'sigma[1]' : 'sigma_ab',
+  #  'sigma[2]' : 'sigma_bb',
+  #  'zk[0]' : 'eps'
+  #}
+  pol_vars = {
+    'LDA' : pol_lda_vars, 
+    'GGA' : pol_gga_vars
+  }
+
+
+
+
+
+
+
+  pol_lda_outputs = {
+    'EXC' : ['eps'],
+    'VXC' : ['vrho_a', 'vrho_b'],
+    'EXC_VXC' : ['eps','vrho_a', 'vrho_b']
+  }
+
+  pol_gga_outputs = {
     'EXC' : ['eps'],
     'VXC' : ['vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb'],
     'EXC_VXC' : ['eps','vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb']
   }
 
+  #pol_outputs = {
+  #  'EXC' : ['eps'],
+  #  'VXC' : ['vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb'],
+  #  'EXC_VXC' : ['eps','vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb']
+  #}
+  pol_outputs = {
+    'LDA' : pol_lda_outputs, 
+    'GGA' : pol_gga_outputs
+  }
+
   arith_ops = [ '+', '-', '*', '/' ]
 
-  def __init__(self, fname, xc_type = 'EXC' ):
+  def __init__(self, fname, xc_approx, xc_type = 'EXC' ):
     self.fname = fname
+    self.xc_approx = xc_approx
     self.xc_type = xc_type
 
     # Generate Preprocessed output
@@ -69,13 +154,13 @@ class XCFunc:
 
 
     self.const_params = []
-    tmp_params, self.unpol_xc_body = self.finalize_lines( self.unpol_func_lines, self.unpol_vars, self.unpol_outputs[xc_type] )
+    tmp_params, self.unpol_xc_body = self.finalize_lines( self.unpol_func_lines, self.unpol_vars[xc_approx], self.unpol_outputs[xc_approx][xc_type] )
     self.const_params = self.const_params + tmp_params
 
-    tmp_params, self.ferr_xc_body = self.finalize_lines( self.ferr_func_lines, self.unpol_vars, self.unpol_outputs[xc_type] )
+    tmp_params, self.ferr_xc_body = self.finalize_lines( self.ferr_func_lines, self.unpol_vars[xc_approx], self.unpol_outputs[xc_approx][xc_type] )
     self.const_params = self.const_params + tmp_params
 
-    tmp_params, self.pol_xc_body = self.finalize_lines( self.pol_func_lines, self.pol_vars, self.pol_outputs[xc_type] )
+    tmp_params, self.pol_xc_body = self.finalize_lines( self.pol_func_lines, self.pol_vars[xc_approx], self.pol_outputs[xc_approx][xc_type] )
     self.const_params = self.const_params + tmp_params
 
     self.const_params = list(set(self.const_params))
@@ -148,14 +233,82 @@ class XCFunc:
     xc_lines = [x for x in xc_lines if 't' in x.split(' = ')[0] or x.split(' = ')[0].strip() in xc_output ]
 
     # TODO: transverse the dependency tree to remove unneeded statements
-    #req_vars = [ x.split(' = ')[1].strip().replace(';','') for x in res_lines ]
-    #req_vars = " ".join(req_vars)
 
-    #for op in self.arith_ops:
-    #  req_vars = req_vars.replace(op,'')
-    #req_vars = req_vars.split(' ')
-    #req_vars = [x for x in req_vars if len(x) > 0 and 't' in x ]
-    #print(req_vars)
+    # Get RHS of result lines
+    req_vars = [ x.split(' = ')[1].strip().replace(';','').replace(',','') for x in res_lines ]
+    req_vars = " ".join(req_vars)
+
+    # Strip RHS into individual variables
+    for op in self.arith_ops:
+      req_vars = req_vars.replace(op,'')
+    req_vars = req_vars.split(' ')
+    req_vars = [x for x in req_vars if len(x) > 0 and 't' in x ]
+    req_vars = [x for x in req_vars if 'functor' not in x ]
+    req_vars = list(req_vars)
+
+    # Get a list of all variables and their dependencies
+    all_vars = dict()
+    for line in xc_lines:
+      tvar, rhs = line.split(' = ')
+      tvar = tvar.strip()
+      rhs  = rhs.strip().replace(';','')
+      rhs  = rhs.strip().replace(',','')
+      for op in self.arith_ops:
+        rhs = rhs.replace(op,'')
+      rhs = rhs.split(' ')
+      rhs = [x for x in rhs if len(x) > 0 and 't' in x ]
+      rhs = [ x for x in rhs if 'constant' not in x ]
+      rhs = [ x for x in rhs if 'cbrt' not in x ]
+      rhs = [ x for x in rhs if 'atan' not in x ]
+      rhs = [ x for x in rhs if 'sqrt' not in x ]
+      rhs = [ x for x in rhs if 'param' not in x ]
+      rhs = [ x for x in rhs if 'functor' not in x ]
+      
+      #if len(rhs) > 0:
+      all_vars[tvar] = set(rhs)
+    #print('all vars', all_vars)
+    #print('req vars', req_vars)
+
+    # Transverse the dependency tree until list of required variables is unchanging
+    have_all_req_vars = False
+    refine_iter = 0
+    while not have_all_req_vars:
+      _req_vars_old = req_vars.copy()
+      new_req_vars = set(req_vars) 
+      
+      for v in req_vars:
+        #print( v, all_vars[v] )
+        new_req_vars = new_req_vars.union( all_vars[v] )
+      #print('new vars', new_req_vars)
+      req_vars = list(new_req_vars)
+      have_all_req_vars = new_req_vars == set(_req_vars_old)
+      refine_iter = refine_iter + 1
+      if refine_iter > 20: raise RuntimeError('Too many Refinements')
+    
+    #print( 'all req vars', req_vars )
+    #sys.exit()
+
+    # Remove unused lines
+    unused_tvars = set(all_vars.keys()).difference( set(req_vars) )
+    #if len(unused_vars): print('unused vars',unused_vars)
+    unused_xc_lines = [ x for x in xc_lines if x.split(' = ')[0].strip() in unused_tvars ]
+    for line in unused_xc_lines: xc_lines.remove( line )
+    
+
+
+    # Determine if there are unused xc_vars in the RHS 
+    unused_xc_vars = []
+    for v in xc_vars.values():
+      dep_lines = [x for x in list(set(xc_lines).union(set(res_lines))) if v in x.split(' = ')[1].strip() ]
+      if len(dep_lines) == 0: unused_xc_vars.append(v)
+    #if len(unused_xc_vars): print( 'unused vars',unused_xc_vars )
+    
+    unused_xc_var_lines = [ '(void)('+x+');' for x in unused_xc_vars ]
+    #if len(unused_xc_var_lines): print( 'unused vars',unused_xc_var_lines )
+    
+
+
+
 
     const_lines, xc_lines = self.get_const_lines( xc_lines, xc_vars )
     #print(const_lines)
@@ -182,7 +335,8 @@ class XCFunc:
     const_lines.append('\n')
     xc_lines.append('\n')
 
-    xc_body_lines = const_lines + xc_lines + res_lines
+    xc_body_lines = unused_xc_var_lines + const_lines + xc_lines + res_lines
+    #xc_body_lines = const_lines + xc_lines + res_lines
 
     # Combine and perform final sanitization of parameters
     xc_body = "\n".join(xc_body_lines).replace('params->','')
@@ -452,8 +606,8 @@ struct {0} : detail::BuiltinKernelImpl< {0} > {{
 
 
 for name, meta_data in gen_table.items():
-  xc_exc = XCFunc( meta_data.libxc_file, 'EXC' )
-  xc_exc_vxc = XCFunc( meta_data.libxc_file, 'EXC_VXC' )
+  xc_exc = XCFunc( meta_data.libxc_file, meta_data.xc_type, 'EXC' )
+  xc_exc_vxc = XCFunc( meta_data.libxc_file, meta_data.xc_type, 'EXC_VXC' )
 
   xc_type = meta_data.xc_type
 
