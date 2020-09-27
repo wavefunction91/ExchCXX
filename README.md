@@ -37,7 +37,7 @@ Department of Energy Exascale Computing Project
 # Design Goals
 
 * Provide a modern C++ wrapper around various XC functional libraries (Libxc, XCFun, etc)
-* Provide stable, portable and high-performance implementations for the evaluation of XC functionals on various accelerator achitectures (GPUs, FPGAs, etc)
+* Provide stable, portable and high-performance implementations for the evaluation of XC functionals on various accelerator architectures (GPUs, FPGAs, etc)
 
 
 # Example Usage
@@ -119,7 +119,7 @@ you have made the changes locally and would like to see them integrated in upstr
 ExchCXX is made freely available under the terms of a modified 3-Clause BSD license. See
 LICENSE.txt for details.
 
-# Acknowledgements
+# Acknowledgments
 
 The development of ExchCXX is supported by the Exascale Computing Project
 (17-SC-20-SC), a collaborative effort of the U.S. Department of Energy Office
