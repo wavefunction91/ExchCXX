@@ -1,6 +1,7 @@
 #include "libxc_common.hpp"
 #include <exchcxx/impl/builtin/util.hpp>
 #include <exchcxx/util/unused.hpp>
+#include <exchcxx/exceptions/exchcxx_exception.hpp>
 //#include <functionals.cuh>
 
 void throw_if_fail( cudaError_t stat, std::string msg ) {
@@ -52,7 +53,7 @@ namespace detail {
 LDA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 
   throw_if_uninitialized();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
 
   size_t sz_rho = this->rho_buffer_len(N);
   size_t sz_exc = this->exc_buffer_len(N);
@@ -76,7 +77,7 @@ LDA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 LDA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 
   throw_if_uninitialized();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
 
   size_t sz_rho = this->rho_buffer_len(N);
   size_t sz_exc = this->exc_buffer_len(N);
@@ -105,7 +106,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 GGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 
   throw_if_uninitialized();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
 
   size_t sz_rho   = this->rho_buffer_len(N);
   size_t sz_sigma = this->sigma_buffer_len(N);
@@ -132,7 +133,7 @@ GGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 GGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 
   throw_if_uninitialized();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
 
   size_t sz_rho    = this->rho_buffer_len(N);
   size_t sz_sigma  = this->sigma_buffer_len(N);
@@ -170,7 +171,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 MGGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 
   throw_if_uninitialized();
-  assert( is_mgga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
 
   size_t sz_rho   = this->rho_buffer_len(N)   ;
   size_t sz_sigma = this->sigma_buffer_len(N) ;
@@ -206,7 +207,7 @@ MGGA_EXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_device_ ) const {
 MGGA_EXC_VXC_GENERATOR_DEVICE( LibxcKernelImpl::eval_exc_vxc_device_ ) const {
 
   throw_if_uninitialized();
-  assert( is_mgga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
 
   size_t sz_rho    = this->rho_buffer_len(N)   ;
   size_t sz_sigma  = this->sigma_buffer_len(N) ;

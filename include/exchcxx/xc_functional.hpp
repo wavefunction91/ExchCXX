@@ -6,6 +6,7 @@
 
 #include <exchcxx/xc_kernel.hpp>
 #include <exchcxx/util/exchcxx_macros.hpp>
+#include <exchcxx/exceptions/exchcxx_exception.hpp>
 
 #include <numeric>
 
@@ -40,7 +41,7 @@ private:
   }
 
 
-  void throw_if_not_sane() const { assert( sanity_check() ); }
+  void throw_if_not_sane() const { EXCHCXX_BOOL_CHECK("Functional Not Sane", sanity_check() ); }
 
 
   inline bool supports_inc_interface() const noexcept {

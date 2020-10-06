@@ -42,7 +42,7 @@ namespace ExchCXX {
 LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   throw_if_not_sane();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
 
   size_t len_exc_buffer = exc_buffer_len( N );
 
@@ -83,7 +83,7 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   throw_if_not_sane();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
 
   size_t len_exc_buffer = exc_buffer_len( N );
   size_t len_vxc_buffer = vrho_buffer_len( N );
@@ -139,7 +139,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   throw_if_not_sane();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
 
   size_t len_exc_buffer = exc_buffer_len( N );
 
@@ -187,7 +187,7 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   throw_if_not_sane();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
 
   size_t len_exc_buffer    = exc_buffer_len(N);
   size_t len_vrho_buffer   = vrho_buffer_len(N);
@@ -262,7 +262,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   throw_if_not_sane();
-  assert( is_mgga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
 
   size_t len_exc_buffer = exc_buffer_len( N );
 
@@ -316,7 +316,7 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   throw_if_not_sane();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
 
   size_t len_exc_buffer    = exc_buffer_len(N);
   size_t len_vrho_buffer   = vrho_buffer_len(N);
