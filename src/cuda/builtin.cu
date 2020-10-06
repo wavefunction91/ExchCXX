@@ -1,18 +1,10 @@
 #include <exchcxx/impl/builtin/kernel_type.hpp>
 #include <exchcxx/impl/builtin/util.hpp>
 #include <exchcxx/impl/builtin/kernels.hpp>
+#include <exchcxx/util/div_ceil.hpp>
 
 namespace ExchCXX {
 namespace detail {
-
-template <typename Integral1, typename Integral2>
-int64_t div_ceil(Integral1 x, Integral2 y) {
-  int64_t x_ll = x;
-  int64_t y_ll = y;
-
-  auto d = std::div(x_ll, y_ll);
-  return d.quot + !!d.rem;
-}
 
 
 template <typename KernelType>
@@ -368,7 +360,7 @@ template <typename KernelType>
 LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, eps
   );
@@ -379,7 +371,7 @@ template <typename KernelType>
 LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, eps
   );
@@ -390,7 +382,7 @@ template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_vxc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, eps, vxc
   );
@@ -401,7 +393,7 @@ template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_vxc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, eps, vxc
   );
@@ -412,7 +404,7 @@ template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, eps
   );
@@ -423,7 +415,7 @@ template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, eps
   );
@@ -434,7 +426,7 @@ template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, eps, vxc
   );
@@ -445,7 +437,7 @@ template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_vxc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, eps, vxc
   );
@@ -459,7 +451,7 @@ template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, sigma, eps
   );
@@ -470,7 +462,7 @@ template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, sigma, eps
   );
@@ -481,7 +473,7 @@ template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
 
   device_eval_exc_vxc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, sigma, eps, vrho, vsigma
@@ -493,7 +485,7 @@ template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
 
   device_eval_exc_vxc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     N, rho, sigma, eps, vrho, vsigma
@@ -506,7 +498,7 @@ template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, sigma, eps
   );
@@ -517,7 +509,7 @@ template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
   device_eval_exc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, sigma, eps
   );
@@ -528,7 +520,7 @@ template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
 
   device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, sigma, eps, vrho, vsigma
@@ -540,7 +532,7 @@ template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   dim3 threads(32);
-  dim3 blocks( div_ceil( N, threads.x) );
+  dim3 blocks( util::div_ceil( N, threads.x) );
 
   device_eval_exc_vxc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
     scal_fact, N, rho, sigma, eps, vrho, vsigma

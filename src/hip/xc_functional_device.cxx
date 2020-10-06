@@ -1,4 +1,5 @@
 #include <exchcxx/xc_functional.hpp>
+#include <exchcxx/util/div_ceil.hpp>
 #include <string>
 
 
@@ -18,25 +19,25 @@ __global__ void add_scal_kernel( const int N, const double fact, const double* X
 
 void scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
   int threads = 1024;
-  int blocks  = div_ceil(N,1024);
+  int blocks  = ExchCXX::util::div_ceil(N,1024);
   hipLaunchKernelGGL(scal_kernel, dim3(blocks), dim3(threads ), 0, 0,  N, fact, X_device, Y_device );
 }
 
 void scal_device( const int N, const double fact, const double* X_device, double* Y_device, hipStream_t& stream ) {
   int threads = 1024;
-  int blocks  = div_ceil(N,1024);
+  int blocks  = ExchCXX::util::div_ceil(N,1024);
   hipLaunchKernelGGL(scal_kernel, dim3(blocks), dim3(threads), 0, stream ,  N, fact, X_device, Y_device );
 }
 
 void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
   int threads = 1024;
-  int blocks  = div_ceil(N,1024);
+  int blocks  = ExchCXX::util::div_ceil(N,1024);
   hipLaunchKernelGGL(add_scal_kernel, dim3(blocks), dim3(threads ), 0, 0,  N, fact, X_device, Y_device );
 }
 
 void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, hipStream_t& stream ) {
   int threads = 1024;
-  int blocks  = div_ceil(N,1024);
+  int blocks  = ExchCXX::util::div_ceil(N,1024);
   hipLaunchKernelGGL(add_scal_kernel, dim3(blocks), dim3(threads), 0, stream ,  N, fact, X_device, Y_device );
 }
 

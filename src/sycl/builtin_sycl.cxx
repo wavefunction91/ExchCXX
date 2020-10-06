@@ -5,16 +5,6 @@
 namespace ExchCXX {
 namespace detail {
 
-template <typename Integral1, typename Integral2>
-int64_t div_ceil(Integral1 x, Integral2 y) {
-  int64_t x_ll = x;
-  int64_t y_ll = y;
-
-  auto d = std::div(x_ll, y_ll);
-  return d.quot + !!d.rem;
-}
-
-
 template <typename KernelType>
 inline LDA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_unpolar_kernel ) {
 
