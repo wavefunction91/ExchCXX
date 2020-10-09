@@ -110,21 +110,15 @@ bool LibxcKernelImpl::is_lda_() const noexcept {
 }
 
 bool LibxcKernelImpl::is_gga_() const noexcept {
-  return 
-    (kernel_.info->family == XC_FAMILY_GGA    ) or
-    (kernel_.info->family == XC_FAMILY_HYB_GGA);
+  return kernel_.info->family == XC_FAMILY_GGA; 
 }
 
 bool LibxcKernelImpl::is_mgga_() const noexcept {
-  return 
-    (kernel_.info->family == XC_FAMILY_MGGA    ) or
-    (kernel_.info->family == XC_FAMILY_HYB_MGGA);
+  return kernel_.info->family == XC_FAMILY_MGGA;
 }
 
 bool LibxcKernelImpl::is_hyb_() const noexcept {
-  return
-    (kernel_.info->family == XC_FAMILY_HYB_GGA ) or
-    (kernel_.info->family == XC_FAMILY_HYB_MGGA);
+  return kernel_.hyb_number_terms != 0;
 }
 
 bool LibxcKernelImpl::is_polarized_() const noexcept {
@@ -133,7 +127,7 @@ bool LibxcKernelImpl::is_polarized_() const noexcept {
 
 
 double LibxcKernelImpl::hyb_exx_() const noexcept {
-  return xc_hyb_exx_coef( &kernel_ );
+  return is_hyb_() ? xc_hyb_exx_coef( &kernel_ ) : 0.;
 }
 
 bool LibxcKernelImpl::supports_inc_interface_() const noexcept {
