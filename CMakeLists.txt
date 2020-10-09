@@ -63,6 +63,12 @@ else()
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/gen_funcidx>
   )
 
+  # disable unity builds for libxc
+  if (CMAKE_UNITY_BUILD)
+    set_target_properties(xc PROPERTIES UNITY_BUILD OFF)
+    message(STATUS "Will disable unity-build for Libxc::xc")
+  endif()
+
 endif()
         
 add_subdirectory( src  )
