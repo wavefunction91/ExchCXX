@@ -50,7 +50,7 @@ else()
   FetchContent_Declare(
     libxc
     GIT_REPOSITORY https://gitlab.com/eduard1/libxc.git
-    GIT_TAG        master
+    GIT_TAG        15337b095f48fc97ce6835192b1675abaf794c93  # v5.0.0 + pr324
   )
 
   FetchContent_MakeAvailable( libxc )
