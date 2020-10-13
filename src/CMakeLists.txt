@@ -87,10 +87,6 @@ install(EXPORT exchcxx-targets
     ${INSTALL_CONFIGDIR}
 )
 
-# Export build-tree targets also (to be usable by e.g. FetchContent)
-export(EXPORT exchcxx-targets
-    NAMESPACE ExchCXX::
-    FILE "${PROJECT_BINARY_DIR}/ExchCXXTargets.cmake")
 
 #Create a ConfigVersion.cmake file
 include(CMakePackageConfigHelpers)
