@@ -69,6 +69,9 @@ else()
     GIT_TAG        5.0.0
   )
 
+  set( OLD_BUILD_TESTING ${BUILD_TESTING} )
+  set( BUILD_TESTING OFF CACHE BOOL "" )
+
   FetchContent_MakeAvailable( libxc )
   add_library( Libxc::xc ALIAS xc )
   target_include_directories( xc 
@@ -78,6 +81,8 @@ else()
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/gen_funcidx>
   )
+
+  set( BUILD_TESTING ${OLD_BUILD_TESTING} CACHE BOOL "" )
 
 endif()
         
