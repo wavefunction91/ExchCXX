@@ -28,4 +28,10 @@ MapStr<XCFunctional::Functional>
              {"PBE_X", XCFunctional::Functional::PBE_X},
              {"SlaterExchange", XCFunctional::Functional::SlaterExchange}});
 
+inline std::ostream &operator<<(std::ostream &out,
+                                XCFunctional::Functional functional) {
+  out << FuncMap.to_str(functional);
+  return out;
+}
+
 } // namespace ExchCXX
