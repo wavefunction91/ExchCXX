@@ -71,6 +71,7 @@ public:
   XCFunctional( const Backend, const Functional, const Spin );
   XCFunctional( const Functional func, const Spin polar) :
     XCFunctional( Backend::libxc, func, polar) { };
+  XCFunctional( const std::string name );
 
   XCFunctional( const XCFunctional& )                    ;
   XCFunctional( XCFunctional&& )                 noexcept;

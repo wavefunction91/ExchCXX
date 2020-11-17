@@ -1,7 +1,11 @@
 #include <exchcxx/xc_functional.hpp>
+#include <map>
 
 namespace ExchCXX {
 
+std::map<std::string, XCFunctional::Functional> str2func = {{"SVWN3", XCFunctional::Functional::SVWN3},
+                                                            {"BLYP", XCFunctional::Functional::BLYP},
+                                                            {"PBE0", XCFunctional::Functional::PBE0}};
 
 std::vector< XCKernel > functional_factory( 
   const Backend        backend,
@@ -69,6 +73,13 @@ XCFunctional::XCFunctional(
 ) :
   XCFunctional(functional_factory(backend,func,polar)) { }
 
+XCFunctional::XCFunctional(const std::string name){
+
+  auto ks = functional_factory(Backend::libxc, str2func.at(name), Spin::Unpolarized);
+  for(const auto& k : ks )
+    kernels_.push_back( { 1., k } );
+
+}
 
 
 
