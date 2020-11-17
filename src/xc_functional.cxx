@@ -5,7 +5,9 @@ namespace ExchCXX {
 
 std::map<std::string, XCFunctional::Functional> str2func = {{"SVWN3", XCFunctional::Functional::SVWN3},
                                                             {"BLYP", XCFunctional::Functional::BLYP},
-                                                            {"PBE0", XCFunctional::Functional::PBE0}};
+                                                            {"PBE0", XCFunctional::Functional::PBE0},
+                                                            {"PBE_X", XCFunctional::Functional::PBE_X},
+                                                            {"SlaterExchange", XCFunctional::Functional::SlaterExchange}};
 
 std::vector< XCKernel > functional_factory( 
   const Backend        backend,
@@ -40,6 +42,14 @@ std::vector< XCKernel > functional_factory(
   else if( func == Functional::PBE0 )
     kerns = { 
       XCKernel( backend, Kernel::PBE0, polar )
+    };
+  else if( func == Functional::SlaterExchange )
+    kerns = {
+        XCKernel( backend, Kernel::SlaterExchange, polar )
+    };
+  else if( func == Functional::PBE_X )
+    kerns = {
+        XCKernel( backend, Kernel::PBE_X, polar )
     };
   else {
     assert( false && "FUNCTIONAL NYS" );

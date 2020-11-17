@@ -60,6 +60,8 @@ public:
     BLYP,
     B3LYP,
     PBE0,
+    SlaterExchange,
+    PBE_X,
   };
 
   XCFunctional();
