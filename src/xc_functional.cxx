@@ -1,18 +1,16 @@
 #include <exchcxx/xc_functional.hpp>
-#include <map>
 
 namespace ExchCXX {
 
 std::vector< XCKernel > functional_factory( 
   const Backend        backend,
-  const XCFunctional::Functional func,
+  const Functional func,
   const Spin          polar
 ) {
 
   std::vector< XCKernel > kerns;
 
   using Kernel     = Kernel;
-  using Functional = XCFunctional::Functional;
 
   if( func == Functional::SVWN3 )
     kerns = { 
@@ -36,14 +34,6 @@ std::vector< XCKernel > functional_factory(
   else if( func == Functional::PBE0 )
     kerns = { 
       XCKernel( backend, Kernel::PBE0, polar )
-    };
-  else if( func == Functional::SlaterExchange )
-    kerns = {
-        XCKernel( backend, Kernel::SlaterExchange, polar )
-    };
-  else if( func == Functional::PBE_X )
-    kerns = {
-        XCKernel( backend, Kernel::PBE_X, polar )
     };
   else {
     assert( false && "FUNCTIONAL NYS" );
@@ -72,7 +62,7 @@ XCFunctional::XCFunctional( std::vector<value_type>&& ks ) :
 
 XCFunctional::XCFunctional( 
   const Backend        backend, 
-  const XCFunctional::Functional func,
+  const Functional func,
   const Spin           polar
 ) :
   XCFunctional(functional_factory(backend,func,polar)) { }

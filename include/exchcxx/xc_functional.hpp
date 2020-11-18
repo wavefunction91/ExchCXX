@@ -54,16 +54,6 @@ private:
 
 public:
 
-  enum Functional {
-    SVWN3,
-    SVWN5,
-    BLYP,
-    B3LYP,
-    PBE0,
-    SlaterExchange,
-    PBE_X,
-  };
-
   XCFunctional();
   XCFunctional( const std::vector< XCKernel >& );
   XCFunctional( const std::initializer_list< value_type >& list );
