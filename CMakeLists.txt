@@ -49,8 +49,8 @@ else()
 
   FetchContent_Declare(
     libxc
-    GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
-    GIT_TAG        5.0.0
+    GIT_REPOSITORY https://gitlab.com/eduard1/libxc.git
+    GIT_TAG        53883f416d0f421e4e856171d72c81fb331d8a57  # v5.0.0 + pr324 + pr351
   )
 
   set( OLD_BUILD_TESTING ${BUILD_TESTING} )
@@ -66,6 +66,12 @@ else()
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/gen_funcidx>
   )
 
+  # disable unity builds for libxc
+  if (CMAKE_UNITY_BUILD)
+    set_target_properties(xc PROPERTIES UNITY_BUILD OFF)
+    message(STATUS "Will disable unity-build for Libxc::xc")
+  endif()
+  
   set( BUILD_TESTING ${OLD_BUILD_TESTING} CACHE BOOL "" )
 
 endif()
