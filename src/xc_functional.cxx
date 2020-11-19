@@ -2,11 +2,15 @@
 
 namespace ExchCXX {
 
-// use this within ExchCXX
-FuncMap str2func;
+
+BidirectionalMap<std::string, Functional> functional_map{{{"SVWN3", Functional::SVWN3},
+                                                {"SVWN5", Functional::SVWN5},
+                                                {"BLYP", Functional::BLYP},
+                                                {"B3LYP", Functional::B3LYP},
+                                                {"PBE0", Functional::PBE0}}};
 
 std::ostream &operator<<(std::ostream &out, Functional functional) {
-  out << str2func.to_str(functional);
+  out << functional_map.to_key(functional);
   return out;
 }
 
