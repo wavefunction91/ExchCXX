@@ -3,10 +3,10 @@
 namespace ExchCXX {
 
 // use this within ExchCXX
-FuncMap func_map;
+FuncMap str2func;
 
-inline std::ostream &operator<<(std::ostream &out, Functional functional) {
-  out << func_map.to_str(functional);
+std::ostream &operator<<(std::ostream &out, Functional functional) {
+  out << str2func.to_str(functional);
   return out;
 }
 

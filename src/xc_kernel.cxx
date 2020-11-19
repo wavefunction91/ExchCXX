@@ -4,6 +4,13 @@
 
 namespace ExchCXX {
 
+KerMap str2ker;
+
+std::ostream& operator<<( std::ostream& out, Kernel kern ) {
+  out << str2ker.to_str(kern);
+  return out;
+}
+
 XCKernel::XCKernel( 
   const Backend backend, 
   const Kernel kern, 

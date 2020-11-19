@@ -12,7 +12,7 @@ enum class Functional {
   PBE0,
 };
 
-class FuncMap : public std::map<std::string, Functional> {
+class FuncMap {
   std::map<std::string, Functional> str2val_;
   std::map<Functional, std::string> val2str_;
 
@@ -33,5 +33,7 @@ public:
 
   std::string to_str(Functional val) { return val2str_.at(val); }
 };
+
+std::ostream &operator<<(std::ostream &out, Functional functional);
 
 }

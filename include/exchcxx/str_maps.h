@@ -4,8 +4,8 @@
 
 namespace ExchCXX{
 
-FuncMap str2func;
+extern FuncMap str2func;
 
-KerMap str2ker;
+extern KerMap str2ker;
 
 }
