@@ -4,8 +4,8 @@
 #include <exchcxx/exchcxx_config.hpp>
 #endif
 
+#include <exchcxx/util/bidirectional_map.hpp>
 #include <iostream>
-#include <exchcxx/bidirectional_map.hpp>
 
 namespace ExchCXX {
 

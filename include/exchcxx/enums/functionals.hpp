@@ -1,6 +1,6 @@
 #pragma once
 
-#include <exchcxx/bidirectional_map.hpp>
+#include <exchcxx/util/bidirectional_map.hpp>
 
 namespace ExchCXX {
 
