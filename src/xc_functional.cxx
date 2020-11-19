@@ -2,6 +2,14 @@
 
 namespace ExchCXX {
 
+// use this within ExchCXX
+FuncMap func_map;
+
+inline std::ostream &operator<<(std::ostream &out, Functional functional) {
+  out << func_map.to_str(functional);
+  return out;
+}
+
 std::vector< XCKernel > functional_factory( 
   const Backend        backend,
   const Functional func,

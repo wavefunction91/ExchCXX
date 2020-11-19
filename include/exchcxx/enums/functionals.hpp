@@ -34,10 +34,4 @@ public:
   std::string to_str(Functional val) { return val2str_.at(val); }
 };
 
-inline std::ostream &operator<<(std::ostream &out, Functional functional) {
-  FuncMap temp_func_map{};
-  out << temp_func_map.to_str(functional);
-  return out;
-}
-
 }
