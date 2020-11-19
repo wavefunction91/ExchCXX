@@ -73,6 +73,8 @@ public:
   std::string to_str(Kernel val) { return val2str_.at(val); }
 };
 
+extern KerMap str2ker;
+
 std::ostream& operator<<( std::ostream& out, Kernel kern );
 
 }
