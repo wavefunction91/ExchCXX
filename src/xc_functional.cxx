@@ -10,7 +10,7 @@ BidirectionalMap<std::string, Functional> functional_map{{{"SVWN3", Functional::
                                                 {"PBE0", Functional::PBE0}}};
 
 std::ostream &operator<<(std::ostream &out, Functional functional) {
-  out << functional_map.to_key(functional);
+  out << functional_map.key(functional);
   return out;
 }
 
