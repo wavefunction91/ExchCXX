@@ -17,9 +17,18 @@ public:
 
   }
 
-  Val val(Key key) { return forward_map_.at(key); }
+  Val value(Key key) { return forward_map_.at(key); }
 
   Key key(Val val) { return reverse_map_.at(val); }
+
+  bool key_exists(Key key){
+    return forward_map_.find(key) != forward_map_.end();
+  }
+
+  bool value_exists(Val val){
+    return reverse_map_.find(val) != reverse_map_.end();
+  }
+
 };
 
 } // namespace ExchCXX
