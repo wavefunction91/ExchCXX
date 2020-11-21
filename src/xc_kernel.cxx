@@ -21,7 +21,7 @@ BidirectionalMap<std::string, Kernel> kernel_map{
      {"B88", Kernel::B88}}};
 
 std::ostream& operator<<( std::ostream& out, Kernel kern ) {
-  out << kernel_map.to_key(kern);
+  out << kernel_map.key(kern);
   return out;
 }
 

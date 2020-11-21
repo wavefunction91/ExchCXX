@@ -17,9 +17,9 @@ public:
 
   }
 
-  Val to_val(Key key) { return forward_map_.at(key); }
+  Val val(Key key) { return forward_map_.at(key); }
 
-  Key to_key(Val val) { return reverse_map_.at(val); }
+  Key key(Val val) { return reverse_map_.at(val); }
 };
 
 } // namespace ExchCXX
