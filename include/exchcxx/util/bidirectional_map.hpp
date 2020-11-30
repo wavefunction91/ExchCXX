@@ -12,6 +12,9 @@ public:
   BidirectionalMap(std::map<Key, Val> map) : forward_map_(map){
 
     for (auto &&v : map) {
+      if (reverse_map_.find(v.second) != reverse_map_.end()){
+        throw std::runtime_error("BidirectionalMap must have unique values");
+      }
       reverse_map_.insert(std::make_pair(v.second, v.first));
     }
 
