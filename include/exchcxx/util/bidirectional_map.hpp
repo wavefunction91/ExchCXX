@@ -3,13 +3,14 @@
 
 namespace ExchCXX {
 
-template <typename Key, typename Val>
+template <typename Key, typename Val, typename CompareKey = std::less<Key>,
+    typename CompareVal = std::less<Val> >
 class BidirectionalMap{
-  std::map<Key, Val> forward_map_;
-  std::map<Val, Key> reverse_map_;
+  std::map<Key, Val, CompareKey> forward_map_;
+  std::map<Val, Key, CompareVal> reverse_map_;
 
 public:
-  BidirectionalMap(std::map<Key, Val> map) : forward_map_(map){
+  BidirectionalMap(std::map<Key, Val, CompareKey> map) : forward_map_(map){
 
     for (auto &&v : map) {
       if (reverse_map_.find(v.second) != reverse_map_.end()){
