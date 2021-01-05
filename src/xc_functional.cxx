@@ -3,16 +3,27 @@
 namespace ExchCXX {
 
 
+BidirectionalMap<std::string, Functional> functional_map{
+    {{"SVWN3", Functional::SVWN3},
+    {"SVWN5", Functional::SVWN5},
+    {"BLYP", Functional::BLYP},
+    {"B3LYP", Functional::B3LYP},
+    {"PBE0", Functional::PBE0}}};
+
+std::ostream &operator<<(std::ostream &out, Functional functional) {
+  out << functional_map.key(functional);
+  return out;
+}
+
 std::vector< XCKernel > functional_factory( 
   const Backend        backend,
-  const XCFunctional::Functional func,
+  const Functional func,
   const Spin          polar
 ) {
 
   std::vector< XCKernel > kerns;
 
   using Kernel     = Kernel;
-  using Functional = XCFunctional::Functional;
 
   if( func == Functional::SVWN3 )
     kerns = { 
@@ -64,11 +75,10 @@ XCFunctional::XCFunctional( std::vector<value_type>&& ks ) :
 
 XCFunctional::XCFunctional( 
   const Backend        backend, 
-  const XCFunctional::Functional func,
+  const Functional func,
   const Spin           polar
 ) :
   XCFunctional(functional_factory(backend,func,polar)) { }
-
 
 
 
