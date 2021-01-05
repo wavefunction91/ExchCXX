@@ -3,11 +3,12 @@
 namespace ExchCXX {
 
 
-BidirectionalMap<std::string, Functional> functional_map{{{"SVWN3", Functional::SVWN3},
-                                                {"SVWN5", Functional::SVWN5},
-                                                {"BLYP", Functional::BLYP},
-                                                {"B3LYP", Functional::B3LYP},
-                                                {"PBE0", Functional::PBE0}}};
+BidirectionalMap<std::string, Functional> functional_map{
+    {{"SVWN3", Functional::SVWN3},
+    {"SVWN5", Functional::SVWN5},
+    {"BLYP", Functional::BLYP},
+    {"B3LYP", Functional::B3LYP},
+    {"PBE0", Functional::PBE0}}};
 
 std::ostream &operator<<(std::ostream &out, Functional functional) {
   out << functional_map.key(functional);
