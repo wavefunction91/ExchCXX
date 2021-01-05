@@ -1,5 +1,7 @@
 #pragma once
 
+#include <exchcxx/util/bidirectional_map.hpp>
+
 namespace ExchCXX {
 
 enum class Functional {
@@ -9,5 +11,9 @@ enum class Functional {
   B3LYP,
   PBE0,
 };
+
+extern BidirectionalMap<std::string, Functional> functional_map;
+
+std::ostream &operator<<(std::ostream &out, Functional functional);
 
 }
