@@ -2,16 +2,22 @@ name: CMake
 
 on: [pull_request]
 
+env:
+  GH_ACTIONS_TOOLCHAIN: .github/workflows/toolchains/gh-actions.cmake
+
 jobs:
   build:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#configuring-a-build-matrix
     runs-on: ubuntu-latest
     strategy:
       matrix:
         build_type: [Release, Debug]
+        compiler_suite: [gnu,llvm]
+        compiler_version: [7,8,9,10]
+        exclude:
+          - compiler_suite: llvm
+            compiler_version: 7
+          - compiler_suite: llvm
+            compiler_version: 8
 
     steps:
     - uses: actions/checkout@v2
@@ -24,59 +30,65 @@ jobs:
            wget --no-check-certificate -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${CMAKE_PREFIX} &&
            export PATH=${CMAKE_PREFIX}/bin:${PATH} && cmake --version
 
-    - name: Create Build Environment
-      # Some projects don't allow in-source building, so create a separate build directory
-      # We'll use this as our working directory for all subsequent commands
-      run: cmake -E make_directory ${{runner.workspace}}/build
+    - name: Ubuntu Apt Setup
+      shell: bash
+      run: sudo apt install software-properties-common &&
+           sudo add-apt-repository ppa:ubuntu-toolchain-r/test 
+
+    - name: Install GNU Compiler Version
+      if: ${{ matrix.compiler_suite == 'gnu' }}
+      env:
+        CC:  gcc-${{matrix.compiler_version}}
+        CXX: g++-${{matrix.compiler_version}}
+      shell: bash
+      run: ${GITHUB_WORKSPACE}/.github/workflows/scripts/compiler_setup.sh ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Install LLVM Compiler Version
+      if: ${{ matrix.compiler_suite == 'llvm' }}
+      env:
+        CC:  clang-${{matrix.compiler_version}}
+        CXX: clang++-${{matrix.compiler_version}}
+      shell: bash
+      run: ${GITHUB_WORKSPACE}/.github/workflows/scripts/compiler_setup.sh ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
     - name: Configure CMake
-      env:
-        BUILD_TYPE: ${{matrix.build_type}}
       shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/install
+      run: cmake -H$GITHUB_WORKSPACE 
+                 -B${{runner.workspace}}/build
+                 -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+                 -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/install 
+                 -DCMAKE_TOOLCHAIN_FILE=${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
     - name: Build
-      working-directory: ${{runner.workspace}}/build
       shell: bash
-      # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config $BUILD_TYPE -j2 
+      run: cmake --build ${{runner.workspace}}/build -j2 
 
-    - name: Test XC Kernel
-      working-directory: ${{runner.workspace}}/build
+    - name: Test
       shell: bash
-      # Execute tests defined by the CMake configuration.  
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ./test/xc_kernel_test
-
-    - name: Test XC Functional
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      # Execute tests defined by the CMake configuration.  
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ./test/xc_functional_test
+      run: cmake --build ${{runner.workspace}}/build --target test
 
     - name: Install
-      working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: cmake --build . --target install
+      run: cmake --build ${{runner.workspace}}/build --target install
 
     - name: CMake Subproject Configure
-      working-directory: ${{runner.workspace}}
       shell: bash
-      run: cmake -H$GITHUB_WORKSPACE/test/cmake/subproject -B${{runner.workspace}}/cmake_subproject_build -DGIT_REVISION=$GITHUB_HEAD_REF 
+      run: cmake -H$GITHUB_WORKSPACE/test/cmake/subproject 
+                 -B${{runner.workspace}}/cmake_subproject_build 
+                 -DGIT_REVISION=$GITHUB_HEAD_REF 
+                 -DCMAKE_TOOLCHAIN_FILE=${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
     - name: CMake Subproject Build
-      working-directory: ${{runner.workspace}}
       shell: bash
       run: cmake --build ${{runner.workspace}}/cmake_subproject_build
 
     - name: CMake Discovery Configure
-      working-directory: ${{runner.workspace}}
       shell: bash
-      run: cmake -H$GITHUB_WORKSPACE/test/cmake/discovery -B${{runner.workspace}}/cmake_discovery_build -DCMAKE_PREFIX_PATH=${{runner.workspace}}/install 
+      run: cmake -H$GITHUB_WORKSPACE/test/cmake/discovery 
+                 -B${{runner.workspace}}/cmake_discovery_build 
+                 -DCMAKE_PREFIX_PATH=${{runner.workspace}}/install 
+                 -DCMAKE_TOOLCHAIN_FILE=${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
     - name: CMake Discovery Build
-      working-directory: ${{runner.workspace}}
       shell: bash
       run: cmake --build ${{runner.workspace}}/cmake_discovery_build
