@@ -34,6 +34,11 @@ else()
   set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 endif()
 
+# Populate BUILD_TESTING prior to dependencies to avoid clash
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+endif()
+
 
 ## Find LibXC
 find_package( Libxc 5.0.0 CONFIG QUIET )
@@ -82,10 +87,6 @@ add_subdirectory( src  )
 # Testing
 if( NOT DEFINED EXCHCXX_ENABLE_TESTS )
   set( EXCHCXX_ENABLE_TESTS ON )
-endif()
-
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  include(CTest)
 endif()
 
 if( CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND EXCHCXX_ENABLE_TESTS AND BUILD_TESTING )
