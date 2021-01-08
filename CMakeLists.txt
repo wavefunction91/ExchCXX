@@ -79,8 +79,16 @@ endif()
         
 add_subdirectory( src  )
 
-if( EXCHCXX_ENABLE_TESTS )
-  enable_testing()
+# Testing
+if( NOT DEFINED EXCHCXXXX_ENABLE_TESTS )
+  set( EXCHCXXXX_ENABLE_TESTS ON )
+endif()
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+endif()
+
+if( CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND EXCHCXXXX_ENABLE_TESTS AND BUILD_TESTING )
   add_subdirectory( test )
 endif()
 
