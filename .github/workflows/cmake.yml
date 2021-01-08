@@ -80,7 +80,7 @@ jobs:
 
     - name: CMake Subproject Build
       shell: bash
-      run: cmake --build ${{runner.workspace}}/cmake_subproject_build
+      run: cmake --build ${{runner.workspace}}/cmake_subproject_build -j2
 
     - name: CMake Discovery Configure
       shell: bash
@@ -91,4 +91,4 @@ jobs:
 
     - name: CMake Discovery Build
       shell: bash
-      run: cmake --build ${{runner.workspace}}/cmake_discovery_build
+      run: cmake --build ${{runner.workspace}}/cmake_discovery_build -j2
