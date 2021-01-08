@@ -60,7 +60,7 @@ else()
   set( Libxc_VERSION 5.0.0 )
 
   set( OLD_BUILD_TESTING ${BUILD_TESTING} )
-  set( BUILD_TESTING OFF CACHE BOOL "" )
+  set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
 
   FetchContent_MakeAvailable( libxc )
   add_library( Libxc::xc ALIAS xc )
@@ -78,7 +78,7 @@ else()
     message(STATUS "Will disable unity-build for Libxc::xc")
   endif()
   
-  set( BUILD_TESTING ${OLD_BUILD_TESTING} CACHE BOOL "" )
+  set( BUILD_TESTING ${OLD_BUILD_TESTING} CACHE BOOL "" FORCE )
 
 endif()
         
