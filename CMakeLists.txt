@@ -37,6 +37,11 @@ else()
   set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 endif()
 
+# Populate BUILD_TESTING prior to dependencies to avoid clash
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+endif()
+
 
 
 # Enable CUDA if desired
@@ -65,12 +70,13 @@ else()
 
   FetchContent_Declare(
     libxc
-    GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
-    GIT_TAG        5.0.0
+    GIT_REPOSITORY https://gitlab.com/eduard1/libxc.git
+    GIT_TAG        53883f416d0f421e4e856171d72c81fb331d8a57  # v5.0.0 + pr324 + pr351
   )
+  set( Libxc_VERSION 5.0.0 )
 
   set( OLD_BUILD_TESTING ${BUILD_TESTING} )
-  set( BUILD_TESTING OFF CACHE BOOL "" )
+  set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
 
   FetchContent_MakeAvailable( libxc )
   add_library( Libxc::xc ALIAS xc )
@@ -82,14 +88,24 @@ else()
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/gen_funcidx>
   )
 
-  set( BUILD_TESTING ${OLD_BUILD_TESTING} CACHE BOOL "" )
+  # disable unity builds for libxc
+  if (CMAKE_UNITY_BUILD)
+    set_target_properties(xc PROPERTIES UNITY_BUILD OFF)
+    message(STATUS "Will disable unity-build for Libxc::xc")
+  endif()
+  
+  set( BUILD_TESTING ${OLD_BUILD_TESTING} CACHE BOOL "" FORCE )
 
 endif()
         
 add_subdirectory( src )
 
-if( EXCHCXX_ENABLE_TESTS )
-  enable_testing()
+# Testing
+if( NOT DEFINED EXCHCXX_ENABLE_TESTS )
+  set( EXCHCXX_ENABLE_TESTS ON )
+endif()
+
+if( CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND EXCHCXX_ENABLE_TESTS AND BUILD_TESTING )
   add_subdirectory( test )
 endif()
 
