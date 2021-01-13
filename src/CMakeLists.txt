@@ -57,7 +57,7 @@ target_compile_options( exchcxx
 )
 
 # INSTALL rules
-add_library( ExchCXX::exchcxx ALIAS exchcxx )
+add_library( ExchCXX::ExchCXX ALIAS exchcxx )
 
 
 include( GNUInstallDirs )
