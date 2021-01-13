@@ -570,6 +570,25 @@ TEST_CASE( "Scale and Increment Interface", "[xc-inc]" ) {
   }
 }
 
+TEST_CASE( "kernel_map Test", "[xc-kernel-map]") {
+
+  SECTION("Conversion of String to Kernel") {
+
+    for (auto pair : string_kernal_pairs) {
+      CHECK(kernel_map.value(pair.first) == pair.second);
+    }
+
+  }
+
+  SECTION("Conversion of Kernel to String") {
+
+    for (auto pair : string_kernal_pairs) {
+      CHECK(kernel_map.key(pair.second) == pair.first);
+    }
+
+  }
+
+}
 
 #ifdef EXCHCXX_ENABLE_CUDA
 

@@ -521,4 +521,22 @@ TEST_CASE( "GGA XC Functionals", "[xc-gga]" ) {
 
 }
 
+TEST_CASE( "functional_map Test", "[xc-functional-map]") {
 
+  SECTION("Conversion of String to Functional") {
+
+    for (auto pair : string_functional_pairs) {
+      CHECK(functional_map.value(pair.first) == pair.second);
+    }
+
+  }
+
+  SECTION("Conversion of Functional to String") {
+
+    for (auto pair : string_functional_pairs) {
+      CHECK(functional_map.key(pair.second) == pair.first);
+    }
+
+  }
+
+}
