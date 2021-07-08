@@ -10,7 +10,6 @@
 
 // Standard Libs
 #include <vector>
-#include <cassert>
 #include <algorithm>
 #include <memory>
 

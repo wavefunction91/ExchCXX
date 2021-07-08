@@ -1,34 +1,34 @@
 #include "reference_values.hpp"
 #include <exchcxx/exchcxx.hpp>
 
-constexpr std::array rho = {0.1, 0.2, 0.3, 0.4, 0.5};
-constexpr std::array sigma = {0.2, 0.3, 0.4, 0.5, 0.6};
+std::vector<double> rho = {0.1, 0.2, 0.3, 0.4, 0.5};
+std::vector<double> sigma = {0.2, 0.3, 0.4, 0.5, 0.6};
 
-constexpr std::array rho_polarized =
+std::vector<double> rho_polarized =
   {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-constexpr std::array sigma_polarized =
+std::vector<double> sigma_polarized =
   {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
    1.1, 1.2, 1.3, 1.5, 1.5 };
 
-constexpr std::array exc_xc_lda_x_ref_unp = {
+std::vector<double> exc_xc_lda_x_ref_unp = {
   -0.342808612301, -0.431911786723,
   -0.494415573788, -0.544174751790,
   -0.586194481348,
 };
 
-constexpr std::array vxc_xc_lda_x_ref_unp = {
+std::vector<double> vxc_xc_lda_x_ref_unp = {
   -0.457078149734, -0.575882382297,
   -0.659220765051, -0.725566335720,
   -0.781592641797
 };
 
-constexpr std::array exc_xc_lda_x_ref_pol = {
+std::vector<double> exc_xc_lda_x_ref_pol = {
   -0.506753763434, -0.658748952120,
   -0.763800785778, -0.846274084184,
   -0.915314307811
 };
 
-constexpr std::array vxc_xc_lda_x_ref_pol = {
+std::vector<double> vxc_xc_lda_x_ref_pol = {
 -0.575882382297, -0.725566335720,
 -0.830566118415, -0.914156299468,
 -0.984745021843, -1.046447735921,
@@ -38,19 +38,19 @@ constexpr std::array vxc_xc_lda_x_ref_pol = {
 
 
 
-constexpr std::array exc_xc_gga_c_lyp_ref_unp = {
+std::vector<double> exc_xc_gga_c_lyp_ref_unp = {
   -0.007040306272, -0.031424640440,
   -0.037479119388, -0.040429224120,
   -0.042290563929
 };
 
-constexpr std::array vrho_xc_gga_c_lyp_ref_unp = {
+std::vector<double> vrho_xc_gga_c_lyp_ref_unp = {
   -0.081854247031, -0.055198496086,
   -0.051617025994, -0.050995654065,
   -0.051084686930
 };
 
-constexpr std::array vsigma_xc_gga_c_lyp_ref_unp = {
+std::vector<double> vsigma_xc_gga_c_lyp_ref_unp = {
   0.013598460611,
   0.004629650473,
   0.002429957976,
@@ -58,13 +58,13 @@ constexpr std::array vsigma_xc_gga_c_lyp_ref_unp = {
   0.001065244937
 };
 
-constexpr std::array exc_xc_gga_c_lyp_ref_pol = {
+std::vector<double> exc_xc_gga_c_lyp_ref_pol = {
   -0.031543975366, -0.043113613690,
   -0.046604883008, -0.048519647105,
   -0.049799110145
 };
 
-constexpr std::array vrho_xc_gga_c_lyp_ref_pol = {
+std::vector<double> vrho_xc_gga_c_lyp_ref_pol = {
   -0.089983823779, -0.035745759262,
   -0.062361000975, -0.045947114249,
   -0.059003605615, -0.049400798274,
@@ -72,7 +72,7 @@ constexpr std::array vrho_xc_gga_c_lyp_ref_pol = {
   -0.058037798927, -0.052712179037
 };
 
-constexpr std::array vsigma_xc_gga_c_lyp_ref_pol = {
+std::vector<double> vsigma_xc_gga_c_lyp_ref_pol = {
 0.008447669161 , 0.006467154082,
 -0.000638497084, 0.001421914705,
 0.001031651601 , 0.000257537600,

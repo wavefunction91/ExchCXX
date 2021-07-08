@@ -2,6 +2,7 @@
 
 #include <exchcxx/impl/builtin/util.hpp>
 #include <exchcxx/util/unused.hpp>
+#include <exchcxx/exceptions/exchcxx_exception.hpp>
 namespace ExchCXX {
 
 
@@ -52,7 +53,7 @@ inline bool libxc_supports_kernel( const Kernel kern ) {
 XCKernel libxc_kernel_factory(const Kernel kern, 
   const Spin spin_polar ) {
 
-  assert( libxc_supports_kernel(kern) );
+  EXCHCXX_BOOL_CHECK( "KERNEL NYI FOR Libxc BACKEND", libxc_supports_kernel(kern) )
 
   return XCKernel( 
     std::make_unique< detail::LibxcKernelImpl >( kern, spin_polar ) );
@@ -145,7 +146,7 @@ bool LibxcKernelImpl::supports_inc_interface_() const noexcept {
 LDA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 
   throw_if_uninitialized();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
   xc_lda_exc( &kernel_, N, rho, eps );
 
 }
@@ -154,7 +155,7 @@ LDA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 LDA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
   throw_if_uninitialized();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
   xc_lda_exc_vxc( &kernel_, N, rho, eps, vxc );
 
 }
@@ -170,7 +171,7 @@ UNUSED_INC_INTERFACE_GENERATOR( LDA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_
 GGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 
   throw_if_uninitialized();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
   xc_gga_exc( &kernel_, N, rho, sigma, eps );
 
 }
@@ -179,7 +180,7 @@ GGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 GGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
   throw_if_uninitialized();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
   xc_gga_exc_vxc( &kernel_, N, rho, sigma, eps, vrho, vsigma );
 
 }
@@ -194,7 +195,7 @@ UNUSED_INC_INTERFACE_GENERATOR( GGA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_
 MGGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 
   throw_if_uninitialized();
-  assert( is_mgga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
   xc_mgga_exc( &kernel_, N, rho, sigma, lapl, tau, eps );
 
 }
@@ -203,7 +204,7 @@ MGGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
 MGGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
   throw_if_uninitialized();
-  assert( is_mgga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
   xc_mgga_exc_vxc( &kernel_, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau );
 
 }

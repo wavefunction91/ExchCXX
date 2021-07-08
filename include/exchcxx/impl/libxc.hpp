@@ -6,7 +6,7 @@
 
 
 #include <exchcxx/impl/xc_kernel.hpp>
-#include <cassert>
+#include <exchcxx/exceptions/exchcxx_exception.hpp>
 #include <xc.h> // Libxc
 
 namespace ExchCXX {
@@ -73,7 +73,7 @@ protected:
   xc_func_type kernel_; ///< Libxc kernel definition
 
   bool initialized_ = false;
-  void throw_if_uninitialized() const { assert( initialized_ ); }
+  void throw_if_uninitialized() const { EXCHCXX_BOOL_CHECK("Kernel Uninitialized", initialized_ ); }
 
 
   auto xc_info() const { 

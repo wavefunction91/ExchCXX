@@ -6,12 +6,11 @@
 namespace ExchCXX {
 namespace detail {
 
-
 template <typename KernelType>
 __global__ LDA_EXC_GENERATOR( device_eval_exc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -26,7 +25,7 @@ template <typename KernelType>
 __global__ LDA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -45,7 +44,7 @@ template <typename KernelType>
 __global__ LDA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -60,7 +59,7 @@ template <typename KernelType>
 __global__ LDA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -81,7 +80,7 @@ template <typename KernelType>
 __global__ LDA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   double e;
   if( tid < N ) {
@@ -98,7 +97,7 @@ template <typename KernelType>
 __global__ LDA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -120,7 +119,7 @@ template <typename KernelType>
 __global__ LDA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   double e,v;
   if( tid < N ) {
@@ -138,7 +137,7 @@ template <typename KernelType>
 __global__ LDA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -162,7 +161,7 @@ template <typename KernelType>
 __global__ GGA_EXC_GENERATOR( device_eval_exc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -178,7 +177,7 @@ template <typename KernelType>
 __global__ GGA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -204,7 +203,7 @@ template <typename KernelType>
 __global__ GGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -221,7 +220,7 @@ template <typename KernelType>
 __global__ GGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -252,7 +251,7 @@ template <typename KernelType>
 __global__ GGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   double e;
   if( tid < N ) {
@@ -272,7 +271,7 @@ template <typename KernelType>
 __global__ GGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -301,7 +300,7 @@ template <typename KernelType>
 __global__ GGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_unpolar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   double e, vr, vs;
   if( tid < N ) {
@@ -322,7 +321,7 @@ template <typename KernelType>
 __global__ GGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kernel ) {
 
   using traits = kernel_traits<KernelType>;
-  int tid = threadIdx.x + blockIdx.x * blockDim.x; 
+  int tid = hipThreadIdx_x + hipBlockIdx_x * hipBlockDim_x; 
 
   if( tid < N ) {
 
@@ -361,7 +360,9 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(
+    HIP_KERNEL_NAME(device_eval_exc_helper_unpolar_kernel<KernelType>),
+    blocks, threads, 0, stream,
     N, rho, eps
   );
 
@@ -372,7 +373,7 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     N, rho, eps
   );
 
@@ -383,7 +384,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_vxc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_helper_unpolar_kernel<KernelType>), blocks, threads, 0, stream, 
     N, rho, eps, vxc
   );
 
@@ -394,7 +395,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_vxc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     N, rho, eps, vxc
   );
 
@@ -405,7 +406,7 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_inc_helper_unpolar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, eps
   );
 
@@ -416,7 +417,7 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_inc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, eps
   );
 
@@ -427,7 +428,7 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, eps, vxc
   );
 
@@ -438,7 +439,7 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_vxc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, eps, vxc
   );
 
@@ -452,7 +453,7 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_helper_unpolar_kernel<KernelType>), blocks, threads, 0, stream, 
     N, rho, sigma, eps
   );
 
@@ -463,7 +464,7 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     N, rho, sigma, eps
   );
 
@@ -474,8 +475,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-
-  device_eval_exc_vxc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_helper_unpolar_kernel<KernelType>), blocks, threads, 0, stream, 
     N, rho, sigma, eps, vrho, vsigma
   );
 
@@ -486,8 +486,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-
-  device_eval_exc_vxc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     N, rho, sigma, eps, vrho, vsigma
   );
 
@@ -499,7 +498,7 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_inc_helper_unpolar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, sigma, eps
   );
 
@@ -510,7 +509,7 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-  device_eval_exc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_inc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, sigma, eps
   );
 
@@ -521,8 +520,7 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-
-  device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, sigma, eps, vrho, vsigma
   );
 
@@ -533,8 +531,7 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   dim3 threads(32);
   dim3 blocks( util::div_ceil( N, threads.x) );
-
-  device_eval_exc_vxc_inc_helper_polar_kernel<KernelType><<<blocks,threads,0,stream>>>(
+  hipLaunchKernelGGL(HIP_KERNEL_NAME(device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>), blocks, threads, 0, stream, 
     scal_fact, N, rho, sigma, eps, vrho, vsigma
   );
 

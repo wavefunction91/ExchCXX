@@ -1,46 +1,45 @@
 #include "libxc_common.hpp"
 #include <exchcxx/impl/builtin/util.hpp>
 #include <exchcxx/util/unused.hpp>
-#include <exchcxx/exceptions/exchcxx_exception.hpp>
 //#include <functionals.cuh>
 
-void throw_if_fail( cudaError_t stat, std::string msg ) {
-  if( stat != cudaSuccess ) throw std::runtime_error( msg );
+void throw_if_fail( hipError_t stat, std::string msg ) {
+  if( stat != hipSuccess ) throw std::runtime_error( msg );
 }
 
 void recv_from_device( void* dest, const void* src, const size_t len ) {
 
-  auto stat = cudaMemcpy( dest, src, len, cudaMemcpyDeviceToHost );
+  auto stat = hipMemcpy( dest, src, len, hipMemcpyDeviceToHost );
   throw_if_fail( stat, "recv failed" );
 
 }
 
 void recv_from_device( void* dest, const void* src, const size_t len, 
-  cudaStream_t& stream ) {
+  hipStream_t& stream ) {
 
-  auto stat = cudaMemcpyAsync( dest, src, len, cudaMemcpyDeviceToHost, stream );
+  auto stat = hipMemcpyAsync( dest, src, len, hipMemcpyDeviceToHost, stream );
   throw_if_fail( stat, "recv failed" );
 
 }
 
 void send_to_device( void* dest, const void* src, const size_t len ) {
 
-  auto stat = cudaMemcpy( dest, src, len, cudaMemcpyHostToDevice);
+  auto stat = hipMemcpy( dest, src, len, hipMemcpyHostToDevice);
   throw_if_fail( stat, "send failed" );
 
 }
 
 void send_to_device( void* dest, const void* src, const size_t len, 
-  cudaStream_t& stream ) {
+  hipStream_t& stream ) {
 
-  auto stat = cudaMemcpyAsync( dest, src, len, cudaMemcpyHostToDevice, stream);
+  auto stat = hipMemcpyAsync( dest, src, len, hipMemcpyHostToDevice, stream);
   throw_if_fail( stat, "send failed" );
 
 }
 
-void stream_sync( cudaStream_t& stream ) {
+void stream_sync( hipStream_t& stream ) {
 
-  auto stat = cudaStreamSynchronize( stream );
+  auto stat = hipStreamSynchronize( stream );
   throw_if_fail( stat, "sync failed" );
 
 }
