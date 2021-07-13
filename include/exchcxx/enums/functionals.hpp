@@ -9,6 +9,8 @@ enum class Functional {
   SVWN5,
   BLYP,
   B3LYP,
+  PBE,
+  revPBE,
   PBE0,
 };
 

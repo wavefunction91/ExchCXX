@@ -34,6 +34,7 @@ enum class Kernel {
   // GGA functionals
   PBE_X,
   PBE_C,
+  revPBE_X,
   B88,
   LYP,
 
