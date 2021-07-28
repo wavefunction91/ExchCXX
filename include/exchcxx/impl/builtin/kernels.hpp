@@ -17,6 +17,7 @@
 #include <exchcxx/impl/builtin/kernels/b88.hpp>
 #include <exchcxx/impl/builtin/kernels/lyp.hpp>
 #include <exchcxx/impl/builtin/kernels/pbe_x.hpp>
+#include <exchcxx/impl/builtin/kernels/rev_pbe_x.hpp>
 #include <exchcxx/impl/builtin/kernels/pbe_c.hpp>
 
 #include <exchcxx/impl/builtin/kernels/pbe0.hpp>

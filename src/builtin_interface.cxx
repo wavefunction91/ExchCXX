@@ -37,6 +37,8 @@ std::unique_ptr<BuiltinKernel>
     return std::make_unique<BuiltinLYP>( polar );
   else if( kern == Kernel::PBE_X )
     return std::make_unique<BuiltinPBE_X>( polar );
+  else if( kern == Kernel::revPBE_X )
+    return std::make_unique<BuiltinRevPBE_X>( polar );
   else if( kern == Kernel::PBE_C )
     return std::make_unique<BuiltinPBE_C>( polar );
 
