@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.17 FATAL_ERROR ) # Require CMake 3.17+
+cmake_minimum_required( VERSION 3.21 FATAL_ERROR ) # Require CMake 3.21+
 include(FetchContent)
 
 # Set up project definition + version information
@@ -47,6 +47,10 @@ endif()
 # Enable CUDA if desired
 if( EXCHCXX_ENABLE_CUDA )
   enable_language( CUDA )
+endif()
+
+if( EXCHCXX_ENABLE_HIP )
+  enable_language( HIP )
 endif()
 
 # Find SYCL if requested

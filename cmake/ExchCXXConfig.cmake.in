@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.17 FATAL_ERROR) # Require CMake 3.17+
+cmake_minimum_required( VERSION 3.21 FATAL_ERROR) # Require CMake 3.21+
 
 get_filename_component(ExchCXX_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
@@ -8,10 +8,15 @@ find_dependency( Libxc @Libxc_VERSION@ EXACT CONFIG )
 
 
 set( EXCHCXX_ENABLE_CUDA   @EXCHCXX_ENABLE_CUDA@   )
+set( EXCHCXX_ENABLE_HIP    @EXCHCXX_ENABLE_HIP@    )
 set( EXCHCXX_ENABLE_DEVICE @EXCHCXX_ENABLE_DEVICE@ )
 
 if( EXCHCXX_ENABLE_CUDA )
   find_dependency( CUDAToolkit @CUDAToolkit_VERSION@ EXACT )
+endif()
+
+if( EXCHCXX_ENABLE_HIP )
+  find_dependency( hip )
 endif()
 
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
