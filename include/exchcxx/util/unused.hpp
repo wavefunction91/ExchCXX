@@ -1,3 +1,4 @@
+#pragma once
 #include <utility>
 #include <exchcxx/util/exchcxx_macros.hpp>
 
