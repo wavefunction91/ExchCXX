@@ -23,8 +23,6 @@ std::vector< XCKernel > functional_factory(
 
   std::vector< XCKernel > kerns;
 
-  using Kernel     = Kernel;
-
   if( func == Functional::SVWN3 )
     kerns = { 
       XCKernel( backend, Kernel::SlaterExchange, polar ),
