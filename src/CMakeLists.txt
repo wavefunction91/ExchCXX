@@ -55,7 +55,7 @@ include( CheckCXXCompilerFlag )
 check_cxx_compiler_flag( -Wall              EXCHCXX_CXX_HAS_WALL              )
 check_cxx_compiler_flag( -Wextra            EXCHCXX_CXX_HAS_WEXTRA            )
 check_cxx_compiler_flag( -Wpedantic         EXCHCXX_CXX_HAS_WPEDANTIC         )
-check_cxx_compiler_flag( -Wnon-virtual_dtor EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
+check_cxx_compiler_flag( -Wnon-virtual-dtor EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
 check_cxx_compiler_flag( -Wshadow           EXCHCXX_CXX_HAS_WSHADOW           )
 
 if( EXCHCXX_CXX_HAS_WALL )
