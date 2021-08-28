@@ -51,10 +51,32 @@ target_include_directories( exchcxx
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
 
-target_compile_options( exchcxx 
-  PRIVATE 
-    $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic -Wnon-virtual-dtor>
-)
+include( CheckCXXCompilerFlag )
+check_cxx_compiler_flag( -Wall              EXCHCXX_CXX_HAS_WALL              )
+check_cxx_compiler_flag( -Wextra            EXCHCXX_CXX_HAS_WEXTRA            )
+check_cxx_compiler_flag( -Wpedantic         EXCHCXX_CXX_HAS_WPEDANTIC         )
+check_cxx_compiler_flag( -Wnon-virtual-dtor EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
+check_cxx_compiler_flag( -Wshadow           EXCHCXX_CXX_HAS_WSHADOW           )
+
+if( EXCHCXX_CXX_HAS_WALL )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wall> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WEXTRA )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wextra> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WPEDANTIC )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wpedantic> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wnon-virtual-dtor -Werror=non-virtual-dtor> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WSHADOW )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wshadow -Werror=shadow> )
+endif()
 
 # INSTALL rules
 add_library( ExchCXX::ExchCXX ALIAS exchcxx )
