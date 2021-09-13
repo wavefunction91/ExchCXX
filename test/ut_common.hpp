@@ -41,6 +41,7 @@ static constexpr std::array lda_kernels = {
 static constexpr std::array gga_kernels = {
   ExchCXX::Kernel::PBE_X,
   ExchCXX::Kernel::PBE_C,
+  ExchCXX::Kernel::revPBE_X,
   ExchCXX::Kernel::B88,
   ExchCXX::Kernel::LYP,
   ExchCXX::Kernel::B3LYP,
