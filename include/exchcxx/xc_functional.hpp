@@ -56,10 +56,10 @@ private:
 public:
 
   XCFunctional();
-  XCFunctional( const std::vector< XCKernel >& );
-  XCFunctional( const std::initializer_list< value_type >& list );
-  XCFunctional( const decltype(kernels_)& ks );
-  XCFunctional( decltype(kernels_)&& ks );
+  explicit XCFunctional( const std::vector< XCKernel >& );
+  explicit XCFunctional( const std::initializer_list< value_type >& list );
+  explicit XCFunctional( const std::vector<value_type>& ks );
+  explicit XCFunctional( std::vector<value_type>&& ks );
 
   XCFunctional( const Backend, const Functional, const Spin );
   XCFunctional( const Functional func, const Spin polar) :

@@ -21,6 +21,7 @@ struct BuiltinPZ81_MOD;
 struct BuiltinB88;
 struct BuiltinLYP;
 struct BuiltinPBE_X;
+struct BuiltinRevPBE_X;
 struct BuiltinPBE_C;
 
 struct BuiltinB3LYP;

@@ -92,6 +92,7 @@ b3lyp.eval_exc_vxc_device( npts, rho_device, gamma_device, exc_device, vrho_devi
 | Vosko-Wilk-Nusair III                | `XC_LDA_C_VWN_3`      | `Kernel::VWN3`           |    Y    |
 | Vosko-Wilk-Nusair V                  | `XC_LDA_C_VWN_RPA`    | `Kernel::VWN5`           |    Y    |
 | Perdew-Burke-Ernzerhof (Exchange)    | `XC_GGA_X_PBE`        | `Kernel::PBE_X`          |    Y    |
+| Perdew-Burke-Ernzerhof (Exchange;rev)| `XC_GGA_X_PBE_R`      | `Kernel::revPBE_X`       |    Y    |
 | Perdew-Burke-Ernzerhof (Correlation) | `XC_GGA_C_PBE`        | `Kernel::PBE_C`          |    Y    |
 | Perdew-Wang 91 (LDA)                 | `XC_LDA_C_PW`         | `Kernel::PW91_LDA`       |    Y    |
 | Perdew-Wang 91 (LDA) Modified        | `XC_LDA_C_PW_MOD`     | `Kernel::PW91_LDA_MOD`   |    Y    |

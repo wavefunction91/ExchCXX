@@ -33,6 +33,7 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   // GGA Functionals
   { Kernel::PBE_X,          XC_GGA_X_PBE        },
   { Kernel::PBE_C,          XC_GGA_C_PBE        },
+  { Kernel::revPBE_X,       XC_GGA_X_PBE_R      },
   { Kernel::B88,            XC_GGA_X_B88        },
   { Kernel::LYP,            XC_GGA_C_LYP        },
 

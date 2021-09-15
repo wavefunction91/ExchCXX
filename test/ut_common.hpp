@@ -41,6 +41,7 @@ static std::vector<ExchCXX::Kernel> lda_kernels = {
 static std::vector<ExchCXX::Kernel> gga_kernels = {
   ExchCXX::Kernel::PBE_X,
   ExchCXX::Kernel::PBE_C,
+  ExchCXX::Kernel::revPBE_X,
   ExchCXX::Kernel::B88,
   ExchCXX::Kernel::LYP,
   ExchCXX::Kernel::B3LYP,

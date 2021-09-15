@@ -402,7 +402,7 @@ class GenMetaData:
 
 
 
-libxc_prefix = '/ccs/home/dbwy/cscratch_chm136/xc_proxy_app_bin/external/libxc/src/maple2c/' 
+libxc_prefix = '/global/project/projectdirs/m1027/dbwy/ExchCXX/build/_deps/libxc-src/src/maple2c/' 
 kernel_prefix = './include/exchcxx/impl/builtin/kernels/'
 gen_table = {
 
@@ -511,6 +511,12 @@ gen_table = {
     libxc_prefix + 'gga_exc/gga_x_pbe.c', 
     kernel_prefix + 'pbe_x.hpp',
     'GGA', 1e-32, 0., {'kappa':'0.8040', 'mu':' 0.2195149727645171'} 
+    ),
+
+  'revPBE_X' : GenMetaData( 'BuiltinRevPBE_X', 
+    libxc_prefix + 'gga_exc/gga_x_pbe.c', 
+    kernel_prefix + 'rev_pbe_x.hpp',
+    'GGA', 1e-32, 0., {'kappa':'1.245', 'mu':' 0.2195149727645171'} 
     ),
 
   'PBE_C' : GenMetaData( 'BuiltinPBE_C', 

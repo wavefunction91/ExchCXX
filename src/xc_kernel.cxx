@@ -8,6 +8,7 @@ BidirectionalMap<std::string, Kernel> kernel_map{
     {{"SlaterExchange", Kernel::SlaterExchange},
      {"PBE_X", Kernel::PBE_X},
      {"PBE_C", Kernel::PBE_C},
+     {"revPBE_X", Kernel::revPBE_X},
      {"LYP", Kernel::LYP},
      {"B3LYP", Kernel::B3LYP},
      {"PBE0", Kernel::PBE0},
