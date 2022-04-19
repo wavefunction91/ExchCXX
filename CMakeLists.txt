@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.17 FATAL_ERROR ) # Require CMake 3.17+
+cmake_minimum_required( VERSION 3.21 FATAL_ERROR ) # Require CMake 3.21+
 include(FetchContent)
 
 # Set up project definition + version information
@@ -8,23 +8,26 @@ project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
 option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
+option( EXCHCXX_ENABLE_HIP       "Enable Device Code (HIP)"     OFF )
+option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"    OFF )
+option( BUILD_SHARED_LIBS        "Build Shared Libs"            OFF )
 
 
 # Decided if we're compiling device bindings
-if( EXCHCXX_ENABLE_CUDA )
+if( EXCHCXX_ENABLE_CUDA OR EXCHCXX_ENABLE_SYCL OR EXCHCXX_ENABLE_HIP )
   set( EXCHCXX_ENABLE_DEVICE TRUE CACHE BOOL "Enable Device Code" )
 endif()
 
-
-
-# Enable CUDA if desired
-if( EXCHCXX_ENABLE_CUDA )
-  enable_language( CUDA )
+# Die if both CUDA and SYCL are enabled
+if( EXCHCXX_ENABLE_CUDA AND EXCHCXX_ENABLE_SYCL )
+  message( FATAL_ERROR "CUDA / SYCL bindings are mutually exclusive" )
 endif()
-
-
-
-
+if( EXCHCXX_ENABLE_CUDA AND EXCHCXX_ENABLE_HIP )
+  message( FATAL_ERROR "CUDA / HIP bindings are mutually exclusive" )
+endif()
+if( EXCHCXX_ENABLE_SYCL AND EXCHCXX_ENABLE_HIP )
+  message( FATAL_ERROR "SYCL / HIP bindings are mutually exclusive" )
+endif()
 
 
 # Append local cmake directory to find CMAKE Modules
@@ -37,6 +40,23 @@ endif()
 # Populate BUILD_TESTING prior to dependencies to avoid clash
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
+endif()
+
+
+
+# Enable CUDA if desired
+if( EXCHCXX_ENABLE_CUDA )
+  enable_language( CUDA )
+endif()
+
+if( EXCHCXX_ENABLE_HIP )
+  enable_language( HIP )
+endif()
+
+# Find SYCL if requested
+if( EXCHCXX_ENABLE_SYCL )
+#  list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/oneAPI" )
+#  find_package( SYCL REQUIRED )
 endif()
 
 
@@ -82,7 +102,7 @@ else()
 
 endif()
         
-add_subdirectory( src  )
+add_subdirectory( src )
 
 # Testing
 if( NOT DEFINED EXCHCXX_ENABLE_TESTS )

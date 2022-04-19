@@ -11,7 +11,7 @@ set( EXCHCXX_SOURCES
      builtin_kernel.cxx 
 )
 
-add_library( exchcxx STATIC ${EXCHCXX_SOURCES} )
+add_library( exchcxx ${EXCHCXX_SOURCES} )
 
 # TARGET properties
 
@@ -25,22 +25,21 @@ configure_file(
 )
 target_compile_definitions( exchcxx PUBLIC "EXCHCXX_HAS_CONFIG_H=1" )
 
-if( EXCHCXX_ENABLE_DEVICE )
-
-  if( EXCHCXX_ENABLE_CUDA )
-    include( cuda/exchcxx_cuda.cmake )
-  endif()
 
 
-#  get_target_property( DEVICE_TARGET_DEPENDS exchcxx_device 
-#    INTERFACE_LINK_LIBRARIES ) 
-#
-#  target_link_libraries( exchcxx PUBLIC 
-#    $<TARGET_OBJECTS:exchcxx_device> 
-#    ${DEVICE_TARGET_DEPENDS}
-#  )
-
+# Device specific
+if( EXCHCXX_ENABLE_CUDA )
+  include( cuda/exchcxx_cuda.cmake )
 endif()
+
+if( EXCHCXX_ENABLE_HIP )
+  include( hip/exchcxx_hip.cmake )
+endif()
+
+if( EXCHCXX_ENABLE_SYCL )
+  include( sycl/exchcxx_sycl.cmake )
+endif()
+
 
 
 target_include_directories( exchcxx

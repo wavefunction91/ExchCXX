@@ -47,7 +47,7 @@ struct kernel_traits< BuiltinPBE_X > :
     constexpr double t18 = mu * t12 * t17;
 
 
-    const double t10 = cbrt( rho );
+    const double t10 = safe_math::cbrt( rho );
     const double t20 = rho * rho;
     const double t21 = t10 * t10;
     const double t23 = 0.1e1 / t21 / t20;
@@ -82,7 +82,7 @@ struct kernel_traits< BuiltinPBE_X > :
     constexpr double t43 = kappa * kappa;
 
 
-    const double t10 = cbrt( rho );
+    const double t10 = safe_math::cbrt( rho );
     const double t20 = rho * rho;
     const double t21 = t10 * t10;
     const double t23 = 0.1e1 / t21 / t20;
@@ -119,7 +119,7 @@ struct kernel_traits< BuiltinPBE_X > :
     constexpr double t14 = 0.1e1 / t13;
 
 
-    const double t7 = cbrt( rho );
+    const double t7 = safe_math::cbrt( rho );
     const double t16 = rho * rho;
     const double t17 = t7 * t7;
     const double t19 = 0.1e1 / t17 / t16;
@@ -151,7 +151,7 @@ struct kernel_traits< BuiltinPBE_X > :
     constexpr double t38 = t36 * t37;
 
 
-    const double t7 = cbrt( rho );
+    const double t7 = safe_math::cbrt( rho );
     const double t16 = rho * rho;
     const double t17 = t7 * t7;
     const double t19 = 0.1e1 / t17 / t16;
@@ -195,25 +195,25 @@ struct kernel_traits< BuiltinPBE_X > :
     const double t10 = 0.1e1 / t9;
     const double t11 = t8 * t10;
     const double t13 = 0.1e1 / 0.2e1 + t11 / 0.2e1;
-    const double t14 = cbrt( t13 );
+    const double t14 = safe_math::cbrt( t13 );
     const double t15 = t14 * t13;
-    const double t16 = cbrt( t9 );
+    const double t16 = safe_math::cbrt( t9 );
     const double t17 = t15 * t16;
     const double t24 = t23 * sigma_aa;
     const double t25 = rho_a * rho_a;
-    const double t26 = cbrt( rho_a );
+    const double t26 = safe_math::cbrt( rho_a );
     const double t27 = t26 * t26;
     const double t29 = 0.1e1 / t27 / t25;
     const double t33 = kappa + t19 * t24 * t29 / 0.24e2;
     const double t38 = 0.1e1 + kappa * ( 0.1e1 - kappa / t33 );
     const double t40 = t7 * t17 * t38;
     const double t42 = 0.1e1 / 0.2e1 - t11 / 0.2e1;
-    const double t43 = cbrt( t42 );
+    const double t43 = safe_math::cbrt( t42 );
     const double t44 = t43 * t42;
     const double t45 = t44 * t16;
     const double t46 = t23 * sigma_bb;
     const double t47 = rho_b * rho_b;
-    const double t48 = cbrt( rho_b );
+    const double t48 = safe_math::cbrt( rho_b );
     const double t49 = t48 * t48;
     const double t51 = 0.1e1 / t49 / t47;
     const double t55 = kappa + t19 * t46 * t51 / 0.24e2;
@@ -251,25 +251,25 @@ struct kernel_traits< BuiltinPBE_X > :
     const double t10 = 0.1e1 / t9;
     const double t11 = t8 * t10;
     const double t13 = 0.1e1 / 0.2e1 + t11 / 0.2e1;
-    const double t14 = cbrt( t13 );
+    const double t14 = safe_math::cbrt( t13 );
     const double t15 = t14 * t13;
-    const double t16 = cbrt( t9 );
+    const double t16 = safe_math::cbrt( t9 );
     const double t17 = t15 * t16;
     const double t24 = t23 * sigma_aa;
     const double t25 = rho_a * rho_a;
-    const double t26 = cbrt( rho_a );
+    const double t26 = safe_math::cbrt( rho_a );
     const double t27 = t26 * t26;
     const double t29 = 0.1e1 / t27 / t25;
     const double t33 = kappa + t19 * t24 * t29 / 0.24e2;
     const double t38 = 0.1e1 + kappa * ( 0.1e1 - kappa / t33 );
     const double t40 = t7 * t17 * t38;
     const double t42 = 0.1e1 / 0.2e1 - t11 / 0.2e1;
-    const double t43 = cbrt( t42 );
+    const double t43 = safe_math::cbrt( t42 );
     const double t44 = t43 * t42;
     const double t45 = t44 * t16;
     const double t46 = t23 * sigma_bb;
     const double t47 = rho_b * rho_b;
-    const double t48 = cbrt( rho_b );
+    const double t48 = safe_math::cbrt( rho_b );
     const double t49 = t48 * t48;
     const double t51 = 0.1e1 / t49 / t47;
     const double t55 = kappa + t19 * t46 * t51 / 0.24e2;

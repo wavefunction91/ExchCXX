@@ -5,14 +5,14 @@
 
 __global__ void scal_kernel( const int N, const double fact, const double* X_device, double* Y_device ) {
 
-  int tid = blockIdx.x * blockDim.x + threadIdx.x;
+  int tid = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
   if( tid < N ) Y_device[tid] = X_device[tid] * fact;
 
 }
 
 __global__ void add_scal_kernel( const int N, const double fact, const double* X_device, double* Y_device ) {
 
-  int tid = blockIdx.x * blockDim.x + threadIdx.x;
+  int tid = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
   if( tid < N ) Y_device[tid] += X_device[tid] * fact;
 
 }
@@ -20,44 +20,44 @@ __global__ void add_scal_kernel( const int N, const double fact, const double* X
 void scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
   int threads = 1024;
   int blocks  = ExchCXX::util::div_ceil(N,1024);
-  scal_kernel<<< blocks, threads >>>( N, fact, X_device, Y_device );
+  hipLaunchKernelGGL(scal_kernel, dim3(blocks), dim3(threads ), 0, 0,  N, fact, X_device, Y_device );
 }
 
-void scal_device( const int N, const double fact, const double* X_device, double* Y_device, cudaStream_t& stream ) {
+void scal_device( const int N, const double fact, const double* X_device, double* Y_device, hipStream_t& stream ) {
   int threads = 1024;
   int blocks  = ExchCXX::util::div_ceil(N,1024);
-  scal_kernel<<< blocks, threads, 0, stream >>>( N, fact, X_device, Y_device );
+  hipLaunchKernelGGL(scal_kernel, dim3(blocks), dim3(threads), 0, stream ,  N, fact, X_device, Y_device );
 }
 
 void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
   int threads = 1024;
   int blocks  = ExchCXX::util::div_ceil(N,1024);
-  add_scal_kernel<<< blocks, threads >>>( N, fact, X_device, Y_device );
+  hipLaunchKernelGGL(add_scal_kernel, dim3(blocks), dim3(threads ), 0, 0,  N, fact, X_device, Y_device );
 }
 
-void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, cudaStream_t& stream ) {
+void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, hipStream_t& stream ) {
   int threads = 1024;
   int blocks  = ExchCXX::util::div_ceil(N,1024);
-  add_scal_kernel<<< blocks, threads, 0, stream >>>( N, fact, X_device, Y_device );
+  hipLaunchKernelGGL(add_scal_kernel, dim3(blocks), dim3(threads), 0, stream ,  N, fact, X_device, Y_device );
 }
 
 
 template <typename T = double>
-T* safe_cuda_malloc( size_t N ) {
+T* safe_hip_malloc( size_t N ) {
 
   T* ptr = nullptr;
-  auto stat = cudaMalloc( &ptr, N*sizeof(T) );
-  if( stat != cudaSuccess ) throw std::runtime_error("Alloc Failed");
+  auto stat = hipMalloc( &ptr, N*sizeof(T) );
+  if( stat != hipSuccess ) throw std::runtime_error("Alloc Failed");
 
   return ptr;
 
 }
 
 template <typename T>
-void safe_zero( size_t len, T* ptr, cudaStream_t stream ) {
-  auto stat = cudaMemsetAsync( ptr, 0, len*sizeof(T), stream );
-  if( stat != cudaSuccess ) 
-    throw std::runtime_error("Memset Failed : " + std::string(cudaGetErrorString( stat )));
+void safe_zero( size_t len, T* ptr, hipStream_t stream ) {
+  auto stat = hipMemsetAsync( ptr, 0, len*sizeof(T), stream );
+  if( stat != hipSuccess ) 
+    throw std::runtime_error("Memset Failed : " + std::string(hipGetErrorString( stat )));
 }
 
 namespace ExchCXX {
@@ -76,7 +76,7 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() ) 
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
+    eps_scr = safe_hip_malloc( len_exc_buffer );
 
   safe_zero( len_exc_buffer, eps, stream );
 
@@ -103,7 +103,7 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
   
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
+  if( eps_scr ) hipFree( eps_scr );
 
 }
 
@@ -118,8 +118,8 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   double* eps_scr(nullptr), *vxc_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
-    vxc_scr = safe_cuda_malloc( len_vxc_buffer );
+    eps_scr = safe_hip_malloc( len_exc_buffer );
+    vxc_scr = safe_hip_malloc( len_vxc_buffer );
   }
 
   safe_zero( len_exc_buffer, eps, stream );
@@ -155,8 +155,8 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
-  if( vxc_scr ) cudaFree( vxc_scr );
+  if( eps_scr ) hipFree( eps_scr );
+  if( vxc_scr ) hipFree( vxc_scr );
 
 }
 
@@ -173,7 +173,7 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() ) 
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
+    eps_scr = safe_hip_malloc( len_exc_buffer );
 
   safe_zero( len_exc_buffer, eps, stream );
 
@@ -207,7 +207,7 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     }
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
+  if( eps_scr ) hipFree( eps_scr );
 
 }
 
@@ -223,9 +223,9 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr    = safe_cuda_malloc( len_exc_buffer );
-    vrho_scr   = safe_cuda_malloc( len_vrho_buffer );
-    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer );
+    eps_scr    = safe_hip_malloc( len_exc_buffer );
+    vrho_scr   = safe_hip_malloc( len_vrho_buffer );
+    vsigma_scr = safe_hip_malloc( len_vsigma_buffer );
   }
 
   safe_zero( len_exc_buffer,    eps,    stream );
@@ -277,9 +277,9 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     }
   }
 
-  if( eps_scr )    cudaFree( eps_scr );
-  if( vrho_scr )   cudaFree( vrho_scr );
-  if( vsigma_scr ) cudaFree( vsigma_scr );
+  if( eps_scr )    hipFree( eps_scr );
+  if( vrho_scr )   hipFree( vrho_scr );
+  if( vsigma_scr ) hipFree( vsigma_scr );
 
 }
 
@@ -297,7 +297,7 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() ) 
-    eps_scr = safe_cuda_malloc( len_exc_buffer );
+    eps_scr = safe_hip_malloc( len_exc_buffer );
 
   safe_zero( len_exc_buffer,    eps,    stream );
 
@@ -337,7 +337,7 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     }
   }
 
-  if( eps_scr ) cudaFree( eps_scr );
+  if( eps_scr ) hipFree( eps_scr );
 
 }
 
@@ -356,11 +356,11 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr), 
     *vlapl_scr(nullptr), *vtau_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr    = safe_cuda_malloc( len_exc_buffer );
-    vrho_scr   = safe_cuda_malloc( len_vrho_buffer );
-    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer );
-    vlapl_scr  = safe_cuda_malloc( len_vlapl_buffer );
-    vtau_scr   = safe_cuda_malloc( len_vtau_buffer );
+    eps_scr    = safe_hip_malloc( len_exc_buffer );
+    vrho_scr   = safe_hip_malloc( len_vrho_buffer );
+    vsigma_scr = safe_hip_malloc( len_vsigma_buffer );
+    vlapl_scr  = safe_hip_malloc( len_vlapl_buffer );
+    vtau_scr   = safe_hip_malloc( len_vtau_buffer );
   }
 
   safe_zero( len_exc_buffer, eps, stream );
@@ -436,11 +436,11 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     }
   }
 
-  if( eps_scr )    cudaFree( eps_scr );
-  if( vrho_scr )   cudaFree( vrho_scr );
-  if( vsigma_scr ) cudaFree( vsigma_scr );
-  if( vlapl_scr )  cudaFree( vlapl_scr );
-  if( vtau_scr )   cudaFree( vtau_scr );
+  if( eps_scr )    hipFree( eps_scr );
+  if( vrho_scr )   hipFree( vrho_scr );
+  if( vsigma_scr ) hipFree( vsigma_scr );
+  if( vlapl_scr )  hipFree( vlapl_scr );
+  if( vtau_scr )   hipFree( vtau_scr );
 }
 
 }

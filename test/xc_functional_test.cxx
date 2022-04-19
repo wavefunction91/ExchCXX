@@ -110,8 +110,8 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 
     XCFunctional func(
       {
-        {1., XCKernel(Kernel::SlaterExchange, Spin::Unpolarized)},
-        {1., XCKernel(Kernel::VWN3,           Spin::Unpolarized)}
+        std::pair<double,XCKernel>{1., XCKernel(Kernel::SlaterExchange, Spin::Unpolarized)},
+        std::pair<double,XCKernel>{1., XCKernel(Kernel::VWN3,           Spin::Unpolarized)}
       }
     );
 
@@ -133,7 +133,7 @@ TEST_CASE( "XC Functional Constructors", "[xc-misc]" ) {
 template <typename... Args>
 void check_meta( Backend backend, Spin polar, Args&&... args ) {
 
-  std::vector kerns = { XCKernel(backend, args, polar)... };
+  std::vector<XCKernel> kerns = { XCKernel(backend, args, polar)... };
 
   XCFunctional func( kerns );
 
@@ -275,7 +275,10 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
   std::vector< std::vector<double> >
     eps_refs, vrho_refs, vsigma_refs;
 
-  for( auto [f, kern] : kern_pairs ) {
+  for( auto p : kern_pairs ) {
+
+    XCKernel& kern = p.second;
+    //double    f    = p.first;
 
     eps_refs.emplace_back( kern.exc_buffer_len(npts) );
     vrho_refs.emplace_back( kern.vrho_buffer_len(npts) );

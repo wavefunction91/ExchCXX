@@ -59,7 +59,7 @@ std::vector< XCKernel > functional_factory(
       XCKernel( backend, Kernel::PBE0, polar )
     };
   else {
-    assert( false && "FUNCTIONAL NYS" );
+    EXCHCXX_BOOL_CHECK( "Functional NYI Through Builtin Backend", false );
   }
 
 
@@ -114,7 +114,7 @@ void _addscal( size_t len, double alpha, double* v, const double* w ) {
 LDA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   throw_if_not_sane();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
 
   const size_t len_exc_buffer = exc_buffer_len(N);
 
@@ -151,7 +151,7 @@ LDA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   throw_if_not_sane();
-  assert( is_lda() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
 
   const size_t len_exc_buffer = exc_buffer_len(N);
   const size_t len_vxc_buffer = vrho_buffer_len(N);
@@ -204,7 +204,7 @@ LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 GGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   throw_if_not_sane();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
 
   const size_t len_exc_buffer = exc_buffer_len(N);
 
@@ -252,7 +252,7 @@ GGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   throw_if_not_sane();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
 
   const size_t len_exc_buffer    = exc_buffer_len(N);
   const size_t len_vrho_buffer   = vrho_buffer_len(N);
@@ -327,7 +327,7 @@ GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 MGGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 
   throw_if_not_sane();
-  assert( is_mgga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
 
   const size_t len_exc_buffer = exc_buffer_len(N);
 
@@ -381,7 +381,7 @@ MGGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
 MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
 
   throw_if_not_sane();
-  assert( is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
 
   const size_t len_exc_buffer    = exc_buffer_len(N);
   const size_t len_vrho_buffer   = vrho_buffer_len(N);

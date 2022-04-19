@@ -41,7 +41,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
     constexpr double t10 = t7 * t9;
 
 
-    const double t11 = cbrt( rho );
+    const double t11 = safe_math::cbrt( rho );
     const double t13 = t5 * t10 * t11;
 
 
@@ -63,7 +63,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
     constexpr double t10 = t7 * t9;
 
 
-    const double t11 = cbrt( rho );
+    const double t11 = safe_math::cbrt( rho );
     const double t13 = t5 * t10 * t11;
 
 
@@ -84,7 +84,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
     constexpr double t7 = t4 * t6;
 
 
-    const double t8 = cbrt( rho );
+    const double t8 = safe_math::cbrt( rho );
     const double t10 = t2 * t7 * t8;
 
 
@@ -104,7 +104,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
     constexpr double t7 = t4 * t6;
 
 
-    const double t8 = cbrt( rho );
+    const double t8 = safe_math::cbrt( rho );
     const double t10 = t2 * t7 * t8;
 
 
@@ -132,11 +132,11 @@ struct kernel_traits< BuiltinSlaterExchange > :
     const double t13 = 0.1e1 / t12;
     const double t14 = t11 * t13;
     const double t15 = 0.1e1 + t14;
-    const double t16 = cbrt( t15 );
+    const double t16 = safe_math::cbrt( t15 );
     const double t18 = 0.1e1 - t14;
-    const double t19 = cbrt( t18 );
+    const double t19 = safe_math::cbrt( t18 );
     const double t21 = t16 * t15 + t19 * t18;
-    const double t22 = cbrt( t12 );
+    const double t22 = safe_math::cbrt( t12 );
     const double t25 = t5 * t10 * t21 * t22;
 
 
@@ -164,11 +164,11 @@ struct kernel_traits< BuiltinSlaterExchange > :
     const double t13 = 0.1e1 / t12;
     const double t14 = t11 * t13;
     const double t15 = 0.1e1 + t14;
-    const double t16 = cbrt( t15 );
+    const double t16 = safe_math::cbrt( t15 );
     const double t18 = 0.1e1 - t14;
-    const double t19 = cbrt( t18 );
+    const double t19 = safe_math::cbrt( t18 );
     const double t21 = t16 * t15 + t19 * t18;
-    const double t22 = cbrt( t12 );
+    const double t22 = safe_math::cbrt( t12 );
     const double t25 = t5 * t10 * t21 * t22;
     const double t27 = t25 / 0.8e1;
     const double t30 = t22 * t12 * alpha * t1;
