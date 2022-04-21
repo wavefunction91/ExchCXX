@@ -16,6 +16,7 @@ endif()
 message( STATUS "Pulling GIT_REVISION = ${GIT_REVISION}" )
 
 include( FetchContent )
+set( FETCHCONTENT_SOURCE_DIR_EXCHCXX ${CMAKE_CURRENT_LIST_DIR}/../../.. )
 FetchContent_Declare( exchcxx
   GIT_REPOSITORY https://github.com/wavefunction91/exchcxx.git
   GIT_TAG        ${GIT_REVISION}
