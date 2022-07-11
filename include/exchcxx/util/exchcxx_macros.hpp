@@ -25,10 +25,10 @@
 
 #ifdef EXCHCXX_ENABLE_SYCL
 
-  #define DEVICE_PARAMS cl::sycl::queue* queue
+  #define DEVICE_PARAMS sycl::queue* queue
   #define DEVICE_PARAMS_NOTYPE queue
 
-  #define SYCL_KERNEL_PARAMS cl::sycl::id<1> idx
+  #define SYCL_KERNEL_PARAMS sycl::id<1> idx
 
 #endif
 

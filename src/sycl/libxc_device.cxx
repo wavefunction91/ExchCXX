@@ -7,11 +7,11 @@
 
 
 void recv_from_device( void* dest, const void* src, const size_t len, 
-  cl::sycl::queue* queue ) {
+  sycl::queue* queue ) {
 
   try {
     queue->memcpy( dest, src, len );
-  } catch( cl::sycl::exception const &ex ) { 
+  } catch( sycl::exception const &ex ) { 
     throw( std::runtime_error( "recv failed + " + std::string(ex.what()) ) ); 
   }
 
@@ -19,17 +19,17 @@ void recv_from_device( void* dest, const void* src, const size_t len,
 
 
 void send_to_device( void* dest, const void* src, const size_t len, 
-  cl::sycl::queue* queue ) {
+  sycl::queue* queue ) {
 
   try {
     queue->memcpy( dest, src, len );
-  } catch( cl::sycl::exception const &ex ) { 
+  } catch( sycl::exception const &ex ) { 
     throw( std::runtime_error( "send failed + " + std::string(ex.what()) ) ); 
   }
 
 }
 
-void queue_sync( cl::sycl::queue* queue ) {
+void queue_sync( sycl::queue* queue ) {
 
   queue->wait_and_throw();
 
@@ -37,7 +37,7 @@ void queue_sync( cl::sycl::queue* queue ) {
 
 
 template <typename T>
-using sycl_host_allocator = cl::sycl::usm_allocator<T, cl::sycl::usm::alloc::host>;
+using sycl_host_allocator = sycl::usm_allocator<T, sycl::usm::alloc::host>;
 
 template <typename T>
 using sycl_host_vector = std::vector<T, sycl_host_allocator<T>>;

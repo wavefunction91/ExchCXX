@@ -1,14 +1,14 @@
 
 
 
-set( EXCHCXX_SOURCES 
-     xc_kernel.cxx 
-     xc_functional.cxx 
-     libxc.cxx 
-     boilerplate.cxx 
-     builtin.cxx 
-     builtin_interface.cxx 
-     builtin_kernel.cxx 
+set( EXCHCXX_SOURCES
+     xc_kernel.cxx
+     xc_functional.cxx
+     libxc.cxx
+     boilerplate.cxx
+     builtin.cxx
+     builtin_interface.cxx
+     builtin_kernel.cxx
 )
 
 add_library( exchcxx ${EXCHCXX_SOURCES} )
@@ -37,6 +37,7 @@ if( EXCHCXX_ENABLE_HIP )
 endif()
 
 if( EXCHCXX_ENABLE_SYCL )
+  target_compile_features( exchcxx PUBLIC cxx_std_17 )
   include( sycl/exchcxx_sycl.cmake )
 endif()
 
@@ -128,9 +129,9 @@ configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/ExchCXXConfig.cmake.in
 )
 
 #Install the config, configversion and custom find modules
-#install(DIRECTORY 
-#  ${PROJECT_SOURCE_DIR}/cmake/ 
-#  DESTINATION ${INSTALL_CONFIGDIR} 
+#install(DIRECTORY
+#  ${PROJECT_SOURCE_DIR}/cmake/
+#  DESTINATION ${INSTALL_CONFIGDIR}
 #  FILES_MATCHING PATTERN "*.cmake"
 #)
 

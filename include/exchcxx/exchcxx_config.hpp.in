@@ -15,5 +15,5 @@
 #endif
 
 #ifdef EXCHCXX_ENABLE_SYCL
-  #include <CL/sycl.hpp>
+  #include <sycl/sycl.hpp>
 #endif

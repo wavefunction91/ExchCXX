@@ -182,7 +182,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
     const auto&   rho      = ref_vals.rho;
     const auto&   exc_ref  = ref_vals.exc;
     const auto&   vrho_ref = ref_vals.vrho;
-    
+
 
     // Allocate buffers
     std::vector<double> exc( func.exc_buffer_len( npts ), fill_val_e );
@@ -1679,39 +1679,39 @@ TEST_CASE( "HIP Interfaces", "[xc-device]" ) {
 #ifdef EXCHCXX_ENABLE_SYCL
 
 template <typename T>
-T* safe_sycl_malloc( size_t n, cl::sycl::queue& q ) {
+T* safe_sycl_malloc( size_t n, sycl::queue& q ) {
   if( n ) {
-    T* ptr = cl::sycl::malloc_device<T>(n, q);
+    T* ptr = sycl::malloc_device<T>(n, q);
     return ptr;
   } else return nullptr;
 }
 
 template <typename T>
-void safe_sycl_cpy( T* dest, const T* src, size_t len, cl::sycl::queue& q ) {
+void safe_sycl_cpy( T* dest, const T* src, size_t len, sycl::queue& q ) {
 
     q.memcpy( (void*)dest, (const void*)src, len*sizeof(T) );
 
 }
 
-void sycl_free_all(cl::sycl::queue&){ }
+void sycl_free_all(sycl::queue&){ }
 template <typename T, typename... Args>
-void sycl_free_all( cl::sycl::queue& q, T* ptr, Args&&... args ) {
+void sycl_free_all( sycl::queue& q, T* ptr, Args&&... args ) {
 
   if( ptr ) {
-    cl::sycl::free( (void*)ptr, q );
+    sycl::free( (void*)ptr, q );
   }
 
   sycl_free_all( q, std::forward<Args>(args)... );
 
 }
 
-void device_synchronize( cl::sycl::queue& q ) {
+void device_synchronize( sycl::queue& q ) {
 q.wait_and_throw();
 }
 
 
 void test_sycl_interface( TestInterface interface, EvalType evaltype,
-                          Backend backend, Kernel kern, Spin polar, cl::sycl::queue& q ) {
+                          Backend backend, Kernel kern, Spin polar, sycl::queue& q ) {
 
   auto [npts_lda, ref_rho]   = load_reference_density( polar );
   auto [npts_gga, ref_sigma] = load_reference_sigma  ( polar );
@@ -1865,9 +1865,9 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 
   if( interface == TestInterface::EXC_VXC_INC ) {
 
-    for( auto i = 0ul; i < len_vrho_buffer; ++i ) 
+    for( auto i = 0ul; i < len_vrho_buffer; ++i )
       CHECK( vrho[i] == Approx(fill_val_vr + alpha * vrho_ref[i]) );
-    for( auto i = 0ul; i < len_vsigma_buffer; ++i ) 
+    for( auto i = 0ul; i < len_vsigma_buffer; ++i )
       CHECK( vsigma[i] == Approx(fill_val_vs + alpha * vsigma_ref[i]) );
 
   } else if(interface == TestInterface::EXC_VXC)  {
@@ -1891,27 +1891,27 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 
 #if 0
 struct SYCLTestFeature {
-  cl::sycl::queue q;
-  SYCLTestFeature() : 
-    q( cl::sycl::gpu_selector{}, 
-       cl::sycl::property_list{cl::sycl::property::queue::in_order{}} ) { }
+  sycl::queue q;
+  SYCLTestFeature() :
+    q( sycl::gpu_selector{},
+       sycl::property_list{sycl::property::queue::in_order{}} ) { }
 };
 #else
 struct SYCLTestFeature {
-  static cl::sycl::queue q;
+  static sycl::queue q;
 
-  SYCLTestFeature() {} 
+  SYCLTestFeature() {}
 };
 
-cl::sycl::queue SYCLTestFeature::q( 
-       cl::sycl::gpu_selector{}, 
-       cl::sycl::property_list{cl::sycl::property::queue::in_order{}} );
+sycl::queue SYCLTestFeature::q(
+       sycl::gpu_selector{},
+       sycl::property_list{sycl::property::queue::in_order{}} );
 #endif
 
 TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
 
   std::cout << "Running on "
-            << q.get_device().get_info<cl::sycl::info::device::name>()
+            << q.get_device().get_info<sycl::info::device::name>()
             << "\n";
 
   SECTION( "Libxc Functionals" ) {
@@ -2222,7 +2222,7 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
         test_sycl_interface( TestInterface::EXC_INC, EvalType::Zero,
           Backend::builtin, kern, Spin::Polarized, q );
     }
-     
+
     SECTION("EXC + VXC + INC Zero: Polarized") {
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,

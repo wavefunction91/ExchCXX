@@ -20,7 +20,10 @@ endif()
 add_library( catch2_main STATIC ut_main.cxx)
 target_link_libraries( catch2_main PUBLIC Catch2::Catch2 )
 
+set(SYCL_FLAGS -fsycl -fsycl-unnamed-lambda -fsycl-device-code-split=per_kernel) # -fsycl-targets=spir64_gen -Xsycl-target-backend "-device 12.1.0,12.4.0")
+
 add_executable( xc_kernel_test xc_kernel_test.cxx reference_values.cxx )
+target_compile_options( xc_kernel_test PRIVATE $<$<COMPILE_LANGUAGE:CXX>: ${SYCL_FLAGS} > )
 target_link_libraries( xc_kernel_test PUBLIC exchcxx catch2_main )
 target_compile_features( xc_kernel_test PRIVATE cxx_std_17 )
 

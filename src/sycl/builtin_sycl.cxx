@@ -12,7 +12,7 @@ inline LDA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_unpolar_kernel ) {
 
   if( idx < N ) {
 
-    const double rho_use = cl::sycl::max( rho[idx], 0. );
+    const double rho_use = sycl::max( rho[idx], 0. );
     traits::eval_exc_unpolar( rho_use, eps[idx] );
 
   }
@@ -28,8 +28,8 @@ inline LDA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_polar_kernel ) {
 
     auto rho_i = rho + 2*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
 
     traits::eval_exc_polar( rho_a_use, rho_b_use, eps[idx] );
 
@@ -44,7 +44,7 @@ inline LDA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_unpolar_ker
 
   if( idx < N ) {
 
-    const double rho_use = cl::sycl::max( rho[idx], 0. );
+    const double rho_use = sycl::max( rho[idx], 0. );
     traits::eval_exc_vxc_unpolar( rho_use, eps[idx], vxc[idx] );
 
   }
@@ -61,8 +61,8 @@ inline LDA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_polar_kerne
     auto rho_i = rho + 2*idx;
     auto vxc_i = vxc + 2*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
 
     traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, eps[idx],
       vxc_i[0], vxc_i[1] );
@@ -79,7 +79,7 @@ inline LDA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_unpolar_ker
   double e;
   if( idx < N ) {
 
-    const double rho_use = cl::sycl::max( rho[idx], 0. );
+    const double rho_use = sycl::max( rho[idx], 0. );
     traits::eval_exc_unpolar( rho_use, e );
     eps[idx] += scal_fact * e;
 
@@ -96,8 +96,8 @@ inline LDA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_polar_kerne
 
     auto rho_i = rho + 2*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
 
     double e;
     traits::eval_exc_polar( rho_a_use, rho_b_use, e );
@@ -116,7 +116,7 @@ inline LDA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_unp
   double e,v;
   if( idx < N ) {
 
-    const double rho_use = cl::sycl::max( rho[idx], 0. );
+    const double rho_use = sycl::max( rho[idx], 0. );
     traits::eval_exc_vxc_unpolar( rho_use, e, v );
     eps[idx] += scal_fact * e;
     vxc[idx] += scal_fact * v;
@@ -135,8 +135,8 @@ inline LDA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_pol
     auto rho_i = rho + 2*idx;
     auto vxc_i = vxc + 2*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
 
     double v_a, v_b, e;
     traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, e, v_a, v_b);
@@ -155,8 +155,8 @@ inline GGA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_unpolar_kernel ) {
 
   if( idx < N ) {
 
-    const double rho_use   = cl::sycl::max( rho[idx],   0.    );
-    const double sigma_use = cl::sycl::max( sigma[idx], 1e-40 );
+    const double rho_use   = sycl::max( rho[idx],   0.    );
+    const double sigma_use = sycl::max( sigma[idx], 1e-40 );
     traits::eval_exc_unpolar( rho_use, sigma_use, eps[idx] );
 
   }
@@ -173,11 +173,11 @@ inline GGA_EXC_GENERATOR_SYCL_KERNEL( device_eval_exc_helper_polar_kernel ) {
     auto* rho_i   = rho   + 2*idx;
     auto* sigma_i = sigma + 3*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
-    const double sigma_aa_use = cl::sycl::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = cl::sycl::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = cl::sycl::max(
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
+    const double sigma_aa_use = sycl::max( sigma_i[0], 1e-40 );
+    const double sigma_bb_use = sycl::max( sigma_i[2], 1e-40 );
+    const double sigma_ab_use = sycl::max(
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
@@ -195,8 +195,8 @@ inline GGA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_unpolar_ker
 
   if( idx < N ) {
 
-    const double rho_use   = cl::sycl::max( rho[idx],   0.    );
-    const double sigma_use = cl::sycl::max( sigma[idx], 1e-40 );
+    const double rho_use   = sycl::max( rho[idx],   0.    );
+    const double sigma_use = sycl::max( sigma[idx], 1e-40 );
     traits::eval_exc_vxc_unpolar( rho_use, sigma_use, eps[idx],
       vrho[idx], vsigma[idx] );
 
@@ -216,11 +216,11 @@ inline GGA_EXC_VXC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_helper_polar_kerne
     auto* vrho_i   = vrho   + 2*idx;
     auto* vsigma_i = vsigma + 3*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
-    const double sigma_aa_use = cl::sycl::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = cl::sycl::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = cl::sycl::max(
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
+    const double sigma_aa_use = sycl::max( sigma_i[0], 1e-40 );
+    const double sigma_bb_use = sycl::max( sigma_i[2], 1e-40 );
+    const double sigma_ab_use = sycl::max(
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
@@ -242,8 +242,8 @@ inline GGA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_unpolar_ker
   double e;
   if( idx < N ) {
 
-    const double rho_use   = cl::sycl::max( rho[idx],   0.    );
-    const double sigma_use = cl::sycl::max( sigma[idx], 1e-40 );
+    const double rho_use   = sycl::max( rho[idx],   0.    );
+    const double sigma_use = sycl::max( sigma[idx], 1e-40 );
 
     traits::eval_exc_unpolar( rho_use, sigma_use, e );
     eps[idx] += scal_fact * e;
@@ -263,11 +263,11 @@ inline GGA_EXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_inc_helper_polar_kerne
     auto* rho_i   = rho   + 2*idx;
     auto* sigma_i = sigma + 3*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
-    const double sigma_aa_use = cl::sycl::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = cl::sycl::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = cl::sycl::max(
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
+    const double sigma_aa_use = sycl::max( sigma_i[0], 1e-40 );
+    const double sigma_bb_use = sycl::max( sigma_i[2], 1e-40 );
+    const double sigma_ab_use = sycl::max(
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
@@ -289,8 +289,8 @@ inline GGA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_unp
   double e, vr, vs;
   if( idx < N ) {
 
-    const double rho_use   = cl::sycl::max( rho[idx],   0.    );
-    const double sigma_use = cl::sycl::max( sigma[idx], 1e-40 );
+    const double rho_use   = sycl::max( rho[idx],   0.    );
+    const double sigma_use = sycl::max( sigma[idx], 1e-40 );
 
     traits::eval_exc_vxc_unpolar( rho_use, sigma_use, e, vr, vs );
     eps[idx]    += scal_fact * e;
@@ -313,11 +313,11 @@ inline GGA_EXC_VXC_INC_GENERATOR_SYCL_KERNEL( device_eval_exc_vxc_inc_helper_pol
     auto* vrho_i   = vrho   + 2*idx;
     auto* vsigma_i = vsigma + 3*idx;
 
-    const double rho_a_use = cl::sycl::max( rho_i[0], 0. );
-    const double rho_b_use = cl::sycl::max( rho_i[1], 0. );
-    const double sigma_aa_use = cl::sycl::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = cl::sycl::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = cl::sycl::max(
+    const double rho_a_use = sycl::max( rho_i[0], 0. );
+    const double rho_b_use = sycl::max( rho_i[1], 0. );
+    const double sigma_aa_use = sycl::max( sigma_i[0], 1e-40 );
+    const double sigma_bb_use = sycl::max( sigma_i[2], 1e-40 );
+    const double sigma_ab_use = sycl::max(
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
@@ -372,16 +372,16 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
   std::cout << "LDA EXC UNPOLAR" << std::endl;
 
   try {
-      queue->submit([&](cl::sycl::handler& cgh) {
-        cgh.parallel_for<lda_eval_exc_unpolar<KernelType>>( cl::sycl::range<1>(N),
-          [=](cl::sycl::id<1> idx) {
+      queue->submit([&](sycl::handler& cgh) {
+        cgh.parallel_for<lda_eval_exc_unpolar<KernelType>>( sycl::range<1>(N),
+          [=](sycl::id<1> idx) {
             device_eval_exc_helper_unpolar_kernel<KernelType>(
                 N, rho, eps, idx
                 );
           });
       });
   }
-  catch( cl::sycl::exception const& ex ) {
+  catch( sycl::exception const& ex ) {
       std::cout << "SYCL: " << ex.what() << std::endl;
     throw;
   }
@@ -391,10 +391,10 @@ template <typename KernelType>
 LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   std::cout << "LDA EXC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<lda_eval_exc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<lda_eval_exc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_helper_polar_kernel<KernelType>(
           N, rho, eps, idx
         );
@@ -408,10 +408,10 @@ template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   std::cout << "LDA EXC VXC UNPOLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<lda_eval_exc_vxc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<lda_eval_exc_vxc_unpolar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
           N, rho, eps, vxc, idx
         );
@@ -425,10 +425,10 @@ template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   std::cout << "LDA EXC VXC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<lda_eval_exc_vxc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<lda_eval_exc_vxc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
           N, rho, eps, vxc, idx
         );
@@ -450,10 +450,10 @@ template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   std::cout << "LDA EXC INC UNPOLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<lda_eval_exc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<lda_eval_exc_inc_unpolar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, eps, idx
         );
@@ -467,10 +467,10 @@ template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   std::cout << "LDA EXC INC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<lda_eval_exc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<lda_eval_exc_inc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, eps, idx
         );
@@ -484,10 +484,10 @@ template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   std::cout << "LDA EXC VXC INC UNPOLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<lda_eval_exc_vxc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<lda_eval_exc_vxc_inc_unpolar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, eps, vxc, idx
         );
@@ -501,10 +501,10 @@ template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   std::cout << "LDA EXC VXC INC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<lda_eval_exc_vxc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<lda_eval_exc_vxc_inc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, eps, vxc, idx
         );
@@ -527,10 +527,10 @@ template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
   std::cout << "GGA EXC UNPOLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_unpolar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_helper_unpolar_kernel<KernelType>(
           N, rho, sigma, eps, idx
         );
@@ -545,10 +545,10 @@ template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
   std::cout << "GGA EXC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_helper_polar_kernel<KernelType>(
           N, rho, sigma, eps, idx
         );
@@ -562,10 +562,10 @@ template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
   std::cout << "GGA EXC VXC UNPOLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_vxc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_vxc_unpolar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
           N, rho, sigma, eps, vrho, vsigma, idx
         );
@@ -579,10 +579,10 @@ template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
   std::cout << "GGA EXC VXC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_vxc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_vxc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
           N, rho, sigma, eps, vrho, vsigma, idx
         );
@@ -604,10 +604,10 @@ template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
   std::cout << "GGA EXC INC UNPOLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_inc_unpolar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, idx
         );
@@ -621,10 +621,10 @@ template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
   std::cout << "GGA EXC INC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_inc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, idx
         );
@@ -638,10 +638,10 @@ template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
   std::cout << "GGA EXC VXC INC UNPOLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_vxc_inc_unpolar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_vxc_inc_unpolar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, vrho, vsigma, idx
         );
@@ -655,10 +655,10 @@ template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
   std::cout << "GGA EXC VXC INC POLAR" << std::endl;
-  queue->submit( [&](cl::sycl::handler &cgh) {
+  queue->submit( [&](sycl::handler &cgh) {
 
-    cgh.parallel_for<gga_eval_exc_vxc_inc_polar<KernelType>>( cl::sycl::range<1>( N ),
-      [=](cl::sycl::id<1> idx) {
+    cgh.parallel_for<gga_eval_exc_vxc_inc_polar<KernelType>>( sycl::range<1>( N ),
+      [=](sycl::id<1> idx) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, sigma, eps, vrho, vsigma, idx
         );

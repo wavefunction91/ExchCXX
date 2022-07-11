@@ -5,30 +5,30 @@ template <typename T> class scal_device_tag;
 template <typename T> class add_scal_device_tag;
 
 
-void scal_device( const int N, const double fact, const double* X_device, double* Y_device, cl::sycl::queue* queue ) {
-  queue->submit( [&]( cl::sycl::handler &cgh ) {
-    cgh.parallel_for<scal_device_tag<double>>( cl::sycl::range<1>(N), 
-      [=]( cl::sycl::id<1> idx ) { Y_device[idx] = fact * X_device[idx]; }
+void scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* queue ) {
+  queue->submit( [&]( sycl::handler &cgh ) {
+    cgh.parallel_for<scal_device_tag<double>>( sycl::range<1>(N), 
+      [=]( sycl::id<1> idx ) { Y_device[idx] = fact * X_device[idx]; }
     );
   });
 }
 
-void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, cl::sycl::queue* queue ) {
-  queue->submit( [&]( cl::sycl::handler &cgh ) {
-    cgh.parallel_for<add_scal_device_tag<double>>( cl::sycl::range<1>(N), 
-      [=]( cl::sycl::id<1> idx ) { Y_device[idx] += fact * X_device[idx]; }
+void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* queue ) {
+  queue->submit( [&]( sycl::handler &cgh ) {
+    cgh.parallel_for<add_scal_device_tag<double>>( sycl::range<1>(N), 
+      [=]( sycl::id<1> idx ) { Y_device[idx] += fact * X_device[idx]; }
     );
   });
 }
 
 
 template <typename T = double>
-T* safe_sycl_malloc( size_t N, cl::sycl::queue* queue ) {
-  return cl::sycl::malloc_device<T>( N, *queue );
+T* safe_sycl_malloc( size_t N, sycl::queue* queue ) {
+  return sycl::malloc_device<T>( N, *queue );
 }
 
 template <typename T>
-void safe_zero( size_t len, T* ptr, cl::sycl::queue* queue ) {
+void safe_zero( size_t len, T* ptr, sycl::queue* queue ) {
   queue->memset( ptr, 0, len*sizeof(T) );
 }
 
@@ -75,7 +75,7 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
   
   }
 
-  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
+  if( eps_scr ) sycl::free( eps_scr, *queue );
 
 }
 
@@ -127,8 +127,8 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   
   }
 
-  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
-  if( vxc_scr ) cl::sycl::free( vxc_scr, *queue );
+  if( eps_scr ) sycl::free( eps_scr, *queue );
+  if( vxc_scr ) sycl::free( vxc_scr, *queue );
 
 }
 
@@ -179,7 +179,7 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     }
   }
 
-  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
+  if( eps_scr ) sycl::free( eps_scr, *queue );
 
 }
 
@@ -249,9 +249,9 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     }
   }
 
-  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
-  if( vrho_scr ) cl::sycl::free( vrho_scr, *queue );
-  if( vsigma_scr ) cl::sycl::free( vsigma_scr, *queue );
+  if( eps_scr ) sycl::free( eps_scr, *queue );
+  if( vrho_scr ) sycl::free( vrho_scr, *queue );
+  if( vsigma_scr ) sycl::free( vsigma_scr, *queue );
 }
 
 
@@ -308,7 +308,7 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     }
   }
 
-  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
+  if( eps_scr ) sycl::free( eps_scr, *queue );
 
 }
 
@@ -407,11 +407,11 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     }
   }
 
-  if( eps_scr ) cl::sycl::free( eps_scr, *queue );
-  if( vrho_scr ) cl::sycl::free( vrho_scr, *queue );
-  if( vsigma_scr ) cl::sycl::free( vsigma_scr, *queue );
-  if( vlapl_scr ) cl::sycl::free( vlapl_scr, *queue );
-  if( vtau_scr ) cl::sycl::free( vtau_scr, *queue );
+  if( eps_scr ) sycl::free( eps_scr, *queue );
+  if( vrho_scr ) sycl::free( vrho_scr, *queue );
+  if( vsigma_scr ) sycl::free( vsigma_scr, *queue );
+  if( vlapl_scr ) sycl::free( vlapl_scr, *queue );
+  if( vtau_scr ) sycl::free( vtau_scr, *queue );
 }
 
 }
