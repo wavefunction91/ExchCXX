@@ -34,7 +34,7 @@ SAFE_CONSTEXPR_INLINE(F) safe_min(F x, F y) { return std::min(x,y); }
 namespace safe_math {
 
 #ifdef EXCHCXX_ENABLE_SYCL
-namespace sm = cl::sycl;
+namespace sm = sycl;
 #else
 namespace sm = std;
 #endif

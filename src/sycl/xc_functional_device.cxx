@@ -6,19 +6,13 @@ template <typename T> class add_scal_device_tag;
 
 
 void scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* queue ) {
-  queue->submit( [&]( sycl::handler &cgh ) {
-    cgh.parallel_for<scal_device_tag<double>>( sycl::range<1>(N), 
-      [=]( sycl::id<1> idx ) { Y_device[idx] = fact * X_device[idx]; }
-    );
-  });
+  queue->parallel_for<scal_device_tag<double>>( sycl::range<1>(N),
+    [=]( sycl::id<1> idx ) { Y_device[idx] = fact * X_device[idx]; });
 }
 
 void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* queue ) {
-  queue->submit( [&]( sycl::handler &cgh ) {
-    cgh.parallel_for<add_scal_device_tag<double>>( sycl::range<1>(N), 
-      [=]( sycl::id<1> idx ) { Y_device[idx] += fact * X_device[idx]; }
-    );
-  });
+  queue->parallel_for<add_scal_device_tag<double>>( sycl::range<1>(N),
+    [=]( sycl::id<1> idx ) { Y_device[idx] += fact * X_device[idx]; });
 }
 
 
@@ -47,7 +41,7 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
   size_t len_exc_buffer = exc_buffer_len( N );
 
   double* eps_scr = nullptr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) 
+  if( kernels_.size() > 1 and not supports_inc_interface() )
     eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
 
   safe_zero( len_exc_buffer, eps, queue );
@@ -66,13 +60,13 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       double* eps_eval = i ? eps_scr : eps;
       kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
 
-      if( i ) 
+      if( i )
         add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
       else
         scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
 
     }
-  
+
   }
 
   if( eps_scr ) sycl::free( eps_scr, *queue );
@@ -124,7 +118,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
       }
 
     }
-  
+
   }
 
   if( eps_scr ) sycl::free( eps_scr, *queue );
@@ -144,7 +138,7 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
   size_t len_exc_buffer = exc_buffer_len( N );
 
   double* eps_scr = nullptr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) 
+  if( kernels_.size() > 1 and not supports_inc_interface() )
     eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
 
   safe_zero( len_exc_buffer, eps, queue );
@@ -171,11 +165,11 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       else
         kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
 
-      if( i ) 
+      if( i )
         add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
       else
         scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-  
+
     }
   }
 
@@ -210,8 +204,8 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
-          kernels_[i].first, N, rho, sigma, eps, vrho, 
-          vsigma, queue 
+          kernels_[i].first, N, rho, sigma, eps, vrho,
+          vsigma, queue
         );
       else
         kernels_[i].second.eval_exc_vxc_inc_device(
@@ -225,7 +219,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
       double* vsigma_eval = i ? vsigma_scr : vsigma;
 
       if( kernels_[i].second.is_gga() )
-        kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, 
+        kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval,
           vsigma_eval, queue );
       else
         kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, queue);
@@ -267,7 +261,7 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
   size_t len_exc_buffer = exc_buffer_len( N );
 
   double* eps_scr = nullptr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) 
+  if( kernels_.size() > 1 and not supports_inc_interface() )
     eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
 
   safe_zero( len_exc_buffer,    eps,    queue );
@@ -300,11 +294,11 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       else
         kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
 
-      if( i ) 
+      if( i )
         add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
       else
         scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-  
+
     }
   }
 
@@ -324,7 +318,7 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   size_t len_vlapl_buffer   = vlapl_buffer_len(N);
   size_t len_vtau_buffer   = vtau_buffer_len(N);
 
-  double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr), 
+  double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr),
     *vlapl_scr(nullptr), *vtau_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
     eps_scr    = safe_sycl_malloc( len_exc_buffer, queue );
@@ -339,7 +333,7 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   safe_zero( len_vsigma_buffer, vsigma, queue );
   safe_zero( len_vlapl_buffer, vlapl, queue );
   safe_zero( len_vtau_buffer, vtau, queue );
-  
+
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -347,13 +341,13 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
-          kernels_[i].first, N, rho, sigma, lapl, tau, eps, 
-          vrho, vsigma, vlapl, vtau, queue 
+          kernels_[i].first, N, rho, sigma, lapl, tau, eps,
+          vrho, vsigma, vlapl, vtau, queue
         );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
-          kernels_[i].first, N, rho, sigma, eps, vrho, 
-          vsigma, queue 
+          kernels_[i].first, N, rho, sigma, eps, vrho,
+          vsigma, queue
         );
       else
         kernels_[i].second.eval_exc_vxc_inc_device(
@@ -369,10 +363,10 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
       double* vtau_eval   = i ? vtau_scr   : vtau;
 
       if( kernels_[i].second.is_mgga() )
-        kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, lapl, tau, eps_eval, 
+        kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, lapl, tau, eps_eval,
           vrho_eval, vsigma_eval, vlapl_eval, vtau_eval, queue );
       else if( kernels_[i].second.is_gga() )
-        kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval, 
+        kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval,
           vsigma_eval, queue );
       else
         kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, queue);
