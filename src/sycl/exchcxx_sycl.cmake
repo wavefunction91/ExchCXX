@@ -8,7 +8,8 @@ set( EXCHCXX_SYCL_SOURCES
 target_sources( exchcxx PRIVATE ${EXCHCXX_SYCL_SOURCES} )
 
 #set(SYCL_FLAGS -fsycl -fsycl-unnamed-lambda -fsycl-device-code-split=per_kernel -fsycl-targets=spir64_gen -Xsycl-target-backend "-device 12.1.0,12.4.0")
-set(SYCL_FLAGS -fsycl -fsycl-unnamed-lambda -fsycl-device-code-split=per_kernel -fsycl-targets=nvptx64-nvidia-cuda -Xsycl-target-backend \'--cuda-gpu-arch=sm_80\')
+#set(SYCL_FLAGS -fsycl -fsycl-unnamed-lambda -fsycl-device-code-split=per_kernel -fsycl-targets=nvptx64-nvidia-cuda -Xsycl-target-backend --cuda-gpu-arch=sm_80)
+#set(SYCL_FLAGS -fsycl -fsycl-unnamed-lambda -fsycl-device-code-split=per_kernel -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a)
 
 include(CheckCXXCompilerFlag)
 target_compile_options( exchcxx
