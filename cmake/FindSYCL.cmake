@@ -9,7 +9,7 @@ find_package_handle_standard_args( SYCL
 if( SYCL_FOUND AND NOT TARGET SYCL::SYCL )
   add_library( SYCL::SYCL INTERFACE IMPORTED )
   set_target_properties( SYCL::SYCL PROPERTIES
-      INTERFACE_COMPILE_OPTIONS  $<$<COMPILE_LANGUAGE:CXX>: -fsycl>
-      INTERFACE_LINK_OPTIONS     -fsycl
+      INTERFACE_COMPILE_OPTIONS  "$<$<COMPILE_LANGUAGE:CXX>:-fsycl>"
+      INTERFACE_LINK_OPTIONS     "-fsycl"
   )
 endif()
