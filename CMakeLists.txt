@@ -53,11 +53,6 @@ if( EXCHCXX_ENABLE_HIP )
   enable_language( HIP )
 endif()
 
-# Find SYCL if requested
-if( EXCHCXX_ENABLE_SYCL )
-#  list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/oneAPI" )
-#  find_package( SYCL REQUIRED )
-endif()
 
 
 ## Find LibXC
