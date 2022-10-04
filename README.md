@@ -1,6 +1,6 @@
 # About
 
-ExchCXX Copyright (c) 2020, The Regents of the University of California,
+ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
 through Lawrence Berkeley National Laboratory (subject to receipt of
 any required approvals from the U.S. Dept. of Energy). All rights reserved.
 
@@ -24,10 +24,10 @@ addition to providing high-level wrappers for the ubiquitous
 XC functionals, ExchCXX also provides locally developed implementations of a
 small subset of XC functionals which may be evaluated either on the host (CPU)
 or device (GPU, FPGA, etc). Currently GPU support is provided through the
-[CUDA](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html)
-framework and is only accessible to NVIDIA GPUs. However, work is underway to
-provide portable interfaces to these implementations as to allow for use with
-emerging exascale and post-exascale compute resources. 
+[CUDA](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html) for NVIDIA
+GPUs, [HIP](https://rocmdocs.amd.com/en/latest/Programming_Guides/HIP-GUIDE.html) for
+AMD GPUs and [SYCL](https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html)
+for generic accelerator backends (including Intel GPUs).
 
 
 ExchCXX is a work in progress. Its development has been funded by the U.S.
@@ -99,6 +99,7 @@ b3lyp.eval_exc_vxc_device( npts, rho_device, gamma_device, exc_device, vrho_devi
 | Perdew-Wang 91 (LDA) RPA             | `XC_LDA_C_PW_RPA`     | `Kernel::PW91_LDA_RPA`   |    Y    |
 | Perdew-Zunger 86                     | `XC_LDA_C_PZ`         | `Kernel::PZ86_LDA`       |    Y    |
 | Perdew-Zunger 86 Modified            | `XC_LDA_C_PZ_MOD`     | `Kernel::PZ86_LDA_MOD`   |    Y    |
+| Revised PBE from Zhang & Yang        | `XC_GGA_X_PBE_R`      | `Kernel::revPBE_X        |    Y    |
 | Becke Exchange 88                    | `XC_GGA_X_B88`        | `Kernel::B88`            |    Y    |
 | Lee-Yang-Parr                        | `XC_GGA_C_LYP`        | `Kernel::LYP`            |    Y    |
 | PBE0                                 | `XC_HYB_GGA_XC_PBEH`  | `Kernel::PBE0`           |    Y    |
@@ -111,7 +112,7 @@ b3lyp.eval_exc_vxc_device( npts, rho_device, gamma_device, exc_device, vrho_devi
 Although ExchCXX may in principle wrap any XC functional implemented by third-party software,
 generating these interfaces must currently be done by hand. As such, if there is a functional
 that you would like to see wrapped in either host or device code, please create a [GitHub issue](https://github.com/wavefunction91/ExchCXX/issues)
-which details your request. Alternatively, I am more than happy to accept [pull-requests](https://github.com/wavefunction91/ExchCXX/pulls) if
+which details your request. Alternatively, we are more than happy to accept [pull-requests](https://github.com/wavefunction91/ExchCXX/pulls) if
 you have made the changes locally and would like to see them integrated in upstream.
 
 

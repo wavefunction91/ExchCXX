@@ -209,6 +209,14 @@ class XCFunc:
     pi_sq_var = [ line.split(' = ')[0].strip() for line in xc_lines if 'constants::m_pi_sq' in line ]
     if len(pi_sq_var) > 0:
       xc_lines = [ x.replace( 'cbrt( ' + pi_sq_var[0] + ' )', 'constants::m_cbrt_pi_sq' ) for x in xc_lines]
+
+    # replace cbrt
+    xc_lines = [ x.replace('cbrt(','safe_math::cbrt(') for x in xc_lines ]
+    xc_lines = [ x.replace('sqrt(','safe_math::sqrt(') for x in xc_lines ]
+    xc_lines = [ x.replace('log(','safe_math::log(') for x in xc_lines ]
+    xc_lines = [ x.replace('exp(','safe_math::exp(') for x in xc_lines ]
+    xc_lines = [ x.replace('pow(','safe_math::pow(') for x in xc_lines ]
+    xc_lines = [ x.replace('atan(','safe_math::atan(') for x in xc_lines ]
     return xc_lines
 
 
@@ -263,6 +271,10 @@ class XCFunc:
       rhs = [ x for x in rhs if 'sqrt' not in x ]
       rhs = [ x for x in rhs if 'param' not in x ]
       rhs = [ x for x in rhs if 'functor' not in x ]
+      rhs = [ x for x in rhs if 'log' not in x ]
+      rhs = [ x for x in rhs if 'pow' not in x ]
+      rhs = [ x for x in rhs if 'exp' not in x ]
+      rhs = [ x for x in rhs if 'atan' not in x ]
       
       #if len(rhs) > 0:
       all_vars[tvar] = set(rhs)
@@ -402,7 +414,7 @@ class GenMetaData:
 
 
 
-libxc_prefix = '/global/project/projectdirs/m1027/dbwy/ExchCXX/build/_deps/libxc-src/src/maple2c/' 
+libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/5.0.0/libxc-5.0.0/src/maple2c/' 
 kernel_prefix = './include/exchcxx/impl/builtin/kernels/'
 gen_table = {
 
