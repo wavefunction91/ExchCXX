@@ -55,7 +55,7 @@ target_link_libraries( my_target PUBLIC exchcxx::exchcxx )
 | `EXCHCXX_ENABLE_BENCHMARK`   | Enable Performance Benchmark                                   | `OFF`    |
 | `EXCHCXX_ENABLE_CUDA`        | Enable CUDA XC evaluator                                       | `OFF`    |
 | `EXCHCXX_ENABLE_HIP`         | Enable HIP XC evaluator                                        | `OFF`    |
-| `EXCHCXX_ENABLE_SYCL`        | Enable SYCL XC evaluator                                       | `OFF`    |
+| `EXCHCXX_ENABLE_SYCL`        | Enable SYCL XC evaluator    (experimental)                     | `OFF`    |
 
 N.B. ExchCXX accelerator bindings are mutally exclusive - this is intentially and will be enforced on configure.
 If it would be desirable to support coexistance of these bindings for your application, please open
@@ -74,6 +74,8 @@ ExchCXX supports NVIDIA GPUs with CC >= 60.
 
 ### Building with SYCL
 
+ExchCXX support for SYCL is experimental, and the mechanism for enabling CMake support
+is likely to change in the future.
 SYCL builds require C++17 per the SYCL-2020 standard.
 Due to the volitility in SYCL compiler development, ExchCXX does not provide automatic means to determine
 the SYCL targets (e.g. NVIDIA-PTX, OpenMP, etc) for the platform of interest. As such, these must be

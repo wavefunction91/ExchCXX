@@ -26,7 +26,7 @@ small subset of XC functionals which may be evaluated either on the host (CPU)
 or device (GPU, FPGA, etc). Currently GPU support is provided through the
 [CUDA](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html) for NVIDIA
 GPUs, [HIP](https://rocmdocs.amd.com/en/latest/Programming_Guides/HIP-GUIDE.html) for
-AMD GPUs and [SYCL](https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html)
+AMD GPUs and [SYCL](https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html) (experimental)
 for generic accelerator backends (including Intel GPUs).
 
 

@@ -1910,9 +1910,9 @@ sycl::queue SYCLTestFeature::q(
 
 TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
 
-  std::cout << "Running on "
-            << q.get_device().get_info<sycl::info::device::name>()
-            << "\n";
+  //std::cout << "Running on "
+  //          << q.get_device().get_info<sycl::info::device::name>()
+  //          << "\n";
 
   SECTION( "Libxc Functionals" ) {
 
@@ -2078,28 +2078,28 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
   SECTION( "Builtin Functionals" ) {
 
     SECTION("EXC Regular: Unpolarized") {
-      std::cout << "EXC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC, EvalType::Regular,
                              Backend::builtin, kern, Spin::Unpolarized, q );
     }
 
     SECTION("EXC + VXC Regular: Unpolarized") {
-      std::cout << "EXC + VXC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC + VXC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized, q );
     }
 
     SECTION("EXC + INC Regular: Unpolarized") {
-      std::cout << "EXC + INC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC + INC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized, q );
     }
 
     SECTION("EXC + VXC + INC Regular: Unpolarized") {
-      std::cout << "EXC + VXC + INC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC + VXC + INC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized, q );
@@ -2154,28 +2154,28 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
     }
 
     SECTION("EXC Regular: Polarized") {
-      std::cout << "EXC Regular: Polarized" << std::endl;
+      //std::cout << "EXC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC, EvalType::Regular,
                              Backend::builtin, kern, Spin::Polarized, q );
     }
 
     SECTION("EXC + VXC Regular: Polarized") {
-      std::cout << "EXC + VXC Regular: Polarized" << std::endl;
+      //std::cout << "EXC + VXC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC, EvalType::Regular,
           Backend::builtin, kern, Spin::Polarized, q );
     }
 
     SECTION("EXC + INC Regular: Polarized") {
-      std::cout << "EXC + INC Regular: Polarized" << std::endl;
+      //std::cout << "EXC + INC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Polarized, q );
     }
 
     SECTION("EXC + VXC + INC Regular: Polarized") {
-      std::cout << "EXC + VXC + INC Regular: Polarized" << std::endl;
+      //std::cout << "EXC + VXC + INC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Polarized, q );
