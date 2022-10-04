@@ -1,3 +1,48 @@
+/**
+ * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * through Lawrence Berkeley National Laboratory (subject to receipt of
+ * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * (1) Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ * 
+ * (2) Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * 
+ * (3) Neither the name of the University of California, Lawrence Berkeley
+ * National Laboratory, U.S. Dept. of Energy nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ * 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * You are under no obligation whatsoever to provide any bug fixes, patches,
+ * or upgrades to the features, functionality or performance of the source
+ * code ("Enhancements") to anyone; however, if you choose to make your
+ * Enhancements available either publicly, or directly to Lawrence Berkeley
+ * National Laboratory, without imposing a separate written license agreement
+ * for such Enhancements, then you hereby grant the following license: a
+ * non-exclusive, royalty-free perpetual license to install, use, modify,
+ * prepare derivative works, incorporate into other computer software,
+ * distribute, and sublicense such enhancements or derivative works thereof,
+ * in binary and source code form.
+ */
+
 #include "ut_common.hpp"
 
 using namespace ExchCXX;
@@ -182,7 +227,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
     const auto&   rho      = ref_vals.rho;
     const auto&   exc_ref  = ref_vals.exc;
     const auto&   vrho_ref = ref_vals.vrho;
-    
+
 
     // Allocate buffers
     std::vector<double> exc( func.exc_buffer_len( npts ), fill_val_e );
@@ -1679,39 +1724,39 @@ TEST_CASE( "HIP Interfaces", "[xc-device]" ) {
 #ifdef EXCHCXX_ENABLE_SYCL
 
 template <typename T>
-T* safe_sycl_malloc( size_t n, cl::sycl::queue& q ) {
+T* safe_sycl_malloc( size_t n, sycl::queue& q ) {
   if( n ) {
-    T* ptr = cl::sycl::malloc_device<T>(n, q);
+    T* ptr = sycl::malloc_device<T>(n, q);
     return ptr;
   } else return nullptr;
 }
 
 template <typename T>
-void safe_sycl_cpy( T* dest, const T* src, size_t len, cl::sycl::queue& q ) {
+void safe_sycl_cpy( T* dest, const T* src, size_t len, sycl::queue& q ) {
 
     q.memcpy( (void*)dest, (const void*)src, len*sizeof(T) );
 
 }
 
-void sycl_free_all(cl::sycl::queue&){ }
+void sycl_free_all(sycl::queue&){ }
 template <typename T, typename... Args>
-void sycl_free_all( cl::sycl::queue& q, T* ptr, Args&&... args ) {
+void sycl_free_all( sycl::queue& q, T* ptr, Args&&... args ) {
 
   if( ptr ) {
-    cl::sycl::free( (void*)ptr, q );
+    sycl::free( (void*)ptr, q );
   }
 
   sycl_free_all( q, std::forward<Args>(args)... );
 
 }
 
-void device_synchronize( cl::sycl::queue& q ) {
+void device_synchronize( sycl::queue& q ) {
 q.wait_and_throw();
 }
 
 
 void test_sycl_interface( TestInterface interface, EvalType evaltype,
-                          Backend backend, Kernel kern, Spin polar, cl::sycl::queue& q ) {
+                          Backend backend, Kernel kern, Spin polar, sycl::queue& q ) {
 
   auto [npts_lda, ref_rho]   = load_reference_density( polar );
   auto [npts_gga, ref_sigma] = load_reference_sigma  ( polar );
@@ -1865,9 +1910,9 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 
   if( interface == TestInterface::EXC_VXC_INC ) {
 
-    for( auto i = 0ul; i < len_vrho_buffer; ++i ) 
+    for( auto i = 0ul; i < len_vrho_buffer; ++i )
       CHECK( vrho[i] == Approx(fill_val_vr + alpha * vrho_ref[i]) );
-    for( auto i = 0ul; i < len_vsigma_buffer; ++i ) 
+    for( auto i = 0ul; i < len_vsigma_buffer; ++i )
       CHECK( vsigma[i] == Approx(fill_val_vs + alpha * vsigma_ref[i]) );
 
   } else if(interface == TestInterface::EXC_VXC)  {
@@ -1891,28 +1936,28 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 
 #if 0
 struct SYCLTestFeature {
-  cl::sycl::queue q;
-  SYCLTestFeature() : 
-    q( cl::sycl::gpu_selector{}, 
-       cl::sycl::property_list{cl::sycl::property::queue::in_order{}} ) { }
+  sycl::queue q;
+  SYCLTestFeature() :
+    q( sycl::gpu_selector{},
+       sycl::property_list{sycl::property::queue::in_order{}} ) { }
 };
 #else
 struct SYCLTestFeature {
-  static cl::sycl::queue q;
+  static sycl::queue q;
 
-  SYCLTestFeature() {} 
+  SYCLTestFeature() {}
 };
 
-cl::sycl::queue SYCLTestFeature::q( 
-       cl::sycl::gpu_selector{}, 
-       cl::sycl::property_list{cl::sycl::property::queue::in_order{}} );
+sycl::queue SYCLTestFeature::q(
+       sycl::gpu_selector{},
+       sycl::property_list{sycl::property::queue::in_order{}} );
 #endif
 
 TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
 
-  std::cout << "Running on "
-            << q.get_device().get_info<cl::sycl::info::device::name>()
-            << "\n";
+  //std::cout << "Running on "
+  //          << q.get_device().get_info<sycl::info::device::name>()
+  //          << "\n";
 
   SECTION( "Libxc Functionals" ) {
 
@@ -2078,28 +2123,28 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
   SECTION( "Builtin Functionals" ) {
 
     SECTION("EXC Regular: Unpolarized") {
-      std::cout << "EXC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC, EvalType::Regular,
                              Backend::builtin, kern, Spin::Unpolarized, q );
     }
 
     SECTION("EXC + VXC Regular: Unpolarized") {
-      std::cout << "EXC + VXC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC + VXC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized, q );
     }
 
     SECTION("EXC + INC Regular: Unpolarized") {
-      std::cout << "EXC + INC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC + INC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized, q );
     }
 
     SECTION("EXC + VXC + INC Regular: Unpolarized") {
-      std::cout << "EXC + VXC + INC Regular: Unpolarized" << std::endl;
+      //std::cout << "EXC + VXC + INC Regular: Unpolarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Unpolarized, q );
@@ -2154,28 +2199,28 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
     }
 
     SECTION("EXC Regular: Polarized") {
-      std::cout << "EXC Regular: Polarized" << std::endl;
+      //std::cout << "EXC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC, EvalType::Regular,
                              Backend::builtin, kern, Spin::Polarized, q );
     }
 
     SECTION("EXC + VXC Regular: Polarized") {
-      std::cout << "EXC + VXC Regular: Polarized" << std::endl;
+      //std::cout << "EXC + VXC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC, EvalType::Regular,
           Backend::builtin, kern, Spin::Polarized, q );
     }
 
     SECTION("EXC + INC Regular: Polarized") {
-      std::cout << "EXC + INC Regular: Polarized" << std::endl;
+      //std::cout << "EXC + INC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Polarized, q );
     }
 
     SECTION("EXC + VXC + INC Regular: Polarized") {
-      std::cout << "EXC + VXC + INC Regular: Polarized" << std::endl;
+      //std::cout << "EXC + VXC + INC Regular: Polarized" << std::endl;
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
           Backend::builtin, kern, Spin::Polarized, q );
@@ -2222,7 +2267,7 @@ TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
         test_sycl_interface( TestInterface::EXC_INC, EvalType::Zero,
           Backend::builtin, kern, Spin::Polarized, q );
     }
-     
+
     SECTION("EXC + VXC + INC Zero: Polarized") {
       for( auto kern : builtin_supported_kernels )
         test_sycl_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
