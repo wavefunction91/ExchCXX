@@ -79,6 +79,8 @@ public:
   
   XCKernel( const Backend backend, const Kernel kern, 
     const Spin polar );
+  XCKernel( const std::string xc_name, 
+    const Spin polar );
   XCKernel( const Kernel kern, const Spin polar ) : 
     XCKernel( Backend::libxc, kern, polar ){ };
 

@@ -93,7 +93,9 @@ inline bool libxc_supports_kernel( const Kernel kern ) {
 }
 
 
-
+inline bool libxc_supports_functional( const std::string xc_name ) {
+  return xc_functional_get_number(xc_name.c_str()) != -1;
+}
 
 
 XCKernel libxc_kernel_factory(const Kernel kern, 
@@ -106,6 +108,15 @@ XCKernel libxc_kernel_factory(const Kernel kern,
 
 }
 
+XCKernel libxc_kernel_factory( const std::string xc_name,
+  const Spin spin_polar ) {
+
+  EXCHCXX_BOOL_CHECK( "LibXC FUNCTIONAL NOT FOUND", libxc_supports_functional(xc_name) )
+
+  return XCKernel(
+      std::make_unique< detail::LibxcKernelImpl >( xc_name, spin_polar ) );
+
+}
 
 namespace detail {
 
@@ -113,6 +124,11 @@ LibxcKernelImpl::LibxcKernelImpl(
   const Kernel    kern,
   const Spin  spin_polar
 ) : LibxcKernelImpl( libxc_kernel_map[kern], libxc_polar_map[spin_polar] ) { }  
+
+LibxcKernelImpl::LibxcKernelImpl(
+  const std::string xc_name,
+  const Spin  spin_polar
+) : LibxcKernelImpl( xc_functional_get_number(xc_name.c_str()), libxc_polar_map[spin_polar] ) { }  
 
 LibxcKernelImpl::LibxcKernelImpl( 
   xc_func_type  kern, 
