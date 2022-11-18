@@ -56,23 +56,23 @@ endif()
 
 
 ## Find LibXC
-find_package( Libxc 5.0.0 CONFIG QUIET )
+find_package( Libxc 6.0.0 CONFIG QUIET )
 
 if( ${Libxc_FOUND} )
 
   message( STATUS "Found: Libxc Version ${Libxc_VERSION}" )
-  if( Libxc_VERSION VERSION_GREATER_EQUAL "6.0.0" )
-    message( FATAL_ERROR "Libxc version 6+ breaks the API currently used in ExchCXX" )
+  if( Libxc_VERSION VERSION_GREATER_EQUAL "7.0.0" )
+    message( FATAL_ERROR "Libxc version 7+ breaks the API currently used in ExchCXX" )
   endif()
 
 else()
 
   FetchContent_Declare(
     libxc
-    GIT_REPOSITORY https://gitlab.com/eduard1/libxc.git
-    GIT_TAG        53883f416d0f421e4e856171d72c81fb331d8a57  # v5.0.0 + pr324 + pr351
+    GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
+    GIT_TAG 6.0.0  # v6.0.0
   )
-  set( Libxc_VERSION 5.0.0 )
+  set( Libxc_VERSION 6.0.0 )
 
   set( OLD_BUILD_TESTING ${BUILD_TESTING} )
   set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
