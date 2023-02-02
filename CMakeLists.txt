@@ -70,9 +70,9 @@ else()
   FetchContent_Declare(
     libxc
     GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
-    GIT_TAG 6.0.0  # v6.0.0
+    GIT_TAG 6.1.0  # v6.1.0
   )
-  set( Libxc_VERSION 6.0.0 )
+  set( Libxc_VERSION 6.1.0 )
 
   set( OLD_BUILD_TESTING ${BUILD_TESTING} )
   set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
