@@ -106,7 +106,7 @@ std::vector<double> vsigma_xc_gga_c_lyp_ref_unp = {
 std::vector<double> exc_xc_gga_c_lyp_ref_pol = {
   -0.031543975366, -0.043113613690,
   -0.046604883008, -0.048519647105,
-  -0.049799110145
+  -0.049807583631
 };
 
 std::vector<double> vrho_xc_gga_c_lyp_ref_pol = {
@@ -114,7 +114,7 @@ std::vector<double> vrho_xc_gga_c_lyp_ref_pol = {
   -0.062361000975, -0.045947114249,
   -0.059003605615, -0.049400798274,
   -0.058191535482, -0.051370405717,
-  -0.058037798927, -0.052712179037
+  -0.058012961950, -0.052706534799
 };
 
 std::vector<double> vsigma_xc_gga_c_lyp_ref_pol = {
