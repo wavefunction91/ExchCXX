@@ -53,7 +53,7 @@ std::vector<double> rho_polarized =
   {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 std::vector<double> sigma_polarized =
   {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
-   1.1, 1.2, 1.3, 1.5, 1.5 };
+   1.1, 1.2, 1.3, 1.4, 1.5 };
 
 std::vector<double> exc_xc_lda_x_ref_unp = {
   -0.342808612301, -0.431911786723,
