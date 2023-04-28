@@ -21,6 +21,8 @@ struct kernel_traits< BuiltinPZ81_MOD > :
   static constexpr bool is_mgga = false;
 
   static constexpr double dens_tol  = 1e-24;
+  static constexpr double zeta_tol  = 1e-15;
+  static constexpr double sigma_tol  = 1e-24;
 
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;
@@ -47,6 +49,7 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
+    constexpr double t76 = constants::m_cbrt_2;
     constexpr double t6 = t5 * t5;
     constexpr double t13 = gamma_0;
     constexpr double t14 = beta1_0;
@@ -56,6 +59,13 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     constexpr double t32 = c_0 * t1;
     constexpr double t33 = t32 * t3;
     constexpr double t38 = d_0 * t1;
+    constexpr double t43 = gamma_1;
+    constexpr double t44 = beta1_1;
+    constexpr double t48 = beta2_1 * t1;
+    constexpr double t54 = a_1;
+    constexpr double t58 = c_1 * t1;
+    constexpr double t59 = t58 * t3;
+    constexpr double t63 = d_1 * t1;
 
 
     const double t7 = safe_math::cbrt( rho );
@@ -68,9 +78,18 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     const double t21 = t20 * t8;
     const double t24 = 0.1e1 + t14 * t15 / 0.2e1 + t19 * t21 / 0.4e1;
     const double t28 = safe_math::log( t11 );
+    const double t34 = t9 * t28;
+    const double t42 = piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_0 + t33 * t34 / 0.4e1 + t38 * t21 / 0.4e1 );
+    const double t51 = 0.1e1 + t44 * t15 / 0.2e1 + t48 * t21 / 0.4e1;
+    const double t67 = piecewise_functor_3( t12, t43 / t51, t54 * t28 + b_1 + t59 * t34 / 0.4e1 + t63 * t21 / 0.4e1 );
+    const double t70 = safe_math::cbrt( zeta_tol );
+    const double t72 = piecewise_functor_3( 0.1e1 <= zeta_tol, t70 * zeta_tol, 1.0 );
+    const double t74 = 0.2e1 * t72 - 0.2e1;
+    const double t79 = 0.1e1 / ( 0.2e1 * t76 - 0.2e1 );
+    const double t80 = ( t67 - t42 ) * t74 * t79;
 
 
-    eps = piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_0 + t33 * t9 * t28 / 0.4e1 + t38 * t21 / 0.4e1 );
+    eps = t42 + t80;
 
   }
 
@@ -81,6 +100,7 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
+    constexpr double t76 = constants::m_cbrt_2;
     constexpr double t6 = t5 * t5;
     constexpr double t13 = gamma_0;
     constexpr double t14 = beta1_0;
@@ -90,6 +110,13 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     constexpr double t32 = c_0 * t1;
     constexpr double t33 = t32 * t3;
     constexpr double t38 = d_0 * t1;
+    constexpr double t43 = gamma_1;
+    constexpr double t44 = beta1_1;
+    constexpr double t48 = beta2_1 * t1;
+    constexpr double t54 = a_1;
+    constexpr double t58 = c_1 * t1;
+    constexpr double t59 = t58 * t3;
+    constexpr double t63 = d_1 * t1;
 
 
     const double t7 = safe_math::cbrt( rho );
@@ -102,95 +129,35 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     const double t21 = t20 * t8;
     const double t24 = 0.1e1 + t14 * t15 / 0.2e1 + t19 * t21 / 0.4e1;
     const double t28 = safe_math::log( t11 );
-    const double t42 = t24 * t24;
-    const double t44 = t13 / t42;
-    const double t47 = t14 / t15 * t1;
-    const double t49 = 0.1e1 / t7 / rho;
-    const double t50 = t20 * t49;
-    const double t54 = -t19 * t50 / 0.12e2 - t47 * t50 / 0.12e2;
-    const double t56 = 0.1e1 / rho;
-    const double t68 = piecewise_functor_3( t12, -t44 * t54, -t27 * t56 / 0.3e1 - t33 * t6 * t49 * t28 / 0.12e2 - t32 * t50 / 0.12e2 - t38 * t50 / 0.12e2 );
+    const double t34 = t9 * t28;
+    const double t42 = piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_0 + t33 * t34 / 0.4e1 + t38 * t21 / 0.4e1 );
+    const double t51 = 0.1e1 + t44 * t15 / 0.2e1 + t48 * t21 / 0.4e1;
+    const double t67 = piecewise_functor_3( t12, t43 / t51, t54 * t28 + b_1 + t59 * t34 / 0.4e1 + t63 * t21 / 0.4e1 );
+    const double t70 = safe_math::cbrt( zeta_tol );
+    const double t72 = piecewise_functor_3( 0.1e1 <= zeta_tol, t70 * zeta_tol, 1.0 );
+    const double t74 = 0.2e1 * t72 - 0.2e1;
+    const double t79 = 0.1e1 / ( 0.2e1 * t76 - 0.2e1 );
+    const double t80 = ( t67 - t42 ) * t74 * t79;
+    const double t81 = t24 * t24;
+    const double t83 = t13 / t81;
+    const double t84 = 0.1e1 / t15;
+    const double t86 = t14 * t84 * t1;
+    const double t88 = 0.1e1 / t7 / rho;
+    const double t89 = t20 * t88;
+    const double t93 = -t19 * t89 / 0.12e2 - t86 * t89 / 0.12e2;
+    const double t95 = 0.1e1 / rho;
+    const double t99 = t6 * t88 * t28;
+    const double t107 = piecewise_functor_3( t12, -t83 * t93, -t27 * t95 / 0.3e1 - t33 * t99 / 0.12e2 - t32 * t89 / 0.12e2 - t38 * t89 / 0.12e2 );
+    const double t108 = t51 * t51;
+    const double t110 = t43 / t108;
+    const double t112 = t44 * t84 * t1;
+    const double t116 = -t112 * t89 / 0.12e2 - t48 * t89 / 0.12e2;
+    const double t127 = piecewise_functor_3( t12, -t110 * t116, -t54 * t95 / 0.3e1 - t59 * t99 / 0.12e2 - t58 * t89 / 0.12e2 - t63 * t89 / 0.12e2 );
+    const double t130 = ( t127 - t107 ) * t74 * t79;
 
 
-    eps = piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_0 + t33 * t9 * t28 / 0.4e1 + t38 * t21 / 0.4e1 );
-    vrho = rho * t68 + ( piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_0 + t33 * t9 * t28 / 0.4e1 + t38 * t21 / 0.4e1 ) );
-
-  }
-
-  BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_ferr_impl( double rho, double& eps ) {
-
-    (void)(eps);
-    constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t3 = constants::m_cbrt_one_ov_pi;
-    constexpr double t5 = constants::m_cbrt_4;
-    constexpr double t6 = t5 * t5;
-    constexpr double t13 = gamma_1;
-    constexpr double t14 = beta1_1;
-    constexpr double t19 = beta2_1 * t1;
-    constexpr double t20 = t3 * t6;
-    constexpr double t27 = a_1;
-    constexpr double t32 = c_1 * t1;
-    constexpr double t33 = t32 * t3;
-    constexpr double t38 = d_1 * t1;
-
-
-    const double t7 = safe_math::cbrt( rho );
-    const double t8 = 0.1e1 / t7;
-    const double t9 = t6 * t8;
-    const double t10 = t1 * t3 * t9;
-    const double t11 = t10 / 0.4e1;
-    const double t12 = 0.1e1 <= t11;
-    const double t15 = safe_math::sqrt( t10 );
-    const double t21 = t20 * t8;
-    const double t24 = 0.1e1 + t14 * t15 / 0.2e1 + t19 * t21 / 0.4e1;
-    const double t28 = safe_math::log( t11 );
-
-
-    eps = piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_1 + t33 * t9 * t28 / 0.4e1 + t38 * t21 / 0.4e1 );
-
-  }
-
-  BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_vxc_ferr_impl( double rho, double& eps, double& vrho ) {
-
-    (void)(eps);
-    constexpr double t1 = constants::m_cbrt_3;
-    constexpr double t3 = constants::m_cbrt_one_ov_pi;
-    constexpr double t5 = constants::m_cbrt_4;
-    constexpr double t6 = t5 * t5;
-    constexpr double t13 = gamma_1;
-    constexpr double t14 = beta1_1;
-    constexpr double t19 = beta2_1 * t1;
-    constexpr double t20 = t3 * t6;
-    constexpr double t27 = a_1;
-    constexpr double t32 = c_1 * t1;
-    constexpr double t33 = t32 * t3;
-    constexpr double t38 = d_1 * t1;
-
-
-    const double t7 = safe_math::cbrt( rho );
-    const double t8 = 0.1e1 / t7;
-    const double t9 = t6 * t8;
-    const double t10 = t1 * t3 * t9;
-    const double t11 = t10 / 0.4e1;
-    const double t12 = 0.1e1 <= t11;
-    const double t15 = safe_math::sqrt( t10 );
-    const double t21 = t20 * t8;
-    const double t24 = 0.1e1 + t14 * t15 / 0.2e1 + t19 * t21 / 0.4e1;
-    const double t28 = safe_math::log( t11 );
-    const double t42 = t24 * t24;
-    const double t44 = t13 / t42;
-    const double t47 = t14 / t15 * t1;
-    const double t49 = 0.1e1 / t7 / rho;
-    const double t50 = t20 * t49;
-    const double t54 = -t19 * t50 / 0.12e2 - t47 * t50 / 0.12e2;
-    const double t56 = 0.1e1 / rho;
-    const double t68 = piecewise_functor_3( t12, -t44 * t54, -t27 * t56 / 0.3e1 - t33 * t6 * t49 * t28 / 0.12e2 - t32 * t50 / 0.12e2 - t38 * t50 / 0.12e2 );
-
-
-    eps = piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_1 + t33 * t9 * t28 / 0.4e1 + t38 * t21 / 0.4e1 );
-    vrho = rho * t68 + ( piecewise_functor_3( t12, t13 / t24, t27 * t28 + b_1 + t33 * t9 * t28 / 0.4e1 + t38 * t21 / 0.4e1 ) );
+    eps = t42 + t80;
+    vrho = t42 + t80 + rho * ( t107 + t130 );
 
   }
 
@@ -201,7 +168,7 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
-    constexpr double t81 = constants::m_cbrt_2;
+    constexpr double t87 = constants::m_cbrt_2;
     constexpr double t6 = t5 * t5;
     constexpr double t14 = gamma_0;
     constexpr double t15 = beta1_0;
@@ -240,15 +207,21 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     const double t71 = 0.1e1 / t7;
     const double t72 = t70 * t71;
     const double t73 = 0.1e1 + t72;
-    const double t74 = safe_math::cbrt( t73 );
-    const double t76 = 0.1e1 - t72;
-    const double t77 = safe_math::cbrt( t76 );
-    const double t79 = t74 * t73 + t77 * t76 - 0.2e1;
-    const double t84 = 0.1e1 / ( 0.2e1 * t81 - 0.2e1 );
-    const double t85 = t69 * t79 * t84;
+    const double t74 = t73 <= zeta_tol;
+    const double t75 = safe_math::cbrt( zeta_tol );
+    const double t76 = t75 * zeta_tol;
+    const double t77 = safe_math::cbrt( t73 );
+    const double t79 = piecewise_functor_3( t74, t76, t77 * t73 );
+    const double t80 = 0.1e1 - t72;
+    const double t81 = t80 <= zeta_tol;
+    const double t82 = safe_math::cbrt( t80 );
+    const double t84 = piecewise_functor_3( t81, t76, t82 * t80 );
+    const double t85 = t79 + t84 - 0.2e1;
+    const double t90 = 0.1e1 / ( 0.2e1 * t87 - 0.2e1 );
+    const double t91 = t69 * t85 * t90;
 
 
-    eps = t43 + t85;
+    eps = t43 + t91;
 
   }
 
@@ -259,7 +232,7 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     constexpr double t1 = constants::m_cbrt_3;
     constexpr double t3 = constants::m_cbrt_one_ov_pi;
     constexpr double t5 = constants::m_cbrt_4;
-    constexpr double t81 = constants::m_cbrt_2;
+    constexpr double t87 = constants::m_cbrt_2;
     constexpr double t6 = t5 * t5;
     constexpr double t14 = gamma_0;
     constexpr double t15 = beta1_0;
@@ -298,44 +271,54 @@ struct kernel_traits< BuiltinPZ81_MOD > :
     const double t71 = 0.1e1 / t7;
     const double t72 = t70 * t71;
     const double t73 = 0.1e1 + t72;
-    const double t74 = safe_math::cbrt( t73 );
-    const double t76 = 0.1e1 - t72;
-    const double t77 = safe_math::cbrt( t76 );
-    const double t79 = t74 * t73 + t77 * t76 - 0.2e1;
-    const double t84 = 0.1e1 / ( 0.2e1 * t81 - 0.2e1 );
-    const double t85 = t69 * t79 * t84;
-    const double t86 = t25 * t25;
-    const double t88 = t14 / t86;
-    const double t89 = 0.1e1 / t16;
-    const double t91 = t15 * t89 * t1;
-    const double t93 = 0.1e1 / t8 / t7;
-    const double t94 = t21 * t93;
-    const double t98 = -t20 * t94 / 0.12e2 - t91 * t94 / 0.12e2;
-    const double t103 = t6 * t93 * t29;
-    const double t111 = piecewise_functor_3( t13, -t88 * t98, -t28 * t71 / 0.3e1 - t34 * t103 / 0.12e2 - t33 * t94 / 0.12e2 - t39 * t94 / 0.12e2 );
-    const double t112 = t52 * t52;
-    const double t114 = t44 / t112;
-    const double t116 = t45 * t89 * t1;
-    const double t120 = -t116 * t94 / 0.12e2 - t49 * t94 / 0.12e2;
-    const double t131 = piecewise_functor_3( t13, -t114 * t120, -t55 * t71 / 0.3e1 - t60 * t103 / 0.12e2 - t59 * t94 / 0.12e2 - t64 * t94 / 0.12e2 );
-    const double t132 = t131 - t111;
-    const double t134 = t132 * t79 * t84;
-    const double t135 = t7 * t7;
-    const double t136 = 0.1e1 / t135;
-    const double t137 = t70 * t136;
-    const double t138 = t71 - t137;
-    const double t140 = -t138;
-    const double t143 = 0.4e1 / 0.3e1 * t74 * t138 + 0.4e1 / 0.3e1 * t77 * t140;
-    const double t145 = t69 * t143 * t84;
-    const double t148 = -t71 - t137;
-    const double t150 = -t148;
-    const double t153 = 0.4e1 / 0.3e1 * t74 * t148 + 0.4e1 / 0.3e1 * t77 * t150;
-    const double t155 = t69 * t153 * t84;
+    const double t74 = t73 <= zeta_tol;
+    const double t75 = safe_math::cbrt( zeta_tol );
+    const double t76 = t75 * zeta_tol;
+    const double t77 = safe_math::cbrt( t73 );
+    const double t79 = piecewise_functor_3( t74, t76, t77 * t73 );
+    const double t80 = 0.1e1 - t72;
+    const double t81 = t80 <= zeta_tol;
+    const double t82 = safe_math::cbrt( t80 );
+    const double t84 = piecewise_functor_3( t81, t76, t82 * t80 );
+    const double t85 = t79 + t84 - 0.2e1;
+    const double t90 = 0.1e1 / ( 0.2e1 * t87 - 0.2e1 );
+    const double t91 = t69 * t85 * t90;
+    const double t92 = t25 * t25;
+    const double t94 = t14 / t92;
+    const double t95 = 0.1e1 / t16;
+    const double t97 = t15 * t95 * t1;
+    const double t99 = 0.1e1 / t8 / t7;
+    const double t100 = t21 * t99;
+    const double t104 = -t20 * t100 / 0.12e2 - t97 * t100 / 0.12e2;
+    const double t109 = t6 * t99 * t29;
+    const double t117 = piecewise_functor_3( t13, -t94 * t104, -t28 * t71 / 0.3e1 - t34 * t109 / 0.12e2 - t33 * t100 / 0.12e2 - t39 * t100 / 0.12e2 );
+    const double t118 = t52 * t52;
+    const double t120 = t44 / t118;
+    const double t122 = t45 * t95 * t1;
+    const double t126 = -t122 * t100 / 0.12e2 - t49 * t100 / 0.12e2;
+    const double t137 = piecewise_functor_3( t13, -t120 * t126, -t55 * t71 / 0.3e1 - t60 * t109 / 0.12e2 - t59 * t100 / 0.12e2 - t64 * t100 / 0.12e2 );
+    const double t138 = t137 - t117;
+    const double t140 = t138 * t85 * t90;
+    const double t141 = t7 * t7;
+    const double t142 = 0.1e1 / t141;
+    const double t143 = t70 * t142;
+    const double t144 = t71 - t143;
+    const double t147 = piecewise_functor_3( t74, 0.0, 0.4e1 / 0.3e1 * t77 * t144 );
+    const double t148 = -t144;
+    const double t151 = piecewise_functor_3( t81, 0.0, 0.4e1 / 0.3e1 * t82 * t148 );
+    const double t152 = t147 + t151;
+    const double t154 = t69 * t152 * t90;
+    const double t157 = -t71 - t143;
+    const double t160 = piecewise_functor_3( t74, 0.0, 0.4e1 / 0.3e1 * t77 * t157 );
+    const double t161 = -t157;
+    const double t164 = piecewise_functor_3( t81, 0.0, 0.4e1 / 0.3e1 * t82 * t161 );
+    const double t165 = t160 + t164;
+    const double t167 = t69 * t165 * t90;
 
 
-    eps = t43 + t85;
-    vrho_a = t43 + t85 + t7 * ( t111 + t134 + t145 );
-    vrho_b = t43 + t85 + t7 * ( t111 + t134 + t155 );
+    eps = t43 + t91;
+    vrho_a = t43 + t91 + t7 * ( t117 + t140 + t154 );
+    vrho_b = t43 + t91 + t7 * ( t117 + t140 + t167 );
 
   }
 

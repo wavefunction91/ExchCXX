@@ -1,5 +1,6 @@
 import os,sys
 import textwrap
+import subprocess
 
 def indent(text, amount, ch=' '):
   return textwrap.indent(text, amount * ch)
@@ -16,17 +17,17 @@ class XCFunc:
   command_map = { 
     'EXC' : "g++ -P -DXC_DONT_COMPILE_{{V,F,K,L}}XC -E {}",
     'VXC' : "g++ -P -DXC_DONT_COMPILE_{{E,F,K,L}}XC -E {}", 
-    'EXC_VXC' : "g++ -P -DXC_DONT_COMPILE_{{F,K,L}}XC -E {}" 
+    'EXC_VXC' : "g++ -P -DXC_DONT_COMPILE_{{E,F,K,L}}XC -E {}" 
   }
 
   unpol_lda_vars = {
     'rho[0]' : 'rho',
-    'zk[0]' : 'eps'
+    'zk[0]' : 'eps',
   }
   unpol_gga_vars = {
     'rho[0]' : 'rho',
     'sigma[0]' : 'sigma',
-    'zk[0]' : 'eps'
+    'zk[0]' : 'eps',
   }
 
   #unpol_vars = {
@@ -69,7 +70,11 @@ class XCFunc:
     'GGA' : unpol_gga_outputs
   }
 
-
+  unpol_substitutions = {
+    'tzk0' : 'eps',
+    'tvrho0' : 'vrho',
+    'tvsigma0': 'vsigma'
+  }
 
 
 
@@ -77,7 +82,7 @@ class XCFunc:
   pol_lda_vars = {
     'rho[0]'   : 'rho_a',
     'rho[1]'   : 'rho_b',
-    'zk[0]' : 'eps'
+    'zk[0]' : 'eps',
   }
 
   pol_gga_vars = {
@@ -130,6 +135,15 @@ class XCFunc:
     'GGA' : pol_gga_outputs
   }
 
+  pol_substitutions = {
+    'tzk0' : 'eps',
+    'tvrho0' : 'vrho_a',
+    'tvrho1' : 'vrho_b',
+    'tvsigma0' : 'vsigma_aa',
+    'tvsigma1' : 'vsigma_ab',
+    'tvsigma2' : 'vsigma_bb'
+  }
+
   arith_ops = [ '+', '-', '*', '/' ]
 
   def __init__(self, fname, xc_approx, xc_type = 'EXC' ):
@@ -139,7 +153,7 @@ class XCFunc:
 
     # Generate Preprocessed output
     self.cmd = self.command_map[xc_type].format(fname)
-    self.xc_out = os.popen(self.cmd).read()
+    self.xc_out = subprocess.check_output(self.cmd, shell=True, executable="/bin/bash").decode()
 
     # Sanitize output
     self.xc_lines = self.sanitize_xc_out()
@@ -149,18 +163,14 @@ class XCFunc:
 
     # Handle special cases
     self.unpol_func_lines = self.special_cases( self.unpol_func_lines )
-    self.ferr_func_lines  = self.special_cases( self.ferr_func_lines )
     self.pol_func_lines   = self.special_cases( self.pol_func_lines )
 
 
     self.const_params = []
-    tmp_params, self.unpol_xc_body = self.finalize_lines( self.unpol_func_lines, self.unpol_vars[xc_approx], self.unpol_outputs[xc_approx][xc_type] )
+    tmp_params, self.unpol_xc_body = self.finalize_lines( self.unpol_func_lines, self.unpol_vars[xc_approx], self.unpol_outputs[xc_approx][xc_type], self.unpol_substitutions )
     self.const_params = self.const_params + tmp_params
 
-    tmp_params, self.ferr_xc_body = self.finalize_lines( self.ferr_func_lines, self.unpol_vars[xc_approx], self.unpol_outputs[xc_approx][xc_type] )
-    self.const_params = self.const_params + tmp_params
-
-    tmp_params, self.pol_xc_body = self.finalize_lines( self.pol_func_lines, self.pol_vars[xc_approx], self.pol_outputs[xc_approx][xc_type] )
+    tmp_params, self.pol_xc_body = self.finalize_lines( self.pol_func_lines, self.pol_vars[xc_approx], self.pol_outputs[xc_approx][xc_type], self.pol_substitutions )
     self.const_params = self.const_params + tmp_params
 
     self.const_params = list(set(self.const_params))
@@ -179,26 +189,33 @@ class XCFunc:
     self.xc_out = self.xc_out.replace('    v','v')
     self.xc_out = self.xc_out.replace('0.1e1 / M_PI','constants::m_one_ov_pi')
     self.xc_out = self.xc_out.replace('M_PI * M_PI','constants::m_pi_sq')
+    self.xc_out = self.xc_out.replace(' 0,',' 0.0,')
+    self.xc_out = self.xc_out.replace(' 0 ',' 0.0 ')
+    self.xc_out = self.xc_out.replace(' 1 ',' 1.0 ')
+    self.xc_out = self.xc_out.replace(' 1,',' 1.0,')
     self.xc_out = self.xc_out.replace('cbrt( constants::m_one_ov_pi )','constants::m_cbrt_one_ov_pi')
     self.xc_out = self.xc_out.replace('cbrt( constants::m_pi_sq )','constants::m_cbrt_pi_sq')
+    self.xc_out = self.xc_out.replace('constants::m_cbrt_PI','1.0/constants::m_cbrt_one_ov_pi')
     self.xc_out = self.xc_out.replace('my_piecewise3','piecewise_functor_3')
     self.xc_out = self.xc_out.replace('my_piecewise5','piecewise_functor_5')
+    self.xc_out = self.xc_out.replace('p->zeta_threshold','zeta_tol')
+    self.xc_out = self.xc_out.replace('p->dens_threshold','dens_tol')
 
     xc_lines = self.xc_out.splitlines()
     xc_lines = list(filter( lambda x: not x.startswith('  double'), xc_lines ))
     xc_lines = list(filter( lambda x: not x.startswith('  if'), xc_lines ))
     xc_lines = list(filter( lambda x: not x.startswith('  assert'), xc_lines ))
+    xc_lines = list(filter( lambda x: not x.startswith('    out->'), xc_lines ))
     xc_lines = list(filter( lambda x: '*params' not in x, xc_lines ))
 
     return xc_lines
 
   def separate_xc_out( self ):
-    unpol_i = next( i for i,v in enumerate( self.xc_lines ) if 'func_unpol' in v )
-    ferr_i  = next( i for i,v in enumerate( self.xc_lines ) if 'func_ferr'  in v )
-    pol_i   = next( i for i,v in enumerate( self.xc_lines ) if 'func_pol'   in v )
+    string = "exc" if self.xc_type == "EXC" else "vxc"
+    unpol_i = next( i for i,v in enumerate( self.xc_lines ) if f'func_{string}_unpol' in v )
+    pol_i   = next( i for i,v in enumerate( self.xc_lines ) if f'func_{string}_pol'   in v )
 
-    self.unpol_func_lines = self.xc_lines[(unpol_i+2):(ferr_i-2)]
-    self.ferr_func_lines  = self.xc_lines[(ferr_i+2):(pol_i-2)]
+    self.unpol_func_lines = self.xc_lines[(unpol_i+2):(pol_i-2)]
     self.pol_func_lines   = self.xc_lines[(pol_i+2):-1]
   
 
@@ -220,12 +237,15 @@ class XCFunc:
     return xc_lines
 
 
-  def finalize_lines( self, _xc_lines, xc_vars, xc_output ):
+  def finalize_lines( self, _xc_lines, xc_vars, xc_output, substitutions ):
 
     xc_lines = _xc_lines.copy()
     
     # this replaces the variables to sane text 
     for k,v in xc_vars.items():
+      xc_lines = [ x.replace(k,v) for x in xc_lines ]
+
+    for k,v in substitutions.items():
       xc_lines = [ x.replace(k,v) for x in xc_lines ]
 
     # This changes all parameter arrays to fixed values
@@ -275,6 +295,8 @@ class XCFunc:
       rhs = [ x for x in rhs if 'pow' not in x ]
       rhs = [ x for x in rhs if 'exp' not in x ]
       rhs = [ x for x in rhs if 'atan' not in x ]
+      rhs = [ x for x in rhs if 'dens_tol' not in x ]
+      rhs = [ x for x in rhs if 'zeta_tol' not in x ]
       
       #if len(rhs) > 0:
       all_vars[tvar] = set(rhs)
@@ -314,7 +336,7 @@ class XCFunc:
       dep_lines = [x for x in list(set(xc_lines).union(set(res_lines))) if v in x.split(' = ')[1].strip() ]
       if len(dep_lines) == 0: unused_xc_vars.append(v)
     #if len(unused_xc_vars): print( 'unused vars',unused_xc_vars )
-    
+   
     unused_xc_var_lines = [ '(void)('+x+');' for x in unused_xc_vars ]
     #if len(unused_xc_var_lines): print( 'unused vars',unused_xc_var_lines )
     
@@ -384,7 +406,7 @@ class XCFunc:
       numbers = [ x for x in expr if _is_conv_to_float(x) ]
       for x in numbers: expr.remove(x)
 
-      const_in_expr = [ x for x in expr if x in const_vars or 'params>' in x]
+      const_in_expr = [ x for x in expr if x in const_vars or 'params>' in x ]
       for x in const_in_expr: expr.remove(x)
 
       if len(expr) > 0: continue
@@ -414,8 +436,9 @@ class GenMetaData:
 
 
 
-libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/5.0.0/libxc-5.0.0/src/maple2c/' 
+libxc_prefix = '/home/meji656/Sources/libxc/src/maple2c/' 
 kernel_prefix = './include/exchcxx/impl/builtin/kernels/'
+kernel_prefix = './'
 gen_table = {
 
   'SlaterExchange' : GenMetaData( 'BuiltinSlaterExchange', 
@@ -516,7 +539,7 @@ gen_table = {
   'LYP' : GenMetaData( 'BuiltinLYP', 
     libxc_prefix + 'gga_exc/gga_c_lyp.c', 
     kernel_prefix + 'lyp.hpp',
-    'GGA', 1e-32, 0., {'A':'0.04918', 'B':'0.132', 'c':'0.2533', 'd':'0.349'} 
+    'GGA', 1e-32, 0., {'a':'0.04918', 'b':'0.132', 'c':'0.2533', 'd':'0.349'} 
     ),
 
   'PBE_X' : GenMetaData( 'BuiltinPBE_X', 
@@ -570,6 +593,8 @@ struct kernel_traits< {0} > :
   static constexpr bool is_mgga = {4};
 
   static constexpr double dens_tol  = {5};
+  static constexpr double zeta_tol  = 1e-15;
+  static constexpr double sigma_tol  = {5};
 
   static constexpr bool is_hyb  = {6};
   static constexpr double exx_coeff = {7};
@@ -659,11 +684,6 @@ for name, meta_data in gen_table.items():
   exc_vxc_prefix_unpolar = func_prefix.format( 'exc_vxc', 'unpolar', 
     exc_vxc_args_unpolar[xc_type] )
 
-  exc_prefix_ferr = func_prefix.format( 'exc', 'ferr', 
-    exc_args_unpolar[xc_type] )
-  exc_vxc_prefix_ferr = func_prefix.format( 'exc_vxc', 'ferr', 
-    exc_vxc_args_unpolar[xc_type] )
-
   exc_prefix_polar = func_prefix.format( 'exc', 'polar', 
     exc_args_polar[xc_type] )
   exc_vxc_prefix_polar = func_prefix.format( 'exc_vxc', 'polar', 
@@ -675,11 +695,6 @@ for name, meta_data in gen_table.items():
     indent(xc_exc.unpol_xc_body,2), 
     "\n}"
   ] )
-  exc_func_ferr_body = "\n".join( [
-    exc_prefix_ferr, 
-    indent(xc_exc.ferr_xc_body,2), 
-    "\n}"
-  ] )
   exc_func_polar_body = "\n".join( [
     exc_prefix_polar, 
     indent(xc_exc.pol_xc_body,2), 
@@ -687,17 +702,11 @@ for name, meta_data in gen_table.items():
   ] )
 
   exc_func_unpolar_body = indent(exc_func_unpolar_body, 2)
-  exc_func_ferr_body = indent(exc_func_ferr_body, 2)
   exc_func_polar_body = indent(exc_func_polar_body, 2)
 
   exc_vxc_func_unpolar_body = "\n".join( [
     exc_vxc_prefix_unpolar, 
     indent(xc_exc_vxc.unpol_xc_body,2), 
-    "\n}"
-  ] )
-  exc_vxc_func_ferr_body = "\n".join( [
-    exc_vxc_prefix_ferr, 
-    indent(xc_exc_vxc.ferr_xc_body,2), 
     "\n}"
   ] )
   exc_vxc_func_polar_body = "\n".join( [
@@ -707,7 +716,6 @@ for name, meta_data in gen_table.items():
   ] )
 
   exc_vxc_func_unpolar_body = indent(exc_vxc_func_unpolar_body, 2)
-  exc_vxc_func_ferr_body = indent(exc_vxc_func_ferr_body, 2)
   exc_vxc_func_polar_body = indent(exc_vxc_func_polar_body, 2)
 
 
@@ -716,8 +724,6 @@ for name, meta_data in gen_table.items():
     xc_param_lines, 
     exc_func_unpolar_body,
     exc_vxc_func_unpolar_body,
-    exc_func_ferr_body,
-    exc_vxc_func_ferr_body,
     exc_func_polar_body,
     exc_vxc_func_polar_body,
     "\n\n};"
