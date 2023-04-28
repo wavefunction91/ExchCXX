@@ -91,7 +91,7 @@ jobs:
 
     - name: CMake Subproject Configure
       shell: bash
-      run: cmake -S $GITHUB_WORKSPACE/tests/cmake/subproject 
+      run: cmake -S $GITHUB_WORKSPACE/test/cmake/subproject 
                  -B ${{runner.workspace}}/cmake_subproject_build 
                  -DGIT_REVISION=$GITHUB_HEAD_REF 
                  -DFETCHCONTENT_SOURCE_DIR_EXCHCXX=$GITHUB_WORKSPACE
@@ -131,7 +131,7 @@ jobs:
 
     - name: CMake Discovery Configure
       shell: bash
-      run: cmake -S $GITHUB_WORKSPACE/tests/cmake/discovery -B ${{runner.workspace}}/cmake_discovery_build 
+      run: cmake -S $GITHUB_WORKSPACE/test/cmake/discovery -B ${{runner.workspace}}/cmake_discovery_build 
                  -DCMAKE_PREFIX_PATH="${{runner.workspace}}/install;${ENV_PREFIX_PATH}"
                  -DCMAKE_TOOLCHAIN_FILE=${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
