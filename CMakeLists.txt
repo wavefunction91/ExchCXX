@@ -56,7 +56,7 @@ endif()
 
 
 ## Find LibXC
-find_package( Libxc 6.0.0 CONFIG QUIET )
+find_package( Libxc 6.1.0 CONFIG QUIET )
 
 if( ${Libxc_FOUND} )
 
