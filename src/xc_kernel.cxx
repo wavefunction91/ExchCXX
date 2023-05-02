@@ -76,7 +76,12 @@ XCKernel::XCKernel(
   const Kernel kern, 
   const Spin polar) : 
 XCKernel( kernel_factory( backend, kern, polar ) ) { }
-  
+
+XCKernel::XCKernel(
+  const std::string xc_name,
+  const Spin polar) :
+XCKernel( libxc_kernel_factory( xc_name, polar ) ) { }
+
 
 XCKernel::XCKernel( impl_ptr&& ptr ) :
   pimpl_(std::move(ptr)) { }

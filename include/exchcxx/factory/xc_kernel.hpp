@@ -55,6 +55,7 @@
 namespace ExchCXX {
 
 XCKernel libxc_kernel_factory(const Kernel, const Spin );
+XCKernel libxc_kernel_factory(const std::string xc_name, const Spin polar );
 XCKernel builtin_kernel_factory( Kernel, Spin );
 
 static inline XCKernel kernel_factory( 

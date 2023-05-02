@@ -132,8 +132,9 @@ protected:
 public:
 
   LibxcKernelImpl() = delete;
-  
+
   LibxcKernelImpl( const Kernel kern, const Spin polar);
+  LibxcKernelImpl( const std::string xc_name, const Spin polar);
   LibxcKernelImpl( const int kern, const int spin_polar );
   LibxcKernelImpl( const LibxcKernelImpl& );
 

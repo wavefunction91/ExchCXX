@@ -40,10 +40,6 @@ struct lda_screening_interface {
 
     if( rho_s <= traits::dens_tol ) {
       eps = 0.;
-    } else if( zeta > 1. - 1e-10 ) {
-      traits::eval_exc_ferr_impl( rho_a, eps );
-    } else if( zeta < -1. + 1e-10 ) {
-      traits::eval_exc_ferr_impl( rho_b, eps );
     } else {
       traits::eval_exc_polar_impl( rho_a, rho_b, eps );
     }
@@ -81,12 +77,6 @@ struct lda_screening_interface {
       eps    = 0.;
       vrho_a = 0.;
       vrho_b = 0.;
-    } else if( zeta > 1. - 1e-10 ) {
-      traits::eval_exc_vxc_ferr_impl( rho_a, eps, vrho_a );
-      vrho_b = 0.;
-    } else if( zeta < -1. + 1e-10 ) {
-      traits::eval_exc_vxc_ferr_impl( rho_b, eps, vrho_b );
-      vrho_a = 0.;
     } else {
       traits::eval_exc_vxc_polar_impl( rho_a, rho_b, eps, vrho_a, vrho_b );
     }
@@ -128,10 +118,6 @@ struct gga_screening_interface {
 
     if( rho_s <= traits::dens_tol ) {
       eps = 0.;
-    } else if( zeta > 1. - 1e-10 ) {
-      traits::eval_exc_ferr_impl( rho_a, sigma_aa, eps );
-    } else if( zeta < -1. + 1e-10 ) {
-      traits::eval_exc_ferr_impl( rho_b, sigma_bb, eps );
     } else {
       traits::eval_exc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab,
         sigma_bb, eps );
@@ -177,14 +163,8 @@ struct gga_screening_interface {
     vsigma_bb = 0.;
 
     if( rho_s > traits::dens_tol ) {
-      if( zeta > 1. - 1e-10 ) {
-        traits::eval_exc_vxc_ferr_impl( rho_a, sigma_aa, eps, vrho_a, vsigma_aa );
-      } else if( zeta < -1. + 1e-10 ) {
-        traits::eval_exc_vxc_ferr_impl( rho_b, sigma_bb, eps, vrho_b, vsigma_bb );
-      } else {
-        traits::eval_exc_vxc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab, 
-          sigma_bb, eps, vrho_a, vrho_b, vsigma_aa, vsigma_ab, vsigma_bb );
-      }
+      traits::eval_exc_vxc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab, 
+        sigma_bb, eps, vrho_a, vrho_b, vsigma_aa, vsigma_ab, vsigma_bb );
     }
 
   }
