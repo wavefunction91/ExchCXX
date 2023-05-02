@@ -43,61 +43,46 @@
  * in binary and source code form.
  */
 
-#include <exchcxx/xc_kernel.hpp>
-#include <exchcxx/impl/xc_kernel.hpp>
-#include <exchcxx/factory/xc_kernel.hpp>
+#pragma once
 
 namespace ExchCXX {
+namespace detail {
 
-BidirectionalMap<std::string, Kernel> kernel_map{
-    {{"SlaterExchange", Kernel::SlaterExchange},
-     {"PBE_X", Kernel::PBE_X},
-     {"PBE_C", Kernel::PBE_C},
-     {"revPBE_X", Kernel::revPBE_X},
-     {"LYP", Kernel::LYP},
-     {"B3LYP", Kernel::B3LYP},
-     {"PBE0", Kernel::PBE0},
-     {"VWN3", Kernel::VWN3},
-     {"VWN5", Kernel::VWN5},
-     {"PZ81", Kernel::PZ81},
-     {"PZ81_MOD", Kernel::PZ81_MOD},
-     {"PW91_LDA", Kernel::PW91_LDA},
-     {"PW91_LDA_MOD", Kernel::PW91_LDA_MOD},
-     {"PW91_LDA_RPA", Kernel::PW91_LDA_RPA},
-     {"B88", Kernel::B88}}};
+template <typename T, typename ParameterType>
+class NamedType {
 
-std::ostream& operator<<( std::ostream& out, Kernel kern ) {
-  out << kernel_map.key(kern);
-  return out;
+public:
+
+  constexpr explicit NamedType() : value_() { }
+  constexpr explicit NamedType(T const& value) : value_(value) {}
+  constexpr explicit NamedType(T&& value) : value_(std::move(value)) {}
+
+  constexpr NamedType( const NamedType& other ) : value_(other.get()) { }
+  constexpr NamedType( NamedType&& other ) noexcept : 
+    value_(std::move(other.get())) { };
+
+  constexpr NamedType& operator=( const NamedType& other ) {
+    value_ = other.get();
+    return *this;
+  }
+  constexpr NamedType& operator=( NamedType&& other ) noexcept {
+    value_ = std::move(other.get());
+    return *this;
+  }
+
+  constexpr T& get() { return value_; }
+  constexpr T const& get() const {return value_; }
+
+  template <typename Archive>
+  void serialize( Archive& ar ) {
+    ar( value_ );
+  }
+
+private:
+
+  T value_;
+
+};
+
 }
-
-XCKernel::XCKernel( 
-  const Backend backend, 
-  const Kernel kern, 
-  const Spin polar) : 
-XCKernel( kernel_factory( backend, kern, polar ) ) { }
-
-XCKernel::XCKernel(
-  const libxc_name_string& xc_name,
-  const Spin polar) :
-XCKernel( libxc_kernel_factory( xc_name.get(), polar ) ) { }
-
-
-XCKernel::XCKernel( impl_ptr&& ptr ) :
-  pimpl_(std::move(ptr)) { }
-
-XCKernel::XCKernel( const XCKernel& other ) :
-  pimpl_(other.pimpl_->clone()) { }
-
-XCKernel::XCKernel( XCKernel&& other ) noexcept = default;
-
-XCKernel& XCKernel::operator=( XCKernel&& other ) noexcept =default;
-
-
-XCKernel& XCKernel::operator=( const XCKernel& other ) {
-  return *this = XCKernel(other);
-}
-
-XCKernel::~XCKernel() noexcept = default;
-
 }
