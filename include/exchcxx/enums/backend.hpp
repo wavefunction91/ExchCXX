@@ -44,6 +44,7 @@
  */
 
 #pragma once
+#include <exchcxx/util/named_type.hpp>
 
 namespace ExchCXX {
 
@@ -51,5 +52,7 @@ enum class Backend {
   libxc,
   builtin
 };
+
+using libxc_name_string = detail::NamedType<std::string, struct LibxcNameString>;
 
 }
