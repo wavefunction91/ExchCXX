@@ -84,7 +84,6 @@ else()
       $<BUILD_INTERFACE:${libxc_SOURCE_DIR}/src>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/src>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}>
-      $<BUILD_INTERFACE:${libxc_BINARY_DIR}/gen_funcidx>
   )
 
   # disable unity builds for libxc
