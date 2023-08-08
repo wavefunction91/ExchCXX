@@ -75,6 +75,51 @@ jobs:
       shell: bash
       run: cmake --build ${{runner.workspace}}/build --target test
 
+  libxc_versions:
+    name: Test Libxc Compatibility
+    needs: release_build
+    runs-on: ubuntu-latest
+    container:
+        image: dbwy/compiler-zoo
+    strategy:
+      matrix:
+        libxc_version: [ master, 6.2.0 ]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Compiler 
+      shell: bash
+      run: $GITHUB_WORKSPACE/.github/workflows/scripts/compiler_setup.sh 
+           gnu 12
+
+    - name: Setup Build Type
+      shell: bash
+      run: echo "set(CMAKE_BUILD_TYPE Debug CACHE BOOL \"\" FORCE)" >> 
+             ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Setup Libxc
+      shell: bash
+      run: | 
+        git clone https://gitlab.com/libxc/libxc.git ${{runner.workspace}}/libxc
+        git -C ${{runner.workspace}}/libxc checkout ${{matrix.libxc_version}}
+
+    - name: Configure CMake
+      shell: bash
+      run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
+                 -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/install
+                 -DFETCHCONTENT_SOURCE_DIR_LIBXC=${{runner.workspace}}/libxc
+                 -DCMAKE_TOOLCHAIN_FILE=${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Build
+      shell: bash
+      run: cmake --build ${{runner.workspace}}/build -j2 
+
+    - name: Test
+      shell: bash
+      run: cmake --build ${{runner.workspace}}/build --target test
+
+
   subproject_build:
     name: Build as Subproject
     needs: release_build
