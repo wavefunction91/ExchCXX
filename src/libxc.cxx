@@ -174,20 +174,30 @@ bool LibxcKernelImpl::is_lda_() const noexcept {
 
 bool LibxcKernelImpl::is_gga_() const noexcept {
   return 
-    (kernel_.info->family == XC_FAMILY_GGA    ) or
-    (kernel_.info->family == XC_FAMILY_HYB_GGA);
+    (kernel_.info->family == XC_FAMILY_GGA    ) 
+#if XC_MAJOR_VERSION < 7
+    or (kernel_.info->family == XC_FAMILY_HYB_GGA)
+#endif
+    ;
 }
 
 bool LibxcKernelImpl::is_mgga_() const noexcept {
   return 
-    (kernel_.info->family == XC_FAMILY_MGGA    ) or
-    (kernel_.info->family == XC_FAMILY_HYB_MGGA);
+    (kernel_.info->family == XC_FAMILY_MGGA    )
+#if XC_MAJOR_VERSION < 7
+    or (kernel_.info->family == XC_FAMILY_HYB_MGGA)
+#endif
+    ;
 }
 
 bool LibxcKernelImpl::is_hyb_() const noexcept {
+#if XC_MAJOR_VERSION < 7
   return
     (kernel_.info->family == XC_FAMILY_HYB_GGA ) or
     (kernel_.info->family == XC_FAMILY_HYB_MGGA);
+#else
+  return xc_hyb_type(&kernel_) == XC_HYB_HYBRID;
+#endif
 }
 
 bool LibxcKernelImpl::is_polarized_() const noexcept {
