@@ -206,7 +206,7 @@ bool LibxcKernelImpl::is_polarized_() const noexcept {
 
 
 double LibxcKernelImpl::hyb_exx_() const noexcept {
-  return xc_hyb_exx_coef( &kernel_ );
+  return is_hyb_() ? xc_hyb_exx_coef(&kernel_) : 0.0;
 }
 
 bool LibxcKernelImpl::supports_inc_interface_() const noexcept {

@@ -85,6 +85,7 @@ else()
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/src>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}>
   )
+  message( STATUS "Libxc Source: ${libxc_SOURCE_DIR}" )
 
   # disable unity builds for libxc
   if (CMAKE_UNITY_BUILD)
