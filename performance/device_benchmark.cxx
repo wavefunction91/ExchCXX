@@ -1,5 +1,6 @@
 #include <chrono>
 #include <iostream>
+#include <cassert>
 
 #include <exchcxx/xc_kernel.hpp>
 
@@ -125,10 +126,10 @@ int main() {
 
 
   using namespace ExchCXX;
-  auto kern  = XCKernel::Kernel::PBE0;
-  auto polar = XCKernel::Spin::Unpolarized;
+  auto kern  = Kernel::PBE0;
+  auto polar = Spin::Unpolarized;
 
-  auto builtin_backend = XCKernel::Backend::builtin;
+  auto builtin_backend = Backend::builtin;
 
   XCKernel pbe_libxc( kern, polar );
   XCKernel pbe_built( builtin_backend, kern, polar );
