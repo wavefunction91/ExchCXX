@@ -5,12 +5,13 @@ include(FetchContent)
 project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
 
 # ExchCXX Options
-option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
-option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
-option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
-option( EXCHCXX_ENABLE_HIP       "Enable Device Code (HIP)"     OFF )
-option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"    OFF )
-option( BUILD_SHARED_LIBS        "Build Shared Libs"            OFF )
+option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"             ON  )
+option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark"  OFF )
+option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"     OFF )
+option( EXCHCXX_ENABLE_HIP       "Enable Device Code (HIP)"      OFF )
+option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"     OFF )
+option( BUILD_SHARED_LIBS        "Build Shared Libs"             OFF )
+option( EXCHCXX_DISABLE_FETCH    "Disable FetchContent for Deps" OFF )
 
 
 # Decided if we're compiling device bindings
@@ -64,6 +65,10 @@ if( ${Libxc_FOUND} )
   if( Libxc_VERSION VERSION_GREATER_EQUAL "7.0.0" )
     message( FATAL_ERROR "Libxc version 7+ breaks the API currently used in ExchCXX" )
   endif()
+
+elseif( EXCHCXX_DISABLE_FETCH )
+
+  message( FATAL_ERROR "Libxc was not found and FetchContent was disabled." )
 
 else()
 
