@@ -9,7 +9,7 @@ jobs:
   release_build:
     runs-on: ubuntu-latest
     container:
-        image: dbwy/compiler-zoo
+        image: dbwy/chemistry:dev
     strategy:
       matrix:
         compiler: [ {suite: gnu, version: 12}, {suite: llvm, version: 14} ]
@@ -45,7 +45,7 @@ jobs:
   debug_build:
     runs-on: ubuntu-latest
     container:
-        image: dbwy/compiler-zoo
+        image: dbwy/chemistry:dev
 
     steps:
     - uses: actions/checkout@v3
@@ -80,7 +80,7 @@ jobs:
     needs: release_build
     runs-on: ubuntu-latest
     container:
-        image: dbwy/compiler-zoo
+        image: dbwy/chemistry:dev
     strategy:
       matrix:
         libxc_version: [ master, 6.2.0 ]
@@ -125,7 +125,7 @@ jobs:
     needs: release_build
     runs-on: ubuntu-latest
     container:
-        image: dbwy/compiler-zoo
+        image: dbwy/chemistry:dev
     
     steps:
     - uses: actions/checkout@v3
@@ -151,7 +151,7 @@ jobs:
     needs: release_build
     runs-on: ubuntu-latest
     container:
-        image: dbwy/compiler-zoo
+        image: dbwy/chemistry:dev
 
     steps:
     - uses: actions/checkout@v3
