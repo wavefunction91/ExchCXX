@@ -24,7 +24,7 @@ jobs:
 
     - name: Setup Build Type
       shell: bash
-      run: echo "set(CMAKE_BUILD_TYPE Release CACHE BOOL \"\" FORCE)" >> 
+      run: echo "set(CMAKE_BUILD_TYPE Release CACHE STRING \"\" FORCE)" >> 
              ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
 
@@ -57,12 +57,12 @@ jobs:
 
     - name: Setup Build Type 
       shell: bash
-      run: echo "set(CMAKE_BUILD_TYPE Release CACHE BOOL \"\" FORCE)" >> 
+      run: echo "set(CMAKE_BUILD_TYPE Release CACHE STRING \"\" FORCE)" >> 
              ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
     - name: Enable CUDA
       shell: bash
-      run: echo "set(EXCHCXX_ENABLE_CUDA CACHE BOOL ON FORCE)" >> 
+      run: echo "set(EXCHCXX_ENABLE_CUDA ON CACHE BOOL \"\" FORCE)" >> 
              ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
     - name: Configure CMake
@@ -90,7 +90,7 @@ jobs:
 
     - name: Setup Build Type
       shell: bash
-      run: echo "set(CMAKE_BUILD_TYPE Debug CACHE BOOL \"\" FORCE)" >> 
+      run: echo "set(CMAKE_BUILD_TYPE Debug CACHE STRING \"\" FORCE)" >> 
              ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
 
@@ -159,7 +159,7 @@ jobs:
 
     - name: Setup Build Type
       shell: bash
-      run: echo "set(CMAKE_BUILD_TYPE Debug CACHE BOOL \"\" FORCE)" >> 
+      run: echo "set(CMAKE_BUILD_TYPE Debug CACHE STRING \"\" FORCE)" >> 
              ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
 
     - name: Setup Libxc
