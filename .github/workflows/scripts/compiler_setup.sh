@@ -15,12 +15,6 @@ then
   update-alternatives --set g++ /usr/bin/g++-${CVER}
   update-alternatives --install /usr/bin/cc  cc  /usr/bin/gcc 30
   update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 30
-elif [[ "${CSUITE}" == "dpcpp" ]]
-then
-  update-alternatives --set icx  /opt/intel/oneapi/compiler/${CVER}/linux/bin/icx
-  update-alternatives --set icpx /opt/intel/oneapi/compiler/${CVER}/linux/bin/icpx
-  update-alternatives --install /usr/bin/cc  cc  /usr/bin/icx  30
-  update-alternatives --install /usr/bin/c++ c++ /usr/bin/icpx 30
 else
   echo "Compiler Suite Not Recognized!"
   exit 125

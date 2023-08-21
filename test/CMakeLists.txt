@@ -16,9 +16,23 @@ if( NOT Catch2_FOUND )
   endif()
 endif()
 
+# Testing options
+option(EXCHCXX_SYCL_TEST_GPU "Enable GPU Device Selection in SYCL Unit Tests" OFF)
+
+# Generate test config header
+configure_file(
+  ${PROJECT_SOURCE_DIR}/test/ut_common.hpp.in
+  ${PROJECT_BINARY_DIR}/test/ut_common.hpp
+)
+
 # Global Catch2 executable
 add_library( catch2_main STATIC ut_main.cxx)
 target_link_libraries( catch2_main PUBLIC Catch2::Catch2 )
+target_include_directories( catch2_main PUBLIC 
+  ${PROJECT_SOURCE_DIR}/test
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/test>
+)
+
 
 add_executable( xc_kernel_test xc_kernel_test.cxx reference_values.cxx )
 target_link_libraries( xc_kernel_test PUBLIC exchcxx catch2_main )

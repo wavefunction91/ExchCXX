@@ -1934,14 +1934,6 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 }
 
 
-#if 0
-struct SYCLTestFeature {
-  sycl::queue q;
-  SYCLTestFeature() :
-    q( sycl::gpu_selector{},
-       sycl::property_list{sycl::property::queue::in_order{}} ) { }
-};
-#else
 struct SYCLTestFeature {
   static sycl::queue q;
 
@@ -1949,15 +1941,18 @@ struct SYCLTestFeature {
 };
 
 sycl::queue SYCLTestFeature::q(
-       sycl::gpu_selector{},
-       sycl::property_list{sycl::property::queue::in_order{}} );
+#ifdef EXCHCXX_SYCL_TEST_GPU
+       sycl::gpu_selector_v,
+#else
+       sycl::default_selector_v,
 #endif
+       sycl::property_list{sycl::property::queue::in_order{}} );
 
 TEST_CASE_METHOD( SYCLTestFeature, "SYCL Interfaces", "[xc-device]" ) {
 
-  //std::cout << "Running on "
-  //          << q.get_device().get_info<sycl::info::device::name>()
-  //          << "\n";
+  std::cout << "Running on "
+            << q.get_device().get_info<sycl::info::device::name>()
+            << "\n";
 
   SECTION( "Libxc Functionals" ) {
 
