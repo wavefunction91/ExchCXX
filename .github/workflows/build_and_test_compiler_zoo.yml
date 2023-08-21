@@ -112,6 +112,35 @@ jobs:
       shell: bash
       run: cmake --build ${{runner.workspace}}/build -j2 
 
+  sycl_build:
+    name: SYCL Build
+    runs-on: ubuntu-latest
+    container:
+        image: dbwy/chemistry-sycl:oneapi-2023.2.1
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Compiler 
+      shell: bash
+      run: $GITHUB_WORKSPACE/.github/workflows/scripts/compiler_setup.sh 
+           dpcpp 2023.2.1
+
+    - name: Enable HIP
+      shell: bash
+      run: |
+        echo "set(EXCHCXX_ENABLE_SYCL ON CACHE BOOL \"\" FORCE)" >> ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Configure CMake
+      shell: bash
+      run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
+                 -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/install 
+                 -DCMAKE_TOOLCHAIN_FILE=${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Build
+      shell: bash
+      run: cmake --build ${{runner.workspace}}/build -j2 
+
   debug_build:
     name: Debug Build and Test 
     runs-on: ubuntu-latest
