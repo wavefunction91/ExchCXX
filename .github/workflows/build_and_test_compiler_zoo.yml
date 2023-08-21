@@ -42,6 +42,39 @@ jobs:
       shell: bash
       run: cmake --build ${{runner.workspace}}/build --target test
 
+  nvgpu_build:
+    runs-on: ubuntu-latest
+    container:
+        image: dbwy/chemistry-nvgpu:cuda-11.7.0 
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Compiler 
+      shell: bash
+      run: $GITHUB_WORKSPACE/.github/workflows/scripts/compiler_setup.sh 
+           gnu 12
+
+    - name: Setup Build Type 
+      shell: bash
+      run: echo "set(CMAKE_BUILD_TYPE Release CACHE BOOL \"\" FORCE)" >> 
+             ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Enable CUDA
+      shell: bash
+      run: echo "set(EXCHCXX_ENABLE_CUDA CACHE BOOL ON FORCE)" >> 
+             ${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Configure CMake
+      shell: bash
+      run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
+                 -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/install 
+                 -DCMAKE_TOOLCHAIN_FILE=${GITHUB_WORKSPACE}/${GH_ACTIONS_TOOLCHAIN}
+
+    - name: Build
+      shell: bash
+      run: cmake --build ${{runner.workspace}}/build -j2 
+
   debug_build:
     runs-on: ubuntu-latest
     container:
