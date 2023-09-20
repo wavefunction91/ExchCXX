@@ -110,7 +110,7 @@ ExchCXX either wraps or mimics the density functional implementations  from
 [Libxc](https://libxc.gitlab.io/), which should also be cited in any
 scientific publication or software employing ExchCXX:
 ```
-% Actual Implementations of the Density Functionals
+% Base Implementation of the Density Functionals
 @article{lehtola2018libxc,
   author  = {Lehtola, Susi and Steigemann, Conrad and Oliveira, Micael J. T. and Marques, Miguel A. L.},
   journal = {SoftwareX},
