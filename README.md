@@ -39,6 +39,90 @@ Department of Energy Exascale Computing Project
 * Provide a modern C++ wrapper around various XC functional libraries (Libxc, XCFun, etc)
 * Provide stable, portable and high-performance implementations for the evaluation of XC functionals on various accelerator architectures (GPUs, FPGAs, etc)
 
+# Publications
+
+## ExchCXX
+Please cite the following publications if ExchCXX was used in your publication:
+```
+% Distributed Memory Seminumerical Exact Exchange implementation
+@article{williams2023distributed,
+  title = {Distributed memory, GPU accelerated Fock construction for hybrid, Gaussian basis density functional theory},
+  author = {Williams-Young, David B. and Asadchev, Andrey and Popovici, Doru Thom and Clark, David and Waldrop, Jonathan and 
+            Windus, Theresa L. and Valeev, Edward F. and de Jong, Wibe A.},
+  journal = {The Journal of Chemical Physics},
+  volume = {158},
+  number = {23},
+  pages = {234104},
+  year = {2023},
+  doi = {10.1063/5.0151070},
+  url = {https://doi.org/10.1063/5.0151070}
+}
+
+% Performance Portability (HIP/SYCL implementations)
+@article{williams2021achieving,
+  title={Achieving performance portability in Gaussian basis set density functional 
+         theory on accelerator based architectures in NWChemEx},
+  author={Williams-Young, David B and Bagusetty, Abhishek and de Jong, Wibe A and 
+          Doerfler, Douglas and van Dam, Hubertus JJ and V{\'a}zquez-Mayagoitia, {\'A}lvaro and 
+          Windus, Theresa L and Yang, Chao},
+  journal={Parallel Computing},
+  volume={108},
+  pages={102829},
+  year={2021},
+  doi={10.1016/j.parco.2021.102829},
+  url={https://www.sciencedirect.com/science/article/pii/S0167819121000776?via%3Dihub}
+}
+
+% CUDA and distributed memory implementation
+@article{williams20on,
+  author={David B. Williams--Young and Wibe A. de Jong and Hubertus J.J. van Dam and
+          Chao Yang},
+  title={On the Efficient Evaluation of the Exchange Correlation Potential on 
+         Graphics Processing Unit Clusters},
+  journal={Frontiers in Chemistry},
+  volume={8},
+  pages={581058},
+  year={2020},
+  doi={10.3389/fchem.2020.581058},
+  url={https://www.frontiersin.org/articles/10.3389/fchem.2020.581058/abstract},
+  preprint={https://arxiv.org/abs/2007.03143}
+}
+
+% Algorithm for XC potential assembly and shared-memory CPU implementation
+@article{petrone18an,
+  author={Alessio Petrone and David B. Williams--Young and Shichao Sun and
+          Torin F. Stetina and Xiaosong Li},
+  title={An Efficient Implementation of Two-Component Relativistic Density 
+         Functional Theory with Torque-Free Auxiliary Variables},
+  journal={The European Physical Journal B},
+  volume={91},
+  number={169},
+  pages={},
+  year={2018},
+  doi={10.1140/epjb/e2018-90170-1},
+  url={https://link.springer.com/article/10.1140/epjb/e2018-90170-1}
+}
+```
+
+## Density functionals
+
+ExchCXX takes its density functionals from
+[Libxc](https://libxc.gitlab.io/), which should also be cited in any
+scientific publication employing ExchCXX:
+```
+% Actual Implementations of the Density Functionals
+@article{lehtola2018libxc,
+  author  = {Lehtola, Susi and Steigemann, Conrad and Oliveira, Micael J. T. and Marques, Miguel A. L.},
+  journal = {SoftwareX},
+  title   = {Recent developments in {LIBXC}---a comprehensive library of functionals for density functional theory},
+  year    = {2018},
+  pages   = {1--5},
+  volume  = {7},
+  doi     = {10.1016/j.softx.2017.11.002},
+}
+```
+
+
 
 # Example Usage
 
