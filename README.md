@@ -108,7 +108,7 @@ Please cite the following publications if ExchCXX was used in your publication:
 
 ExchCXX either wraps or mimics the density functional implementations  from
 [Libxc](https://libxc.gitlab.io/), which should also be cited in any
-scientific publication employing ExchCXX:
+scientific publication or software employing ExchCXX:
 ```
 % Actual Implementations of the Density Functionals
 @article{lehtola2018libxc,
