@@ -39,6 +39,61 @@ Department of Energy Exascale Computing Project
 * Provide a modern C++ wrapper around various XC functional libraries (Libxc, XCFun, etc)
 * Provide stable, portable and high-performance implementations for the evaluation of XC functionals on various accelerator architectures (GPUs, FPGAs, etc)
 
+# Publications
+
+## ExchCXX
+Please cite the following publications if ExchCXX was used in your publication:
+```
+% Performance Portability (HIP/SYCL implementations)
+@article{williams2021achieving,
+  title={Achieving performance portability in Gaussian basis set density functional 
+         theory on accelerator based architectures in NWChemEx},
+  author={Williams-Young, David B and Bagusetty, Abhishek and de Jong, Wibe A and 
+          Doerfler, Douglas and van Dam, Hubertus JJ and V{\'a}zquez-Mayagoitia, {\'A}lvaro and 
+          Windus, Theresa L and Yang, Chao},
+  journal={Parallel Computing},
+  volume={108},
+  pages={102829},
+  year={2021},
+  doi={10.1016/j.parco.2021.102829},
+  url={https://www.sciencedirect.com/science/article/pii/S0167819121000776?via%3Dihub}
+}
+
+% CUDA and distributed memory implementation
+@article{williams20on,
+  author={David B. Williams--Young and Wibe A. de Jong and Hubertus J.J. van Dam and
+          Chao Yang},
+  title={On the Efficient Evaluation of the Exchange Correlation Potential on 
+         Graphics Processing Unit Clusters},
+  journal={Frontiers in Chemistry},
+  volume={8},
+  pages={581058},
+  year={2020},
+  doi={10.3389/fchem.2020.581058},
+  url={https://www.frontiersin.org/articles/10.3389/fchem.2020.581058/abstract},
+  preprint={https://arxiv.org/abs/2007.03143}
+}
+```
+
+## Density functionals
+
+ExchCXX either wraps or mimics the density functional implementations  from
+[Libxc](https://libxc.gitlab.io/), which should also be cited in any
+scientific publication or software employing ExchCXX:
+```
+% Base Implementation of the Density Functionals
+@article{lehtola2018libxc,
+  author  = {Lehtola, Susi and Steigemann, Conrad and Oliveira, Micael J. T. and Marques, Miguel A. L.},
+  journal = {SoftwareX},
+  title   = {Recent developments in {LIBXC}---a comprehensive library of functionals for density functional theory},
+  year    = {2018},
+  pages   = {1--5},
+  volume  = {7},
+  doi     = {10.1016/j.softx.2017.11.002},
+}
+```
+
+
 
 # Example Usage
 
