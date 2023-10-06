@@ -56,6 +56,8 @@
 
 #include "reference_values.hpp"
 
+#cmakedefine EXCHCXX_SYCL_TEST_GPU
+
 
 enum class TestInterface {
   EXC,
