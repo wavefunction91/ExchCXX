@@ -1938,7 +1938,7 @@ void test_sycl_interface( TestInterface interface, EvalType evaltype,
 struct SYCLTestFeature {
   sycl::queue q;
   SYCLTestFeature() :
-    q( sycl::gpu_selector{},
+    q( sycl::gpu_selector_v,
        sycl::property_list{sycl::property::queue::in_order{}} ) { }
 };
 #else
@@ -1949,7 +1949,7 @@ struct SYCLTestFeature {
 };
 
 sycl::queue SYCLTestFeature::q(
-       sycl::gpu_selector{},
+       sycl::gpu_selector_v,
        sycl::property_list{sycl::property::queue::in_order{}} );
 #endif
 

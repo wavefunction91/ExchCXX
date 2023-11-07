@@ -62,7 +62,7 @@ SAFE_INLINE(F) safe_max(F x, F y) { return fmax(x,y); }
 template <typename F>
 SAFE_INLINE(F) safe_min(F x, F y) { return fmin(x,y); }
 
-#elif defined(__SYCL_DEVICE_ONLY__)
+#elif defined(__SYCL_DEVICE_ONLY__) && defined(EXCHCXX_ENABLE_SYCL)
 
 #define SAFE_CONSTEXPR_INLINE(TYPE) static __attribute__((always_inline)) constexpr TYPE
 #define SAFE_INLINE(TYPE)           static __attribute__((always_inline)) TYPE
