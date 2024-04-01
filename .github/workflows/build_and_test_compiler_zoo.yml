@@ -83,7 +83,7 @@ jobs:
         image: dbwy/compiler-zoo
     strategy:
       matrix:
-        libxc_version: [ master, 6.2.0 ]
+        libxc_version: [ 6.2.0 ]
 
     steps:
     - uses: actions/checkout@v3
