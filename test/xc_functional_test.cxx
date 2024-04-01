@@ -196,12 +196,15 @@ void check_meta( Backend backend, Spin polar, Args&&... args ) {
     [](const auto& k) { return k.is_polarized(); } ); 
   bool should_be_hyb = std::any_of( kerns.begin(), kerns.end(),
     [](const auto& k) { return k.is_hyb(); } );
+  bool should_need_lapl = std::any_of( kerns.begin(), kerns.end(),
+    [](const auto& k) { return k.needs_laplacian(); } );
 
   CHECK( func.is_mgga()       == should_be_mgga       );
   CHECK( func.is_gga()        == should_be_gga        );
   CHECK( func.is_lda()        == should_be_lda        );
   CHECK( func.is_polarized()  == should_be_polarized  );
   CHECK( func.is_hyb()        == should_be_hyb        );
+  CHECK( func.needs_laplacian() == should_need_lapl   );
 
   double total_exx = std::accumulate( kerns.begin(), kerns.end(), 0.,
     [](const auto &a, const auto &b){ return a + b.hyb_exx(); } );

@@ -69,6 +69,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
     CHECK( not lda.is_gga() );
     CHECK( not lda.is_mgga() );
     CHECK( not lda.is_hyb() );
+    CHECK( not lda.needs_laplacian() );
 
     CHECK( lda.rho_buffer_len( npts )    == npts );
     CHECK( lda.sigma_buffer_len( npts )  == 0    );
@@ -90,6 +91,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
     CHECK( not lda.is_gga() );
     CHECK( not lda.is_mgga() );
     CHECK( not lda.is_hyb() );
+    CHECK( not lda.needs_laplacian() );
 
     CHECK( lda.rho_buffer_len( npts )    == 2*npts );
     CHECK( lda.sigma_buffer_len( npts )  == 0      );
@@ -112,6 +114,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
     CHECK( not gga.is_lda() );
     CHECK( not gga.is_mgga() );
     CHECK( not gga.is_hyb() );
+    CHECK( not gga.needs_laplacian() );
 
     CHECK( gga.rho_buffer_len( npts )    == npts );
     CHECK( gga.sigma_buffer_len( npts )  == npts );
@@ -133,6 +136,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
     CHECK( not gga.is_lda() );
     CHECK( not gga.is_mgga() );
     CHECK( not gga.is_hyb() );
+    CHECK( not gga.needs_laplacian() );
 
     CHECK( gga.rho_buffer_len( npts )    == 2*npts );
     CHECK( gga.sigma_buffer_len( npts )  == 3*npts );
