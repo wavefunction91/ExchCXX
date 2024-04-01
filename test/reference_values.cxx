@@ -135,6 +135,141 @@ std::vector<double> vsigma_xc_gga_c_lyp_ref_pol = {
 };
 
 
+
+
+
+std::vector<double> exc_xc_mgga_c_scan_ref_unp = {
+-0.396376974817, -0.471540080123,
+-0.533396348869, -0.591369866023,
+-0.642807787274
+};
+
+std::vector<double> vrho_xc_mgga_c_scan_ref_unp = {
+-0.460152650566, -0.623118535281,
+-0.764470500527, -0.862470512705,
+-0.936094993961
+};
+
+std::vector<double> vsigma_xc_mgga_c_scan_ref_unp = {
+-0.049357276976, -0.056332014377,
+-0.040207846026, -0.028050533162,
+-0.020140871184
+};
+
+std::vector<double> vtau_xc_mgga_c_scan_ref_unp = {
+0.042672319773, 0.087890594383,
+0.088306469557, 0.080389984903,
+0.071734366025
+};
+
+std::vector<double> exc_xc_mgga_c_scan_ref_pol = {
+-0.592191935274, -0.756007107013,
+-0.875625350878, -0.972027141138,
+-1.053486673118
+};
+
+std::vector<double> vrho_xc_mgga_c_scan_ref_pol = {
+-0.642368591061, -0.822909425557,
+-0.958799773865, -1.063088704863,
+-1.153559630345, -1.228156943455,
+-1.296083819945, -1.355697783203,
+-1.411287187583, -1.461796825163
+};
+
+std::vector<double> vsigma_xc_mgga_c_scan_ref_pol = {
+-0.044495462460, 0.000000000000,
+-0.020457936958, -0.018239002704,
+ 0.000000000000, -0.012892377595,
+-0.010154834731, 0.000000000000,
+-0.007876478998, -0.006455830014,
+ 0.000000000000, -0.005319202936,
+-0.004524387110, 0.000000000000,
+-0.003875648399
+};
+
+std::vector<double> vtau_xc_mgga_c_scan_ref_pol = {
+0.038229318445, 0.034287395774,
+0.042250078467, 0.039339723043,
+0.038151864869, 0.035489486994,
+0.033824550829, 0.031903228786,
+0.030524916152, 0.029113290061
+};
+
+
+
+
+std::vector<double> exc_xc_mgga_c_r2scanl_ref_unp = {
+-0.396376974817, -0.491171995952,
+-0.528380290237, -0.565443056965,
+-0.600480870171
+};
+
+std::vector<double> vrho_xc_mgga_c_r2scanl_ref_unp = {
+-0.545497290112, -0.546087438942,
+-0.621955980174, -0.694599669881,
+-0.762595835512
+};
+
+std::vector<double> vsigma_xc_mgga_c_r2scanl_ref_unp = {
+ 0.003983122740, -0.036415775717,
+-0.033904222674, -0.027285116327,
+-0.020495017477
+};
+
+std::vector<double> vlapl_xc_mgga_c_r2scanl_ref_unp = {
+0.000000000000, 0.011056364163,
+0.013679018572, 0.012650392673,
+0.011802313376
+};
+
+std::vector<double> vtau_xc_mgga_c_r2scanl_ref_unp = {
+0.000000000000, 0.000000000000,
+0.000000000000, 0.000000000000,
+0.000000000000
+};
+
+std::vector<double> exc_xc_mgga_c_r2scanl_ref_pol = {
+-0.575885222281, -0.692588892216,
+-0.784198364004, -0.862584626416,
+-0.930239925125
+};
+
+std::vector<double> vrho_xc_mgga_c_r2scanl_ref_pol = {
+-0.613207873659, -0.688746989901,
+-0.790625972596, -0.882861971126,
+-0.971394010990, -1.040800712793,
+-1.103937287811, -1.157509381409,
+-1.207429868663, -1.252191434665
+};
+
+std::vector<double> vsigma_xc_mgga_c_r2scanl_ref_pol = {
+-0.028553084024, 0.000000000000,
+-0.035982064895, -0.031040505262,
+ 0.000000000000, -0.022323946859,
+-0.015645099288, 0.000000000000,
+-0.011675746617, -0.008965945413,
+ 0.000000000000, -0.007315682423,
+-0.006084573039, 0.000000000000,
+-0.005226777712
+};
+
+std::vector<double> vlapl_xc_mgga_c_r2scanl_ref_pol = {
+0.004769962444, 0.010540407693,
+0.011426280664, 0.010546991623,
+0.009746880821, 0.009123409167,
+0.008581982177, 0.008176059558,
+0.007814849266, 0.007529117778
+};
+
+std::vector<double> vtau_xc_mgga_c_r2scanl_ref_pol = {
+0.000000000000, 0.000000000000,
+0.000000000000, 0.000000000000,
+0.000000000000, 0.000000000000,
+0.000000000000, 0.000000000000,
+0.000000000000, 0.000000000000
+};
+
+
 template <typename T, typename OutIt>
 void copy_iterable( const T& src, OutIt&& dest ) {
   std::copy( src.begin(), src.end(), dest );
@@ -149,8 +284,8 @@ lda_reference load_lda_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
 
   if( p == Spin::Unpolarized ) {
 
-    ref_vals.npts = rho.size();
     copy_iterable( rho, std::back_inserter(ref_vals.rho) );
+    ref_vals.npts = rho.size();
 
     switch(k) {
       case Kernel::SlaterExchange:
@@ -216,6 +351,69 @@ gga_reference load_gga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
         copy_iterable(exc_xc_gga_c_lyp_ref_pol, std::back_inserter(ref_vals.exc) );
         copy_iterable(vrho_xc_gga_c_lyp_ref_pol, std::back_inserter(ref_vals.vrho) );
         copy_iterable(vsigma_xc_gga_c_lyp_ref_pol, std::back_inserter(ref_vals.vsigma) );
+        break;
+      default: 
+        throw std::runtime_error("No Reference Values for Specified Kernel");
+    }
+
+  }
+
+  return ref_vals;
+}
+
+mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bool need_lap) {
+
+  using namespace ExchCXX; 
+
+  mgga_reference ref_vals;
+
+  if( p == Spin::Unpolarized ) {
+
+    copy_iterable( rho, std::back_inserter(ref_vals.rho) );
+    copy_iterable( sigma, std::back_inserter(ref_vals.sigma) );
+    copy_iterable( tau, std::back_inserter(ref_vals.tau) );
+    if(need_lap) copy_iterable( lapl, std::back_inserter(ref_vals.lapl) );
+    ref_vals.npts = rho.size();
+
+    switch(k) {
+      case Kernel::SCAN_C:
+        copy_iterable(exc_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.exc) );
+        copy_iterable(vrho_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.vrho) );
+        copy_iterable(vsigma_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.vsigma) );
+        copy_iterable(vtau_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.vtau) );
+        break;
+      case Kernel::R2SCANL_C:
+        copy_iterable(exc_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.exc) );
+        copy_iterable(vrho_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.vrho) );
+        copy_iterable(vsigma_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.vsigma) );
+        copy_iterable(vlapl_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.vlapl) );
+        copy_iterable(vtau_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.vtau) );
+        break;
+      default: 
+        throw std::runtime_error("No Reference Values for Specified Kernel");
+    }
+
+  } else {
+
+    copy_iterable( rho_polarized, std::back_inserter(ref_vals.rho) );
+    copy_iterable( sigma_polarized, std::back_inserter(ref_vals.sigma) );
+    copy_iterable( tau_polarized, std::back_inserter(ref_vals.tau) );
+    if(need_lap) copy_iterable( lapl_polarized, std::back_inserter(ref_vals.lapl) );
+    ref_vals.npts = rho_polarized.size() / 2;
+
+    switch(k) {
+      case Kernel::SCAN_C:
+        copy_iterable(exc_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.exc) );
+        copy_iterable(vrho_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.vrho) );
+        copy_iterable(vsigma_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.vsigma) );
+        copy_iterable(vtau_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.vtau) );
+        break;
+      case Kernel::R2SCANL_C:
+        copy_iterable(exc_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.exc) );
+        copy_iterable(vrho_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vrho) );
+        copy_iterable(vsigma_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vsigma) );
+        copy_iterable(vlapl_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vlapl) );
+        copy_iterable(vtau_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vtau) );
         break;
       default: 
         throw std::runtime_error("No Reference Values for Specified Kernel");

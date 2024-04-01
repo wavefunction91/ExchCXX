@@ -530,10 +530,11 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
   } else if( func.is_mgga() ) {
 
     // Get reference values
-    //auto ref_vals = use_ref_values ?
-    //  load_gga_reference_values( kern, polar ) :
-    //  gen_gga_reference_values( backend,kern, polar );
-    auto ref_vals = gen_mgga_reference_values( backend, kern, polar );
+    auto ref_vals = use_ref_values ?
+      load_mgga_reference_values( kern, polar, func.needs_laplacian() ) :
+      gen_mgga_reference_values( backend,kern, polar );
+    //auto ref_vals = 
+    //  gen_mgga_reference_values( backend,kern, polar );
 
     size_t  npts       = ref_vals.npts;
     const auto&   rho        = ref_vals.rho;
@@ -559,8 +560,9 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
       func.eval_exc( npts, rho.data(), sigma.data(), lapl.data(), tau.data(), exc.data() );
 
       // Check correctness
-      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i ) {
         CHECK( exc[i] == Approx(exc_ref[i]) );
+      }
 
     }
 
@@ -582,16 +584,21 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
         vrho.data(), vsigma.data(), vlapl.data(), vtau.data() );
 
       // Check correctness
-      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i )
+      for( auto i = 0ul; i < func.exc_buffer_len(npts); ++i ) {
         CHECK( exc[i] == Approx(exc_ref[i]) );
-      for( auto i = 0ul; i < func.vrho_buffer_len(npts); ++i )
+      }
+      for( auto i = 0ul; i < func.vrho_buffer_len(npts); ++i ) {
         CHECK( vrho[i] == Approx(vrho_ref[i]) );
-      for( auto i = 0ul; i < func.vsigma_buffer_len(npts); ++i )
+      }
+      for( auto i = 0ul; i < func.vsigma_buffer_len(npts); ++i ) {
         CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
-      for( auto i = 0ul; i < func.vlapl_buffer_len(npts); ++i )
+      }
+      for( auto i = 0ul; i < func.vlapl_buffer_len(npts); ++i ) {
         CHECK( vlapl[i] == Approx(vlapl_ref[i]) );
-      for( auto i = 0ul; i < func.vtau_buffer_len(npts); ++i )
+      }
+      for( auto i = 0ul; i < func.vtau_buffer_len(npts); ++i ) {
         CHECK( vtau[i] == Approx(vtau_ref[i]) );
+      }
 
     }
 

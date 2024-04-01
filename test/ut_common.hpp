@@ -114,6 +114,7 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::LYP,
   ExchCXX::Kernel::PBE_X,
   ExchCXX::Kernel::PBE_C,
+  ExchCXX::Kernel::revPBE_X,
 
   ExchCXX::Kernel::B3LYP,
   ExchCXX::Kernel::PBE0
