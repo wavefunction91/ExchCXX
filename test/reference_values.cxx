@@ -48,12 +48,18 @@
 
 std::vector<double> rho = {0.1, 0.2, 0.3, 0.4, 0.5};
 std::vector<double> sigma = {0.2, 0.3, 0.4, 0.5, 0.6};
+std::vector<double> lapl  = {0.3, 0.4, 0.5, 0.6, 0.7};
+std::vector<double> tau   = {0.2, 0.3, 0.4, 0.5, 0.6};
 
 std::vector<double> rho_polarized =
   {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 std::vector<double> sigma_polarized =
   {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
    1.1, 1.2, 1.3, 1.4, 1.5 };
+std::vector<double> lapl_polarized =
+  {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+std::vector<double> tau_polarized =
+  {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 
 std::vector<double> exc_xc_lda_x_ref_unp = {
   -0.342808612301, -0.431911786723,
@@ -262,6 +268,36 @@ gga_reference gen_gga_reference_values(ExchCXX::Backend backend,
 
 }
 
+mgga_reference gen_mgga_reference_values(ExchCXX::Backend backend, 
+  ExchCXX::Kernel kern, ExchCXX::Spin polar) {
+  
+  using namespace ExchCXX;
+  XCKernel func( backend, kern, polar );
+
+  mgga_reference ref_vals;
+  std::tie( ref_vals.npts, ref_vals.rho )   = load_reference_density( polar );
+  std::tie( ref_vals.npts, ref_vals.sigma ) = load_reference_sigma( polar );
+  std::tie( ref_vals.npts, ref_vals.tau )   = load_reference_tau( polar );
+  if(func.needs_laplacian()) {
+    std::tie( ref_vals.npts, ref_vals.lapl )  = load_reference_lapl( polar );
+  }
+
+
+  ref_vals.exc.resize( func.exc_buffer_len( ref_vals.npts ) );
+  ref_vals.vrho.resize( func.vrho_buffer_len( ref_vals.npts ) );
+  ref_vals.vsigma.resize( func.vsigma_buffer_len( ref_vals.npts ) );
+  ref_vals.vlapl.resize( func.vlapl_buffer_len( ref_vals.npts ) );
+  ref_vals.vtau.resize( func.vtau_buffer_len( ref_vals.npts ) );
+
+  func.eval_exc_vxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.sigma.data(), 
+    ref_vals.lapl.data(), ref_vals.tau.data(), ref_vals.exc.data(), 
+    ref_vals.vrho.data(), ref_vals.vsigma.data(), ref_vals.vlapl.data(),
+    ref_vals.vtau.data() );
+
+  return ref_vals;
+
+}
+
 
 
 
@@ -297,6 +333,38 @@ std::pair<int,std::vector<double>> load_reference_sigma(ExchCXX::Spin s) {
     copy_iterable( sigma, std::back_inserter(ref_sigma) );
   }
   return std::make_pair(npts, ref_sigma);
+
+}
+
+std::pair<int,std::vector<double>> load_reference_lapl(ExchCXX::Spin s) {
+
+  std::vector<double> ref_lapl;
+  int npts;
+
+  if( s == ExchCXX::Spin::Polarized ) {
+    npts = lapl_polarized.size() / 2;
+    copy_iterable( lapl_polarized, std::back_inserter(ref_lapl) );
+  } else {
+    npts = lapl.size();
+    copy_iterable( lapl, std::back_inserter(ref_lapl) );
+  }
+  return std::make_pair(npts, ref_lapl);
+
+}
+
+std::pair<int,std::vector<double>> load_reference_tau(ExchCXX::Spin s) {
+
+  std::vector<double> ref_tau;
+  int npts;
+
+  if( s == ExchCXX::Spin::Polarized ) {
+    npts = tau_polarized.size() / 2;
+    copy_iterable( tau_polarized, std::back_inserter(ref_tau) );
+  } else {
+    npts = tau.size();
+    copy_iterable( tau, std::back_inserter(ref_tau) );
+  }
+  return std::make_pair(npts, ref_tau);
 
 }
 
