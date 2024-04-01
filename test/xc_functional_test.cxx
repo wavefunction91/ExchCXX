@@ -420,7 +420,7 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
       for( auto i = 0ul; i < vlapl.size(); ++i ) {
         double ref_val = 0.;
         for( auto j = 0ul; j < kern_pairs.size(); ++j )
-        if( kern_pairs[j].second.is_mgga() )
+        if( kern_pairs[j].second.needs_laplacian() )
           ref_val += coeffs[j] * vlapl_refs[j][i];
 
         CHECK( vlapl[i] == Approx( ref_val ) );
@@ -616,89 +616,154 @@ TEST_CASE( "MGGA XC Functionals", "[xc-mgga]" ) {
   std::default_random_engine gen;
   std::normal_distribution<> dist(5.0,2.0);
 
-  SECTION("MGGA Unpolarized: EXC Only") {
+  SECTION("MGGA-LAPL Unpolarized: EXC Only") {
     check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
       dist(gen), Kernel::R2SCANL_X 
     );
   }
 
-  SECTION("MGGA Unpolarized: EXC + VXC") {
+  SECTION("MGGA-LAPL Unpolarized: EXC + VXC") {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
       dist(gen), Kernel::R2SCANL_X 
     );
   }
 
-  SECTION("MGGA + MGGA Unpolarized: EXC") {
+  SECTION("MGGA-LAPL + MGGA-LAPL Unpolarized: EXC") {
     check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::R2SCANL_C 
     );
   }
 
-  SECTION("MGGA + MGGA Unpolarized: EXC + VXC") {
+  SECTION("MGGA-LAPL + MGGA-LAPL Unpolarized: EXC + VXC") {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::R2SCANL_C 
     );
   }
 
-  SECTION("MGGA + LDA Unpolarized: EXC") {
+  SECTION("MGGA-LAPL + LDA Unpolarized: EXC") {
     check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::VWN5 
     );
   }
 
-  SECTION("MGGA + LDA Unpolarized: EXC + VXC") {
+  SECTION("MGGA-LAPL + LDA Unpolarized: EXC + VXC") {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::VWN5 
     );
   }
 
+  SECTION("MGGA-LAPL Unpolarized: EXC Only") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::R2SCANL_X 
+    );
+  }
+
+  SECTION("MGGA-TAU Unpolarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::SCAN_X 
+    );
+  }
+
+  SECTION("MGGA-TAU + MGGA-TAU Unpolarized: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::SCAN_X,
+      dist(gen), Kernel::SCAN_C 
+    );
+  }
+
+  SECTION("MGGA-TAU + MGGA-TAU Unpolarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::SCAN_X,
+      dist(gen), Kernel::SCAN_C 
+    );
+  }
+
+  SECTION("MGGA-TAU + MGGA-LAPL Unpolarized: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::SCAN_X,
+      dist(gen), Kernel::R2SCANL_C 
+    );
+  }
+
+  SECTION("MGGA-TAU + MGGA-LAPL Unpolarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::SCAN_X,
+      dist(gen), Kernel::R2SCANL_C 
+    );
+  }
 
 
 
 
 
 
-  SECTION("MGGA Polarized: EXC Only") {
+  SECTION("MGGA-LAPL Polarized: EXC Only") {
     check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::R2SCANL_X 
     );
   }
 
-  SECTION("MGGA Polarized: EXC + VXC") {
+  SECTION("MGGA-LAPL Polarized: EXC + VXC") {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::R2SCANL_X 
     );
   }
 
-  SECTION("MGGA + MGGA Polarized: EXC") {
+  SECTION("MGGA-LAPL + MGGA-LAPL Polarized: EXC") {
     check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::R2SCANL_C 
     );
   }
 
-  SECTION("MGGA + MGGA Polarized: EXC + VXC") {
+  SECTION("MGGA-LAPL + MGGA-LAPL Polarized: EXC + VXC") {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::R2SCANL_C 
     );
   }
 
-  SECTION("MGGA + LDA Polarized: EXC") {
+  SECTION("MGGA-LAPL + LDA Polarized: EXC") {
     check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::VWN5 
     );
   }
 
-  SECTION("MGGA + LDA Polarized: EXC + VXC") {
+  SECTION("MGGA-LAPL + LDA Polarized: EXC + VXC") {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::R2SCANL_X,
       dist(gen), Kernel::VWN5 
+    );
+  }
+
+  SECTION("MGGA-TAU Polarized: EXC Only") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::SCAN_X 
+    );
+  }
+
+  SECTION("MGGA-TAU Polarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::SCAN_X 
+    );
+  }
+
+  SECTION("MGGA-TAU + MGGA-TAU Polarized: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::SCAN_X,
+      dist(gen), Kernel::SCAN_C 
+    );
+  }
+
+  SECTION("MGGA-TAU + MGGA-TAU Polarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::SCAN_X,
+      dist(gen), Kernel::SCAN_C 
     );
   }
 
@@ -707,13 +772,14 @@ TEST_CASE( "MGGA XC Functionals", "[xc-mgga]" ) {
 
 
 
-  SECTION("LDA + MGGA: EXC") {
+
+  SECTION("LDA + MGGA-LAPL: EXC") {
     check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::SlaterExchange,
       dist(gen), Kernel::R2SCANL_C 
     );
   }
-  SECTION("LDA + MGGA: EXC + VXC") {
+  SECTION("LDA + MGGA-LAPL: EXC + VXC") {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::SlaterExchange,
       dist(gen), Kernel::R2SCANL_C 
