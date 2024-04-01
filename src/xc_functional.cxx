@@ -54,6 +54,8 @@ BidirectionalMap<std::string, Functional> functional_map{
     {"BLYP", Functional::BLYP},
     {"B3LYP", Functional::B3LYP},
     {"PBE", Functional::PBE},
+    {"SCAN", Functional::SCAN},
+    {"R2SCANL", Functional::R2SCANL},
     {"revPBE", Functional::revPBE},
     {"PBE0", Functional::PBE0}}};
 
@@ -93,6 +95,16 @@ std::vector< XCKernel > functional_factory(
     kerns = {
         XCKernel( backend, Kernel::PBE_X, polar ),
         XCKernel( backend, Kernel::PBE_C, polar )
+    };
+  else if( func == Functional::SCAN )
+    kerns = {
+        XCKernel( backend, Kernel::SCAN_X, polar ),
+        XCKernel( backend, Kernel::SCAN_C, polar )
+    };
+  else if( func == Functional::R2SCANL )
+    kerns = {
+        XCKernel( backend, Kernel::R2SCANL_X, polar ),
+        XCKernel( backend, Kernel::R2SCANL_C, polar )
     };
   else if( func == Functional::revPBE )
     kerns = {

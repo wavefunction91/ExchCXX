@@ -55,6 +55,9 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   auto gga_kernel_test = Kernel::LYP;
   auto hyb_kernel_test = Kernel::B3LYP;
 
+  auto mgga_tau_kernel_test  = Kernel::SCAN_C;
+  auto mgga_lapl_kernel_test = Kernel::R2SCANL_C;
+
   Backend backend;
 
   SECTION( "Pure LDA Unpolarized" ) {
@@ -73,9 +76,13 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
     CHECK( lda.rho_buffer_len( npts )    == npts );
     CHECK( lda.sigma_buffer_len( npts )  == 0    );
+    CHECK( lda.lapl_buffer_len( npts )   == 0    );
+    CHECK( lda.tau_buffer_len( npts )    == 0    );
     CHECK( lda.exc_buffer_len( npts )    == npts );
     CHECK( lda.vrho_buffer_len( npts )   == npts );
     CHECK( lda.vsigma_buffer_len( npts ) == 0    );
+    CHECK( lda.vlapl_buffer_len( npts )  == 0    );
+    CHECK( lda.vtau_buffer_len( npts )   == 0    );
 
   }
 
@@ -95,9 +102,13 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
     CHECK( lda.rho_buffer_len( npts )    == 2*npts );
     CHECK( lda.sigma_buffer_len( npts )  == 0      );
+    CHECK( lda.lapl_buffer_len( npts )   == 0      );
+    CHECK( lda.tau_buffer_len( npts )    == 0      );
     CHECK( lda.exc_buffer_len( npts )    == npts   );
     CHECK( lda.vrho_buffer_len( npts )   == 2*npts );
     CHECK( lda.vsigma_buffer_len( npts ) == 0      );
+    CHECK( lda.vlapl_buffer_len( npts )  == 0      );
+    CHECK( lda.vtau_buffer_len( npts )   == 0      );
 
   }
 
@@ -118,9 +129,13 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
     CHECK( gga.rho_buffer_len( npts )    == npts );
     CHECK( gga.sigma_buffer_len( npts )  == npts );
+    CHECK( gga.lapl_buffer_len( npts )   == 0    );
+    CHECK( gga.tau_buffer_len( npts )    == 0    );
     CHECK( gga.exc_buffer_len( npts )    == npts );
     CHECK( gga.vrho_buffer_len( npts )   == npts );
     CHECK( gga.vsigma_buffer_len( npts ) == npts );
+    CHECK( gga.vlapl_buffer_len( npts )  == 0    );
+    CHECK( gga.vtau_buffer_len( npts )   == 0    );
 
   }
 
@@ -140,9 +155,143 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
     CHECK( gga.rho_buffer_len( npts )    == 2*npts );
     CHECK( gga.sigma_buffer_len( npts )  == 3*npts );
+    CHECK( gga.lapl_buffer_len( npts )   == 0    );
+    CHECK( gga.tau_buffer_len( npts )    == 0    );
     CHECK( gga.exc_buffer_len( npts )    == npts   );
     CHECK( gga.vrho_buffer_len( npts )   == 2*npts );
     CHECK( gga.vsigma_buffer_len( npts ) == 3*npts );
+    CHECK( gga.vlapl_buffer_len( npts )  == 0    );
+    CHECK( gga.vtau_buffer_len( npts )   == 0    );
+
+  }
+
+  SECTION( "Pure MGGA-TAU Unpolarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel mgga( backend, mgga_tau_kernel_test, Spin::Unpolarized );
+
+    CHECK( mgga.is_mgga() );
+    CHECK( not mgga.is_polarized() );
+    CHECK( not mgga.is_lda() );
+    CHECK( not mgga.is_gga() );
+    CHECK( not mgga.is_hyb() );
+    CHECK( not mgga.needs_laplacian() );
+
+    CHECK( mgga.rho_buffer_len( npts )    == npts );
+    CHECK( mgga.sigma_buffer_len( npts )  == npts );
+    CHECK( mgga.lapl_buffer_len( npts )   == 0    );
+    CHECK( mgga.tau_buffer_len( npts )    == npts );
+    CHECK( mgga.exc_buffer_len( npts )    == npts );
+    CHECK( mgga.vrho_buffer_len( npts )   == npts );
+    CHECK( mgga.vsigma_buffer_len( npts ) == npts );
+    CHECK( mgga.vlapl_buffer_len( npts )  == 0    );
+    CHECK( mgga.vtau_buffer_len( npts )   == npts );
+
+  }
+
+  SECTION( "Pure MGGA-LAPL Unpolarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel mgga( backend, mgga_lapl_kernel_test, Spin::Unpolarized );
+
+    CHECK( mgga.is_mgga() );
+    CHECK( mgga.needs_laplacian() );
+    CHECK( not mgga.is_polarized() );
+    CHECK( not mgga.is_lda() );
+    CHECK( not mgga.is_gga() );
+    CHECK( not mgga.is_hyb() );
+
+    CHECK( mgga.rho_buffer_len( npts )    == npts );
+    CHECK( mgga.sigma_buffer_len( npts )  == npts );
+    CHECK( mgga.lapl_buffer_len( npts )   == npts );
+    CHECK( mgga.tau_buffer_len( npts )    == npts );
+    CHECK( mgga.exc_buffer_len( npts )    == npts );
+    CHECK( mgga.vrho_buffer_len( npts )   == npts );
+    CHECK( mgga.vsigma_buffer_len( npts ) == npts );
+    CHECK( mgga.vlapl_buffer_len( npts )  == npts );
+    CHECK( mgga.vtau_buffer_len( npts )   == npts );
+
+  }
+
+  SECTION( "Pure MGGA-TAU Polarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel mgga( backend, mgga_tau_kernel_test, Spin::Polarized );
+
+    CHECK( mgga.is_mgga() );
+    CHECK( mgga.is_polarized() );
+    CHECK( not mgga.is_lda() );
+    CHECK( not mgga.is_gga() );
+    CHECK( not mgga.is_hyb() );
+    CHECK( not mgga.needs_laplacian() );
+
+    CHECK( mgga.rho_buffer_len( npts )    == 2*npts );
+    CHECK( mgga.sigma_buffer_len( npts )  == 3*npts );
+    CHECK( mgga.lapl_buffer_len( npts )   == 0      );
+    CHECK( mgga.tau_buffer_len( npts )    == 2*npts );
+    CHECK( mgga.exc_buffer_len( npts )    == npts   );
+    CHECK( mgga.vrho_buffer_len( npts )   == 2*npts );
+    CHECK( mgga.vsigma_buffer_len( npts ) == 3*npts );
+    CHECK( mgga.vlapl_buffer_len( npts )  == 0      );
+    CHECK( mgga.vtau_buffer_len( npts )   == 2*npts );
+
+  }
+
+  SECTION( "Pure MGGA-LAPL Unpolarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel mgga( backend, mgga_lapl_kernel_test, Spin::Unpolarized );
+
+    CHECK( mgga.is_mgga() );
+    CHECK( mgga.needs_laplacian() );
+    CHECK( not mgga.is_polarized() );
+    CHECK( not mgga.is_lda() );
+    CHECK( not mgga.is_gga() );
+    CHECK( not mgga.is_hyb() );
+
+    CHECK( mgga.rho_buffer_len( npts )    == npts );
+    CHECK( mgga.sigma_buffer_len( npts )  == npts );
+    CHECK( mgga.lapl_buffer_len( npts )   == npts );
+    CHECK( mgga.tau_buffer_len( npts )    == npts );
+    CHECK( mgga.exc_buffer_len( npts )    == npts );
+    CHECK( mgga.vrho_buffer_len( npts )   == npts );
+    CHECK( mgga.vsigma_buffer_len( npts ) == npts );
+    CHECK( mgga.vlapl_buffer_len( npts )  == npts );
+    CHECK( mgga.vtau_buffer_len( npts )   == npts );
+
+  }
+
+  SECTION( "Pure MGGA-LAPL Polarized" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel mgga( backend, mgga_lapl_kernel_test, Spin::Polarized );
+
+    CHECK( mgga.is_mgga() );
+    CHECK( mgga.needs_laplacian() );
+    CHECK( mgga.is_polarized() );
+    CHECK( not mgga.is_lda() );
+    CHECK( not mgga.is_gga() );
+    CHECK( not mgga.is_hyb() );
+
+    CHECK( mgga.rho_buffer_len( npts )    == 2*npts );
+    CHECK( mgga.sigma_buffer_len( npts )  == 3*npts );
+    CHECK( mgga.lapl_buffer_len( npts )   == 2*npts );
+    CHECK( mgga.tau_buffer_len( npts )    == 2*npts );
+    CHECK( mgga.exc_buffer_len( npts )    == npts   );
+    CHECK( mgga.vrho_buffer_len( npts )   == 2*npts );
+    CHECK( mgga.vsigma_buffer_len( npts ) == 3*npts );
+    CHECK( mgga.vlapl_buffer_len( npts )  == 2*npts );
+    CHECK( mgga.vtau_buffer_len( npts )   == 2*npts );
 
   }
 
@@ -188,6 +337,23 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
       auto exx = load_reference_exx( kern );
 
       CHECK( func.is_gga() );
+      CHECK( exx == Approx( func.hyb_exx() ) );
+
+      if( std::abs(exx) > 0 ) CHECK( func.is_hyb() );
+    }
+
+  }
+
+  SECTION( "MGGA Kernels" ) {
+
+    SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
+    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    for( const auto& kern : mgga_kernels ) {
+      XCKernel func( backend, kern, Spin::Unpolarized );
+      auto exx = load_reference_exx( kern );
+
+      CHECK( func.is_mgga() );
       CHECK( exx == Approx( func.hyb_exx() ) );
 
       if( std::abs(exx) > 0 ) CHECK( func.is_hyb() );

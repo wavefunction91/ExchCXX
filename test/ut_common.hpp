@@ -93,6 +93,13 @@ static std::vector<ExchCXX::Kernel> gga_kernels = {
   ExchCXX::Kernel::PBE0
 };
 
+static std::vector<ExchCXX::Kernel> mgga_kernels = {
+  ExchCXX::Kernel::SCAN_X,
+  ExchCXX::Kernel::SCAN_C,
+  ExchCXX::Kernel::R2SCANL_X,
+  ExchCXX::Kernel::R2SCANL_C
+};
+
 static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::SlaterExchange,
   ExchCXX::Kernel::VWN3,
@@ -116,6 +123,10 @@ static constexpr std::array string_kernal_pairs = {
     std::pair("SlaterExchange", ExchCXX::Kernel::SlaterExchange),
     std::pair("PBE_X",ExchCXX::Kernel::PBE_X),
     std::pair("PBE_C", ExchCXX::Kernel::PBE_C),
+    std::pair("SCAN_X",ExchCXX::Kernel::SCAN_X),
+    std::pair("SCAN_C", ExchCXX::Kernel::SCAN_C),
+    std::pair("R2SCANL_X",ExchCXX::Kernel::R2SCANL_X),
+    std::pair("R2SCANL_C", ExchCXX::Kernel::R2SCANL_C),
     std::pair("LYP", ExchCXX::Kernel::LYP),
     std::pair("B3LYP", ExchCXX::Kernel::B3LYP),
     std::pair("PBE0", ExchCXX::Kernel::PBE0),
@@ -134,5 +145,8 @@ static constexpr std::array string_functional_pairs = {
     std::pair("SVWN5", ExchCXX::Functional::SVWN5),
     std::pair("BLYP", ExchCXX::Functional::BLYP),
     std::pair("B3LYP", ExchCXX::Functional::B3LYP),
+    std::pair("PBE", ExchCXX::Functional::PBE),
+    std::pair("SCAN", ExchCXX::Functional::SCAN),
+    std::pair("R2SCANL", ExchCXX::Functional::R2SCANL),
     std::pair("PBE0", ExchCXX::Functional::PBE0)
 };
