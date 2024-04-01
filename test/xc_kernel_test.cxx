@@ -988,12 +988,16 @@ void device_synchronize() {
 void test_cuda_interface( TestInterface interface, EvalType evaltype,
   Backend backend, Kernel kern, Spin polar ) {
 
-  size_t npts_lda, npts_gga;
-  std::vector<double> ref_rho, ref_sigma;
+  size_t npts_lda, npts_gga, npts_mgga, npts_lapl;
+  std::vector<double> ref_rho, ref_sigma, ref_lapl, ref_tau;
   std::tie(npts_lda, ref_rho  )  = load_reference_density( polar );
   std::tie(npts_gga, ref_sigma)  = load_reference_sigma  ( polar );
+  std::tie(npts_lapl, ref_lapl)  = load_reference_lapl   ( polar );
+  std::tie(npts_mgga, ref_tau)   = load_reference_tau    ( polar );
 
   REQUIRE( npts_lda == npts_gga );
+  REQUIRE( npts_lda == npts_mgga );
+  REQUIRE( npts_lda == npts_lapl );
 
   const int npts = npts_lda;
 
@@ -1001,39 +1005,55 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
 
   size_t len_rho_buffer    = func.rho_buffer_len(npts);
   size_t len_sigma_buffer  = func.sigma_buffer_len(npts);
+  size_t len_lapl_buffer   = func.lapl_buffer_len(npts);
+  size_t len_tau_buffer    = func.tau_buffer_len(npts);
   size_t len_exc_buffer    = func.exc_buffer_len(npts);
   size_t len_vrho_buffer   = func.vrho_buffer_len(npts);
   size_t len_vsigma_buffer = func.vsigma_buffer_len(npts);
+  size_t len_vlapl_buffer  = func.vlapl_buffer_len(npts);
+  size_t len_vtau_buffer   = func.vtau_buffer_len(npts);
 
 
   std::vector<double> rho_small(len_rho_buffer, 1e-13);
   std::vector<double> sigma_small(len_sigma_buffer, 1e-14);
+  std::vector<double> lapl_small(len_lapl_buffer, 1e-14);
+  std::vector<double> tau_small(len_tau_buffer, 1e-14);
 
   std::vector<double> rho_zero(len_rho_buffer, 0.);
   std::vector<double> sigma_zero(len_sigma_buffer, 0.);
+  std::vector<double> lapl_zero(len_lapl_buffer, 0.);
+  std::vector<double> tau_zero(len_tau_buffer, 0.);
 
-  std::vector<double> rho, sigma;
+  std::vector<double> rho, sigma, lapl, tau;
 
   if( evaltype == EvalType::Regular ) {
     rho   = ref_rho;
     sigma = ref_sigma;
+    lapl  = ref_lapl;
+    tau   = ref_tau;
   }
 
   if( evaltype == EvalType::Small ) {
     rho   = rho_small;
     sigma = sigma_small;
+    lapl  = lapl_small;
+    tau   = tau_small;
   }
 
   if( evaltype == EvalType::Zero ) {
     rho   = rho_zero;
     sigma = sigma_zero;
+    lapl  = lapl_zero;
+    tau   = tau_zero;
   }
 
   // Get Reference Values
   std::vector<double>
     exc_ref( len_exc_buffer ),
     vrho_ref( len_vrho_buffer ),
-    vsigma_ref( len_vsigma_buffer );
+    vsigma_ref( len_vsigma_buffer ),
+    vlapl_ref( len_vlapl_buffer ),
+    vtau_ref( len_vtau_buffer );
 
   if( interface == TestInterface::EXC or interface == TestInterface::EXC_INC ) {
 
@@ -1041,6 +1061,8 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
       func.eval_exc( npts, rho.data(), exc_ref.data() );
     else if( func.is_gga() )
       func.eval_exc( npts, rho.data(), sigma.data(), exc_ref.data() );
+    else if( func.is_mgga() )
+      func.eval_exc( npts, rho.data(), sigma.data(), lapl.data(), tau.data(), exc_ref.data() );
 
   } else if( interface == TestInterface::EXC_VXC or interface == TestInterface::EXC_VXC_INC ) {
 
@@ -1049,6 +1071,9 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     else if( func.is_gga() )
       func.eval_exc_vxc( npts, rho.data(), sigma.data(), exc_ref.data(),
         vrho_ref.data(), vsigma_ref.data() );
+    else if( func.is_mgga() )
+      func.eval_exc_vxc( npts, rho.data(), sigma.data(), lapl.data(), tau.data(),
+        exc_ref.data(), vrho_ref.data(), vsigma_ref.data(), vlapl_ref.data(), vtau_ref.data() );
 
   }
 
@@ -1060,29 +1085,44 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
   // Allocate device memory
   double* rho_device    = safe_cuda_malloc<double>( len_rho_buffer    );
   double* sigma_device  = safe_cuda_malloc<double>( len_sigma_buffer  );
+  double* lapl_device   = safe_cuda_malloc<double>( len_lapl_buffer  );
+  double* tau_device    = safe_cuda_malloc<double>( len_tau_buffer  );
   double* exc_device    = safe_cuda_malloc<double>( len_exc_buffer    );
   double* vrho_device   = safe_cuda_malloc<double>( len_vrho_buffer   );
   double* vsigma_device = safe_cuda_malloc<double>( len_vsigma_buffer );
+  double* vlapl_device  = safe_cuda_malloc<double>( len_vlapl_buffer );
+  double* vtau_device   = safe_cuda_malloc<double>( len_vtau_buffer );
 
   // H2D Copy of rho / sigma
   safe_cuda_cpy( rho_device, rho.data(), len_rho_buffer );
-  if( func.is_gga() )
+  if( func.is_gga() or func.is_mgga() )
     safe_cuda_cpy( sigma_device, sigma.data(), len_sigma_buffer );
+  if( func.is_mgga() )
+    safe_cuda_cpy( tau_device, tau.data(), len_tau_buffer );
+  if( func.needs_laplacian() )
+    safe_cuda_cpy( lapl_device, lapl.data(), len_lapl_buffer );
 
   const double alpha = 3.14;
   const double fill_val_e = 2.;
   const double fill_val_vr = 10.;
   const double fill_val_vs = 50.;
+  const double fill_val_vl = 20.;
+  const double fill_val_vt = 30.;
 
   std::vector<double>
     exc( len_exc_buffer, fill_val_e ), vrho( len_vrho_buffer, fill_val_vr ),
-    vsigma( len_vsigma_buffer, fill_val_vs );
+    vsigma( len_vsigma_buffer, fill_val_vs ), vlapl(len_vlapl_buffer, fill_val_vl),
+    vtau(len_vtau_buffer, fill_val_vt);
 
   // H2D copy of initial values, tests clobber / increment
   safe_cuda_cpy( exc_device, exc.data(), len_exc_buffer );
   safe_cuda_cpy( vrho_device, vrho.data(), len_vrho_buffer );
-  if( func.is_gga() )
+  if( func.is_gga() or func.is_mgga() )
     safe_cuda_cpy( vsigma_device, vsigma.data(), len_vsigma_buffer );
+  if( func.is_mgga() )
+    safe_cuda_cpy( vtau_device, vtau.data(), len_vtau_buffer );
+  if( func.needs_laplacian() )
+    safe_cuda_cpy( vlapl_device, vlapl.data(), len_vlapl_buffer );
 
   // Evaluate functional on device
   cudaStream_t stream = 0;
@@ -1093,6 +1133,9 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     else if( func.is_gga() )
       func.eval_exc_device( npts, rho_device, sigma_device, exc_device,
         stream );
+    else if( func.is_mgga() )
+      func.eval_exc_device( npts, rho_device, sigma_device, lapl_device, tau_device,
+        exc_device, stream );
 
   } else if( interface == TestInterface::EXC_INC ) {
 
@@ -1101,6 +1144,9 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     else if( func.is_gga() )
       func.eval_exc_inc_device( alpha, npts, rho_device, sigma_device, exc_device,
         stream );
+    else if( func.is_mgga() )
+      func.eval_exc_inc_device( alpha, npts, rho_device, sigma_device, lapl_device,
+        tau_device, exc_device, stream );
 
   } else if( interface == TestInterface::EXC_VXC ) {
 
@@ -1109,6 +1155,9 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     else if( func.is_gga() )
       func.eval_exc_vxc_device( npts, rho_device, sigma_device, exc_device,
         vrho_device, vsigma_device, stream );
+    else if( func.is_mgga() )
+      func.eval_exc_vxc_device( npts, rho_device, sigma_device, lapl_device, tau_device,
+        exc_device, vrho_device, vsigma_device, vlapl_device, vtau_device, stream );
 
   } else if( interface == TestInterface::EXC_VXC_INC ) {
 
@@ -1118,6 +1167,10 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     else if( func.is_gga() )
       func.eval_exc_vxc_inc_device( alpha, npts, rho_device, sigma_device,
         exc_device, vrho_device, vsigma_device, stream );
+    else if( func.is_mgga() )
+      func.eval_exc_vxc_inc_device( alpha, npts, rho_device, sigma_device,
+        lapl_device, tau_device, exc_device, vrho_device, vsigma_device, 
+        vlapl_device, vtau_device, stream );
 
   }
 
@@ -1126,8 +1179,12 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
   // D2H of results
   safe_cuda_cpy( exc.data(), exc_device, len_exc_buffer );
   safe_cuda_cpy( vrho.data(), vrho_device, len_vrho_buffer );
-  if(func.is_gga())
+  if( func.is_gga() or func.is_mgga() )
     safe_cuda_cpy( vsigma.data(), vsigma_device, len_vsigma_buffer );
+  if(func.is_mgga())
+    safe_cuda_cpy( vtau.data(), vtau_device, len_vtau_buffer );
+  if(func.needs_laplacian())
+    safe_cuda_cpy( vlapl.data(), vlapl_device, len_vlapl_buffer );
 
   // Check correctness
   if( interface == TestInterface::EXC_INC or interface == TestInterface::EXC_VXC_INC ) {
@@ -1144,6 +1201,10 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
       CHECK( vrho[i] == Approx(fill_val_vr + alpha * vrho_ref[i]) );
     for( auto i = 0ul; i < len_vsigma_buffer; ++i )
       CHECK( vsigma[i] == Approx(fill_val_vs + alpha * vsigma_ref[i]) );
+    for( auto i = 0ul; i < len_vlapl_buffer; ++i )
+      CHECK( vlapl[i] == Approx(fill_val_vs + alpha * vlapl_ref[i]) );
+    for( auto i = 0ul; i < len_vtau_buffer; ++i )
+      CHECK( vtau[i] == Approx(fill_val_vs + alpha * vtau_ref[i]) );
 
   } else if(interface == TestInterface::EXC_VXC)  {
 
@@ -1153,10 +1214,19 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
       INFO( "Kernel is " << kern );
       CHECK( vsigma[i] == Approx(vsigma_ref[i]) );
     }
+    for( auto i = 0ul; i < len_vlapl_buffer; ++i ) {
+      INFO( "Kernel is " << kern );
+      CHECK( vlapl[i] == Approx(vlapl_ref[i]) );
+    }
+    for( auto i = 0ul; i < len_vtau_buffer; ++i ) {
+      INFO( "Kernel is " << kern );
+      CHECK( vtau[i] == Approx(vtau_ref[i]) );
+    }
 
   }
 
-  cuda_free_all( rho_device, sigma_device, exc_device, vrho_device, vsigma_device );
+  cuda_free_all( rho_device, sigma_device, exc_device, vrho_device, vsigma_device, lapl_device, tau_device,
+    vlapl_device, vtau_device );
 }
 
 
@@ -1190,6 +1260,18 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
+    SECTION( "MGGA Functionals: EXC Regular Eval Unpolarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC + VXC Regular Eval Unpolarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
     SECTION( "LDA Functionals: EXC Small Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
@@ -1215,6 +1297,18 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
           Backend::libxc, kern, Spin::Unpolarized );
     }
 
+    SECTION( "MGGA Functionals: EXC Small Eval Unpolarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC + VXC Small Eval Unpolarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
     SECTION( "LDA Functionals: EXC Zero Eval Unpolarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Zero,
@@ -1236,6 +1330,18 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
 
     SECTION( "GGA Functionals: EXC + VXC Zero Eval Unpolarized" ) {
       for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC Zero Eval Unpolarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Unpolarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC + VXC Zero Eval Unpolarized" ) {
+      for( auto kern : mgga_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
           Backend::libxc, kern, Spin::Unpolarized );
     }
@@ -1272,6 +1378,18 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
           Backend::libxc, kern, Spin::Polarized );
     }
 
+    SECTION( "MGGA Functionals: EXC Regular Eval Polarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC + VXC Regular Eval Polarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
     SECTION( "LDA Functionals: EXC Small Eval Polarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
@@ -1297,6 +1415,18 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
           Backend::libxc, kern, Spin::Polarized );
     }
 
+    SECTION( "MGGA Functionals: EXC Small Eval Polarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC + VXC Small Eval Polarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
     SECTION( "LDA Functionals: EXC Zero Eval Polarized" ) {
       for( auto kern : lda_kernels )
         test_cuda_interface( TestInterface::EXC, EvalType::Zero,
@@ -1318,6 +1448,18 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
 
     SECTION( "GGA Functionals: EXC + VXC Zero Eval Polarized" ) {
       for( auto kern : gga_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC Zero Eval Polarized" ) {
+      for( auto kern : mgga_kernels )
+        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
+          Backend::libxc, kern, Spin::Polarized );
+    }
+
+    SECTION( "MGGA Functionals: EXC + VXC Zero Eval Polarized" ) {
+      for( auto kern : mgga_kernels )
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
           Backend::libxc, kern, Spin::Polarized );
     }
