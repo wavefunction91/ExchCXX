@@ -155,6 +155,14 @@ public:
     );
   }
 
+  inline bool needs_laplacian() const {
+    throw_if_not_sane();
+    return std::any_of( 
+      kernels_.begin(), kernels_.end(),
+      [](const auto& x) { return x.second.needs_laplacian(); }
+    );
+  }
+
   inline double hyb_exx() const {
     throw_if_not_sane();
     return std::accumulate( 
@@ -163,7 +171,6 @@ public:
         return x + y.second.hyb_exx(); 
       }
     );
-
   }
 
 

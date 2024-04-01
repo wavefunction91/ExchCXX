@@ -200,6 +200,10 @@ bool LibxcKernelImpl::is_hyb_() const noexcept {
 #endif
 }
 
+bool LibxcKernelImpl::needs_laplacian_() const noexcept {
+  return kernel_.info->flags & XC_FLAGS_NEEDS_LAPLACIAN;
+}
+
 bool LibxcKernelImpl::is_polarized_() const noexcept {
   return polar_ == XC_POLARIZED;
 }

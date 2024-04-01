@@ -72,6 +72,7 @@ class BuiltinKernelInterface : public XCKernelImpl {
   bool is_gga_()       const noexcept override;
   bool is_mgga_()      const noexcept override;
   bool is_hyb_()       const noexcept override;
+  bool needs_laplacian_()       const noexcept override;
   bool is_polarized_() const noexcept override;
   double hyb_exx_()    const noexcept override;
 
