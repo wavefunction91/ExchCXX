@@ -456,7 +456,7 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
         add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
         add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
 
-        if( kernels_[i].second.is_gga() )
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
           add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
 
         if( kernels_[i].second.is_mgga() ) {
