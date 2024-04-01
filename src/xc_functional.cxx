@@ -506,10 +506,11 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
         if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
           _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
 
-        if( kernels_[i].second.is_mgga() ) {
+        if( kernels_[i].second.needs_laplacian() ) 
           _addscal( len_vlapl_buffer, kernels_[i].first, vlapl, vlapl_eval );
+
+        if( kernels_[i].second.is_mgga() ) 
           _addscal( len_vtau_buffer,  kernels_[i].first, vtau,  vtau_eval  );
-        }
 
       } else {
 
@@ -519,10 +520,11 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
         if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
           _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
 
-        if( kernels_[i].second.is_mgga() ) {
+        if( kernels_[i].second.needs_laplacian() ) 
           _scal( len_vlapl_buffer, kernels_[i].first, vlapl );
+
+        if( kernels_[i].second.is_mgga() ) 
           _scal( len_vtau_buffer,  kernels_[i].first, vtau  );
-        }
 
       }
 
