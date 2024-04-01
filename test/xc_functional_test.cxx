@@ -308,7 +308,9 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
 
   std::vector<double>
     rho( func.rho_buffer_len(npts) ),
-    sigma( func.sigma_buffer_len(npts) );
+    sigma( func.sigma_buffer_len(npts) ),
+    lapl( func.lapl_buffer_len(npts) ),
+    tau( func.tau_buffer_len(npts) );
 
   // Randomly generate Rho / Sigma
   std::default_random_engine gen;
@@ -317,11 +319,15 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     [&](){ return dist(gen); } );
   std::generate( sigma.begin(), sigma.end(), 
     [&](){ return dist(gen); } );
+  std::generate( lapl.begin(), lapl.end(), 
+    [&](){ return dist(gen); } );
+  std::generate( tau.begin(), tau.end(), 
+    [&](){ return dist(gen); } );
 
 
   // Evaluate individual kernels
   std::vector< std::vector<double> >
-    eps_refs, vrho_refs, vsigma_refs;
+    eps_refs, vrho_refs, vsigma_refs, vlapl_refs, vtau_refs;
 
   for( auto p : kern_pairs ) {
 
@@ -331,6 +337,8 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     eps_refs.emplace_back( kern.exc_buffer_len(npts) );
     vrho_refs.emplace_back( kern.vrho_buffer_len(npts) );
     vsigma_refs.emplace_back( kern.vsigma_buffer_len(npts) );
+    vlapl_refs.emplace_back( kern.vlapl_buffer_len(npts) );
+    vtau_refs.emplace_back( kern.vtau_buffer_len(npts) );
 
     if( interface == TestInterface::EXC ) {
 
@@ -338,6 +346,9 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
         kern.eval_exc( npts, rho.data(), eps_refs.back().data() );
       else if( kern.is_gga() )
         kern.eval_exc( npts, rho.data(), sigma.data(), 
+          eps_refs.back().data() );
+      else if( kern.is_mgga() )
+        kern.eval_exc( npts, rho.data(), sigma.data(), lapl.data(), tau.data(),
           eps_refs.back().data() );
 
     } else if( interface == TestInterface::EXC_VXC ) {
@@ -349,6 +360,11 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
         kern.eval_exc_vxc( npts, rho.data(), sigma.data(), 
           eps_refs.back().data(), vrho_refs.back().data(),
           vsigma_refs.back().data() );
+      else if( kern.is_mgga() )
+        kern.eval_exc_vxc( npts, rho.data(), sigma.data(), 
+          lapl.data(), tau.data(), eps_refs.back().data(), 
+          vrho_refs.back().data(), vsigma_refs.back().data(),
+          vlapl_refs.back().data(), vtau_refs.back().data() );
 
     }
     
@@ -359,13 +375,19 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
   std::vector<double>
     eps( func.exc_buffer_len( npts ) ),
     vrho( func.vrho_buffer_len( npts ) ),
-    vsigma( func.vsigma_buffer_len( npts ) );
+    vsigma( func.vsigma_buffer_len( npts ) ),
+    vlapl( func.vlapl_buffer_len( npts ) ),
+    vtau( func.vtau_buffer_len( npts ) );
 
   if( func.is_lda() )
     func.eval_exc_vxc( npts, rho.data(), eps.data(), vrho.data() );
   else if( func.is_gga() )
     func.eval_exc_vxc( npts, rho.data(), sigma.data(), 
       eps.data(), vrho.data(), vsigma.data() );
+  else if( func.is_mgga() )
+    func.eval_exc_vxc( npts, rho.data(), sigma.data(), 
+      lapl.data(), tau.data(), eps.data(), vrho.data(), 
+      vsigma.data(), vlapl.data(), vtau.data() );
 
 
   for( auto i = 0ul; i < eps.size(); ++i ) {
@@ -393,6 +415,25 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
 
         CHECK( vsigma[i] == Approx( ref_val ) );
       }
+
+    if( func.is_mgga() )  {
+      for( auto i = 0ul; i < vlapl.size(); ++i ) {
+        double ref_val = 0.;
+        for( auto j = 0ul; j < kern_pairs.size(); ++j )
+        if( kern_pairs[j].second.is_mgga() )
+          ref_val += coeffs[j] * vlapl_refs[j][i];
+
+        CHECK( vlapl[i] == Approx( ref_val ) );
+      }
+      for( auto i = 0ul; i < vtau.size(); ++i ) {
+        double ref_val = 0.;
+        for( auto j = 0ul; j < kern_pairs.size(); ++j )
+        if( kern_pairs[j].second.is_mgga() )
+          ref_val += coeffs[j] * vtau_refs[j][i];
+
+        CHECK( vtau[i] == Approx( ref_val ) );
+      }
+    }
 
   }
 
@@ -564,6 +605,118 @@ TEST_CASE( "GGA XC Functionals", "[xc-gga]" ) {
     check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
       dist(gen), Kernel::SlaterExchange,
       dist(gen), Kernel::LYP 
+    );
+  }
+
+}
+
+
+TEST_CASE( "MGGA XC Functionals", "[xc-mgga]" ) {
+
+  std::default_random_engine gen;
+  std::normal_distribution<> dist(5.0,2.0);
+
+  SECTION("MGGA Unpolarized: EXC Only") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::R2SCANL_X 
+    );
+  }
+
+  SECTION("MGGA Unpolarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::R2SCANL_X 
+    );
+  }
+
+  SECTION("MGGA + MGGA Unpolarized: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::R2SCANL_C 
+    );
+  }
+
+  SECTION("MGGA + MGGA Unpolarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::R2SCANL_C 
+    );
+  }
+
+  SECTION("MGGA + LDA Unpolarized: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::VWN5 
+    );
+  }
+
+  SECTION("MGGA + LDA Unpolarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Unpolarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::VWN5 
+    );
+  }
+
+
+
+
+
+
+
+  SECTION("MGGA Polarized: EXC Only") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::R2SCANL_X 
+    );
+  }
+
+  SECTION("MGGA Polarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::R2SCANL_X 
+    );
+  }
+
+  SECTION("MGGA + MGGA Polarized: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::R2SCANL_C 
+    );
+  }
+
+  SECTION("MGGA + MGGA Polarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::R2SCANL_C 
+    );
+  }
+
+  SECTION("MGGA + LDA Polarized: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::VWN5 
+    );
+  }
+
+  SECTION("MGGA + LDA Polarized: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::R2SCANL_X,
+      dist(gen), Kernel::VWN5 
+    );
+  }
+
+
+
+
+
+
+  SECTION("LDA + MGGA: EXC") {
+    check_correctness( TestInterface::EXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::SlaterExchange,
+      dist(gen), Kernel::R2SCANL_C 
+    );
+  }
+  SECTION("LDA + MGGA: EXC + VXC") {
+    check_correctness( TestInterface::EXC_VXC, Backend::libxc, Spin::Polarized, 
+      dist(gen), Kernel::SlaterExchange,
+      dist(gen), Kernel::R2SCANL_C 
     );
   }
 
