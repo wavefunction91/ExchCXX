@@ -183,7 +183,7 @@ public:
     return is_lda() ? 0 : is_polarized() ? 3*npts : npts;
   }
   inline size_t lapl_buffer_len( size_t npts ) const noexcept {
-    return is_mgga() ? rho_buffer_len(npts) : 0;
+    return needs_laplacian() ? rho_buffer_len(npts) : 0;
   }
   inline size_t tau_buffer_len( size_t npts ) const noexcept {
     return is_mgga() ? rho_buffer_len(npts) : 0;
