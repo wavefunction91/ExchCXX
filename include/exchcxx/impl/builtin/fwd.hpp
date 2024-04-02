@@ -72,6 +72,11 @@ struct BuiltinPBE_C;
 struct BuiltinB3LYP;
 struct BuiltinPBE0;
 
+struct BuiltinSCAN_X;
+struct BuiltinSCAN_C;
+struct BuiltinR2SCAN_X;
+struct BuiltinR2SCAN_C;
+
 
 template <typename KernelType>
 struct kernel_traits;

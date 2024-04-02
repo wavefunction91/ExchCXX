@@ -93,6 +93,16 @@ std::unique_ptr<BuiltinKernel>
   else if( kern == Kernel::B3LYP )
     return std::make_unique<BuiltinB3LYP>( polar );
 
+  else if( kern == Kernel::SCAN_X )
+    return std::make_unique<BuiltinSCAN_X>( polar );
+  else if( kern == Kernel::SCAN_C )
+    return std::make_unique<BuiltinSCAN_C>( polar );
+  else if( kern == Kernel::R2SCAN_X )
+    return std::make_unique<BuiltinR2SCAN_X>( polar );
+  else if( kern == Kernel::R2SCAN_C )
+    return std::make_unique<BuiltinR2SCAN_C>( polar );
+
+
 
   else
     throw std::runtime_error("Specified kernel does not have a builtin implementation");

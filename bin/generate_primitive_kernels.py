@@ -30,6 +30,14 @@ class XCFunc:
     'zk[0]' : 'eps',
   }
 
+  unpol_mgga_vars = {
+    'rho[0]' : 'rho',
+    'sigma[0]' : 'sigma',
+    'lapl[0]' : 'lapl',
+    'tau[0]' : 'tau',
+    'zk[0]' : 'eps',
+  }
+
   #unpol_vars = {
   #  'rho[0]' : 'rho',
   #  'sigma[0]' : 'sigma',
@@ -37,7 +45,8 @@ class XCFunc:
   #}
   unpol_vars = {
     'LDA' : unpol_lda_vars, 
-    'GGA' : unpol_gga_vars
+    'GGA' : unpol_gga_vars,
+    'MGGA' : unpol_mgga_vars
   }
 
 
@@ -59,6 +68,11 @@ class XCFunc:
     'EXC_VXC' : ['eps','vrho', 'vsigma']
   }
 
+  unpol_mgga_outputs = {
+    'EXC' : ['eps'],
+    'VXC' : ['vrho', 'vsigma', 'vlapl', 'vtau'],
+    'EXC_VXC' : ['eps', 'vrho', 'vsigma', 'vlapl', 'vtau']
+  }
 
   #unpol_outputs = {
   #  'EXC' : ['eps'],
@@ -67,13 +81,16 @@ class XCFunc:
   #}
   unpol_outputs = {
     'LDA' : unpol_lda_outputs, 
-    'GGA' : unpol_gga_outputs
+    'GGA' : unpol_gga_outputs,
+    'MGGA' : unpol_mgga_outputs
   }
 
   unpol_substitutions = {
     'tzk0' : 'eps',
     'tvrho0' : 'vrho',
-    'tvsigma0': 'vsigma'
+    'tvsigma0': 'vsigma',
+    'tvlapl0' : 'vlapl',
+    'tvtau0': 'vtau'
   }
 
 
@@ -94,6 +111,19 @@ class XCFunc:
     'zk[0]' : 'eps'
   }
 
+  pol_mgga_vars = {
+    'rho[0]'   : 'rho_a',
+    'rho[1]'   : 'rho_b',
+    'sigma[0]' : 'sigma_aa',
+    'sigma[1]' : 'sigma_ab',
+    'sigma[2]' : 'sigma_bb',
+    'lapl[0]' : 'lapl_a',
+    'lapl[1]' : 'lapl_b',
+    'tau[0]'  : 'tau_a',
+    'tau[1]'  : 'tau_b',
+    'zk[0]'    : 'eps'
+  }
+
   #pol_vars = {
   #  'rho[0]'   : 'rho_a',
   #  'rho[1]'   : 'rho_b',
@@ -104,7 +134,8 @@ class XCFunc:
   #}
   pol_vars = {
     'LDA' : pol_lda_vars, 
-    'GGA' : pol_gga_vars
+    'GGA' : pol_gga_vars,
+    'MGGA': pol_mgga_vars
   }
 
 
@@ -125,6 +156,12 @@ class XCFunc:
     'EXC_VXC' : ['eps','vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb']
   }
 
+  pol_mgga_outputs = {
+    'EXC' : ['eps'],
+    'VXC' : ['vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb', 'vlapl_a', 'vlapl_b', 'vtau_a', 'vtau_b'],
+    'EXC_VXC' : ['eps','vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb', 'vlapl_a', 'vlapl_b', 'vtau_a', 'vtau_b']
+  }
+
   #pol_outputs = {
   #  'EXC' : ['eps'],
   #  'VXC' : ['vrho_a', 'vrho_b', 'vsigma_aa', 'vsigma_ab', 'vsigma_bb'],
@@ -132,7 +169,8 @@ class XCFunc:
   #}
   pol_outputs = {
     'LDA' : pol_lda_outputs, 
-    'GGA' : pol_gga_outputs
+    'GGA' : pol_gga_outputs,
+    'MGGA': pol_mgga_outputs
   }
 
   pol_substitutions = {
@@ -141,7 +179,11 @@ class XCFunc:
     'tvrho1' : 'vrho_b',
     'tvsigma0' : 'vsigma_aa',
     'tvsigma1' : 'vsigma_ab',
-    'tvsigma2' : 'vsigma_bb'
+    'tvsigma2' : 'vsigma_bb',
+    'tvlapl0'  : 'vlapl_a',
+    'tvlapl1'  : 'vlapl_b',
+    'tvtau0'   : 'vtau_a',
+    'tvtau1'   : 'vtau_b'
   }
 
   arith_ops = [ '+', '-', '*', '/' ]
@@ -182,6 +224,7 @@ class XCFunc:
     #self.xc_out = self.xc_out.replace('params->','')
     self.xc_out = self.xc_out.replace('POW_1_3','cbrt')
     self.xc_out = self.xc_out.replace('POW_3_2','pow_3_2')
+    self.xc_out = self.xc_out.replace('POW_1_4','pow_1_4')
     self.xc_out = self.xc_out.replace('POW_2','square')
     self.xc_out = self.xc_out.replace('M_CBRT','constants::m_cbrt_')
     self.xc_out = self.xc_out.replace('  t','t')
@@ -189,6 +232,7 @@ class XCFunc:
     self.xc_out = self.xc_out.replace('    v','v')
     self.xc_out = self.xc_out.replace('0.1e1 / M_PI','constants::m_one_ov_pi')
     self.xc_out = self.xc_out.replace('M_PI * M_PI','constants::m_pi_sq')
+    self.xc_out = self.xc_out.replace('DBL_EPSILON', 'std::numeric_limits<double>::epsilon()')
     self.xc_out = self.xc_out.replace(' 0,',' 0.0,')
     self.xc_out = self.xc_out.replace(' 0 ',' 0.0 ')
     self.xc_out = self.xc_out.replace(' 1 ',' 1.0 ')
@@ -200,6 +244,8 @@ class XCFunc:
     self.xc_out = self.xc_out.replace('my_piecewise5','piecewise_functor_5')
     self.xc_out = self.xc_out.replace('p->zeta_threshold','zeta_tol')
     self.xc_out = self.xc_out.replace('p->dens_threshold','dens_tol')
+    self.xc_out = self.xc_out.replace('p->sigma_threshold', 'sigma_tol')
+    self.xc_out = self.xc_out.replace('p->tau_threshold', 'tau_tol')
 
     xc_lines = self.xc_out.splitlines()
     xc_lines = list(filter( lambda x: not x.startswith('  double'), xc_lines ))
@@ -270,7 +316,7 @@ class XCFunc:
     for op in self.arith_ops:
       req_vars = req_vars.replace(op,'')
     req_vars = req_vars.split(' ')
-    req_vars = [x for x in req_vars if len(x) > 0 and 't' in x ]
+    req_vars = [x for x in req_vars if len(x) > 0 and 't' in x and 'tau' not in x]
     req_vars = [x for x in req_vars if 'functor' not in x ]
     req_vars = list(req_vars)
 
@@ -284,7 +330,8 @@ class XCFunc:
       for op in self.arith_ops:
         rhs = rhs.replace(op,'')
       rhs = rhs.split(' ')
-      rhs = [x for x in rhs if len(x) > 0 and 't' in x ]
+      rhs = [ x for x in rhs if len(x) > 0 and 't' in x and 'tau' not in x ]
+      rhs = [ x for x in rhs if 'numeric' not in x ]
       rhs = [ x for x in rhs if 'constant' not in x ]
       rhs = [ x for x in rhs if 'cbrt' not in x ]
       rhs = [ x for x in rhs if 'atan' not in x ]
@@ -297,6 +344,8 @@ class XCFunc:
       rhs = [ x for x in rhs if 'atan' not in x ]
       rhs = [ x for x in rhs if 'dens_tol' not in x ]
       rhs = [ x for x in rhs if 'zeta_tol' not in x ]
+      rhs = [ x for x in rhs if 'tau_tol' not in x ]
+      rhs = [ x for x in rhs if 'sigma_tol' not in x ]
       
       #if len(rhs) > 0:
       all_vars[tvar] = set(rhs)
@@ -423,7 +472,7 @@ class XCFunc:
 
 class GenMetaData:
   def __init__( self, local_name, libxc_file, ofname, xc_type, dens_tol, exx_coeff,
-    params = {} ):
+    params = {}, needs_laplacian = False ):
     self.local_name = local_name
     self.libxc_file = libxc_file
     self.ofname     = ofname
@@ -431,14 +480,14 @@ class GenMetaData:
     self.dens_tol   = dens_tol
     self.exx_coeff  = exx_coeff
     self.params     = params
+    self.needs_laplacian = needs_laplacian
 
     self.is_hyb = abs(float(exx_coeff)) > 1e-10
 
 
 
-libxc_prefix = '/home/meji656/Sources/libxc/src/maple2c/' 
-kernel_prefix = './include/exchcxx/impl/builtin/kernels/'
-kernel_prefix = './'
+libxc_prefix = '/Users/meji656/Projects/libxc/src/maple2c/' 
+kernel_prefix = '/Users/meji656/Projects/ExchCXX/include/exchcxx/impl/builtin/kernels/'
 gen_table = {
 
   'SlaterExchange' : GenMetaData( 'BuiltinSlaterExchange', 
@@ -558,7 +607,65 @@ gen_table = {
     libxc_prefix + 'gga_exc/gga_c_pbe.c', 
     kernel_prefix + 'pbe_c.hpp',
     'GGA', 1e-12, 0., {'beta':'0.06672455060314922', 'gamma':'0.031090690869654895034', 'BB':'1.'} 
-    )
+    ),
+
+  'SCAN_X' : GenMetaData( 'BuiltinSCAN_X',
+    libxc_prefix + 'mgga_exc/mgga_x_scan.c',
+    kernel_prefix + 'scan_x.hpp',
+    'MGGA', 1e-15, 0., 
+    {'c1': '0.667',
+     'c2': '0.8',
+     'd' : '1.24',
+     'k1': '0.065'}
+    ),
+
+  'SCAN_C' : GenMetaData( 'BuiltinSCAN_C',
+    libxc_prefix + 'mgga_exc/mgga_c_scan.c',
+    kernel_prefix + 'scan_c.hpp',
+    'MGGA', 1e-15, 0.
+    ),
+
+  'R2SCAN_X' : GenMetaData( 'BuiltinR2SCAN_X',
+    libxc_prefix + 'mgga_exc/mgga_x_r2scan.c',
+    kernel_prefix + 'r2scan_x.hpp',
+    'MGGA', 1e-11, 0.,
+    {'c1': '0.667',
+     'c2': '0.8',
+     'd': '1.24',
+     'k1': '0.065',
+     'eta': '0.001',
+     'dp2': '0.361'}
+    ),
+
+  'R2SCAN_C' : GenMetaData( 'BuiltinR2SCAN_C',
+    libxc_prefix + 'mgga_exc/mgga_c_r2scan.c',
+    kernel_prefix + 'r2scan_c.hpp',
+    'MGGA', 1e-11, 0.,
+    {'eta': '0.001'}
+    ),
+
+  #'R2SCANL_X' : GenMetaData( 'BuiltinR2SCANL_X',
+  #  libxc_prefix + 'mgga_exc/mgga_x_r2scanl.c',
+  #  kernel_prefix + 'r2scanl_x.hpp',
+  #  'MGGA', 1e-11, 0.,
+  #  {'c1': '0.667',
+  #   'c2': '0.8',
+  #   'd': '1.24',
+  #   'k1': '0.065',
+  #   'eta': '0.001',
+  #   'dp2': '0.361',
+  #   'a': '1.784720',
+  #   'b': '0.258304'}
+  #  ),
+
+  #'R2SCANL_C' : GenMetaData( 'BuiltinR2SCANL_C',
+  #  libxc_prefix + 'mgga_exc/mgga_c_r2scanl.c',
+  #  kernel_prefix + 'r2scanl_c.hpp',
+  #  'MGGA', 1e-11, 0.,
+  #  {'eta': '0.001',
+  #   'a': '1.784720',
+  #   'b': '0.258304'}
+  #  )
 
 }
 
@@ -591,41 +698,50 @@ struct kernel_traits< {0} > :
   static constexpr bool is_lda  = {2};
   static constexpr bool is_gga  = {3};
   static constexpr bool is_mgga = {4};
+  static constexpr bool needs_laplacian = {5};
 
-  static constexpr double dens_tol  = {5};
+  static constexpr double dens_tol  = {6};
   static constexpr double zeta_tol  = 1e-15;
-  static constexpr double sigma_tol  = {5};
+  static constexpr double sigma_tol  = {7};
+  static constexpr double tau_tol = 1e-20;
 
-  static constexpr bool is_hyb  = {6};
-  static constexpr double exx_coeff = {7};
+  static constexpr bool is_hyb  = {8};
+  static constexpr double exx_coeff = {9};
 """
 
 lda_exc_args_unpolar     = "double rho, double& eps"
 lda_exc_vxc_args_unpolar = "double rho, double& eps, double& vrho" 
 gga_exc_args_unpolar     = "double rho, double sigma, double& eps"
-gga_exc_vxc_args_unpolar = "double rho, double sigma, double& eps, double& vrho, double& vsigma" 
+gga_exc_vxc_args_unpolar = "double rho, double sigma, double& eps, double& vrho, double& vsigma"
+mgga_exc_args_unpolar    = "double rho, double sigma, double lapl, double tau, double& eps"
+mgga_exc_vxc_args_unpolar = "double rho, double sigma, double lapl, double tau, double& eps, double& vrho, double& vsigma, double& vlapl, double& vtau" 
 
 lda_exc_args_polar     = "double rho_a, double rho_b, double& eps"
 lda_exc_vxc_args_polar = "double rho_a, double rho_b, double& eps, double& vrho_a, double& vrho_b" 
 gga_exc_args_polar     = "double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double& eps"
 gga_exc_vxc_args_polar = "double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double& eps, double& vrho_a, double& vrho_b, double& vsigma_aa, double& vsigma_ab, double& vsigma_bb" 
-
+mgga_exc_args_polar    = "double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double lapl_a, double lapl_b, double tau_a, double tau_b, double& eps"
+mgga_exc_vxc_args_polar = "double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double lapl_a, double lapl_b, double tau_a, double tau_b, double& eps, double& vrho_a, double& vrho_b, double& vsigma_aa, double& vsigma_ab, double& vsigma_bb, double& vlapl_a, double& vlapl_b, double& vtau_a, double& vtau_b"
 
 exc_args_unpolar = {
   'LDA' : lda_exc_args_unpolar,
-  'GGA' : gga_exc_args_unpolar
+  'GGA' : gga_exc_args_unpolar,
+  'MGGA': mgga_exc_args_unpolar
 }
 exc_args_polar = {
   'LDA' : lda_exc_args_polar,
-  'GGA' : gga_exc_args_polar
+  'GGA' : gga_exc_args_polar,
+  'MGGA': mgga_exc_args_polar
 }
 exc_vxc_args_unpolar = {
   'LDA' : lda_exc_vxc_args_unpolar,
-  'GGA' : gga_exc_vxc_args_unpolar
+  'GGA' : gga_exc_vxc_args_unpolar,
+  'MGGA': mgga_exc_vxc_args_unpolar
 }
 exc_vxc_args_polar = {
   'LDA' : lda_exc_vxc_args_polar,
-  'GGA' : gga_exc_vxc_args_polar
+  'GGA' : gga_exc_vxc_args_polar,
+  'MGGA': mgga_exc_vxc_args_polar
 }
 
 
@@ -649,6 +765,7 @@ struct {0} : detail::BuiltinKernelImpl< {0} > {{
 
 
 for name, meta_data in gen_table.items():
+  print(name)
   xc_exc = XCFunc( meta_data.libxc_file, meta_data.xc_type, 'EXC' )
   xc_exc_vxc = XCFunc( meta_data.libxc_file, meta_data.xc_type, 'EXC_VXC' )
 
@@ -657,11 +774,12 @@ for name, meta_data in gen_table.items():
   is_lda  = xc_type == 'LDA'
   is_gga  = xc_type == 'GGA'
   is_mgga = xc_type == 'MGGA'
+  needs_laplacian = (xc_type == 'MGGA') and meta_data.needs_laplacian
 
   xc_struct_prefix = struct_prefix.format(
     meta_data.local_name, xc_type.lower(), str(is_lda).lower(), 
-    str(is_gga).lower(), str(is_mgga).lower(), meta_data.dens_tol,
-    str(meta_data.is_hyb).lower(), meta_data.exx_coeff )
+    str(is_gga).lower(), str(is_mgga).lower(), str(needs_laplacian).lower(), 
+    meta_data.dens_tol, meta_data.dens_tol**(4.0/3.0), str(meta_data.is_hyb).lower(), meta_data.exx_coeff )
 
   xc_param_lines = []
   for pname, valstr in meta_data.params.items():

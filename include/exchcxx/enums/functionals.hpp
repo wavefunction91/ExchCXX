@@ -58,6 +58,7 @@ enum class Functional {
   revPBE,
   PBE0,
   SCAN,
+  R2SCAN,
   R2SCANL
 };
 
