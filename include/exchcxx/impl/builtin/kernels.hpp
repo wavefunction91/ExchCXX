@@ -68,5 +68,8 @@
 #include <exchcxx/impl/builtin/kernels/pbe0.hpp>
 #include <exchcxx/impl/builtin/kernels/b3lyp.hpp>
 
-
+#include <exchcxx/impl/builtin/kernels/scan_x.hpp>
+#include <exchcxx/impl/builtin/kernels/scan_c.hpp>
+#include <exchcxx/impl/builtin/kernels/r2scan_x.hpp>
+#include <exchcxx/impl/builtin/kernels/r2scan_c.hpp>
 

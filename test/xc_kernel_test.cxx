@@ -168,7 +168,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   SECTION( "Pure MGGA-TAU Unpolarized" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     XCKernel mgga( backend, mgga_tau_kernel_test, Spin::Unpolarized );
 
@@ -220,7 +220,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   SECTION( "Pure MGGA-TAU Polarized" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     XCKernel mgga( backend, mgga_tau_kernel_test, Spin::Polarized );
 
@@ -347,9 +347,11 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
   SECTION( "MGGA Kernels" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
-    //SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
     for( const auto& kern : mgga_kernels ) {
+      if ( backend == Backend::builtin && kern == ExchCXX::Kernel::R2SCANL_X ) continue;
+      if ( backend == Backend::builtin && kern == ExchCXX::Kernel::R2SCANL_C ) continue;
       XCKernel func( backend, kern, Spin::Unpolarized );
       auto exx = load_reference_exx( kern );
 
@@ -617,8 +619,8 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
         CHECK( vsigma[i] == Approx(fill_val_vs + alpha * vsigma_ref[i]) );
       for( auto i = 0ul; i < func.vlapl_buffer_len(npts); ++i )
         CHECK( vlapl[i] == Approx(fill_val_vl + alpha * vlapl_ref[i]) );
-      for( auto i = 0ul; i < func.vsigma_buffer_len(npts); ++i )
-        CHECK( vsigma[i] == Approx(fill_val_vt + alpha * vsigma_ref[i]) );
+      for( auto i = 0ul; i < func.vtau_buffer_len(npts); ++i )
+        CHECK( vtau[i] == Approx(fill_val_vt + alpha * vtau_ref[i]) );
 
     }
 
@@ -913,7 +915,7 @@ TEST_CASE( "Scale and Increment Interface", "[xc-inc]" ) {
   }
 
   SECTION( "Builtin Polarized EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) 
       kernel_test( TestInterface::EXC_VXC_INC, Backend::builtin, kern,
         Spin::Polarized );
   }

@@ -126,6 +126,8 @@ template <typename F>
 SAFE_CONSTEXPR_INLINE( F ) square( F x ) { return x*x; }
 template <typename F>
 SAFE_INLINE( F ) pow_3_2( F x ) { F y = safe_math::sqrt(x); return y*y*y; }
+template <typename F>
+SAFE_INLINE( F ) pow_1_4( F x ) { F y = safe_math::sqrt(x); return safe_math::sqrt(y); }
 
 template <typename F>
 SAFE_CONSTEXPR_INLINE( F ) piecewise_functor_3( bool b, F x, F y ) {
