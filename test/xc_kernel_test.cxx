@@ -1204,9 +1204,9 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     for( auto i = 0ul; i < len_vsigma_buffer; ++i )
       CHECK( vsigma[i] == Approx(fill_val_vs + alpha * vsigma_ref[i]) );
     for( auto i = 0ul; i < len_vlapl_buffer; ++i )
-      CHECK( vlapl[i] == Approx(fill_val_vs + alpha * vlapl_ref[i]) );
+      CHECK( vlapl[i] == Approx(fill_val_vl + alpha * vlapl_ref[i]) );
     for( auto i = 0ul; i < len_vtau_buffer; ++i )
-      CHECK( vtau[i] == Approx(fill_val_vs + alpha * vtau_ref[i]) );
+      CHECK( vtau[i] == Approx(fill_val_vt + alpha * vtau_ref[i]) );
 
   } else if(interface == TestInterface::EXC_VXC)  {
 
@@ -1221,7 +1221,7 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
       CHECK( vlapl[i] == Approx(vlapl_ref[i]) );
     }
     for( auto i = 0ul; i < len_vtau_buffer; ++i ) {
-      INFO( "Kernel is " << kern );
+      INFO( "Kernel is " << kern << std::scientific << " " << vtau[i] << " " << vtau_ref[i] );
       CHECK( vtau[i] == Approx(vtau_ref[i]) );
     }
 
