@@ -413,7 +413,7 @@ __global__ MGGA_EXC_GENERATOR( device_eval_exc_helper_unpolar_kernel ) {
     const double tau_use   = fmax( tau[tid],   1e-40 );
     // TODO: Handle Fermihole
     const double sigma_use = fmax( sigma[tid], 1e-40 );
-    const double lapl_use  = lapl ? lapl[tid] : 0.0;
+    const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
     traits::eval_exc_unpolar( rho_use, sigma_use, lapl_use, tau_use, eps[tid] );
 
   }
@@ -431,7 +431,7 @@ __global__ MGGA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
 
     auto* rho_i   = rho   + 2*tid;
     auto* sigma_i = sigma + 3*tid;
-    auto* lapl_i  = lapl ? (lapl + 2*tid) : lapl;
+    auto* lapl_i  = traits::needs_laplacian ? (lapl + 2*tid) : nullptr;
     auto* tau_i   = tau   + 2*tid;
 
     const double rho_a_use = fmax( rho_i[0], 0. );
@@ -446,8 +446,8 @@ __global__ MGGA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
-    const double lapl_a_use = lapl ? lapl_i[0] : 0.0;
-    const double lapl_b_use = lapl ? lapl_i[1] : 0.0;
+    const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
+    const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
 
     traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
       sigma_ab_use, sigma_bb_use, lapl_a_use, lapl_b_use, tau_a_use,
@@ -469,10 +469,10 @@ __global__ MGGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_unpolar_kernel ) {
     const double tau_use   = fmax( tau[tid],   1e-40 );
     // TODO: Handle Fermihole
     const double sigma_use = fmax( sigma[tid], 1e-40 );
-    const double lapl_use  = lapl ? lapl[tid] : 0.0;
+    const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
 
     double dummy;
-    auto& vlapl_return = vlapl ? vlapl[tid] : dummy; 
+    auto& vlapl_return = traits::needs_laplacian ? vlapl[tid] : dummy; 
     traits::eval_exc_vxc_unpolar( rho_use, sigma_use, lapl_use, tau_use,
       eps[tid], vrho[tid], vsigma[tid], vlapl_return, vtau[tid] );
 
@@ -492,12 +492,12 @@ __global__ MGGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
 
     auto* rho_i   = rho   + 2*tid;
     auto* sigma_i = sigma + 3*tid;
-    auto* lapl_i  = lapl ? (lapl + 2*tid) : lapl;
+    auto* lapl_i  = traits::needs_laplacian ? (lapl + 2*tid) : lapl;
     auto* tau_i   = tau   + 2*tid;
 
     auto* vrho_i   = vrho   + 2*tid;
     auto* vsigma_i = vsigma + 3*tid;
-    auto* vlapl_i  = vlapl ? vlapl + 2*tid : dummy_vlapl;
+    auto* vlapl_i  = traits::needs_laplacian ? vlapl + 2*tid : dummy_vlapl;
     auto* vtau_i   = vtau   + 2*tid;
 
     const double rho_a_use = fmax( rho_i[0], 0. );
@@ -512,8 +512,8 @@ __global__ MGGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
-    const double lapl_a_use = lapl ? lapl_i[0] : 0.0;
-    const double lapl_b_use = lapl ? lapl_i[1] : 0.0;
+    const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
+    const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
                                                          
     traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
       sigma_ab_use, sigma_bb_use, lapl_a_use, lapl_b_use, tau_a_use,
@@ -538,7 +538,7 @@ __global__ MGGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_unpolar_kernel ) {
     const double tau_use   = fmax( tau[tid],   1e-40 );
     // TODO: Handle Fermihole
     const double sigma_use = fmax( sigma[tid], 1e-40 );
-    const double lapl_use  = lapl ? lapl[tid] : 0.0;
+    const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
                                       
     traits::eval_exc_unpolar( rho_use, sigma_use, lapl_use, tau_use, e );
     eps[tid] += scal_fact * e;
@@ -558,7 +558,7 @@ __global__ MGGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
 
     auto* rho_i   = rho   + 2*tid;
     auto* sigma_i = sigma + 3*tid;
-    auto* lapl_i  = lapl ? (lapl + 2*tid) : lapl;
+    auto* lapl_i  = traits::needs_laplacian ? (lapl + 2*tid) : lapl;
     auto* tau_i   = tau   + 2*tid;
 
     const double rho_a_use = fmax( rho_i[0], 0. );
@@ -573,8 +573,8 @@ __global__ MGGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
-    const double lapl_a_use = lapl ? lapl_i[0] : 0.0;
-    const double lapl_b_use = lapl ? lapl_i[1] : 0.0;
+    const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
+    const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
 
     double e;
     traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
@@ -600,7 +600,7 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_unpolar_ke
     const double tau_use   = fmax( tau[tid],   1e-40 );
     // TODO: Handle Fermihole
     const double sigma_use = fmax( sigma[tid], 1e-40 );
-    const double lapl_use  = lapl ? lapl[tid] : 0.0;
+    const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
 
     traits::eval_exc_vxc_unpolar( rho_use, sigma_use, lapl_use, tau_use,
       e, vr, vs, vl, vt );
@@ -625,12 +625,12 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kern
 
     auto* rho_i   = rho   + 2*tid;
     auto* sigma_i = sigma + 3*tid;
-    auto* lapl_i  = lapl ? (lapl + 2*tid) : lapl;
+    auto* lapl_i  = traits::needs_laplacian ? (lapl + 2*tid) : lapl;
     auto* tau_i   = tau   + 2*tid;
 
     auto* vrho_i   = vrho   + 2*tid;
     auto* vsigma_i = vsigma + 3*tid;
-    auto* vlapl_i  = vlapl ? vlapl + 2*tid : dummy_vlapl;
+    auto* vlapl_i  = traits::needs_laplacian ? vlapl + 2*tid : dummy_vlapl;
     auto* vtau_i   = vtau   + 2*tid;
 
     const double rho_a_use = fmax( rho_i[0], 0. );
@@ -645,8 +645,8 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kern
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
 
-    const double lapl_a_use = lapl ? lapl_i[0] : 0.0;
-    const double lapl_b_use = lapl ? lapl_i[1] : 0.0;
+    const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
+    const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
                                                          
                                                          
     double e, vra, vrb, vsaa,vsab,vsbb, vla, vlb, vta, vtb;
