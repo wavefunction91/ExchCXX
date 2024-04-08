@@ -99,7 +99,8 @@ static std::vector<ExchCXX::Kernel> mgga_kernels = {
   ExchCXX::Kernel::R2SCAN_X,
   ExchCXX::Kernel::R2SCAN_C,
   ExchCXX::Kernel::R2SCANL_X,
-  ExchCXX::Kernel::R2SCANL_C
+  ExchCXX::Kernel::R2SCANL_C,
+  ExchCXX::Kernel::FT98_X
 };
 
 static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
@@ -124,7 +125,8 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::SCAN_X, 
   ExchCXX::Kernel::SCAN_C,
   ExchCXX::Kernel::R2SCAN_X, 
-  ExchCXX::Kernel::R2SCAN_C
+  ExchCXX::Kernel::R2SCAN_C,
+  ExchCXX::Kernel::FT98_X
 
 };
 
@@ -134,6 +136,7 @@ static constexpr std::array string_kernal_pairs = {
     std::pair("PBE_C", ExchCXX::Kernel::PBE_C),
     std::pair("SCAN_X",ExchCXX::Kernel::SCAN_X),
     std::pair("SCAN_C", ExchCXX::Kernel::SCAN_C),
+    std::pair("FT98_X",ExchCXX::Kernel::FT98_X),
     std::pair("R2SCANL_X",ExchCXX::Kernel::R2SCANL_X),
     std::pair("R2SCANL_C", ExchCXX::Kernel::R2SCANL_C),
     std::pair("R2SCAN_X",ExchCXX::Kernel::R2SCAN_X),

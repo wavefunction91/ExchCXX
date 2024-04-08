@@ -76,6 +76,7 @@ struct BuiltinSCAN_X;
 struct BuiltinSCAN_C;
 struct BuiltinR2SCAN_X;
 struct BuiltinR2SCAN_C;
+struct BuiltinFT98_X;
 
 
 template <typename KernelType>

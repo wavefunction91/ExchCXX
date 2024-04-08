@@ -90,6 +90,7 @@ enum class Kernel {
   R2SCAN_X,
   R2SCANL_C,
   R2SCANL_X,
+  FT98_X,
 
   // Hybrid GGA functionals
   B3LYP,

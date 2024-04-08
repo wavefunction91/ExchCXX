@@ -486,8 +486,10 @@ class GenMetaData:
 
 
 
-libxc_prefix = '/Users/meji656/Projects/libxc/src/maple2c/' 
-kernel_prefix = '/Users/meji656/Projects/ExchCXX/include/exchcxx/impl/builtin/kernels/'
+#libxc_prefix = '/Users/meji656/Projects/libxc/src/maple2c/' 
+#kernel_prefix = '/Users/meji656/Projects/ExchCXX/include/exchcxx/impl/builtin/kernels/'
+libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/6.2.0/libxc-6.2.0/src/maple2c/' 
+kernel_prefix = 'include/exchcxx/impl/builtin/kernels/'
 gen_table = {
 
   'SlaterExchange' : GenMetaData( 'BuiltinSlaterExchange', 
@@ -643,6 +645,19 @@ gen_table = {
     'MGGA', 1e-11, 0.,
     {'eta': '0.001'}
     ),
+
+  'FT98' : GenMetaData( 'BuiltinFT98_X',
+    libxc_prefix + 'mgga_exc/mgga_x_ft98.c',
+    kernel_prefix + 'ft98_x.hpp',
+    'MGGA', 1e-12, 0.,
+    { 'a': '0.00528014',
+      'b': '0.00003904539', 
+      'a1': '2.816049', 
+      'a2': '0.879058', 
+      'b1': '0.398773', 
+      'b2': '66.364138'},
+    True
+    )
 
   #'R2SCANL_X' : GenMetaData( 'BuiltinR2SCANL_X',
   #  libxc_prefix + 'mgga_exc/mgga_x_r2scanl.c',
