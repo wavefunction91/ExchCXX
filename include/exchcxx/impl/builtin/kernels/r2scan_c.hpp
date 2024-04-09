@@ -21,7 +21,7 @@ struct kernel_traits< BuiltinR2SCAN_C > :
   static constexpr bool is_mgga = true;
   static constexpr bool needs_laplacian = false;
 
-  static constexpr double dens_tol  = 1e-11;
+  static constexpr double dens_tol  = 1e-15;
   static constexpr double zeta_tol  = 1e-15;
   static constexpr double sigma_tol  = 2.1544346900318875e-15;
   static constexpr double tau_tol = 1e-20;

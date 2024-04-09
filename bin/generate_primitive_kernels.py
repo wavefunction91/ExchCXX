@@ -642,7 +642,7 @@ gen_table = {
   'R2SCAN_C' : GenMetaData( 'BuiltinR2SCAN_C',
     libxc_prefix + 'mgga_exc/mgga_c_r2scan.c',
     kernel_prefix + 'r2scan_c.hpp',
-    'MGGA', 1e-11, 0.,
+    'MGGA', 1e-15, 0.,
     {'eta': '0.001'}
     ),
 
