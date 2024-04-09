@@ -465,7 +465,10 @@ MGGA_EXC_GENERATOR( host_eval_exc_helper_unpolar ) {
 
     const double rho_use   = std::max( rho[i],   0.  );
     const double tau_use   = std::max( tau[i], 1e-20 );
-    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
+    double sigma_use = sigma[i];
+    if constexpr (not traits::is_kedf) {
+      sigma_use = enforce_fermi_hole_curvature(sigma_use, rho_use, tau_use);
+    }
 
     if ( traits::needs_laplacian ) {
       const double lapl_use = lapl[i];
@@ -493,8 +496,12 @@ MGGA_EXC_GENERATOR( host_eval_exc_helper_polar ) {
     const double rho_b_use = std::max( rho_i[1], 0. );
     const double tau_a_use  = std::max( tau_i[0], 1e-20 );
     const double tau_b_use  = std::max( tau_i[1], 1e-20 );
-    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
-    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
+    double sigma_aa_use = sigma_i[0];
+    double sigma_bb_use = sigma_i[2];
+    if constexpr (not traits::is_kedf) {
+      sigma_aa_use = enforce_fermi_hole_curvature(sigma_aa_use, rho_a_use, tau_a_use);
+      sigma_bb_use = enforce_fermi_hole_curvature(sigma_bb_use, rho_b_use, tau_b_use);
+    }
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
@@ -524,7 +531,10 @@ MGGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
     const double tau_use   = std::max( tau[i], 1e-20 );
-    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
+    double sigma_use = sigma[i];
+    if constexpr (not traits::is_kedf) {
+      sigma_use = enforce_fermi_hole_curvature(sigma_use, rho_use, tau_use);
+    }
 
     if ( traits::needs_laplacian ) {
       const double lapl_use  = lapl[i];
@@ -558,8 +568,12 @@ MGGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar ) {
     const double rho_b_use = std::max( rho_i[1], 0. );
     const double tau_a_use = std::max(tau_i[0], 1e-20 );
     const double tau_b_use = std::max(tau_i[1], 1e-20 );
-    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
-    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
+    double sigma_aa_use = sigma_i[0];
+    double sigma_bb_use = sigma_i[2];
+    if constexpr (not traits::is_kedf) {
+      sigma_aa_use = enforce_fermi_hole_curvature(sigma_aa_use, rho_a_use, tau_a_use);
+      sigma_bb_use = enforce_fermi_hole_curvature(sigma_bb_use, rho_b_use, tau_b_use);
+    }
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
@@ -600,7 +614,10 @@ MGGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
     const double tau_use   = std::max( tau[i],   1e-20 );
-    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
+    double sigma_use = sigma[i];
+    if constexpr (not traits::is_kedf) {
+      sigma_use = enforce_fermi_hole_curvature(sigma_use, rho_use, tau_use);
+    }
 
     double e;
 
@@ -632,8 +649,12 @@ MGGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar ) {
     const double rho_b_use = std::max( rho_i[1], 0. );
     const double tau_a_use  = tau_i[0];
     const double tau_b_use  = tau_i[1];
-    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
-    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
+    double sigma_aa_use = sigma_i[0];
+    double sigma_bb_use = sigma_i[2];
+    if constexpr (not traits::is_kedf) {
+      sigma_aa_use = enforce_fermi_hole_curvature(sigma_aa_use, rho_a_use, tau_a_use);
+      sigma_bb_use = enforce_fermi_hole_curvature(sigma_bb_use, rho_b_use, tau_b_use);
+    }
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
@@ -666,7 +687,10 @@ MGGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
     const double tau_use   = std::max( tau[i], 1e-20 );
-    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
+    double sigma_use = sigma[i];
+    if constexpr (not traits::is_kedf) {
+      sigma_use = enforce_fermi_hole_curvature(sigma_use, rho_use, tau_use);
+    }
 
     double e, vr, vs, vl, vt;
     
@@ -706,8 +730,12 @@ MGGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar ) {
     const double rho_b_use = std::max( rho_i[1], 0. );
     const double tau_a_use  = std::max( tau_i[0], 1e-20 );
     const double tau_b_use  = std::max( tau_i[1], 1e-20 );
-    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
-    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
+    double sigma_aa_use = sigma_i[0];
+    double sigma_bb_use = sigma_i[2];
+    if constexpr (not traits::is_kedf) {
+      sigma_aa_use = enforce_fermi_hole_curvature(sigma_aa_use, rho_a_use, tau_a_use);
+      sigma_bb_use = enforce_fermi_hole_curvature(sigma_bb_use, rho_b_use, tau_b_use);
+    }
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
@@ -803,6 +831,9 @@ MGGA_GENERATE_HOST_HELPERS( BuiltinPC07_K )
 MGGA_GENERATE_HOST_HELPERS( BuiltinPC07OPT_K )
 
 MGGA_GENERATE_HOST_HELPERS( BuiltinSCANL_C )
+//MGGA_GENERATE_HOST_HELPERS( BuiltinSCANL_X )
+//MGGA_GENERATE_HOST_HELPERS( BuiltinR2SCANL_C )
+//MGGA_GENERATE_HOST_HELPERS( BuiltinR2SCANL_X )
 
 }
 }

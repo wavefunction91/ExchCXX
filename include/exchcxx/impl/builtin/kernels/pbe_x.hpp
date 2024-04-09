@@ -20,11 +20,12 @@ struct kernel_traits< BuiltinPBE_X > :
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr bool needs_laplacian = false;
+  static constexpr bool is_kedf = false;
 
   static constexpr double dens_tol  = 1e-32;
   static constexpr double zeta_tol  = 1e-15;
   static constexpr double sigma_tol  = 2.1544346900318956e-43;
-  static constexpr double tau_tol = 1e-20;
+  static constexpr double tau_tol = is_kedf ? 0.0 : 1e-20;
 
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;

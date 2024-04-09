@@ -472,7 +472,7 @@ class XCFunc:
 
 class GenMetaData:
   def __init__( self, local_name, libxc_file, ofname, xc_type, dens_tol, exx_coeff,
-    params = {}, needs_laplacian = False ):
+    params = {}, needs_laplacian = False, is_kedf = False ):
     self.local_name = local_name
     self.libxc_file = libxc_file
     self.ofname     = ofname
@@ -481,6 +481,7 @@ class GenMetaData:
     self.exx_coeff  = exx_coeff
     self.params     = params
     self.needs_laplacian = needs_laplacian
+    self.is_kedf = is_kedf
 
     self.is_hyb = abs(float(exx_coeff)) > 1e-10
 
@@ -665,7 +666,7 @@ gen_table = {
     'MGGA', 1e-15, 0.,
     { 'a': '0.5389',
       'b': '3.0' },
-    True
+    True, True
     ),
 
   'PC07OPT' : GenMetaData( 'BuiltinPC07OPT_K',
@@ -674,7 +675,7 @@ gen_table = {
     'MGGA', 1e-15, 0.,
     { 'a': '1.784720',
       'b': '0.258304' },
-    True
+    True, True
     )
 
   #'R2SCANL_X' : GenMetaData( 'BuiltinR2SCANL_X',
@@ -732,14 +733,15 @@ struct kernel_traits< {0} > :
   static constexpr bool is_gga  = {3};
   static constexpr bool is_mgga = {4};
   static constexpr bool needs_laplacian = {5};
+  static constexpr bool is_kedf = {6};
 
-  static constexpr double dens_tol  = {6};
+  static constexpr double dens_tol  = {7};
   static constexpr double zeta_tol  = 1e-15;
-  static constexpr double sigma_tol  = {7};
-  static constexpr double tau_tol = 1e-20;
+  static constexpr double sigma_tol  = {8};
+  static constexpr double tau_tol = is_kedf ? 0.0 : 1e-20;
 
-  static constexpr bool is_hyb  = {8};
-  static constexpr double exx_coeff = {9};
+  static constexpr bool is_hyb  = {9};
+  static constexpr double exx_coeff = {10};
 """
 
 lda_exc_args_unpolar     = "double rho, double& eps"
@@ -808,10 +810,11 @@ for name, meta_data in gen_table.items():
   is_gga  = xc_type == 'GGA'
   is_mgga = xc_type == 'MGGA'
   needs_laplacian = (xc_type == 'MGGA') and meta_data.needs_laplacian
+  is_kedf = meta_data.is_kedf
 
   xc_struct_prefix = struct_prefix.format(
     meta_data.local_name, xc_type.lower(), str(is_lda).lower(), 
-    str(is_gga).lower(), str(is_mgga).lower(), str(needs_laplacian).lower(), 
+    str(is_gga).lower(), str(is_mgga).lower(), str(needs_laplacian).lower(), str(is_kedf).lower(),
     meta_data.dens_tol, meta_data.dens_tol**(4.0/3.0), str(meta_data.is_hyb).lower(), meta_data.exx_coeff )
 
   xc_param_lines = []

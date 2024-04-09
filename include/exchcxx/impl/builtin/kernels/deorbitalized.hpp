@@ -17,6 +17,7 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   static constexpr bool is_gga  = false;
   static constexpr bool is_mgga = true;
   static constexpr bool needs_laplacian = true;
+  static constexpr bool is_kedf = false;
   static constexpr double exx_coeff = xc_traits::exx_coeff + ke_traits::exx_coeff;
 
   BUILTIN_KERNEL_EVAL_RETURN

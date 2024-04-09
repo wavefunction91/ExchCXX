@@ -20,11 +20,12 @@ struct kernel_traits< BuiltinPW91_LDA_MOD > :
   static constexpr bool is_gga  = false;
   static constexpr bool is_mgga = false;
   static constexpr bool needs_laplacian = false;
+  static constexpr bool is_kedf = false;
 
   static constexpr double dens_tol  = 1e-24;
   static constexpr double zeta_tol  = 1e-15;
   static constexpr double sigma_tol  = 1.000000000000004e-32;
-  static constexpr double tau_tol = 1e-20;
+  static constexpr double tau_tol = is_kedf ? 0.0 : 1e-20;
 
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;
