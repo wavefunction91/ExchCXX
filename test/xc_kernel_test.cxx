@@ -1222,7 +1222,7 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     }
     for( auto i = 0ul; i < len_vtau_buffer; ++i ) {
       INFO( "Kernel is " << kern << std::scientific << " " << vtau[i] << " " << vtau_ref[i] );
-      CHECK( vtau[i] == Approx(vtau_ref[i]) );
+      CHECK( vtau[i] == Approx(vtau_ref[i]).margin(std::numeric_limits<double>::epsilon()) );
     }
 
   }
@@ -1500,11 +1500,11 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
           Backend::builtin, kern, Spin::Unpolarized );
     }
 
-    //SECTION("EXC + VXC Small: Unpolarized") {
-    //  for( auto kern : builtin_supported_kernels )
-    //    test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
-    //      Backend::builtin, kern, Spin::Unpolarized );
-    //}
+    SECTION("EXC + VXC Small: Unpolarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::builtin, kern, Spin::Unpolarized );
+    }
 
     SECTION("EXC + INC Small: Unpolarized") {
       for( auto kern : builtin_supported_kernels )
@@ -1572,11 +1572,11 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
           Backend::builtin, kern, Spin::Polarized );
     }
 
-    //SECTION("EXC + VXC Small: Polarized") {
-    //  for( auto kern : builtin_supported_kernels )
-    //    test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
-    //      Backend::builtin, kern, Spin::Polarized );
-    //}
+    SECTION("EXC + VXC Small: Polarized") {
+      for( auto kern : builtin_supported_kernels )
+        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
+          Backend::builtin, kern, Spin::Polarized );
+    }
 
     SECTION("EXC + INC Small: Polarized") {
       for( auto kern : builtin_supported_kernels )
