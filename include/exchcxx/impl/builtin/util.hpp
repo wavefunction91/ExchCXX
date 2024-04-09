@@ -139,4 +139,11 @@ SAFE_CONSTEXPR_INLINE( F ) piecewise_functor_5( bool b, F x, bool c, F y, F z ) 
   return b ? x : (c ? y : z);
 }
 
+
+
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) enforce_fermi_hole_curvature(F sigma, F rho, F tau) {
+  return safe_min(sigma, F(8) * rho * tau);
+}
+
 }

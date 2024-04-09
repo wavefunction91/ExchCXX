@@ -411,8 +411,7 @@ __global__ MGGA_EXC_GENERATOR( device_eval_exc_helper_unpolar_kernel ) {
 
     const double rho_use   = fmax( rho[tid],   0.    );
     const double tau_use   = fmax( tau[tid],   1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
+    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
     traits::eval_exc_unpolar( rho_use, sigma_use, lapl_use, tau_use, eps[tid] );
 
@@ -438,9 +437,8 @@ __global__ MGGA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
     const double rho_b_use = fmax( rho_i[1], 0. );
     const double tau_a_use = fmax( tau_i[0], 1e-40 );
     const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
+    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
+    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
 
     const double sigma_ab_use = fmax( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
@@ -467,8 +465,7 @@ __global__ MGGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
     const double rho_use   = fmax( rho[tid],   0.    );
     const double tau_use   = fmax( tau[tid],   1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
+    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
 
     double dummy;
@@ -504,9 +501,8 @@ __global__ MGGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
     const double rho_b_use = fmax( rho_i[1], 0. );
     const double tau_a_use = fmax( tau_i[0], 1e-40 );
     const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
+    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
+    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
 
     const double sigma_ab_use = fmax( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
@@ -536,8 +532,7 @@ __global__ MGGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_unpolar_kernel ) {
 
     const double rho_use   = fmax( rho[tid],   0.    );
     const double tau_use   = fmax( tau[tid],   1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
+    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
                                       
     traits::eval_exc_unpolar( rho_use, sigma_use, lapl_use, tau_use, e );
@@ -565,9 +560,8 @@ __global__ MGGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
     const double rho_b_use = fmax( rho_i[1], 0. );
     const double tau_a_use = fmax( tau_i[0], 1e-40 );
     const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
+    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
+    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
 
     const double sigma_ab_use = fmax( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
@@ -598,8 +592,7 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_unpolar_ke
 
     const double rho_use   = fmax( rho[tid],   0.    );
     const double tau_use   = fmax( tau[tid],   1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
+    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
 
     traits::eval_exc_vxc_unpolar( rho_use, sigma_use, lapl_use, tau_use,
@@ -637,9 +630,8 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kern
     const double rho_b_use = fmax( rho_i[1], 0. );
     const double tau_a_use = fmax( tau_i[0], 1e-40 );
     const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    // TODO: Handle Fermihole
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
+    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
+    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
 
     const double sigma_ab_use = fmax( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
@@ -1012,6 +1004,9 @@ MGGA_GENERATE_DEVICE_HELPERS( BuiltinPC07_K );
 MGGA_GENERATE_DEVICE_HELPERS( BuiltinPC07OPT_K );
 
 MGGA_GENERATE_DEVICE_HELPERS( BuiltinSCANL_C );
+//MGGA_GENERATE_DEVICE_HELPERS( BuiltinSCANL_X );
+//MGGA_GENERATE_DEVICE_HELPERS( BuiltinR2SCANL_C );
+//MGGA_GENERATE_DEVICE_HELPERS( BuiltinR2SCANL_X );
 }
 }
 

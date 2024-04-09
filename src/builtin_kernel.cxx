@@ -463,9 +463,9 @@ MGGA_EXC_GENERATOR( host_eval_exc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
+    const double rho_use   = std::max( rho[i],   0.  );
     const double tau_use   = std::max( tau[i], 1e-20 );
+    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
 
     if ( traits::needs_laplacian ) {
       const double lapl_use = lapl[i];
@@ -491,13 +491,13 @@ MGGA_EXC_GENERATOR( host_eval_exc_helper_polar ) {
 
     const double rho_a_use = std::max( rho_i[0], 0. );
     const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
+    const double tau_a_use  = std::max( tau_i[0], 1e-20 );
+    const double tau_b_use  = std::max( tau_i[1], 1e-20 );
+    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
+    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
-    const double tau_a_use  = std::max( tau_i[0], 1e-20 );
-    const double tau_b_use  = std::max( tau_i[1], 1e-20 );
    
     if ( traits::needs_laplacian ) { 
       auto* lapl_i  = lapl  + 2*i;
@@ -523,8 +523,8 @@ MGGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar ) {
   for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
     const double tau_use   = std::max( tau[i], 1e-20 );
+    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
 
     if ( traits::needs_laplacian ) {
       const double lapl_use  = lapl[i];
@@ -556,13 +556,13 @@ MGGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar ) {
 
     const double rho_a_use = std::max( rho_i[0], 0. );
     const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
+    const double tau_a_use = std::max(tau_i[0], 1e-20 );
+    const double tau_b_use = std::max(tau_i[1], 1e-20 );
+    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
+    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
-    const double tau_a_use = std::max(tau_i[0], 1e-20 );
-    const double tau_b_use = std::max(tau_i[1], 1e-20 );
 
     if ( traits::needs_laplacian) {
       auto* lapl_i   = lapl  + 2*i;
@@ -599,8 +599,8 @@ MGGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar ) {
   for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
     const double tau_use   = std::max( tau[i],   1e-20 );
+    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
 
     double e;
 
@@ -630,13 +630,13 @@ MGGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar ) {
 
     const double rho_a_use = std::max( rho_i[0], 0. );
     const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
+    const double tau_a_use  = tau_i[0];
+    const double tau_b_use  = tau_i[1];
+    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
+    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
-    const double tau_a_use  = tau_i[0];
-    const double tau_b_use  = tau_i[1];
 
     double e;
     if ( traits::needs_laplacian ) {
@@ -665,8 +665,8 @@ MGGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar ) {
   for( int32_t i = 0; i < N; ++i ) {
 
     const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
     const double tau_use   = std::max( tau[i], 1e-20 );
+    const double sigma_use = enforce_fermi_hole_curvature(sigma[i], rho_use, tau_use);
 
     double e, vr, vs, vl, vt;
     
@@ -704,13 +704,13 @@ MGGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar ) {
 
     const double rho_a_use = std::max( rho_i[0], 0. );
     const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
+    const double tau_a_use  = std::max( tau_i[0], 1e-20 );
+    const double tau_b_use  = std::max( tau_i[1], 1e-20 );
+    const double sigma_aa_use = enforce_fermi_hole_curvature(sigma_i[0], rho_a_use, tau_a_use);
+    const double sigma_bb_use = enforce_fermi_hole_curvature(sigma_i[2], rho_b_use, tau_b_use);
     const double sigma_ab_use = std::max( 
       sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
     );
-    const double tau_a_use  = std::max( tau_i[0], 1e-20 );
-    const double tau_b_use  = std::max( tau_i[1], 1e-20 );
                                                          
     double e, vra, vrb, vsaa,vsab,vsbb, vla, vlb, vta, vtb;
 

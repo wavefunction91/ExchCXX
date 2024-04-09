@@ -183,7 +183,11 @@ struct mgga_screening_interface {
     if( rho <= traits::dens_tol ) {
       eps = 0.;
     } else {
-      traits::eval_exc_unpolar_impl( rho, sigma, lapl, tau, eps );
+      traits::eval_exc_unpolar_impl( 
+        rho, 
+        safe_max(traits::sigma_tol*traits::sigma_tol, sigma), 
+        lapl, 
+        safe_max(traits::tau_tol, tau), eps );
     }
 
   }
@@ -206,8 +210,17 @@ struct mgga_screening_interface {
     if( rho_s <= traits::dens_tol ) {
       eps = 0.;
     } else {
-      traits::eval_exc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab,
-        sigma_bb, lapl_a, lapl_b, tau_a, tau_b, eps );
+      sigma_aa = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_aa);
+      sigma_bb = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_bb);
+      const auto s_ave = 0.5 * (sigma_aa + sigma_bb);
+      sigma_ab = (sigma_ab >= -s_ave ? sigma_ab : -s_ave);
+      sigma_ab = (sigma_ab <=  s_ave ? sigma_ab :  s_ave);
+    
+      traits::eval_exc_polar_impl( rho_a, rho_b, 
+        sigma_aa, sigma_ab, sigma_bb, lapl_a, lapl_b, 
+        safe_max(traits::tau_tol, tau_a), 
+        safe_max(traits::tau_tol, tau_b), 
+        eps );
     }
 
   }
@@ -223,7 +236,12 @@ struct mgga_screening_interface {
       vlapl  = 0.;
       vtau   = 0.;
     } else {
-      traits::eval_exc_vxc_unpolar_impl( rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau );
+      traits::eval_exc_vxc_unpolar_impl( 
+        rho, 
+        safe_max(traits::sigma_tol*traits::sigma_tol, sigma), 
+        lapl, 
+        safe_max(traits::tau_tol, tau), 
+        eps, vrho, vsigma, vlapl, vtau );
     }
 
   }
@@ -258,9 +276,17 @@ struct mgga_screening_interface {
     vtau_b    = 0.;
 
     if( rho_s > traits::dens_tol ) {
+      sigma_aa = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_aa);
+      sigma_bb = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_bb);
+      const auto s_ave = 0.5 * (sigma_aa + sigma_bb);
+      sigma_ab = (sigma_ab >= -s_ave ? sigma_ab : -s_ave);
+      sigma_ab = (sigma_ab <=  s_ave ? sigma_ab :  s_ave);
       traits::eval_exc_vxc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab, 
-        sigma_bb, lapl_a, lapl_b, tau_a, tau_b, eps, vrho_a, vrho_b, 
-        vsigma_aa, vsigma_ab, vsigma_bb, vlapl_a, vlapl_b, vtau_a, vtau_b );
+        sigma_bb, lapl_a, lapl_b, 
+        safe_max(traits::tau_tol, tau_a), 
+        safe_max(traits::tau_tol, tau_b), 
+        eps, vrho_a, vrho_b, vsigma_aa, vsigma_ab, vsigma_bb, vlapl_a, vlapl_b, 
+        vtau_a, vtau_b );
     }
 
   }
