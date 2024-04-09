@@ -376,7 +376,7 @@ struct kernel_traits< BuiltinPBE_C > :
     const double t138 = t134 * t137;
     const double t141 = t106 * t56 * t112 / 0.96e2 + t127 * t138 / 0.3072e4;
     const double t142 = beta * t141;
-    const double t146 = t143 * t123 * t141 + 0.1e1;
+    const double t146 = t123 * t141 * t143 + 0.1e1;
     const double t147 = 0.1e1 / t146;
     const double t148 = t116 * t147;
     const double t150 = t142 * t148 + 0.1e1;
@@ -499,7 +499,7 @@ struct kernel_traits< BuiltinPBE_C > :
     const double t138 = t134 * t137;
     const double t141 = t106 * t56 * t112 / 0.96e2 + t127 * t138 / 0.3072e4;
     const double t142 = beta * t141;
-    const double t146 = t143 * t123 * t141 + 0.1e1;
+    const double t146 = t123 * t141 * t143 + 0.1e1;
     const double t147 = 0.1e1 / t146;
     const double t148 = t116 * t147;
     const double t150 = t142 * t148 + 0.1e1;
@@ -593,7 +593,7 @@ struct kernel_traits< BuiltinPBE_C > :
     const double t287 = t286 * t1;
     const double t290 = ( t158 + t183 + t187 - t192 + t206 + t239 + t241 - t246 - t251 ) * t116;
     const double t292 = t133 * t262;
-    const double t295 = 0.3e1 * t118 * t292 - t290 * t119;
+    const double t295 = 0.3e1 * t118 * t292 - t119 * t290;
     const double t296 = t295 * t121;
     const double t297 = t288 * t296;
     const double t298 = t287 * t297;
@@ -615,9 +615,9 @@ struct kernel_traits< BuiltinPBE_C > :
     const double t324 = t116 * t323;
     const double t325 = t143 * t282;
     const double t326 = t141 * t295;
-    const double t331 = -t325 * t326 * t121 + t143 * t123 * t319;
+    const double t331 = -t121 * t325 * t326 + t123 * t143 * t319;
     const double t332 = t324 * t331;
-    const double t334 = -t142 * t332 + t320 * t148;
+    const double t334 = -t142 * t332 + t148 * t320;
     const double t335 = 0.1e1 / t150;
     const double t336 = t334 * t335;
     const double t337 = t101 * t336;
@@ -641,7 +641,7 @@ struct kernel_traits< BuiltinPBE_C > :
     const double t366 = t275 * t365;
     const double t370 = ( t158 + t183 - t187 - t192 + t351 + t239 + t353 - t246 - t251 ) * t116;
     const double t372 = t133 * t361;
-    const double t375 = 0.3e1 * t118 * t372 - t370 * t119;
+    const double t375 = 0.3e1 * t118 * t372 - t119 * t370;
     const double t376 = t375 * t121;
     const double t377 = t288 * t376;
     const double t378 = t287 * t377;
@@ -649,9 +649,9 @@ struct kernel_traits< BuiltinPBE_C > :
     const double t385 = -t272 - t274 * t366 / 0.48e2 - t285 * t378 / 0.3072e4 - t307 - t310 * t382 / 0.768e3;
     const double t386 = beta * t385;
     const double t388 = t141 * t375;
-    const double t393 = -t325 * t388 * t121 + t143 * t123 * t385;
+    const double t393 = -t121 * t325 * t388 + t123 * t143 * t385;
     const double t394 = t324 * t393;
-    const double t396 = -t142 * t394 + t386 * t148;
+    const double t396 = -t142 * t394 + t148 * t386;
     const double t397 = t396 * t335;
     const double t398 = t101 * t397;
     const double t399 = t158 + t183 - t187 - t192 + t351 + t239 + t353 - t246 - t251 + t364 + t398;
@@ -666,17 +666,17 @@ struct kernel_traits< BuiltinPBE_C > :
     const double t418 = t415 * t417;
     const double t419 = t323 * t123;
     const double t420 = t419 * t411;
-    const double t422 = t412 * t148 - t418 * t420;
+    const double t422 = t148 * t412 - t418 * t420;
     const double t427 = t405 / 0.48e2 + t409 / 0.768e3;
     const double t428 = beta * t427;
     const double t430 = t419 * t427;
-    const double t432 = t428 * t148 - t418 * t430;
+    const double t432 = t148 * t428 - t418 * t430;
     const double t433 = t100 * t432;
 
 
     eps = -t33 + t89 + t91 + t152;
-    vrho_a = t7 * t338 + t152 - t33 + t89 + t91;
-    vrho_b = t7 * t399 + t152 - t33 + t89 + t91;
+    vrho_a = t338 * t7 + t152 - t33 + t89 + t91;
+    vrho_b = t399 * t7 + t152 - t33 + t89 + t91;
     vsigma_aa = t401 * t100 * t422 * t335;
     vsigma_ab = t401 * t433 * t335;
     vsigma_bb = vsigma_aa;

@@ -35,6 +35,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     eval_exc_unpolar_impl( double rho, double sigma, double lapl, double tau, double& eps ) {
 
     (void)(lapl);
+    (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
     constexpr double t4 = constants::m_cbrt_one_ov_pi;
     constexpr double t6 = constants::m_cbrt_4;
@@ -113,7 +114,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t112 = 0.1e1 / t22 / t86;
     const double t124 = 0.5e1 / 0.9e1 * ( tau * t109 - sigma * t112 / 0.8e1 ) * t116 * t122;
     const double t125 = t124 <= 0.1e1;
-    const double t126 = safe_math::log( std::numeric_limits<double>::epsilon() );
+    const double t126 = safe_math::log( DBL_EPSILON );
     const double t129 = t126 / ( -t126 + 0.64e0 );
     const double t130 = -t129 < t124;
     const double t131 = t124 < -t129;
@@ -122,7 +123,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t134 = 0.1e1 / t133;
     const double t137 = safe_math::exp( -0.64e0 * t132 * t134 );
     const double t138 = piecewise_functor_3( t130, 0.0, t137 );
-    const double t140 = safe_math::log( 0.14285714285714285714e1 * std::numeric_limits<double>::epsilon() );
+    const double t140 = safe_math::log( 0.14285714285714285714e1 * DBL_EPSILON );
     const double t143 = ( -t140 + 0.15e1 ) / t140;
     const double t144 = t124 < -t143;
     const double t145 = piecewise_functor_3( t144, -t143, t124 );
@@ -153,6 +154,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     eval_exc_vxc_unpolar_impl( double rho, double sigma, double lapl, double tau, double& eps, double& vrho, double& vsigma, double& vlapl, double& vtau ) {
 
     (void)(lapl);
+    (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
     constexpr double t4 = constants::m_cbrt_one_ov_pi;
     constexpr double t6 = constants::m_cbrt_4;
@@ -234,7 +236,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t112 = 0.1e1 / t22 / t86;
     const double t124 = 0.5e1 / 0.9e1 * ( tau * t109 - sigma * t112 / 0.8e1 ) * t116 * t122;
     const double t125 = t124 <= 0.1e1;
-    const double t126 = safe_math::log( std::numeric_limits<double>::epsilon() );
+    const double t126 = safe_math::log( DBL_EPSILON );
     const double t129 = t126 / ( -t126 + 0.64e0 );
     const double t130 = -t129 < t124;
     const double t131 = t124 < -t129;
@@ -243,7 +245,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t134 = 0.1e1 / t133;
     const double t137 = safe_math::exp( -0.64e0 * t132 * t134 );
     const double t138 = piecewise_functor_3( t130, 0.0, t137 );
-    const double t140 = safe_math::log( 0.14285714285714285714e1 * std::numeric_limits<double>::epsilon() );
+    const double t140 = safe_math::log( 0.14285714285714285714e1 * DBL_EPSILON );
     const double t143 = ( -t140 + 0.15e1 ) / t140;
     const double t144 = t124 < -t143;
     const double t145 = piecewise_functor_3( t144, -t143, t124 );
@@ -402,6 +404,7 @@ struct kernel_traits< BuiltinSCAN_C > :
 
     (void)(lapl_a);
     (void)(lapl_b);
+    (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
     constexpr double t4 = constants::m_cbrt_one_ov_pi;
     constexpr double t6 = constants::m_cbrt_4;
@@ -531,7 +534,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t180 = t177 * t179;
     const double t182 = 0.5e1 / 0.9e1 * t174 * t180;
     const double t183 = t182 <= 0.1e1;
-    const double t184 = safe_math::log( std::numeric_limits<double>::epsilon() );
+    const double t184 = safe_math::log( DBL_EPSILON );
     const double t187 = t184 / ( -t184 + 0.64e0 );
     const double t188 = -t187 < t182;
     const double t189 = t182 < -t187;
@@ -540,7 +543,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t192 = 0.1e1 / t191;
     const double t195 = safe_math::exp( -0.64e0 * t190 * t192 );
     const double t196 = piecewise_functor_3( t188, 0.0, t195 );
-    const double t198 = safe_math::log( 0.14285714285714285714e1 * std::numeric_limits<double>::epsilon() );
+    const double t198 = safe_math::log( 0.14285714285714285714e1 * DBL_EPSILON );
     const double t201 = ( -t198 + 0.15e1 ) / t198;
     const double t202 = t182 < -t201;
     const double t203 = piecewise_functor_3( t202, -t201, t182 );
@@ -580,6 +583,7 @@ struct kernel_traits< BuiltinSCAN_C > :
 
     (void)(lapl_a);
     (void)(lapl_b);
+    (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
     constexpr double t4 = constants::m_cbrt_one_ov_pi;
     constexpr double t6 = constants::m_cbrt_4;
@@ -713,7 +717,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t180 = t177 * t179;
     const double t182 = 0.5e1 / 0.9e1 * t174 * t180;
     const double t183 = t182 <= 0.1e1;
-    const double t184 = safe_math::log( std::numeric_limits<double>::epsilon() );
+    const double t184 = safe_math::log( DBL_EPSILON );
     const double t187 = t184 / ( -t184 + 0.64e0 );
     const double t188 = -t187 < t182;
     const double t189 = t182 < -t187;
@@ -722,7 +726,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     const double t192 = 0.1e1 / t191;
     const double t195 = safe_math::exp( -0.64e0 * t190 * t192 );
     const double t196 = piecewise_functor_3( t188, 0.0, t195 );
-    const double t198 = safe_math::log( 0.14285714285714285714e1 * std::numeric_limits<double>::epsilon() );
+    const double t198 = safe_math::log( 0.14285714285714285714e1 * DBL_EPSILON );
     const double t201 = ( -t198 + 0.15e1 ) / t198;
     const double t202 = t182 < -t201;
     const double t203 = piecewise_functor_3( t202, -t201, t182 );

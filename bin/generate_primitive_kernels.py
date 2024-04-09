@@ -232,7 +232,7 @@ class XCFunc:
     self.xc_out = self.xc_out.replace('    v','v')
     self.xc_out = self.xc_out.replace('0.1e1 / M_PI','constants::m_one_ov_pi')
     self.xc_out = self.xc_out.replace('M_PI * M_PI','constants::m_pi_sq')
-    self.xc_out = self.xc_out.replace('DBL_EPSILON', 'std::numeric_limits<double>::epsilon()')
+    #self.xc_out = self.xc_out.replace('DBL_EPSILON', 'std::numeric_limits<double>::epsilon()')
     self.xc_out = self.xc_out.replace(' 0,',' 0.0,')
     self.xc_out = self.xc_out.replace(' 0 ',' 0.0 ')
     self.xc_out = self.xc_out.replace(' 1 ',' 1.0 ')

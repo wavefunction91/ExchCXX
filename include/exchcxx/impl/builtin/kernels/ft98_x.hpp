@@ -40,6 +40,7 @@ struct kernel_traits< BuiltinFT98_X > :
     eval_exc_unpolar_impl( double rho, double sigma, double lapl, double tau, double& eps ) {
 
     (void)(tau);
+    (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
     constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
     constexpr double t22 = constants::m_cbrt_2;
@@ -107,7 +108,7 @@ struct kernel_traits< BuiltinFT98_X > :
     const double t74 = t70 * t73;
     const double t75 = 0.2e1 * t74;
     const double t76 = t68 - t75 - b2;
-    const double t77 = pow_1_4( std::numeric_limits<double>::epsilon() );
+    const double t77 = pow_1_4( DBL_EPSILON );
     const double t78 = 0.1e1 / t77;
     const double t79 = t76 < -t78;
     const double t85 = t76 * t76;
@@ -152,6 +153,7 @@ struct kernel_traits< BuiltinFT98_X > :
     eval_exc_vxc_unpolar_impl( double rho, double sigma, double lapl, double tau, double& eps, double& vrho, double& vsigma, double& vlapl, double& vtau ) {
 
     (void)(tau);
+    (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
     constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
     constexpr double t22 = constants::m_cbrt_2;
@@ -221,7 +223,7 @@ struct kernel_traits< BuiltinFT98_X > :
     const double t74 = t70 * t73;
     const double t75 = 0.2e1 * t74;
     const double t76 = t68 - t75 - b2;
-    const double t77 = pow_1_4( std::numeric_limits<double>::epsilon() );
+    const double t77 = pow_1_4( DBL_EPSILON );
     const double t78 = 0.1e1 / t77;
     const double t79 = t76 < -t78;
     const double t85 = t76 * t76;
@@ -386,6 +388,7 @@ struct kernel_traits< BuiltinFT98_X > :
     (void)(sigma_ab);
     (void)(tau_a);
     (void)(tau_b);
+    (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
     constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
     constexpr double t116 = constants::m_cbrt_2;
@@ -454,7 +457,7 @@ struct kernel_traits< BuiltinFT98_X > :
     const double t75 = 0.1e1 / t31 / t73;
     const double t76 = t72 * t75;
     const double t77 = t71 - t76 - b2;
-    const double t78 = pow_1_4( std::numeric_limits<double>::epsilon() );
+    const double t78 = pow_1_4( DBL_EPSILON );
     const double t79 = 0.1e1 / t78;
     const double t80 = t77 < -t79;
     const double t86 = t77 * t77;
@@ -574,6 +577,7 @@ struct kernel_traits< BuiltinFT98_X > :
     (void)(sigma_ab);
     (void)(tau_a);
     (void)(tau_b);
+    (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
     constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
     constexpr double t116 = constants::m_cbrt_2;
@@ -645,7 +649,7 @@ struct kernel_traits< BuiltinFT98_X > :
     const double t75 = 0.1e1 / t31 / t73;
     const double t76 = t72 * t75;
     const double t77 = t71 - t76 - b2;
-    const double t78 = pow_1_4( std::numeric_limits<double>::epsilon() );
+    const double t78 = pow_1_4( DBL_EPSILON );
     const double t79 = 0.1e1 / t78;
     const double t80 = t77 < -t79;
     const double t86 = t77 * t77;

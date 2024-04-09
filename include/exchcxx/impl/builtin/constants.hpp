@@ -48,6 +48,7 @@
 #ifdef EXCHCXX_HAS_CONFIG_H
 #include <exchcxx/exchcxx_config.hpp>
 #endif
+#include <cfloat>
 
 
 namespace ExchCXX {

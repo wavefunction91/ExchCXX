@@ -289,7 +289,7 @@ struct kernel_traits< BuiltinPW91_LDA_MOD > :
     const double t132 = 0.1e1 + t112 / t128 / 0.2e1;
     const double t133 = safe_math::log( t132 );
     const double t135 = t133 * t134;
-    const double t138 = -0.2e1 * t75 * t80 * t103 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
+    const double t138 = -0.2e1 * t103 * t75 * t80 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
     const double t139 = t74 * t138;
     const double t140 = t54 * t139;
     const double t143 = t110 * t133 * t134;
@@ -394,7 +394,7 @@ struct kernel_traits< BuiltinPW91_LDA_MOD > :
     const double t132 = 0.1e1 + t112 / t128 / 0.2e1;
     const double t133 = safe_math::log( t132 );
     const double t135 = t133 * t134;
-    const double t138 = -0.2e1 * t75 * t80 * t103 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
+    const double t138 = -0.2e1 * t103 * t75 * t80 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
     const double t139 = t74 * t138;
     const double t140 = t54 * t139;
     const double t143 = t110 * t133 * t134;
