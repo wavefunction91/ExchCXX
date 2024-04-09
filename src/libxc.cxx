@@ -83,14 +83,14 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::LYP,            XC_GGA_C_LYP        },
 
   // MGGA Functionals
-  { Kernel::SCAN_C,         XC_MGGA_X_SCAN      },
-  { Kernel::SCAN_X,         XC_MGGA_C_SCAN      },
-  { Kernel::SCANL_C,        XC_MGGA_X_SCANL     },
-  { Kernel::SCANL_X,        XC_MGGA_C_SCANL     },
-  { Kernel::R2SCAN_C,       XC_MGGA_X_R2SCAN    },
-  { Kernel::R2SCAN_X,       XC_MGGA_C_R2SCAN    },
-  { Kernel::R2SCANL_C,      XC_MGGA_X_R2SCANL   },
-  { Kernel::R2SCANL_X,      XC_MGGA_C_R2SCANL   },
+  { Kernel::SCAN_C,         XC_MGGA_C_SCAN      },
+  { Kernel::SCAN_X,         XC_MGGA_X_SCAN      },
+  { Kernel::SCANL_C,        XC_MGGA_C_SCANL     },
+  { Kernel::SCANL_X,        XC_MGGA_X_SCANL     },
+  { Kernel::R2SCAN_C,       XC_MGGA_C_R2SCAN    },
+  { Kernel::R2SCAN_X,       XC_MGGA_X_R2SCAN    },
+  { Kernel::R2SCANL_C,      XC_MGGA_C_R2SCANL   },
+  { Kernel::R2SCANL_X,      XC_MGGA_X_R2SCANL   },
   { Kernel::FT98_X,         XC_MGGA_X_FT98      },
 
   // KEDFs

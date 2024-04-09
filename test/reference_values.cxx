@@ -376,13 +376,13 @@ mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bo
     ref_vals.npts = rho.size();
 
     switch(k) {
-      case Kernel::SCAN_C:
+      case Kernel::SCAN_X:
         copy_iterable(exc_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.exc) );
         copy_iterable(vrho_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.vrho) );
         copy_iterable(vsigma_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.vsigma) );
         copy_iterable(vtau_xc_mgga_c_scan_ref_unp, std::back_inserter(ref_vals.vtau) );
         break;
-      case Kernel::R2SCANL_C:
+      case Kernel::R2SCANL_X:
         copy_iterable(exc_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.exc) );
         copy_iterable(vrho_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.vrho) );
         copy_iterable(vsigma_xc_mgga_c_r2scanl_ref_unp, std::back_inserter(ref_vals.vsigma) );
@@ -402,13 +402,13 @@ mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bo
     ref_vals.npts = rho_polarized.size() / 2;
 
     switch(k) {
-      case Kernel::SCAN_C:
+      case Kernel::SCAN_X:
         copy_iterable(exc_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.exc) );
         copy_iterable(vrho_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.vrho) );
         copy_iterable(vsigma_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.vsigma) );
         copy_iterable(vtau_xc_mgga_c_scan_ref_pol, std::back_inserter(ref_vals.vtau) );
         break;
-      case Kernel::R2SCANL_C:
+      case Kernel::R2SCANL_X:
         copy_iterable(exc_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.exc) );
         copy_iterable(vrho_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vrho) );
         copy_iterable(vsigma_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vsigma) );

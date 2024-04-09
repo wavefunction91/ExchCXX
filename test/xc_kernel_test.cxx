@@ -667,39 +667,39 @@ TEST_CASE( "Libxc Correctness Check", "[xc-libxc]" ) {
   }
 
   SECTION( "SCAN Unpolarized: EXC" ) {
-    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::SCAN_C,
+    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::SCAN_X,
       Spin::Unpolarized );
   }
   SECTION( "SCAN Unpolarized: EXC + VXC" ) {
-    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::SCAN_C,
+    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::SCAN_X,
       Spin::Unpolarized );
   }
 
   SECTION( "SCAN Polarized: EXC" ) {
-    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::SCAN_C,
+    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::SCAN_X,
       Spin::Polarized );
   }
   SECTION( "SCAN Polarized: EXC + VXC" ) {
-    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::SCAN_C,
+    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::SCAN_X,
       Spin::Polarized );
   }
   
 
   SECTION( "R2SCANL Unpolarized: EXC" ) {
-    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::R2SCANL_C,
+    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::R2SCANL_X,
       Spin::Unpolarized );
   }
   SECTION( "R2SCANL Unpolarized: EXC + VXC" ) {
-    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::R2SCANL_C,
+    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::R2SCANL_X,
       Spin::Unpolarized );
   }
 
   SECTION( "R2SCANL Polarized: EXC" ) {
-    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::R2SCANL_C,
+    kernel_test( TestInterface::EXC, Backend::libxc, Kernel::R2SCANL_X,
       Spin::Polarized );
   }
   SECTION( "R2SCANL Polarized: EXC + VXC" ) {
-    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::R2SCANL_C,
+    kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::R2SCANL_X,
       Spin::Polarized );
   }
 
@@ -709,12 +709,16 @@ TEST_CASE( "Libxc Correctness Check", "[xc-libxc]" ) {
 void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   Kernel kern, Spin polar ) {
 
-  size_t npts_lda, npts_gga;
-  std::vector<double> ref_rho, ref_sigma;
+  size_t npts_lda, npts_gga, npts_mgga, npts_lapl;
+  std::vector<double> ref_rho, ref_sigma, ref_lapl, ref_tau;
   std::tie(npts_lda, ref_rho  )  = load_reference_density( polar );
   std::tie(npts_gga, ref_sigma)  = load_reference_sigma  ( polar );
+  std::tie(npts_lapl, ref_lapl)  = load_reference_lapl   ( polar );
+  std::tie(npts_mgga, ref_tau)   = load_reference_tau    ( polar );
 
   REQUIRE( npts_lda == npts_gga );
+  REQUIRE( npts_lda == npts_mgga );
+  REQUIRE( npts_lda == npts_lapl );
 
   const int npts = npts_lda;
 
@@ -723,28 +727,40 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
 
   const int len_rho   = func_libxc.rho_buffer_len( npts );
   const int len_sigma = func_libxc.sigma_buffer_len( npts );
+  const int len_lapl = func_libxc.lapl_buffer_len( npts );
+  const int len_tau = func_libxc.tau_buffer_len( npts );
 
   std::vector<double> rho_small(len_rho, 1e-13);
   std::vector<double> sigma_small(len_sigma, 1e-14);
+  std::vector<double> lapl_small(len_lapl, 1e-14);
+  std::vector<double> tau_small(len_tau, 1e-14);
 
   std::vector<double> rho_zero(len_rho, 0.);
   std::vector<double> sigma_zero(len_sigma, 0.);
+  std::vector<double> lapl_zero(len_lapl, 0.);
+  std::vector<double> tau_zero(len_tau, 0.);
 
-  std::vector<double> rho_use, sigma_use;
+  std::vector<double> rho_use, sigma_use, lapl_use, tau_use;
 
   if( evaltype == EvalType::Regular ) {
     rho_use   = ref_rho;
     sigma_use = ref_sigma;
+    lapl_use = ref_lapl;
+    tau_use = ref_tau;
   }
 
   if( evaltype == EvalType::Small ) {
     rho_use   = rho_small;
     sigma_use = sigma_small;
+    lapl_use = lapl_small;
+    tau_use = tau_small;
   }
 
   if( evaltype == EvalType::Zero ) {
     rho_use   = rho_zero;
     sigma_use = sigma_zero;
+    lapl_use = lapl_zero;
+    tau_use = tau_zero;
   }
 
 
@@ -752,10 +768,14 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   std::vector<double> exc_libxc( func_builtin.exc_buffer_len(npts) );
   std::vector<double> vrho_libxc( func_builtin.vrho_buffer_len(npts) );
   std::vector<double> vsigma_libxc( func_builtin.vsigma_buffer_len(npts) );
+  std::vector<double> vlapl_libxc( func_builtin.vlapl_buffer_len(npts) );
+  std::vector<double> vtau_libxc( func_builtin.vtau_buffer_len(npts) );
 
   std::vector<double> exc_builtin( func_builtin.exc_buffer_len(npts) );
   std::vector<double> vrho_builtin( func_builtin.vrho_buffer_len(npts) );
   std::vector<double> vsigma_builtin( func_builtin.vsigma_buffer_len(npts) );
+  std::vector<double> vlapl_builtin( func_builtin.vlapl_buffer_len(npts) );
+  std::vector<double> vtau_builtin( func_builtin.vtau_buffer_len(npts) );
 
   if( func_libxc.is_lda() ) {
 
@@ -788,6 +808,25 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
         exc_libxc.data(), vrho_libxc.data(), vsigma_libxc.data() );
       func_builtin.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(),
         exc_builtin.data(), vrho_builtin.data(), vsigma_builtin.data() );
+
+    }
+
+  } else if( func_libxc.is_mgga() ) {
+
+    std::cout << "******* START NEW *******" << std::endl;
+    if( interface == TestInterface::EXC ) {
+
+      func_libxc.eval_exc( npts, rho_use.data(), sigma_use.data(),
+        lapl_use.data(), tau_use.data(), exc_libxc.data() );
+      func_builtin.eval_exc( npts, rho_use.data(), sigma_use.data(),
+        lapl_use.data(), tau_use.data(), exc_builtin.data() );
+
+    } else if( interface == TestInterface::EXC_VXC ) {
+
+      func_libxc.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(),
+        lapl_use.data(), tau_use.data(), exc_libxc.data(), vrho_libxc.data(), vsigma_libxc.data(), vlapl_libxc.data(), vtau_libxc.data() );
+      func_builtin.eval_exc_vxc( npts, rho_use.data(), sigma_use.data(),
+        lapl_use.data(), tau_use.data(), exc_builtin.data(), vrho_builtin.data(), vsigma_builtin.data(), vlapl_builtin.data(), vtau_builtin.data() );
 
     }
 
