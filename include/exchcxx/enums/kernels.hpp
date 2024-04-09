@@ -86,6 +86,8 @@ enum class Kernel {
   // MGGA functionals
   SCAN_C,
   SCAN_X,
+  SCANL_C,
+  SCANL_X,
   R2SCAN_C,
   R2SCAN_X,
   R2SCANL_C,

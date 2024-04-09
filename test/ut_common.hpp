@@ -96,6 +96,7 @@ static std::vector<ExchCXX::Kernel> gga_kernels = {
 static std::vector<ExchCXX::Kernel> mgga_kernels = {
   ExchCXX::Kernel::SCAN_X,
   ExchCXX::Kernel::SCAN_C,
+  ExchCXX::Kernel::SCANL_C,
   ExchCXX::Kernel::R2SCAN_X,
   ExchCXX::Kernel::R2SCAN_C,
   ExchCXX::Kernel::R2SCANL_X,
@@ -126,6 +127,7 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
 
   ExchCXX::Kernel::SCAN_X, 
   ExchCXX::Kernel::SCAN_C,
+  ExchCXX::Kernel::SCANL_C,
   ExchCXX::Kernel::R2SCAN_X, 
   ExchCXX::Kernel::R2SCAN_C,
   ExchCXX::Kernel::FT98_X,
@@ -140,6 +142,7 @@ static constexpr std::array string_kernal_pairs = {
     std::pair("PBE_C", ExchCXX::Kernel::PBE_C),
     std::pair("SCAN_X",ExchCXX::Kernel::SCAN_X),
     std::pair("SCAN_C", ExchCXX::Kernel::SCAN_C),
+    std::pair("SCANL_C", ExchCXX::Kernel::SCANL_C),
     std::pair("FT98_X",ExchCXX::Kernel::FT98_X),
     std::pair("PC07_K",ExchCXX::Kernel::PC07_K),
     std::pair("PC07OPT_K",ExchCXX::Kernel::PC07OPT_K),

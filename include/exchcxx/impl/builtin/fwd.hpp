@@ -81,6 +81,13 @@ struct BuiltinFT98_X;
 struct BuiltinPC07_K;
 struct BuiltinPC07OPT_K;
 
+template <typename XCEF, typename KEDF>
+struct Deorbitalized;
+struct BuiltinSCANL_X;
+struct BuiltinSCANL_C;
+struct BuiltinR2SCANL_X;
+struct BuiltinR2SCANL_C;
+
 
 template <typename KernelType>
 struct kernel_traits;
