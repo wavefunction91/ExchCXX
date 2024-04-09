@@ -104,6 +104,10 @@ std::unique_ptr<BuiltinKernel>
   else if( kern == Kernel::FT98_X )
     return std::make_unique<BuiltinFT98_X>( polar );
 
+  else if( kern == Kernel::PC07_K )
+    return std::make_unique<BuiltinPC07_K>( polar );
+  else if( kern == Kernel::PC07OPT_K )
+    return std::make_unique<BuiltinPC07OPT_K>( polar );
 
 
   else

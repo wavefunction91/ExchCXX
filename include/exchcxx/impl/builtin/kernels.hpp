@@ -74,3 +74,7 @@
 #include <exchcxx/impl/builtin/kernels/r2scan_c.hpp>
 #include <exchcxx/impl/builtin/kernels/ft98_x.hpp>
 
+#include <exchcxx/impl/builtin/kernels/pc07_k.hpp>
+#include <exchcxx/impl/builtin/kernels/pc07opt_k.hpp>
+
+

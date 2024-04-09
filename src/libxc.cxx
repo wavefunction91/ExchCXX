@@ -91,6 +91,10 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::R2SCANL_X,      XC_MGGA_C_R2SCANL   },
   { Kernel::FT98_X,         XC_MGGA_X_FT98      },
 
+  // KEDFs
+  { Kernel::PC07_K,         XC_MGGA_K_PC07      },
+  { Kernel::PC07OPT_K,      XC_MGGA_K_PC07_OPT  },
+
   // Hybrid GGA Functionals
   { Kernel::B3LYP,          XC_HYB_GGA_XC_B3LYP },
   { Kernel::PBE0,           XC_HYB_GGA_XC_PBEH  },

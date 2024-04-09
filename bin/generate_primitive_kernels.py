@@ -657,6 +657,24 @@ gen_table = {
       'b1': '0.398773', 
       'b2': '66.364138'},
     True
+    ),
+
+  'PC07' : GenMetaData( 'BuiltinPC07_K',
+    libxc_prefix + 'mgga_exc/mgga_k_pc07.c',
+    kernel_prefix + 'pc07_k.hpp',
+    'MGGA', 1e-15, 0.,
+    { 'a': '0.5389',
+      'b': '3.0' },
+    True
+    ),
+
+  'PC07OPT' : GenMetaData( 'BuiltinPC07OPT_K',
+    libxc_prefix + 'mgga_exc/mgga_k_pc07.c',
+    kernel_prefix + 'pc07opt_k.hpp',
+    'MGGA', 1e-15, 0.,
+    { 'a': '1.784720',
+      'b': '0.258304' },
+    True
     )
 
   #'R2SCANL_X' : GenMetaData( 'BuiltinR2SCANL_X',

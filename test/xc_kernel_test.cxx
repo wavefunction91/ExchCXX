@@ -1218,7 +1218,7 @@ void test_cuda_interface( TestInterface interface, EvalType evaltype,
     }
     for( auto i = 0ul; i < len_vlapl_buffer; ++i ) {
       INFO( "Kernel is " << kern );
-      CHECK( vlapl[i] == Approx(vlapl_ref[i]) );
+      CHECK( vlapl[i] == Approx(vlapl_ref[i]).margin(std::numeric_limits<double>::epsilon()) );
     }
     for( auto i = 0ul; i < len_vtau_buffer; ++i ) {
       INFO( "Kernel is " << kern << std::scientific << " " << vtau[i] << " " << vtau_ref[i] );

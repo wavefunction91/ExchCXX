@@ -92,6 +92,10 @@ enum class Kernel {
   R2SCANL_X,
   FT98_X,
 
+  // KEDFs
+  PC07_K,
+  PC07OPT_K,
+
   // Hybrid GGA functionals
   B3LYP,
   PBE0,
