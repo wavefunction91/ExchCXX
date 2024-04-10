@@ -5,7 +5,6 @@ include(FetchContent)
 project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
 
 # ExchCXX Options
-option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
 option( EXCHCXX_ENABLE_HIP       "Enable Device Code (HIP)"     OFF )
@@ -106,7 +105,11 @@ if( NOT DEFINED EXCHCXX_ENABLE_TESTS )
 endif()
 
 if( CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND EXCHCXX_ENABLE_TESTS AND BUILD_TESTING )
-  add_subdirectory( test )
+  if(${Libxc_FOUND})
+    message(WARNING "ExchCXX Unit Tests Require Local Patch of Libxc - Disabling")
+  else()
+    add_subdirectory( test )
+  endif()
 endif()
 
 if( EXCHCXX_ENABLE_BENCHMARK )
