@@ -25,6 +25,8 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
 
     double TAU;
     ke_traits::eval_exc_unpolar_impl(rho, sigma, lapl, tau, TAU);
+
+    TAU *= rho;
     xc_traits::eval_exc_unpolar_impl(rho, sigma, lapl, TAU, eps);
 
   }
@@ -34,6 +36,7 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
 
     double TAU, vrho_k, vsigma_k, vlapl_k, vtau_k;
     ke_traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, tau, TAU, vrho_k, vsigma_k, vlapl_k, vtau_k);
+    TAU *= rho;
     xc_traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, TAU, eps, vrho, vsigma, vlapl, vtau);
 
     vrho   += vtau * vrho_k;
@@ -50,6 +53,8 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
     ke_traits::eval_exc_polar_impl(rho_a, 0.0, sigma_aa, 0.0, 0.0, lapl_a, 0.0, 0.0, 0.0, TAU_A);
     ke_traits::eval_exc_polar_impl(rho_b, 0.0, sigma_bb, 0.0, 0.0, lapl_b, 0.0, 0.0, 0.0, TAU_B);
 
+    TAU_A *= rho_a;
+    TAU_B *= rho_b;
     xc_traits::eval_exc_polar_impl(rho_a, rho_b, sigma_aa, sigma_ab, sigma_bb, lapl_a, lapl_b, TAU_A, TAU_B, eps);
 
   }
@@ -60,6 +65,9 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
     double TAU_A, TAU_B, vrho_a_k, vrho_b_k, vsigma_aa_k, vsigma_bb_k, vlapl_a_k, vlapl_b_k, vtau_k, dummy;
     ke_traits::eval_exc_vxc_polar_impl(rho_a, 0.0, sigma_aa, 0.0, 0.0, lapl_a, 0.0, 0.0, 0.0, TAU_A, vrho_a_k, dummy, vsigma_aa_k, dummy, dummy, vlapl_a_k, dummy, dummy, dummy);
     ke_traits::eval_exc_vxc_polar_impl(rho_b, 0.0, sigma_bb, 0.0, 0.0, lapl_b, 0.0, 0.0, 0.0, TAU_B, vrho_b_k, dummy, vsigma_bb_k, dummy, dummy, vlapl_b_k, dummy, dummy, dummy);
+
+    TAU_A *= rho_a;
+    TAU_B *= rho_b;
 
     xc_traits::eval_exc_vxc_polar_impl(rho_a, rho_b, sigma_aa, sigma_ab, sigma_bb, lapl_a, lapl_b, TAU_A, TAU_B, eps, vrho_a, vrho_b, vsigma_aa, vsigma_ab, vsigma_bb, vlapl_a, vlapl_b, vtau_a, vtau_b);
 
