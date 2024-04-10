@@ -56,6 +56,7 @@ BidirectionalMap<std::string, Kernel> kernel_map{
      {"SCAN_X", Kernel::SCAN_X},
      {"SCAN_C", Kernel::SCAN_C},
      {"SCANL_C", Kernel::SCANL_C},
+     {"SCANL_X", Kernel::SCANL_X},
      {"FT98_X", Kernel::FT98_X},
      {"PC07_K", Kernel::PC07_K},
      {"PC07OPT_K", Kernel::PC07OPT_K},

@@ -212,9 +212,7 @@ struct mgga_screening_interface {
     } else {
       sigma_aa = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_aa);
       sigma_bb = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_bb);
-      const auto s_ave = 0.5 * (sigma_aa + sigma_bb);
-      sigma_ab = (sigma_ab >= -s_ave ? sigma_ab : -s_ave);
-      sigma_ab = (sigma_ab <=  s_ave ? sigma_ab :  s_ave);
+      sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
     
       traits::eval_exc_polar_impl( rho_a, rho_b, 
         sigma_aa, sigma_ab, sigma_bb, lapl_a, lapl_b, 
@@ -278,9 +276,7 @@ struct mgga_screening_interface {
     if( rho_s > traits::dens_tol ) {
       sigma_aa = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_aa);
       sigma_bb = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_bb);
-      const auto s_ave = 0.5 * (sigma_aa + sigma_bb);
-      sigma_ab = (sigma_ab >= -s_ave ? sigma_ab : -s_ave);
-      sigma_ab = (sigma_ab <=  s_ave ? sigma_ab :  s_ave);
+      sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
       traits::eval_exc_vxc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab, 
         sigma_bb, lapl_a, lapl_b, 
         safe_max(traits::tau_tol, tau_a), 

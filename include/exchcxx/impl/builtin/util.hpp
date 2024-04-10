@@ -146,4 +146,12 @@ SAFE_CONSTEXPR_INLINE( F ) enforce_fermi_hole_curvature(F sigma, F rho, F tau) {
   return safe_min(sigma, F(8) * rho * tau);
 }
 
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) enforce_polar_sigma_constraints(F sigma_aa, F sigma_ab, F sigma_bb) {
+  const auto s_ave = 0.5 * (sigma_aa + sigma_bb);
+  sigma_ab = (sigma_ab >= -s_ave ? sigma_ab : -s_ave);
+  sigma_ab = (sigma_ab <=  s_ave ? sigma_ab :  s_ave);
+  return sigma_ab;
+}
+
 }
