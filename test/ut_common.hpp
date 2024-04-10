@@ -127,13 +127,13 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
 
   ExchCXX::Kernel::SCAN_X, 
   ExchCXX::Kernel::SCAN_C,
-  //ExchCXX::Kernel::SCANL_C,
+  ExchCXX::Kernel::SCANL_C,
   ExchCXX::Kernel::R2SCAN_X, 
   ExchCXX::Kernel::R2SCAN_C,
   ExchCXX::Kernel::FT98_X,
 
-  //ExchCXX::Kernel::PC07_K,
-  //ExchCXX::Kernel::PC07OPT_K
+  ExchCXX::Kernel::PC07_K,
+  ExchCXX::Kernel::PC07OPT_K
 };
 
 static constexpr std::array string_kernal_pairs = {
