@@ -56,7 +56,7 @@ endif()
 
 
 ## Find LibXC
-find_package( Libxc 6.1.0 CONFIG QUIET )
+find_package( Libxc 6.2.0 CONFIG QUIET )
 
 if( ${Libxc_FOUND} )
 
@@ -70,9 +70,10 @@ else()
   FetchContent_Declare(
     libxc
     GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
-    GIT_TAG 6.1.0  # v6.1.0
+    GIT_TAG 6.2.0  # v6.2.0
+    PATCH_COMMAND sed -i -e "s/p->info->family != XC_KINETIC/p->info->kind != XC_KINETIC/g" src/work_mgga_inc.c
   )
-  set( Libxc_VERSION 6.1.0 )
+  set( Libxc_VERSION 6.2.0 )
 
   set( OLD_BUILD_TESTING ${BUILD_TESTING} )
   set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
