@@ -252,9 +252,7 @@ GGA_EXC_GENERATOR( host_eval_exc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
-    traits::eval_exc_unpolar( rho_use, sigma_use, eps[i] );
+    traits::eval_exc_unpolar( rho[i], sigma[i], eps[i] );
 
   }
 
@@ -270,16 +268,9 @@ GGA_EXC_GENERATOR( host_eval_exc_helper_polar ) {
     auto* rho_i   = rho   + 2*i;
     auto* sigma_i = sigma + 3*i;
 
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = std::max( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
 
-    traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, eps[i] );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], eps[i] );
 
   }
 
@@ -292,9 +283,7 @@ GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
-    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, 
+    traits::eval_exc_vxc_unpolar( rho[i], sigma[i], 
       eps[i], vrho[i], vsigma[i] );
 
   }
@@ -313,17 +302,8 @@ GGA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar ) {
     auto* vrho_i   = vrho   + 2*i;
     auto* vsigma_i = vsigma + 3*i;
 
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = std::max( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-                                                         
-                                                         
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, eps[i], vrho_i[0], vrho_i[1],
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], eps[i], vrho_i[0], vrho_i[1],
       vsigma_i[0], vsigma_i[1], vsigma_i[2] );
 
   }
@@ -339,11 +319,8 @@ GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
-
     double e;
-    traits::eval_exc_unpolar( rho_use, sigma_use, e );
+    traits::eval_exc_unpolar( rho[i], sigma[i], e );
     eps[i] += scal_fact * e;
 
   }
@@ -361,17 +338,10 @@ GGA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar ) {
     auto* rho_i   = rho   + 2*i;
     auto* sigma_i = sigma + 3*i;
 
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = std::max( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
 
     double e;
-    traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, e );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], e );
     eps[i] += scal_fact * e;
 
   }
@@ -385,11 +355,8 @@ GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use   = std::max( rho[i],   0.    );
-    const double sigma_use = std::max( sigma[i], 1e-40 );
-
     double e, vr, vs;
-    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, e, vr, vs );
+    traits::eval_exc_vxc_unpolar( rho[i], sigma[i], e, vr, vs );
     eps[i]    += scal_fact * e;
     vrho[i]   += scal_fact * vr;
     vsigma[i] += scal_fact * vs;
@@ -410,18 +377,9 @@ GGA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar ) {
     auto* vrho_i   = vrho   + 2*i;
     auto* vsigma_i = vsigma + 3*i;
 
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-    const double sigma_aa_use = std::max( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = std::max( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = std::max( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-                                                         
-                                                         
     double e, vra, vrb, vsaa,vsab,vsbb;
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, e, vra, vrb, vsaa, vsab, vsbb );
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], e, vra, vrb, vsaa, vsab, vsbb );
 
     eps[i]      += scal_fact * e;
     vrho_i[0]   += scal_fact * vra;
