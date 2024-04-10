@@ -175,11 +175,14 @@ struct mgga_screening_interface {
     if( rho <= traits::dens_tol ) {
       eps = 0.;
     } else {
-      traits::eval_exc_unpolar_impl( 
-        rho, 
-        safe_max(traits::sigma_tol*traits::sigma_tol, sigma), 
-        lapl, 
-        safe_max(traits::tau_tol, tau), eps );
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      sigma = safe_max(sigma, sigma_tol_sq); 
+      tau   = safe_max(tau, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
+      }
+
+      traits::eval_exc_unpolar_impl(rho, sigma, lapl, tau, eps) ;
     }
 
   }
@@ -190,20 +193,22 @@ struct mgga_screening_interface {
       double tau_a, double tau_b, double& eps ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     if( rho_s <= traits::dens_tol ) {
       eps = 0.;
     } else {
-      sigma_aa = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_aa);
-      sigma_bb = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_bb);
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      rho_a    = safe_max(rho_a, traits::dens_tol);
+      rho_b    = safe_max(rho_b, traits::dens_tol);
+      sigma_aa = safe_max(sigma_aa, sigma_tol_sq); 
+      sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
+      tau_a = safe_max(tau_a, traits::tau_tol);
+      tau_b = safe_max(tau_b, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
+        sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
+      }
       sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
     
       traits::eval_exc_polar_impl( rho_a, rho_b, 
@@ -226,11 +231,13 @@ struct mgga_screening_interface {
       vlapl  = 0.;
       vtau   = 0.;
     } else {
-      traits::eval_exc_vxc_unpolar_impl( 
-        rho, 
-        safe_max(traits::sigma_tol*traits::sigma_tol, sigma), 
-        lapl, 
-        safe_max(traits::tau_tol, tau), 
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      sigma = safe_max(sigma, sigma_tol_sq); 
+      tau   = safe_max(tau, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
+      }
+      traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, tau, 
         eps, vrho, vsigma, vlapl, vtau );
     }
 
@@ -245,14 +252,7 @@ struct mgga_screening_interface {
       double& vtau_a, double& vtau_b ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     eps       = 0.;
     vrho_a    = 0.;
@@ -266,9 +266,19 @@ struct mgga_screening_interface {
     vtau_b    = 0.;
 
     if( rho_s > traits::dens_tol ) {
-      sigma_aa = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_aa);
-      sigma_bb = safe_max(traits::sigma_tol*traits::sigma_tol, sigma_bb);
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      rho_a    = safe_max(rho_a, traits::dens_tol);
+      rho_b    = safe_max(rho_b, traits::dens_tol);
+      sigma_aa = safe_max(sigma_aa, sigma_tol_sq); 
+      sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
+      tau_a = safe_max(tau_a, traits::tau_tol);
+      tau_b = safe_max(tau_b, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
+        sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
+      }
       sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
+
       traits::eval_exc_vxc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab, 
         sigma_bb, lapl_a, lapl_b, 
         safe_max(traits::tau_tol, tau_a), 
