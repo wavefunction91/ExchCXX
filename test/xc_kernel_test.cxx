@@ -813,7 +813,6 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
 
   } else if( func_libxc.is_mgga() ) {
 
-    std::cout << "******* START NEW *******" << std::endl;
     if( interface == TestInterface::EXC ) {
 
       func_libxc.eval_exc( npts, rho_use.data(), sigma_use.data(),
