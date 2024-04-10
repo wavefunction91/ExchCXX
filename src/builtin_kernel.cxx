@@ -109,8 +109,7 @@ LDA_EXC_GENERATOR( host_eval_exc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use = std::max( rho[i], 0. );
-    traits::eval_exc_unpolar( rho_use, eps[i] );
+    traits::eval_exc_unpolar( rho[i], eps[i] );
 
   }
 
@@ -125,11 +124,7 @@ LDA_EXC_GENERATOR( host_eval_exc_helper_polar ) {
   for( int32_t i = 0; i < N; ++i ) {
 
     auto rho_i = rho + 2*i;
-
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-
-    traits::eval_exc_polar( rho_a_use, rho_b_use, eps[i] );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], eps[i] );
 
   }
 
@@ -142,8 +137,7 @@ LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use = std::max( rho[i], 0. );
-    traits::eval_exc_vxc_unpolar( rho_use, eps[i], vxc[i] );
+    traits::eval_exc_vxc_unpolar( rho[i], eps[i], vxc[i] );
 
   }
 
@@ -159,10 +153,7 @@ LDA_EXC_VXC_GENERATOR( host_eval_exc_vxc_helper_polar ) {
     auto rho_i = rho + 2*i;
     auto vxc_i = vxc + 2*i;
 
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, eps[i], 
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], eps[i], 
       vxc_i[0], vxc_i[1] );
 
   }
@@ -176,9 +167,8 @@ LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use = std::max( rho[i], 0. );
     double e;
-    traits::eval_exc_unpolar( rho_use, e );
+    traits::eval_exc_unpolar( rho[i], e );
     eps[i] += scal_fact * e;
 
   }
@@ -195,11 +185,8 @@ LDA_EXC_INC_GENERATOR( host_eval_exc_inc_helper_polar ) {
 
     auto rho_i = rho + 2*i;
 
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-
     double e;
-    traits::eval_exc_polar( rho_a_use, rho_b_use, e );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], e );
     
     eps[i] += scal_fact * e;
 
@@ -214,9 +201,8 @@ LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_unpolar ) {
   
   for( int32_t i = 0; i < N; ++i ) {
 
-    const double rho_use = std::max( rho[i], 0. );
     double v,e;
-    traits::eval_exc_vxc_unpolar( rho_use, e, v );
+    traits::eval_exc_vxc_unpolar( rho[i], e, v );
     eps[i] += scal_fact * e;
     vxc[i] += scal_fact * v;
 
@@ -235,11 +221,8 @@ LDA_EXC_VXC_INC_GENERATOR( host_eval_exc_vxc_inc_helper_polar ) {
     auto rho_i = rho + 2*i;
     auto vxc_i = vxc + 2*i;
 
-    const double rho_a_use = std::max( rho_i[0], 0. );
-    const double rho_b_use = std::max( rho_i[1], 0. );
-
     double v_a, v_b, e;
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, e, v_a, v_b);
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], e, v_a, v_b);
     eps[i]   += scal_fact * e;
     vxc_i[0] += scal_fact * v_a;
     vxc_i[1] += scal_fact * v_b;

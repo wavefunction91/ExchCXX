@@ -29,18 +29,13 @@ struct lda_screening_interface {
     eval_exc_polar( double rho_a, double rho_b, double& eps ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     if( rho_s <= traits::dens_tol ) {
       eps = 0.;
     } else {
+      rho_a = safe_max(rho_a, traits::dens_tol);
+      rho_b = safe_max(rho_b, traits::dens_tol);
       traits::eval_exc_polar_impl( rho_a, rho_b, eps );
     }
 
@@ -64,20 +59,15 @@ struct lda_screening_interface {
       double& vrho_b ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     if( rho_s <= traits::dens_tol ) {
       eps    = 0.;
       vrho_a = 0.;
       vrho_b = 0.;
     } else {
+      rho_a = safe_max(rho_a, traits::dens_tol);
+      rho_b = safe_max(rho_b, traits::dens_tol);
       traits::eval_exc_vxc_polar_impl( rho_a, rho_b, eps, vrho_a, vrho_b );
     }
 
