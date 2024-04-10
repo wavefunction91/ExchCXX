@@ -60,8 +60,7 @@ __global__ LDA_EXC_GENERATOR( device_eval_exc_helper_unpolar_kernel ) {
 
   if( tid < N ) {
 
-    const double rho_use = fmax( rho[tid], 0. );
-    traits::eval_exc_unpolar( rho_use, eps[tid] );
+    traits::eval_exc_unpolar( rho[tid], eps[tid] );
 
   }
 
@@ -76,11 +75,7 @@ __global__ LDA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
   if( tid < N ) {
 
     auto rho_i = rho + 2*tid;
-
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-
-    traits::eval_exc_polar( rho_a_use, rho_b_use, eps[tid] );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], eps[tid] );
 
   }
 
@@ -94,8 +89,7 @@ __global__ LDA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
   if( tid < N ) {
 
-    const double rho_use = fmax( rho[tid], 0. );
-    traits::eval_exc_vxc_unpolar( rho_use, eps[tid], vxc[tid] );
+    traits::eval_exc_vxc_unpolar( rho[tid], eps[tid], vxc[tid] );
 
   }
 
@@ -112,10 +106,7 @@ __global__ LDA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
     auto rho_i = rho + 2*tid;
     auto vxc_i = vxc + 2*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, eps[tid], 
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], eps[tid], 
       vxc_i[0], vxc_i[1] );
 
   }
@@ -131,8 +122,7 @@ __global__ LDA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_unpolar_kernel ) {
   double e;
   if( tid < N ) {
 
-    const double rho_use = fmax( rho[tid], 0. );
-    traits::eval_exc_unpolar( rho_use, e );
+    traits::eval_exc_unpolar( rho[tid], e );
     eps[tid] += scal_fact * e;
 
   }
@@ -149,11 +139,8 @@ __global__ LDA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
 
     auto rho_i = rho + 2*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-
     double e;
-    traits::eval_exc_polar( rho_a_use, rho_b_use, e );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], e );
     
     eps[tid] += scal_fact * e;
 
@@ -170,8 +157,7 @@ __global__ LDA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_unpolar_ker
   double e,v;
   if( tid < N ) {
 
-    const double rho_use = fmax( rho[tid], 0. );
-    traits::eval_exc_vxc_unpolar( rho_use, e, v );
+    traits::eval_exc_vxc_unpolar( rho[tid], e, v );
     eps[tid] += scal_fact * e;
     vxc[tid] += scal_fact * v;
 
@@ -190,11 +176,8 @@ __global__ LDA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kerne
     auto rho_i = rho + 2*tid;
     auto vxc_i = vxc + 2*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-
     double v_a, v_b, e;
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, e, v_a, v_b);
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], e, v_a, v_b);
     eps[tid] += scal_fact * e;
     vxc_i[0] += scal_fact * v_a;
     vxc_i[1] += scal_fact * v_b;
@@ -211,9 +194,7 @@ __global__ GGA_EXC_GENERATOR( device_eval_exc_helper_unpolar_kernel ) {
 
   if( tid < N ) {
 
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
-    traits::eval_exc_unpolar( rho_use, sigma_use, eps[tid] );
+    traits::eval_exc_unpolar( rho[tid], sigma[tid], eps[tid] );
 
   }
 
@@ -230,16 +211,8 @@ __global__ GGA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
     auto* rho_i   = rho   + 2*tid;
     auto* sigma_i = sigma + 3*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-
-    traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, eps[tid] );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], eps[tid] );
 
   }
 
@@ -253,9 +226,7 @@ __global__ GGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
   if( tid < N ) {
 
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
-    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, eps[tid], 
+    traits::eval_exc_vxc_unpolar( rho[tid], sigma[tid], eps[tid], 
       vrho[tid], vsigma[tid] );
 
   }
@@ -275,17 +246,8 @@ __global__ GGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
     auto* vrho_i   = vrho   + 2*tid;
     auto* vsigma_i = vsigma + 3*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-                                                         
-                                                         
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, eps[tid], vrho_i[0], vrho_i[1],
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], eps[tid], vrho_i[0], vrho_i[1],
       vsigma_i[0], vsigma_i[1], vsigma_i[2] );
 
   }
@@ -301,14 +263,10 @@ __global__ GGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_unpolar_kernel ) {
 
   double e;
   if( tid < N ) {
-
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
                                       
-    traits::eval_exc_unpolar( rho_use, sigma_use, e );
+    traits::eval_exc_unpolar( rho[tid], sigma[tid], e );
     eps[tid] += scal_fact * e;
      
-
   }
 
 }
@@ -323,18 +281,9 @@ __global__ GGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
 
     auto* rho_i   = rho   + 2*tid;
     auto* sigma_i = sigma + 3*tid;
-
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-
     double e;
-    traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, e );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], e );
     eps[tid] += scal_fact * e;
      
 
@@ -351,10 +300,7 @@ __global__ GGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_unpolar_ker
   double e, vr, vs;
   if( tid < N ) {
 
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double sigma_use = fmax( sigma[tid], 1e-40 );
-
-    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, e, vr, vs );
+    traits::eval_exc_vxc_unpolar( rho[tid], sigma[tid], e, vr, vs );
     eps[tid]    += scal_fact * e;
     vrho[tid]   += scal_fact * vr;
     vsigma[tid] += scal_fact * vs;
@@ -375,19 +321,10 @@ __global__ GGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kerne
     auto* sigma_i  = sigma + 3*tid;
     auto* vrho_i   = vrho   + 2*tid;
     auto* vsigma_i = vsigma + 3*tid;
-
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double sigma_aa_use = fmax( sigma_i[0], 1e-40 );
-    const double sigma_bb_use = fmax( sigma_i[2], 1e-40 );
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-                                                         
                                                          
     double e, vra, vrb, vsaa,vsab,vsbb;
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, e, vra, vrb, vsaa, vsab, vsbb );
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], e, vra, vrb, vsaa, vsab, vsbb );
 
     eps[tid]    += scal_fact * e;
     vrho_i[0]   += scal_fact * vra;
@@ -409,11 +346,8 @@ __global__ MGGA_EXC_GENERATOR( device_eval_exc_helper_unpolar_kernel ) {
 
   if( tid < N ) {
 
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double tau_use   = fmax( tau[tid],   1e-40 );
-    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
-    traits::eval_exc_unpolar( rho_use, sigma_use, lapl_use, tau_use, eps[tid] );
+    traits::eval_exc_unpolar( rho[tid], sigma[tid], lapl_use, tau[tid], eps[tid] );
 
   }
 
@@ -433,23 +367,12 @@ __global__ MGGA_EXC_GENERATOR( device_eval_exc_helper_polar_kernel ) {
     auto* lapl_i  = traits::needs_laplacian ? (lapl + 2*tid) : nullptr;
     auto* tau_i   = tau   + 2*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double tau_a_use = fmax( tau_i[0], 1e-40 );
-    const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
-    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
-
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-
     const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
     const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
 
-    traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, lapl_a_use, lapl_b_use, tau_a_use,
-      tau_b_use, eps[tid] );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], lapl_a_use, lapl_b_use, tau_i[0],
+      tau_i[1], eps[tid] );
 
   }
 
@@ -463,14 +386,11 @@ __global__ MGGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_unpolar_kernel ) {
 
   if( tid < N ) {
 
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double tau_use   = fmax( tau[tid],   1e-40 );
-    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
 
     double dummy;
     auto& vlapl_return = traits::needs_laplacian ? vlapl[tid] : dummy; 
-    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, lapl_use, tau_use,
+    traits::eval_exc_vxc_unpolar( rho[tid], sigma[tid], lapl_use, tau[tid],
       eps[tid], vrho[tid], vsigma[tid], vlapl_return, vtau[tid] );
 
   }
@@ -496,24 +416,12 @@ __global__ MGGA_EXC_VXC_GENERATOR( device_eval_exc_vxc_helper_polar_kernel ) {
     auto* vsigma_i = vsigma + 3*tid;
     auto* vlapl_i  = traits::needs_laplacian ? vlapl + 2*tid : dummy_vlapl;
     auto* vtau_i   = vtau   + 2*tid;
-
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double tau_a_use = fmax( tau_i[0], 1e-40 );
-    const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
-    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
-
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-
     const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
     const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
                                                          
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, lapl_a_use, lapl_b_use, tau_a_use,
-      tau_b_use, eps[tid], vrho_i[0], vrho_i[1], vsigma_i[0], vsigma_i[1], 
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], lapl_a_use, lapl_b_use, tau_i[0],
+      tau_i[1], eps[tid], vrho_i[0], vrho_i[1], vsigma_i[0], vsigma_i[1], 
       vsigma_i[2], vlapl_i[0], vlapl_i[1], vtau_i[0], vtau_i[1] );
 
   }
@@ -530,12 +438,8 @@ __global__ MGGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_unpolar_kernel ) {
   double e;
   if( tid < N ) {
 
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double tau_use   = fmax( tau[tid],   1e-40 );
-    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
-                                      
-    traits::eval_exc_unpolar( rho_use, sigma_use, lapl_use, tau_use, e );
+    traits::eval_exc_unpolar( rho[tid], sigma[tid], lapl_use, tau[tid], e );
     eps[tid] += scal_fact * e;
      
 
@@ -556,24 +460,13 @@ __global__ MGGA_EXC_INC_GENERATOR( device_eval_exc_inc_helper_polar_kernel ) {
     auto* lapl_i  = traits::needs_laplacian ? (lapl + 2*tid) : lapl;
     auto* tau_i   = tau   + 2*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double tau_a_use = fmax( tau_i[0], 1e-40 );
-    const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
-    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
-
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-
     const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
     const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
 
     double e;
-    traits::eval_exc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, lapl_a_use, lapl_b_use, tau_a_use, 
-      tau_b_use, e );
+    traits::eval_exc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], lapl_a_use, lapl_b_use, tau_i[0], 
+      tau_i[1], e );
     eps[tid] += scal_fact * e;
      
 
@@ -590,18 +483,15 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_unpolar_ke
   double e, vr, vs, vl, vt;
   if( tid < N ) {
 
-    const double rho_use   = fmax( rho[tid],   0.    );
-    const double tau_use   = fmax( tau[tid],   1e-40 );
-    const double sigma_use = enforce_fermi_hole_curvature( sigma[tid], rho_use, tau_use );
     const double lapl_use  = traits::needs_laplacian ? lapl[tid] : 0.0;
 
-    traits::eval_exc_vxc_unpolar( rho_use, sigma_use, lapl_use, tau_use,
+    traits::eval_exc_vxc_unpolar( rho[tid], sigma[tid], lapl_use, tau[tid],
       e, vr, vs, vl, vt );
     eps[tid]    += scal_fact * e;
     vrho[tid]   += scal_fact * vr;
     vsigma[tid] += scal_fact * vs;
     vtau[tid]   += scal_fact * vt;
-    if(vlapl) vlapl[tid] += scal_fact * vl;
+    if(traits::needs_laplacian) vlapl[tid] += scal_fact * vl;
 
   }
 
@@ -626,25 +516,14 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kern
     auto* vlapl_i  = traits::needs_laplacian ? vlapl + 2*tid : dummy_vlapl;
     auto* vtau_i   = vtau   + 2*tid;
 
-    const double rho_a_use = fmax( rho_i[0], 0. );
-    const double rho_b_use = fmax( rho_i[1], 0. );
-    const double tau_a_use = fmax( tau_i[0], 1e-40 );
-    const double tau_b_use = fmax( tau_i[1], 1e-40 );
-    const double sigma_aa_use = enforce_fermi_hole_curvature( sigma_i[0], rho_a_use, tau_a_use );
-    const double sigma_bb_use = enforce_fermi_hole_curvature( sigma_i[2], rho_b_use, tau_b_use );
-
-    const double sigma_ab_use = fmax( 
-      sigma_i[1], -(sigma_i[0] + sigma_i[1]) / 2.
-    );
-
     const double lapl_a_use = traits::needs_laplacian ? lapl_i[0] : 0.0;
     const double lapl_b_use = traits::needs_laplacian ? lapl_i[1] : 0.0;
                                                          
                                                          
     double e, vra, vrb, vsaa,vsab,vsbb, vla, vlb, vta, vtb;
-    traits::eval_exc_vxc_polar( rho_a_use, rho_b_use, sigma_aa_use, 
-      sigma_ab_use, sigma_bb_use, lapl_a_use, lapl_b_use, tau_a_use,
-      tau_b_use, e, vra, vrb, vsaa, vsab, vsbb, vla, vlb, vta, vtb );
+    traits::eval_exc_vxc_polar( rho_i[0], rho_i[1], sigma_i[0], 
+      sigma_i[1], sigma_i[2], lapl_a_use, lapl_b_use, tau_i[0],
+      tau_i[1], e, vra, vrb, vsaa, vsab, vsbb, vla, vlb, vta, vtb );
 
     eps[tid]    += scal_fact * e;
     vrho_i[0]   += scal_fact * vra;
@@ -654,7 +533,7 @@ __global__ MGGA_EXC_VXC_INC_GENERATOR( device_eval_exc_vxc_inc_helper_polar_kern
     vsigma_i[2] += scal_fact * vsbb;
     vtau_i[0]   += scal_fact * vta;
     vtau_i[1]   += scal_fact * vtb;
-    if(vlapl) {
+    if(traits::needs_laplacian) {
       vlapl_i[0]   += scal_fact * vla;
       vlapl_i[1]   += scal_fact * vlb;
     }
