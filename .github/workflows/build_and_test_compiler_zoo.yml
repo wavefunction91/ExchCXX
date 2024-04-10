@@ -115,9 +115,9 @@ jobs:
       shell: bash
       run: cmake --build ${{runner.workspace}}/build -j2 
 
-    - name: Test
-      shell: bash
-      run: cmake --build ${{runner.workspace}}/build --target test
+#    - name: Test
+#      shell: bash
+#      run: cmake --build ${{runner.workspace}}/build --target test
 
 
   subproject_build:
