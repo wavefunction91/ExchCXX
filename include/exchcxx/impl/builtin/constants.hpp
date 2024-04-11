@@ -62,7 +62,8 @@ constexpr double m_cbrt_pi   = 1.464591887561523263020142527263790391739L;
 constexpr double m_pi        = 3.14159265358979323846e+00;
 constexpr double m_one_ov_pi = 3.18309886183790691216e-01;
 constexpr double m_pi_sq     = 9.869604401089357992305e+00;
-constexpr double m_cbrt_one_ov_pi = 6.82784063255295725625e-01;
+//constexpr double m_cbrt_one_ov_pi = 6.82784063255295725625e-01;
+constexpr double m_cbrt_one_ov_pi = 6.82784063255295503581e-01;
 constexpr double m_cbrt_pi_sq     = 2.145029397111025470934e+00;
 
 }

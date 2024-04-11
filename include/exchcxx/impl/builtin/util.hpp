@@ -96,8 +96,10 @@ namespace sm = std;
 
 template <typename T>
 SAFE_INLINE(auto) sqrt( T x ) { return sm::sqrt(x); }
+
+// Apparently C / C++ cbrt differ ever-so-slightly
 template <typename T>
-SAFE_INLINE(auto) cbrt( T x ) { return sm::cbrt(x); }
+SAFE_INLINE(double) cbrt( T x ) { return ::cbrt(x); }
 template <typename T>
 SAFE_INLINE(auto) log( T x ) { return sm::log(x); }
 template <typename T>

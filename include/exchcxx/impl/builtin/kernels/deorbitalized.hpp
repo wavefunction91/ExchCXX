@@ -24,9 +24,11 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
     eval_exc_unpolar_impl( double rho, double sigma, double lapl, double tau, double& eps ) {
 
     double TAU;
-    ke_traits::eval_exc_unpolar_impl(rho, sigma, lapl, tau, TAU);
+    ke_traits::eval_exc_unpolar_impl(rho, sigma, lapl, 0.0, TAU);
 
-    TAU *= rho;
+    TAU = TAU * rho;
+    sigma = enforce_fermi_hole_curvature(sigma, rho, TAU);
+    TAU   = safe_max(TAU, xc_traits::tau_tol);
     xc_traits::eval_exc_unpolar_impl(rho, sigma, lapl, TAU, eps);
 
   }
@@ -34,10 +36,16 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_vxc_unpolar_impl( double rho, double sigma, double lapl, double tau, double& eps, double& vrho, double& vsigma, double& vlapl, double& vtau ) {
 
-    double TAU, vrho_k, vsigma_k, vlapl_k, vtau_k;
-    ke_traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, tau, TAU, vrho_k, vsigma_k, vlapl_k, vtau_k);
-    TAU *= rho;
+    double TAU, vrho_k, vsigma_k, vlapl_k, dummy;
+    ke_traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, 0.0, TAU, vrho_k, vsigma_k, vlapl_k, dummy);
+
+
+    TAU = TAU * rho;
+    sigma = enforce_fermi_hole_curvature(sigma, rho, TAU);
+    TAU   = safe_max(TAU, xc_traits::tau_tol);
     xc_traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, TAU, eps, vrho, vsigma, vlapl, vtau);
+
+    //printf("BLTIN %.16e %.16e %.16e %.16e %.16e\n", rho, sigma, lapl, TAU, vrho);
 
     vrho   += vtau * vrho_k;
     vsigma += vtau * vsigma_k;
