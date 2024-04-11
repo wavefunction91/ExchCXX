@@ -239,7 +239,7 @@ class XCFunc:
     self.xc_out = self.xc_out.replace(' 1,',' 1.0,')
     self.xc_out = self.xc_out.replace('cbrt( constants::m_one_ov_pi )','constants::m_cbrt_one_ov_pi')
     self.xc_out = self.xc_out.replace('cbrt( constants::m_pi_sq )','constants::m_cbrt_pi_sq')
-    self.xc_out = self.xc_out.replace('constants::m_cbrt_PI','1.0/constants::m_cbrt_one_ov_pi')
+    self.xc_out = self.xc_out.replace('constants::m_cbrt_PI','constants::m_cbrt_pi')
     self.xc_out = self.xc_out.replace('my_piecewise3','piecewise_functor_3')
     self.xc_out = self.xc_out.replace('my_piecewise5','piecewise_functor_5')
     self.xc_out = self.xc_out.replace('p->zeta_threshold','zeta_tol')

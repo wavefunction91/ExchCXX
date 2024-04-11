@@ -38,7 +38,7 @@ struct kernel_traits< BuiltinB88 > :
 
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t23 = constants::m_cbrt_one_ov_pi;
     constexpr double t25 = constants::m_cbrt_4;
     constexpr double t28 = constants::m_cbrt_2;
@@ -87,7 +87,7 @@ struct kernel_traits< BuiltinB88 > :
 
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t23 = constants::m_cbrt_one_ov_pi;
     constexpr double t25 = constants::m_cbrt_4;
     constexpr double t28 = constants::m_cbrt_2;
@@ -164,7 +164,7 @@ struct kernel_traits< BuiltinB88 > :
     (void)(sigma_ab);
     (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
-    constexpr double t3 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t3 = constants::m_cbrt_pi;
     constexpr double t31 = constants::m_cbrt_one_ov_pi;
     constexpr double t34 = constants::m_cbrt_4;
     constexpr double t5 = t2 / t3;
@@ -238,7 +238,7 @@ struct kernel_traits< BuiltinB88 > :
     (void)(sigma_ab);
     (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
-    constexpr double t3 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t3 = constants::m_cbrt_pi;
     constexpr double t31 = constants::m_cbrt_one_ov_pi;
     constexpr double t34 = constants::m_cbrt_4;
     constexpr double t5 = t2 / t3;

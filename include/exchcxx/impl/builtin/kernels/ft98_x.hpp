@@ -43,7 +43,7 @@ struct kernel_traits< BuiltinFT98_X > :
     (void)(tau);
     (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
-    constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t5 = constants::m_cbrt_pi;
     constexpr double t22 = constants::m_cbrt_2;
     constexpr double t128 = constants::m_cbrt_one_ov_pi;
     constexpr double t131 = constants::m_cbrt_4;
@@ -156,7 +156,7 @@ struct kernel_traits< BuiltinFT98_X > :
     (void)(tau);
     (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
-    constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t5 = constants::m_cbrt_pi;
     constexpr double t22 = constants::m_cbrt_2;
     constexpr double t128 = constants::m_cbrt_one_ov_pi;
     constexpr double t131 = constants::m_cbrt_4;
@@ -391,7 +391,7 @@ struct kernel_traits< BuiltinFT98_X > :
     (void)(tau_b);
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t116 = constants::m_cbrt_2;
     constexpr double t130 = constants::m_cbrt_one_ov_pi;
     constexpr double t133 = constants::m_cbrt_4;
@@ -580,7 +580,7 @@ struct kernel_traits< BuiltinFT98_X > :
     (void)(tau_b);
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t116 = constants::m_cbrt_2;
     constexpr double t130 = constants::m_cbrt_one_ov_pi;
     constexpr double t133 = constants::m_cbrt_4;

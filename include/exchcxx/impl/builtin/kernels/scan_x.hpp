@@ -41,7 +41,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     (void)(lapl);
     (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
-    constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t5 = constants::m_cbrt_pi;
     constexpr double t21 = constants::m_cbrt_6;
     constexpr double t22 = constants::m_pi_sq;
     constexpr double t23 = constants::m_cbrt_pi_sq;
@@ -139,7 +139,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     (void)(lapl);
     (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
-    constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t5 = constants::m_cbrt_pi;
     constexpr double t21 = constants::m_cbrt_6;
     constexpr double t22 = constants::m_pi_sq;
     constexpr double t23 = constants::m_cbrt_pi_sq;
@@ -339,7 +339,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     (void)(lapl_b);
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t29 = constants::m_cbrt_6;
     constexpr double t30 = constants::m_pi_sq;
     constexpr double t31 = constants::m_cbrt_pi_sq;
@@ -509,7 +509,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     (void)(lapl_b);
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t29 = constants::m_cbrt_6;
     constexpr double t30 = constants::m_pi_sq;
     constexpr double t31 = constants::m_cbrt_pi_sq;

@@ -39,7 +39,7 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     (void)(tau);
     (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
-    constexpr double t6 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t6 = constants::m_cbrt_pi;
     constexpr double t25 = constants::m_cbrt_6;
     constexpr double t26 = constants::m_pi_sq;
     constexpr double t27 = constants::m_cbrt_pi_sq;
@@ -137,7 +137,7 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     (void)(tau);
     (void)(eps);
     constexpr double t4 = constants::m_cbrt_3;
-    constexpr double t6 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t6 = constants::m_cbrt_pi;
     constexpr double t25 = constants::m_cbrt_6;
     constexpr double t26 = constants::m_pi_sq;
     constexpr double t27 = constants::m_cbrt_pi_sq;
@@ -333,7 +333,7 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     (void)(tau_b);
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t5 = constants::m_cbrt_pi;
     constexpr double t33 = constants::m_cbrt_6;
     constexpr double t34 = constants::m_pi_sq;
     constexpr double t35 = constants::m_cbrt_pi_sq;
@@ -493,7 +493,7 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     (void)(tau_b);
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t5 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t5 = constants::m_cbrt_pi;
     constexpr double t33 = constants::m_cbrt_6;
     constexpr double t34 = constants::m_pi_sq;
     constexpr double t35 = constants::m_cbrt_pi_sq;

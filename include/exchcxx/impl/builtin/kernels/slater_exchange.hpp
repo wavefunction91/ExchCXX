@@ -37,7 +37,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
 
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t6 = t3 / t4;
 
 
@@ -58,7 +58,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
 
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t6 = t3 / t4;
 
 
@@ -83,7 +83,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
 
     (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
-    constexpr double t3 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t3 = constants::m_cbrt_pi;
     constexpr double t13 = constants::m_cbrt_2;
     constexpr double t5 = t2 / t3;
 
@@ -120,7 +120,7 @@ struct kernel_traits< BuiltinSlaterExchange > :
 
     (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
-    constexpr double t3 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t3 = constants::m_cbrt_pi;
     constexpr double t13 = constants::m_cbrt_2;
     constexpr double t5 = t2 / t3;
 
