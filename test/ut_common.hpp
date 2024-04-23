@@ -45,8 +45,9 @@
 
 #pragma once
 
-#include "catch2/catch.hpp"
+#include "catch2/catch_all.hpp"
 #include <exchcxx/exchcxx.hpp>
+#include <xc.h>
 #include <cmath>
 #include <vector>
 #include <array>
@@ -56,6 +57,7 @@
 
 #include "reference_values.hpp"
 
+using Catch::Approx;
 
 enum class TestInterface {
   EXC,

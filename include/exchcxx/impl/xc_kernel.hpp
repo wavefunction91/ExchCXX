@@ -77,6 +77,7 @@ struct XCKernelImpl {
   bool is_hyb()          const noexcept { return is_hyb_();       }
   bool is_polarized()    const noexcept { return is_polarized_(); }
   bool needs_laplacian() const noexcept { return needs_laplacian_();       }
+  bool needs_tau() const noexcept { return needs_tau_();       }
 
   double hyb_exx() const noexcept { return hyb_exx_(); };
 
@@ -177,6 +178,7 @@ private:
   virtual bool is_hyb_()        const noexcept = 0;
   virtual bool is_polarized_()  const noexcept = 0;
   virtual bool needs_laplacian_() const noexcept = 0;
+  virtual bool needs_tau_() const noexcept = 0;
 
   virtual double hyb_exx_() const noexcept = 0;
 

@@ -53,6 +53,9 @@
 #include <exchcxx/impl/xc_kernel.hpp>
 #include <exchcxx/exceptions/exchcxx_exception.hpp>
 #include <xc.h> // Libxc
+#if XC_MAJOR_VERSION > 6
+#include <xc_funcs.h> // Libxc funcs
+#endif
 
 namespace ExchCXX {
 namespace detail {
@@ -69,6 +72,7 @@ class LibxcKernelImpl : public XCKernelImpl {
   bool is_hyb_()       const noexcept override;
   bool is_polarized_() const noexcept override;
   bool needs_laplacian_()       const noexcept override;
+  bool needs_tau_()    const noexcept override;
   double hyb_exx_()    const noexcept override;
 
   bool supports_inc_interface_() const noexcept override;

@@ -72,6 +72,7 @@ public:
   virtual bool is_mgga()      const noexcept = 0;
   virtual bool is_hyb()       const noexcept = 0;
   virtual bool needs_laplacian()       const noexcept = 0;
+  virtual bool needs_tau()    const noexcept = 0;
   virtual double hyb_exx()    const noexcept = 0;
 
   inline bool is_polarized() const noexcept { 
@@ -382,6 +383,9 @@ public:
     if constexpr (traits::is_mgga) return traits::needs_laplacian;
     else return false;
   }
+  inline bool needs_tau() const noexcept override {
+    return traits::is_mgga;
+  }
 
   inline FORWARD_XC_ARGS( LDA, EXC, eval_exc, eval_exc_, const override );
   inline FORWARD_XC_ARGS( LDA, EXC_VXC, eval_exc_vxc, eval_exc_vxc_, const override );
@@ -531,6 +535,10 @@ public:
     else return false;
   }
 
+  inline bool needs_tau() const noexcept override {
+    return traits::is_mgga;
+  }
+
   inline FORWARD_XC_ARGS( GGA, EXC, eval_exc, eval_exc_, const override );
   inline FORWARD_XC_ARGS( GGA, EXC_VXC, eval_exc_vxc, eval_exc_vxc_, const override );
 
@@ -676,6 +684,10 @@ public:
   inline bool needs_laplacian() const noexcept override { 
     if constexpr (traits::is_mgga) return traits::needs_laplacian;
     else return false;
+  }
+
+  inline bool needs_tau() const noexcept override {
+    return traits::is_mgga;
   }
 
   inline FORWARD_XC_ARGS( MGGA, EXC, eval_exc, eval_exc_, const override );

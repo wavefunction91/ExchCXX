@@ -599,7 +599,10 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
         CHECK( vlapl[i] == Approx(vlapl_ref[i]) );
       }
       for( auto i = 0ul; i < func.vtau_buffer_len(npts); ++i ) {
-        CHECK( vtau[i] == Approx(vtau_ref[i]) );
+#if XC_MAJOR_VERSION > 6
+	if (func.needs_tau() )
+#endif
+          CHECK( vtau[i] == Approx(vtau_ref[i]) );
       }
 
     }

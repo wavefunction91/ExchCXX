@@ -102,6 +102,7 @@ public:
   bool is_polarized() const noexcept { return pimpl_->is_polarized(); }
 
   bool needs_laplacian() const noexcept { return pimpl_->needs_laplacian(); }
+  bool needs_tau()    const noexcept { return pimpl_->needs_tau(); }
   
   double hyb_exx() const noexcept { return pimpl_->hyb_exx(); }
 

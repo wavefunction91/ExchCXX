@@ -162,6 +162,9 @@ bool BuiltinKernelInterface::is_polarized_() const noexcept {
 bool BuiltinKernelInterface::needs_laplacian_()       const noexcept {
   return impl_->needs_laplacian();
 }
+bool BuiltinKernelInterface::needs_tau_()       const noexcept {
+  return impl_->needs_tau();
+}
 double BuiltinKernelInterface::hyb_exx_()    const noexcept {
   return impl_->hyb_exx();
 }
