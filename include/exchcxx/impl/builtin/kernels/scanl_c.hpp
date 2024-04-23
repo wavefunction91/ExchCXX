@@ -11,8 +11,7 @@ namespace ExchCXX {
 
 template <>
 struct kernel_traits<BuiltinSCANL_C> : 
-  public kernel_traits<Deorbitalized<BuiltinSCAN_C, BuiltinPC07OPT_K>>,
-  public mgga_screening_interface<BuiltinSCANL_C> {
+  public kernel_traits<Deorbitalized<BuiltinSCAN_C, BuiltinPC07OPT_K>> {
 
   static constexpr double dens_tol  = 1e-15;
   static constexpr double zeta_tol  = 1e-15;
