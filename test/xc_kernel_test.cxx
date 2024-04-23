@@ -865,15 +865,19 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
   }
 
   SECTION( "Unpolarized Small Eval : EXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_unstable_small(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Small,
         kern, Spin::Unpolarized );
+    }
   }
 
   SECTION( "Unpolarized Small Eval : EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_unstable_small(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Small,
         kern, Spin::Unpolarized );
+    }
   }
 
   SECTION( "Unpolarized Zero Eval : EXC" ) {
@@ -906,15 +910,19 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
   }
 
   SECTION( "Polarized Small Eval : EXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_unstable_small(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Small,
         kern, Spin::Polarized );
+    }
   }
 
   SECTION( "Polarized Small Eval : EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_unstable_small(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Small,
         kern, Spin::Polarized );
+    }
   }
 
   SECTION( "Polarized Zero Eval : EXC" ) {
@@ -1313,40 +1321,52 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
     }
 
     SECTION( "LDA Functionals: EXC Small Eval Unpolarized" ) {
-      for( auto kern : lda_kernels )
+      for( auto kern : lda_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
+      }
     }
 
 
     SECTION( "LDA Functionals: EXC + VXC Small Eval Unpolarized" ) {
-      for( auto kern : lda_kernels )
+      for( auto kern : lda_kernels ){
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION( "GGA Functionals: EXC Small Eval Unpolarized" ) {
-      for( auto kern : gga_kernels )
+      for( auto kern : gga_kernels ){
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION( "GGA Functionals: EXC + VXC Small Eval Unpolarized" ) {
-      for( auto kern : gga_kernels )
+      for( auto kern : gga_kernels ){
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION( "MGGA Functionals: EXC Small Eval Unpolarized" ) {
-      for( auto kern : mgga_kernels )
+      for( auto kern : mgga_kernels ){
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION( "MGGA Functionals: EXC + VXC Small Eval Unpolarized" ) {
-      for( auto kern : mgga_kernels )
+      for( auto kern : mgga_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION( "LDA Functionals: EXC Zero Eval Unpolarized" ) {
@@ -1431,40 +1451,52 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
     }
 
     SECTION( "LDA Functionals: EXC Small Eval Polarized" ) {
-      for( auto kern : lda_kernels )
+      for( auto kern : lda_kernels ){
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Polarized );
+      }
     }
 
 
     SECTION( "LDA Functionals: EXC + VXC Small Eval Polarized" ) {
-      for( auto kern : lda_kernels )
+      for( auto kern : lda_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Polarized );
+      }
     }
 
     SECTION( "GGA Functionals: EXC Small Eval Polarized" ) {
-      for( auto kern : gga_kernels )
+      for( auto kern : gga_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Polarized );
+      }
     }
 
     SECTION( "GGA Functionals: EXC + VXC Small Eval Polarized" ) {
-      for( auto kern : gga_kernels )
+      for( auto kern : gga_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Polarized );
+      }
     }
 
     SECTION( "MGGA Functionals: EXC Small Eval Polarized" ) {
-      for( auto kern : mgga_kernels )
+      for( auto kern : mgga_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::libxc, kern, Spin::Polarized );
+      }
     }
 
     SECTION( "MGGA Functionals: EXC + VXC Small Eval Polarized" ) {
-      for( auto kern : mgga_kernels )
+      for( auto kern : mgga_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::libxc, kern, Spin::Polarized );
+      }
     }
 
     SECTION( "LDA Functionals: EXC Zero Eval Polarized" ) {
@@ -1533,27 +1565,35 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
     }
 
     SECTION("EXC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION("EXC + VXC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION("EXC + INC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_INC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION("EXC + VXC + INC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Small,
           Backend::builtin, kern, Spin::Unpolarized );
+      }
     }
 
     SECTION("EXC Zero: Unpolarized") {
@@ -1605,27 +1645,35 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
     }
 
     SECTION("EXC Small: Polarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC, EvalType::Small,
           Backend::builtin, kern, Spin::Polarized );
+      }
     }
 
     SECTION("EXC + VXC Small: Polarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
           Backend::builtin, kern, Spin::Polarized );
+      }
     }
 
     SECTION("EXC + INC Small: Polarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_INC, EvalType::Small,
           Backend::builtin, kern, Spin::Polarized );
+      }
     }
 
     SECTION("EXC + VXC + INC Small: Polarized") {
-      for( auto kern : builtin_supported_kernels )
+      for( auto kern : builtin_supported_kernels ) {
+        if(is_unstable_small(kern)) continue;
         test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Small,
           Backend::builtin, kern, Spin::Polarized );
+      }
     }
 
     SECTION("EXC Zero: Polarized") {

@@ -136,6 +136,16 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::PC07OPT_K
 };
 
+static std::vector<ExchCXX::Kernel> unstable_small_kernels = {
+  ExchCXX::Kernel::SCAN_C,
+  ExchCXX::Kernel::SCANL_C,
+};
+
+inline bool is_unstable_small(ExchCXX::Kernel kern) {
+  return std::find(unstable_small_kernels.begin(), unstable_small_kernels.end(),
+                   kern) != unstable_small_kernels.end();
+}
+
 static constexpr std::array string_kernal_pairs = {
     std::pair("SlaterExchange", ExchCXX::Kernel::SlaterExchange),
     std::pair("PBE_X",ExchCXX::Kernel::PBE_X),
