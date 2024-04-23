@@ -128,6 +128,7 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::SCAN_X, 
   ExchCXX::Kernel::SCAN_C,
   ExchCXX::Kernel::SCANL_C,
+  ExchCXX::Kernel::SCANL_X,
   ExchCXX::Kernel::R2SCAN_X, 
   ExchCXX::Kernel::R2SCAN_C,
   ExchCXX::Kernel::FT98_X,
@@ -139,6 +140,7 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
 static std::vector<ExchCXX::Kernel> unstable_small_kernels = {
   ExchCXX::Kernel::SCAN_C,
   ExchCXX::Kernel::SCANL_C,
+  ExchCXX::Kernel::SCANL_X
 };
 
 inline bool is_unstable_small(ExchCXX::Kernel kern) {

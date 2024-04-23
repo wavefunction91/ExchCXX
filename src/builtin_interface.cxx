@@ -99,8 +99,8 @@ std::unique_ptr<BuiltinKernel>
     return std::make_unique<BuiltinSCAN_C>( polar );
   else if( kern == Kernel::SCANL_C )
     return std::make_unique<BuiltinSCANL_C>( polar );
-  //else if( kern == Kernel::SCANL_X )
-  //  return std::make_unique<BuiltinSCANL_X>( polar );
+  else if( kern == Kernel::SCANL_X )
+    return std::make_unique<BuiltinSCANL_X>( polar );
   else if( kern == Kernel::R2SCAN_X )
     return std::make_unique<BuiltinR2SCAN_X>( polar );
   else if( kern == Kernel::R2SCAN_C )
