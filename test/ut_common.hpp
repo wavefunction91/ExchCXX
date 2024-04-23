@@ -131,6 +131,8 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::SCANL_X,
   ExchCXX::Kernel::R2SCAN_X, 
   ExchCXX::Kernel::R2SCAN_C,
+  ExchCXX::Kernel::R2SCANL_X, 
+  ExchCXX::Kernel::R2SCANL_C,
   ExchCXX::Kernel::FT98_X,
 
   ExchCXX::Kernel::PC07_K,
