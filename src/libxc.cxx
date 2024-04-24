@@ -82,6 +82,21 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::B88,            XC_GGA_X_B88        },
   { Kernel::LYP,            XC_GGA_C_LYP        },
 
+  // MGGA Functionals
+  { Kernel::SCAN_C,         XC_MGGA_C_SCAN      },
+  { Kernel::SCAN_X,         XC_MGGA_X_SCAN      },
+  { Kernel::SCANL_C,        XC_MGGA_C_SCANL     },
+  { Kernel::SCANL_X,        XC_MGGA_X_SCANL     },
+  { Kernel::R2SCAN_C,       XC_MGGA_C_R2SCAN    },
+  { Kernel::R2SCAN_X,       XC_MGGA_X_R2SCAN    },
+  { Kernel::R2SCANL_C,      XC_MGGA_C_R2SCANL   },
+  { Kernel::R2SCANL_X,      XC_MGGA_X_R2SCANL   },
+  { Kernel::FT98_X,         XC_MGGA_X_FT98      },
+
+  // KEDFs
+  { Kernel::PC07_K,         XC_MGGA_K_PC07      },
+  { Kernel::PC07OPT_K,      XC_MGGA_K_PC07_OPT  },
+
   // Hybrid GGA Functionals
   { Kernel::B3LYP,          XC_HYB_GGA_XC_B3LYP },
   { Kernel::PBE0,           XC_HYB_GGA_XC_PBEH  },
@@ -169,34 +184,45 @@ std::unique_ptr< XCKernelImpl > LibxcKernelImpl::clone_() const {
 
 
 bool LibxcKernelImpl::is_lda_() const noexcept {
-  return kernel_.info->family == XC_FAMILY_LDA;
+  return (kernel_.info->family == XC_FAMILY_LDA) 
+#if XC_MAJOR_VERSION > 6
+  or (kernel_.info->family == XC_FAMILY_HYB_LDA)
+#endif
+  ;
 }
 
 bool LibxcKernelImpl::is_gga_() const noexcept {
   return 
     (kernel_.info->family == XC_FAMILY_GGA    ) 
-#if XC_MAJOR_VERSION < 7
-    or (kernel_.info->family == XC_FAMILY_HYB_GGA)
-#endif
-    ;
+    or (kernel_.info->family == XC_FAMILY_HYB_GGA);
 }
 
 bool LibxcKernelImpl::is_mgga_() const noexcept {
   return 
     (kernel_.info->family == XC_FAMILY_MGGA    )
-#if XC_MAJOR_VERSION < 7
-    or (kernel_.info->family == XC_FAMILY_HYB_MGGA)
-#endif
-    ;
+    or (kernel_.info->family == XC_FAMILY_HYB_MGGA);
 }
 
 bool LibxcKernelImpl::is_hyb_() const noexcept {
-#if XC_MAJOR_VERSION < 7
   return
     (kernel_.info->family == XC_FAMILY_HYB_GGA ) or
-    (kernel_.info->family == XC_FAMILY_HYB_MGGA);
+    (kernel_.info->family == XC_FAMILY_HYB_MGGA)
+#if XC_MAJOR_VERSION > 6
+    or (kernel_.info->family == XC_FAMILY_HYB_LDA)
+#endif
+  ;
+}
+
+bool LibxcKernelImpl::needs_laplacian_() const noexcept {
+  return kernel_.info->flags & XC_FLAGS_NEEDS_LAPLACIAN;
+}
+
+bool LibxcKernelImpl::needs_tau_() const noexcept {
+  return
+#if XC_MAJOR_VERSION > 6
+    kernel_.info->flags & XC_FLAGS_NEEDS_TAU;
 #else
-  return xc_hyb_type(&kernel_) == XC_HYB_HYBRID;
+    is_mgga_();
 #endif
 }
 

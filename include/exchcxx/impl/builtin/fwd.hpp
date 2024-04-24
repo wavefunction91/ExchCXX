@@ -72,6 +72,22 @@ struct BuiltinPBE_C;
 struct BuiltinB3LYP;
 struct BuiltinPBE0;
 
+struct BuiltinSCAN_X;
+struct BuiltinSCAN_C;
+struct BuiltinR2SCAN_X;
+struct BuiltinR2SCAN_C;
+struct BuiltinFT98_X;
+
+struct BuiltinPC07_K;
+struct BuiltinPC07OPT_K;
+
+template <typename XCEF, typename KEDF>
+struct Deorbitalized;
+struct BuiltinSCANL_X;
+struct BuiltinSCANL_C;
+struct BuiltinR2SCANL_X;
+struct BuiltinR2SCANL_C;
+
 
 template <typename KernelType>
 struct kernel_traits;

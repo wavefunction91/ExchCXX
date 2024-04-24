@@ -96,8 +96,10 @@ namespace sm = std;
 
 template <typename T>
 SAFE_INLINE(auto) sqrt( T x ) { return sm::sqrt(x); }
+
+// Apparently C / C++ cbrt differ ever-so-slightly
 template <typename T>
-SAFE_INLINE(auto) cbrt( T x ) { return sm::cbrt(x); }
+SAFE_INLINE(double) cbrt( T x ) { return ::cbrt(x); }
 template <typename T>
 SAFE_INLINE(auto) log( T x ) { return sm::log(x); }
 template <typename T>
@@ -126,6 +128,8 @@ template <typename F>
 SAFE_CONSTEXPR_INLINE( F ) square( F x ) { return x*x; }
 template <typename F>
 SAFE_INLINE( F ) pow_3_2( F x ) { F y = safe_math::sqrt(x); return y*y*y; }
+template <typename F>
+SAFE_INLINE( F ) pow_1_4( F x ) { F y = safe_math::sqrt(x); return safe_math::sqrt(y); }
 
 template <typename F>
 SAFE_CONSTEXPR_INLINE( F ) piecewise_functor_3( bool b, F x, F y ) {
@@ -135,6 +139,21 @@ SAFE_CONSTEXPR_INLINE( F ) piecewise_functor_3( bool b, F x, F y ) {
 template <typename F>
 SAFE_CONSTEXPR_INLINE( F ) piecewise_functor_5( bool b, F x, bool c, F y, F z ) {
   return b ? x : (c ? y : z);
+}
+
+
+
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) enforce_fermi_hole_curvature(F sigma, F rho, F tau) {
+  return safe_min(sigma, F(8) * rho * tau);
+}
+
+template <typename F>
+SAFE_CONSTEXPR_INLINE( F ) enforce_polar_sigma_constraints(F sigma_aa, F sigma_ab, F sigma_bb) {
+  const auto s_ave = 0.5 * (sigma_aa + sigma_bb);
+  sigma_ab = (sigma_ab >= -s_ave ? sigma_ab : -s_ave);
+  sigma_ab = (sigma_ab <=  s_ave ? sigma_ab :  s_ave);
+  return sigma_ab;
 }
 
 }

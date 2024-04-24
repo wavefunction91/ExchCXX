@@ -83,6 +83,21 @@ enum class Kernel {
   B88,
   LYP,
 
+  // MGGA functionals
+  SCAN_C,
+  SCAN_X,
+  SCANL_C,
+  SCANL_X,
+  R2SCAN_C,
+  R2SCAN_X,
+  R2SCANL_C,
+  R2SCANL_X,
+  FT98_X,
+
+  // KEDFs
+  PC07_K,
+  PC07OPT_K,
+
   // Hybrid GGA functionals
   B3LYP,
   PBE0,

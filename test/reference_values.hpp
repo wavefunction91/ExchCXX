@@ -65,13 +65,30 @@ struct gga_reference {
   std::vector<double> vsigma;
 };
 
+struct mgga_reference {
+  int npts;
+  std::vector<double> rho;
+  std::vector<double> sigma;
+  std::vector<double> lapl;
+  std::vector<double> tau;
+  std::vector<double> exc;
+  std::vector<double> vrho;
+  std::vector<double> vsigma;
+  std::vector<double> vlapl;
+  std::vector<double> vtau;
+};
+
 lda_reference load_lda_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
 gga_reference load_gga_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
+mgga_reference load_mgga_reference_values(ExchCXX::Kernel, ExchCXX::Spin, bool need_lap);
 
 lda_reference gen_lda_reference_values(ExchCXX::Backend, ExchCXX::Kernel, ExchCXX::Spin);
 gga_reference gen_gga_reference_values(ExchCXX::Backend, ExchCXX::Kernel, ExchCXX::Spin);
+mgga_reference gen_mgga_reference_values(ExchCXX::Backend, ExchCXX::Kernel, ExchCXX::Spin);
 
 std::pair<int,std::vector<double>> load_reference_density(ExchCXX::Spin);
 std::pair<int,std::vector<double>> load_reference_sigma(ExchCXX::Spin);
+std::pair<int,std::vector<double>> load_reference_lapl(ExchCXX::Spin);
+std::pair<int,std::vector<double>> load_reference_tau(ExchCXX::Spin);
 
 double load_reference_exx( ExchCXX::Kernel );

@@ -68,5 +68,17 @@
 #include <exchcxx/impl/builtin/kernels/pbe0.hpp>
 #include <exchcxx/impl/builtin/kernels/b3lyp.hpp>
 
+#include <exchcxx/impl/builtin/kernels/scan_x.hpp>
+#include <exchcxx/impl/builtin/kernels/scan_c.hpp>
+#include <exchcxx/impl/builtin/kernels/r2scan_x.hpp>
+#include <exchcxx/impl/builtin/kernels/r2scan_c.hpp>
+#include <exchcxx/impl/builtin/kernels/ft98_x.hpp>
+#include <exchcxx/impl/builtin/kernels/scanl_c.hpp>
+#include <exchcxx/impl/builtin/kernels/scanl_x.hpp>
+#include <exchcxx/impl/builtin/kernels/r2scanl_c.hpp>
+#include <exchcxx/impl/builtin/kernels/r2scanl_x.hpp>
+
+#include <exchcxx/impl/builtin/kernels/pc07_k.hpp>
+#include <exchcxx/impl/builtin/kernels/pc07opt_k.hpp>
 
 

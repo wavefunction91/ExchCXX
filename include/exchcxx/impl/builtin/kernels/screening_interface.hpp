@@ -29,18 +29,13 @@ struct lda_screening_interface {
     eval_exc_polar( double rho_a, double rho_b, double& eps ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     if( rho_s <= traits::dens_tol ) {
       eps = 0.;
     } else {
+      rho_a = safe_max(rho_a, traits::dens_tol);
+      rho_b = safe_max(rho_b, traits::dens_tol);
       traits::eval_exc_polar_impl( rho_a, rho_b, eps );
     }
 
@@ -64,20 +59,15 @@ struct lda_screening_interface {
       double& vrho_b ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     if( rho_s <= traits::dens_tol ) {
       eps    = 0.;
       vrho_a = 0.;
       vrho_b = 0.;
     } else {
+      rho_a = safe_max(rho_a, traits::dens_tol);
+      rho_b = safe_max(rho_b, traits::dens_tol);
       traits::eval_exc_vxc_polar_impl( rho_a, rho_b, eps, vrho_a, vrho_b );
     }
 
@@ -97,6 +87,8 @@ struct gga_screening_interface {
     if( rho <= traits::dens_tol ) {
       eps = 0.;
     } else {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      sigma = safe_max(sigma, sigma_tol_sq); 
       traits::eval_exc_unpolar_impl( rho, sigma, eps );
     }
 
@@ -107,18 +99,17 @@ struct gga_screening_interface {
       double sigma_ab, double sigma_bb, double& eps ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     if( rho_s <= traits::dens_tol ) {
       eps = 0.;
     } else {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      rho_a    = safe_max(rho_a, traits::dens_tol);
+      rho_b    = safe_max(rho_b, traits::dens_tol);
+      sigma_aa = safe_max(sigma_aa, sigma_tol_sq); 
+      sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
+      sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
       traits::eval_exc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab,
         sigma_bb, eps );
     }
@@ -134,6 +125,8 @@ struct gga_screening_interface {
       vrho   = 0.;
       vsigma = 0.;
     } else {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      sigma = safe_max(sigma, sigma_tol_sq); 
       traits::eval_exc_vxc_unpolar_impl( rho, sigma, eps, vrho, vsigma );
     }
 
@@ -146,14 +139,7 @@ struct gga_screening_interface {
       double& vsigma_bb ) {
 
     const double rho_s = rho_a + rho_b;
-    const double rho_z = rho_a - rho_b;
-
-    double zeta = 0;
-    if( rho_s > 0 ) {
-      zeta = rho_z / rho_s;
-      zeta = safe_min(zeta,  1.);
-      zeta = safe_max(zeta, -1.);
-    }
+    //const double rho_z = rho_a - rho_b;
 
     eps       = 0.;
     vrho_a    = 0.;
@@ -163,8 +149,142 @@ struct gga_screening_interface {
     vsigma_bb = 0.;
 
     if( rho_s > traits::dens_tol ) {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      rho_a    = safe_max(rho_a, traits::dens_tol);
+      rho_b    = safe_max(rho_b, traits::dens_tol);
+      sigma_aa = safe_max(sigma_aa, sigma_tol_sq); 
+      sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
+      sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
       traits::eval_exc_vxc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab, 
         sigma_bb, eps, vrho_a, vrho_b, vsigma_aa, vsigma_ab, vsigma_bb );
+    }
+
+  }
+
+};
+
+template <typename KernelType>
+struct mgga_screening_interface {
+
+  using traits = kernel_traits<KernelType>;
+
+  BUILTIN_KERNEL_EVAL_RETURN
+    eval_exc_unpolar( double rho, double sigma, double lapl, double tau, double& eps ) {
+
+    
+    if( rho <= traits::dens_tol ) {
+      eps = 0.;
+    } else {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      sigma = safe_max(sigma, sigma_tol_sq); 
+      tau   = safe_max(tau, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
+      }
+
+      traits::eval_exc_unpolar_impl(rho, sigma, lapl, tau, eps) ;
+    }
+
+  }
+
+  BUILTIN_KERNEL_EVAL_RETURN
+    eval_exc_polar( double rho_a, double rho_b, double sigma_aa, 
+      double sigma_ab, double sigma_bb, double lapl_a, double lapl_b,
+      double tau_a, double tau_b, double& eps ) {
+
+    const double rho_s = rho_a + rho_b;
+    //const double rho_z = rho_a - rho_b;
+
+    if( rho_s <= traits::dens_tol ) {
+      eps = 0.;
+    } else {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      rho_a    = safe_max(rho_a, traits::dens_tol);
+      rho_b    = safe_max(rho_b, traits::dens_tol);
+      sigma_aa = safe_max(sigma_aa, sigma_tol_sq); 
+      sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
+      tau_a = safe_max(tau_a, traits::tau_tol);
+      tau_b = safe_max(tau_b, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
+        sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
+      }
+      sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
+    
+      traits::eval_exc_polar_impl( rho_a, rho_b, 
+        sigma_aa, sigma_ab, sigma_bb, lapl_a, lapl_b, 
+        safe_max(traits::tau_tol, tau_a), 
+        safe_max(traits::tau_tol, tau_b), 
+        eps );
+    }
+
+  }
+
+  BUILTIN_KERNEL_EVAL_RETURN
+    eval_exc_vxc_unpolar( double rho, double sigma, double lapl, double tau, 
+    double& eps, double& vrho, double& vsigma, double& vlapl, double &vtau ) {
+
+    if( rho <= traits::dens_tol ) {
+      eps    = 0.;
+      vrho   = 0.;
+      vsigma = 0.;
+      vlapl  = 0.;
+      vtau   = 0.;
+    } else {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      sigma = safe_max(sigma, sigma_tol_sq); 
+      tau   = safe_max(tau, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
+      }
+      traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, tau, 
+        eps, vrho, vsigma, vlapl, vtau );
+    }
+
+  }
+
+  BUILTIN_KERNEL_EVAL_RETURN
+    eval_exc_vxc_polar( double rho_a, double rho_b, double sigma_aa, 
+      double sigma_ab, double sigma_bb, double lapl_a, double lapl_b,
+      double tau_a, double tau_b, double& eps, double& vrho_a,
+      double& vrho_b, double& vsigma_aa, double& vsigma_ab, 
+      double& vsigma_bb, double& vlapl_a, double& vlapl_b,
+      double& vtau_a, double& vtau_b ) {
+
+    const double rho_s = rho_a + rho_b;
+    //const double rho_z = rho_a - rho_b;
+
+    eps       = 0.;
+    vrho_a    = 0.;
+    vrho_b    = 0.;
+    vsigma_aa = 0.;
+    vsigma_ab = 0.;
+    vsigma_bb = 0.;
+    vlapl_a   = 0.;
+    vlapl_b   = 0.;
+    vtau_a    = 0.;
+    vtau_b    = 0.;
+
+    if( rho_s > traits::dens_tol ) {
+      constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
+      rho_a    = safe_max(rho_a, traits::dens_tol);
+      rho_b    = safe_max(rho_b, traits::dens_tol);
+      sigma_aa = safe_max(sigma_aa, sigma_tol_sq); 
+      sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
+      tau_a = safe_max(tau_a, traits::tau_tol);
+      tau_b = safe_max(tau_b, traits::tau_tol);
+      if constexpr (not traits::is_kedf) {
+        sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
+        sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
+      }
+      sigma_ab = enforce_polar_sigma_constraints(sigma_aa, sigma_ab, sigma_bb);
+
+      traits::eval_exc_vxc_polar_impl( rho_a, rho_b, sigma_aa, sigma_ab, 
+        sigma_bb, lapl_a, lapl_b, 
+        safe_max(traits::tau_tol, tau_a), 
+        safe_max(traits::tau_tol, tau_b), 
+        eps, vrho_a, vrho_b, vsigma_aa, vsigma_ab, vsigma_bb, vlapl_a, vlapl_b, 
+        vtau_a, vtau_b );
     }
 
   }

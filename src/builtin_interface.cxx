@@ -93,6 +93,30 @@ std::unique_ptr<BuiltinKernel>
   else if( kern == Kernel::B3LYP )
     return std::make_unique<BuiltinB3LYP>( polar );
 
+  else if( kern == Kernel::SCAN_X )
+    return std::make_unique<BuiltinSCAN_X>( polar );
+  else if( kern == Kernel::SCAN_C )
+    return std::make_unique<BuiltinSCAN_C>( polar );
+  else if( kern == Kernel::SCANL_C )
+    return std::make_unique<BuiltinSCANL_C>( polar );
+  else if( kern == Kernel::SCANL_X )
+    return std::make_unique<BuiltinSCANL_X>( polar );
+  else if( kern == Kernel::R2SCAN_X )
+    return std::make_unique<BuiltinR2SCAN_X>( polar );
+  else if( kern == Kernel::R2SCAN_C )
+    return std::make_unique<BuiltinR2SCAN_C>( polar );
+  else if( kern == Kernel::R2SCANL_X )
+    return std::make_unique<BuiltinR2SCANL_X>( polar );
+  else if( kern == Kernel::R2SCANL_C )
+    return std::make_unique<BuiltinR2SCANL_C>( polar );
+  else if( kern == Kernel::FT98_X )
+    return std::make_unique<BuiltinFT98_X>( polar );
+
+  else if( kern == Kernel::PC07_K )
+    return std::make_unique<BuiltinPC07_K>( polar );
+  else if( kern == Kernel::PC07OPT_K )
+    return std::make_unique<BuiltinPC07OPT_K>( polar );
+
 
   else
     throw std::runtime_error("Specified kernel does not have a builtin implementation");
@@ -134,6 +158,12 @@ bool BuiltinKernelInterface::is_hyb_()       const noexcept {
 }
 bool BuiltinKernelInterface::is_polarized_() const noexcept {
   return impl_->is_polarized();
+}
+bool BuiltinKernelInterface::needs_laplacian_()       const noexcept {
+  return impl_->needs_laplacian();
+}
+bool BuiltinKernelInterface::needs_tau_()       const noexcept {
+  return impl_->needs_tau();
 }
 double BuiltinKernelInterface::hyb_exx_()    const noexcept {
   return impl_->hyb_exx();

@@ -95,11 +95,14 @@ public:
 
 
 
-  bool is_lda()       const noexcept { return pimpl_->is_lda();       };
-  bool is_gga()       const noexcept { return pimpl_->is_gga();       };
-  bool is_mgga()      const noexcept { return pimpl_->is_mgga();      };
-  bool is_hyb()       const noexcept { return pimpl_->is_hyb();       };
-  bool is_polarized() const noexcept { return pimpl_->is_polarized(); };
+  bool is_lda()       const noexcept { return pimpl_->is_lda();       }
+  bool is_gga()       const noexcept { return pimpl_->is_gga();       }
+  bool is_mgga()      const noexcept { return pimpl_->is_mgga();      }
+  bool is_hyb()       const noexcept { return pimpl_->is_hyb();       }
+  bool is_polarized() const noexcept { return pimpl_->is_polarized(); }
+
+  bool needs_laplacian() const noexcept { return pimpl_->needs_laplacian(); }
+  bool needs_tau()    const noexcept { return pimpl_->needs_tau(); }
   
   double hyb_exx() const noexcept { return pimpl_->hyb_exx(); }
 

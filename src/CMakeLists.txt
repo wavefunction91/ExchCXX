@@ -15,11 +15,7 @@ add_library( exchcxx ${EXCHCXX_SOURCES} )
 
 # TARGET properties
 
-if( EXCHCXX_ENABLE_SYCL )
-  target_compile_features( exchcxx PUBLIC cxx_std_17 )
-else()
-  target_compile_features( exchcxx PUBLIC cxx_std_14 )
-endif()
+target_compile_features( exchcxx PUBLIC cxx_std_17 )
 target_link_libraries( exchcxx PUBLIC Libxc::xc )
 
 # Generate exchcxx_config.hpp

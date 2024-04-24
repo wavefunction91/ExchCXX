@@ -48,21 +48,23 @@
 #ifdef EXCHCXX_HAS_CONFIG_H
 #include <exchcxx/exchcxx_config.hpp>
 #endif
+#include <cfloat>
 
 
 namespace ExchCXX {
 namespace constants {
 
-constexpr double m_third     = 3.33333333333333333333e-01;
-constexpr double m_cbrt_2    = 1.25992104989487316475e+00;
-constexpr double m_cbrt_3    = 1.44224957030740838233e+00;
-constexpr double m_cbrt_4    = 1.58740105196819947480e+00;
-constexpr double m_cbrt_6    = 1.81712059283213965891e+00;
-constexpr double m_pi        = 3.14159265358979311600e+00;
-constexpr double m_one_ov_pi = 3.18309886183790683952e-01;
-constexpr double m_pi_sq     = 9.86960440108935784919e+00;
-constexpr double m_cbrt_one_ov_pi = 6.82784063255295690334e-01;
-constexpr double m_cbrt_pi_sq     = 2.14502939711102554444e+00;
+constexpr double m_cbrt_2    = 1.259921049894873164767210607278228350570L;
+constexpr double m_cbrt_3    = 1.442249570307408382321638310780109588392L;
+constexpr double m_cbrt_4    = 1.587401051968199474751705639272308260391L;
+constexpr double m_cbrt_6    = 1.817120592832139658891211756327260502428L;
+constexpr double m_cbrt_pi   = 1.464591887561523263020142527263790391739L; 
+constexpr double m_pi        = 3.14159265358979323846e+00;
+constexpr double m_one_ov_pi = 3.18309886183790691216e-01;
+constexpr double m_pi_sq     = 9.869604401089357992305e+00;
+//constexpr double m_cbrt_one_ov_pi = 6.82784063255295725625e-01;
+constexpr double m_cbrt_one_ov_pi = 6.82784063255295503581e-01;
+constexpr double m_cbrt_pi_sq     = 2.145029397111025470934e+00;
 
 }
 }

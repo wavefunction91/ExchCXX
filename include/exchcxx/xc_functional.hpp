@@ -155,6 +155,23 @@ public:
     );
   }
 
+  inline bool needs_laplacian() const {
+    throw_if_not_sane();
+    return std::any_of( 
+      kernels_.begin(), kernels_.end(),
+      [](const auto& x) { return x.second.needs_laplacian(); }
+    );
+  }
+
+  inline bool needs_tau() const {
+    throw_if_not_sane();
+    return std::any_of(
+      kernels_.begin(), kernels_.end(),
+      [](const auto& x) { return x.second.needs_tau(); }
+    );
+  }
+
+
   inline double hyb_exx() const {
     throw_if_not_sane();
     return std::accumulate( 
@@ -163,7 +180,6 @@ public:
         return x + y.second.hyb_exx(); 
       }
     );
-
   }
 
 
@@ -176,7 +192,7 @@ public:
     return is_lda() ? 0 : is_polarized() ? 3*npts : npts;
   }
   inline size_t lapl_buffer_len( size_t npts ) const noexcept {
-    return is_mgga() ? rho_buffer_len(npts) : 0;
+    return needs_laplacian() ? rho_buffer_len(npts) : 0;
   }
   inline size_t tau_buffer_len( size_t npts ) const noexcept {
     return is_mgga() ? rho_buffer_len(npts) : 0;

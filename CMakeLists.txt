@@ -5,7 +5,6 @@ include(FetchContent)
 project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
 
 # ExchCXX Options
-option( EXCHCXX_ENABLE_TESTS     "Enable Unit Tests"            ON  )
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )
 option( EXCHCXX_ENABLE_HIP       "Enable Device Code (HIP)"     OFF )
@@ -56,13 +55,13 @@ endif()
 
 
 ## Find LibXC
-find_package( Libxc 6.1.0 CONFIG QUIET )
+find_package( Libxc 6.2.0 CONFIG QUIET )
 
 if( ${Libxc_FOUND} )
 
   message( STATUS "Found: Libxc Version ${Libxc_VERSION}" )
-  if( Libxc_VERSION VERSION_GREATER_EQUAL "7.0.0" )
-    message( FATAL_ERROR "Libxc version 7+ breaks the API currently used in ExchCXX" )
+  if( Libxc_VERSION VERSION_GREATER_EQUAL "8.0.0" )
+    message( FATAL_ERROR "Libxc version 8+ breaks the API currently used in ExchCXX" )
   endif()
 
 else()
@@ -70,9 +69,10 @@ else()
   FetchContent_Declare(
     libxc
     GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
-    GIT_TAG 6.1.0  # v6.1.0
+    GIT_TAG 6.2.0  # v6.2.0
+    PATCH_COMMAND sed -i -e "s/p->info->family != XC_KINETIC/p->info->kind != XC_KINETIC/g" src/work_mgga_inc.c
   )
-  set( Libxc_VERSION 6.1.0 )
+  set( Libxc_VERSION 6.2.0 )
 
   set( OLD_BUILD_TESTING ${BUILD_TESTING} )
   set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
@@ -105,7 +105,11 @@ if( NOT DEFINED EXCHCXX_ENABLE_TESTS )
 endif()
 
 if( CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND EXCHCXX_ENABLE_TESTS AND BUILD_TESTING )
-  add_subdirectory( test )
+  if(${Libxc_FOUND})
+    message(WARNING "ExchCXX Unit Tests Require Local Patch of Libxc - Disabling")
+  else()
+    add_subdirectory( test )
+  endif()
 endif()
 
 if( EXCHCXX_ENABLE_BENCHMARK )

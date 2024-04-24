@@ -19,10 +19,13 @@ struct kernel_traits< BuiltinPW91_LDA > :
   static constexpr bool is_lda  = true;
   static constexpr bool is_gga  = false;
   static constexpr bool is_mgga = false;
+  static constexpr bool needs_laplacian = false;
+  static constexpr bool is_kedf = false;
 
   static constexpr double dens_tol  = 1e-24;
   static constexpr double zeta_tol  = 1e-15;
-  static constexpr double sigma_tol  = 1e-24;
+  static constexpr double sigma_tol  = 1.000000000000004e-32;
+  static constexpr double tau_tol = is_kedf ? 0.0 : 1e-20;
 
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;
@@ -287,7 +290,7 @@ struct kernel_traits< BuiltinPW91_LDA > :
     const double t132 = 0.1e1 + t112 / t128 / 0.2e1;
     const double t133 = safe_math::log( t132 );
     const double t135 = t133 * t134;
-    const double t138 = -0.2e1 * t75 * t80 * t103 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
+    const double t138 = -0.2e1 * t103 * t75 * t80 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
     const double t139 = t74 * t138;
     const double t140 = t54 * t139;
     const double t143 = t110 * t133 * t134;
@@ -392,7 +395,7 @@ struct kernel_traits< BuiltinPW91_LDA > :
     const double t132 = 0.1e1 + t112 / t128 / 0.2e1;
     const double t133 = safe_math::log( t132 );
     const double t135 = t133 * t134;
-    const double t138 = -0.2e1 * t75 * t80 * t103 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
+    const double t138 = -0.2e1 * t103 * t75 * t80 - 0.2e1 * t105 * t110 * t135 + 0.2e1 * t46;
     const double t139 = t74 * t138;
     const double t140 = t54 * t139;
     const double t143 = t110 * t133 * t134;

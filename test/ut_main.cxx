@@ -43,5 +43,5 @@
  * in binary and source code form.
  */
 
-#define CATCH_CONFIG_MAIN
-#include "catch2/catch.hpp"
+// #define CATCH_CONFIG_MAIN
+#include "catch2/catch_all.hpp"

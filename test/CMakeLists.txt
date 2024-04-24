@@ -5,7 +5,7 @@ if( NOT Catch2_FOUND )
   FetchContent_Declare(
     catch2_download
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG        v2.13.10
+    GIT_TAG        v3.5.4
   )
   if( NOT catch2_download_POPULATED )
     FetchContent_Populate( catch2_download )
@@ -18,7 +18,7 @@ endif()
 
 # Global Catch2 executable
 add_library( catch2_main STATIC ut_main.cxx)
-target_link_libraries( catch2_main PUBLIC Catch2::Catch2 )
+target_link_libraries( catch2_main PUBLIC Catch2::Catch2WithMain )
 
 add_executable( xc_kernel_test xc_kernel_test.cxx reference_values.cxx )
 target_link_libraries( xc_kernel_test PUBLIC exchcxx catch2_main )

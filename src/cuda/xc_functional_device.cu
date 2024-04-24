@@ -63,26 +63,26 @@ __global__ void add_scal_kernel( const int N, const double fact, const double* X
 }
 
 void scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
-  int threads = 1024;
-  int blocks  = ExchCXX::util::div_ceil(N,1024);
+  int threads = 512;
+  int blocks  = ExchCXX::util::div_ceil(N,512);
   scal_kernel<<< blocks, threads >>>( N, fact, X_device, Y_device );
 }
 
 void scal_device( const int N, const double fact, const double* X_device, double* Y_device, cudaStream_t& stream ) {
-  int threads = 1024;
-  int blocks  = ExchCXX::util::div_ceil(N,1024);
+  int threads = 512;
+  int blocks  = ExchCXX::util::div_ceil(N,512);
   scal_kernel<<< blocks, threads, 0, stream >>>( N, fact, X_device, Y_device );
 }
 
 void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device ) {
-  int threads = 1024;
-  int blocks  = ExchCXX::util::div_ceil(N,1024);
+  int threads = 512;
+  int blocks  = ExchCXX::util::div_ceil(N,512);
   add_scal_kernel<<< blocks, threads >>>( N, fact, X_device, Y_device );
 }
 
 void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, cudaStream_t& stream ) {
-  int threads = 1024;
-  int blocks  = ExchCXX::util::div_ceil(N,1024);
+  int threads = 512;
+  int blocks  = ExchCXX::util::div_ceil(N,512);
   add_scal_kernel<<< blocks, threads, 0, stream >>>( N, fact, X_device, Y_device );
 }
 
@@ -404,16 +404,18 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
     eps_scr    = safe_cuda_malloc( len_exc_buffer );
     vrho_scr   = safe_cuda_malloc( len_vrho_buffer );
     vsigma_scr = safe_cuda_malloc( len_vsigma_buffer );
-    vlapl_scr  = safe_cuda_malloc( len_vlapl_buffer );
     vtau_scr   = safe_cuda_malloc( len_vtau_buffer );
+    if(needs_laplacian())
+      vlapl_scr  = safe_cuda_malloc( len_vlapl_buffer );
   }
 
   safe_zero( len_exc_buffer, eps, stream );
   safe_zero( len_vrho_buffer, vrho, stream );
   safe_zero( len_vsigma_buffer, vsigma, stream );
-  safe_zero( len_vlapl_buffer, vlapl, stream );
   safe_zero( len_vtau_buffer, vtau, stream );
   
+  if(needs_laplacian()) 
+    safe_zero( len_vlapl_buffer, vlapl, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -456,12 +458,16 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
         add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
         add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
 
-        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() ) {
           add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+        }
 
         if( kernels_[i].second.is_mgga() ) {
-          add_scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
           add_scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, stream  );
+        }
+
+        if( kernels_[i].second.needs_laplacian() ) {
+          add_scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
         }
 
       } else {
@@ -469,12 +475,16 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
         scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
         scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
 
-        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() ) {
           scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+        }
 
         if( kernels_[i].second.is_mgga() ) {
-          scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
           scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, stream  );
+        }
+
+        if( kernels_[i].second.needs_laplacian() ) {
+          scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
         }
 
       }

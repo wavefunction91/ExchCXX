@@ -57,6 +57,9 @@ enum class Functional {
   PBE,
   revPBE,
   PBE0,
+  SCAN,
+  R2SCAN,
+  R2SCANL
 };
 
 extern BidirectionalMap<std::string, Functional> functional_map;

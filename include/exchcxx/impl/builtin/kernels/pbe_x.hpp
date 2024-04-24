@@ -19,10 +19,13 @@ struct kernel_traits< BuiltinPBE_X > :
   static constexpr bool is_lda  = false;
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
+  static constexpr bool needs_laplacian = false;
+  static constexpr bool is_kedf = false;
 
   static constexpr double dens_tol  = 1e-32;
   static constexpr double zeta_tol  = 1e-15;
-  static constexpr double sigma_tol  = 1e-32;
+  static constexpr double sigma_tol  = 2.1544346900318956e-43;
+  static constexpr double tau_tol = is_kedf ? 0.0 : 1e-20;
 
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;
@@ -35,7 +38,7 @@ struct kernel_traits< BuiltinPBE_X > :
 
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t20 = constants::m_cbrt_6;
     constexpr double t23 = constants::m_cbrt_pi_sq;
     constexpr double t27 = constants::m_cbrt_2;
@@ -71,7 +74,7 @@ struct kernel_traits< BuiltinPBE_X > :
 
     (void)(eps);
     constexpr double t3 = constants::m_cbrt_3;
-    constexpr double t4 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t4 = constants::m_cbrt_pi;
     constexpr double t20 = constants::m_cbrt_6;
     constexpr double t23 = constants::m_cbrt_pi_sq;
     constexpr double t27 = constants::m_cbrt_2;
@@ -121,7 +124,7 @@ struct kernel_traits< BuiltinPBE_X > :
     (void)(sigma_ab);
     (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
-    constexpr double t3 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t3 = constants::m_cbrt_pi;
     constexpr double t28 = constants::m_cbrt_6;
     constexpr double t31 = constants::m_cbrt_pi_sq;
     constexpr double t5 = t2 / t3;
@@ -183,7 +186,7 @@ struct kernel_traits< BuiltinPBE_X > :
     (void)(sigma_ab);
     (void)(eps);
     constexpr double t2 = constants::m_cbrt_3;
-    constexpr double t3 = 1.0/constants::m_cbrt_one_ov_pi;
+    constexpr double t3 = constants::m_cbrt_pi;
     constexpr double t28 = constants::m_cbrt_6;
     constexpr double t31 = constants::m_cbrt_pi_sq;
     constexpr double t5 = t2 / t3;
