@@ -63,6 +63,8 @@ struct BuiltinPW91_LDA_RPA;
 struct BuiltinPZ81;
 struct BuiltinPZ81_MOD;
 
+struct BuiltinEPC17_2;
+
 struct BuiltinB88;
 struct BuiltinLYP;
 struct BuiltinPBE_X;

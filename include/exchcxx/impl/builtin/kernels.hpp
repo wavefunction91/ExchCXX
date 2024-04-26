@@ -65,6 +65,8 @@
 #include <exchcxx/impl/builtin/kernels/rev_pbe_x.hpp>
 #include <exchcxx/impl/builtin/kernels/pbe_c.hpp>
 
+#include <exchcxx/impl/builtin/kernels/epc17_2.hpp>
+
 #include <exchcxx/impl/builtin/kernels/pbe0.hpp>
 #include <exchcxx/impl/builtin/kernels/b3lyp.hpp>
 

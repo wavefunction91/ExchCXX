@@ -64,6 +64,9 @@ enum class Kernel {
   PW91_LDA,
   PW91_LDA_MOD,
   PW91_LDA_RPA,
+
+  // NEO LDA Functionals
+  EPC17_2,
 /*
   Wigner,
   RPA,
