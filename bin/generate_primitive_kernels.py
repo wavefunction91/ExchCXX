@@ -489,9 +489,23 @@ class GenMetaData:
 
 #libxc_prefix = '/Users/meji656/Projects/libxc/src/maple2c/' 
 #kernel_prefix = '/Users/meji656/Projects/ExchCXX/include/exchcxx/impl/builtin/kernels/'
+#libxc_prefix = '/Users/aodongliu/Softwares/libxc/src/maple2c/' 
+#kernel_prefix = 'include/exchcxx/impl/builtin/kernels/'
 libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/6.2.0/libxc-6.2.0/src/maple2c/' 
 kernel_prefix = 'include/exchcxx/impl/builtin/kernels/'
 gen_table = {
+
+  'EPC17' : GenMetaData( 'BuiltinEPC17', 
+    libxc_prefix + 'lda_exc/lda_c_epc17.c', 
+    kernel_prefix + 'epc17.hpp',
+    'LDA', 1e-24, 0. 
+    ),
+
+  'EPC18' : GenMetaData( 'BuiltinEPC18', 
+    libxc_prefix + 'lda_exc/lda_c_epc18.c', 
+    kernel_prefix + 'epc18.hpp',
+    'LDA', 1e-24, 0. 
+    ),
 
   'SlaterExchange' : GenMetaData( 'BuiltinSlaterExchange', 
     libxc_prefix + 'lda_exc/lda_x.c', 

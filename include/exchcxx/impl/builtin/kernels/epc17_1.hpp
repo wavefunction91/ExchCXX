@@ -13,8 +13,8 @@
 namespace ExchCXX {
 
 template <>
-struct kernel_traits< BuiltinEPC17_2 > :
-  public lda_screening_interface< BuiltinEPC17_2 > {
+struct kernel_traits< BuiltinEPC17_1 > :
+  public lda_screening_interface< BuiltinEPC17_1 > {
 
   static constexpr bool is_lda  = true;
   static constexpr bool is_gga  = false;
@@ -29,7 +29,7 @@ struct kernel_traits< BuiltinEPC17_2 > :
 
   static constexpr double a = 2.35; 
   static constexpr double b = 2.40; 
-  static constexpr double c = 6.60; 
+  static constexpr double c = 3.20; 
 
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;
@@ -198,12 +198,12 @@ struct kernel_traits< BuiltinEPC17_2 > :
 
 };
 
-struct BuiltinEPC17_2 : detail::BuiltinKernelImpl< BuiltinEPC17_2 > {
+struct BuiltinEPC17_1 : detail::BuiltinKernelImpl< BuiltinEPC17_1 > {
 
-  BuiltinEPC17_2( Spin p ) :
-    detail::BuiltinKernelImpl< BuiltinEPC17_2 >(p) { }
+  BuiltinEPC17_1( Spin p ) :
+    detail::BuiltinKernelImpl< BuiltinEPC17_1 >(p) { }
   
-  virtual ~BuiltinEPC17_2() = default;
+  virtual ~BuiltinEPC17_1() = default;
 
 };
 
