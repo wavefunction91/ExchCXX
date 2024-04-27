@@ -58,7 +58,11 @@ BidirectionalMap<std::string, Functional> functional_map{
     {"R2SCAN", Functional::R2SCAN},
     {"R2SCANL", Functional::R2SCANL},
     {"revPBE", Functional::revPBE},
-    {"PBE0", Functional::PBE0}}};
+    {"PBE0", Functional::PBE0},
+    {"EPC17_1", Functional::EPC17_1},
+    {"EPC17_2", Functional::EPC17_2},
+    {"EPC18_1", Functional::EPC18_1},
+    {"EPC18_2", Functional::EPC18_2}}};
 
 std::ostream &operator<<(std::ostream &out, Functional functional) {
   out << functional_map.key(functional);
@@ -120,6 +124,22 @@ std::vector< XCKernel > functional_factory(
   else if( func == Functional::PBE0 )
     kerns = { 
       XCKernel( backend, Kernel::PBE0, polar )
+    };
+  else if( func == Functional::EPC17_1 )
+    kerns = { 
+      XCKernel( backend, Kernel::EPC17_1, polar )
+    };
+  else if( func == Functional::EPC17_2 )
+    kerns = { 
+      XCKernel( backend, Kernel::EPC17_2, polar )
+    };
+  else if( func == Functional::EPC18_1 )
+    kerns = { 
+      XCKernel( backend, Kernel::EPC18_1, polar )
+    };
+  else if( func == Functional::EPC18_2 )
+    kerns = { 
+      XCKernel( backend, Kernel::EPC18_2, polar )
     };
   else {
     EXCHCXX_BOOL_CHECK( "Functional NYI Through Builtin Backend", false );

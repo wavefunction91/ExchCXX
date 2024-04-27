@@ -65,11 +65,6 @@ enum class Kernel {
   PW91_LDA_MOD,
   PW91_LDA_RPA,
 
-  // NEO LDA Functionals
-  EPC17_1,
-  EPC17_2,
-  EPC18_1,
-  EPC18_2,
 /*
   Wigner,
   RPA,
@@ -107,6 +102,12 @@ enum class Kernel {
   // Hybrid GGA functionals
   B3LYP,
   PBE0,
+
+  // NEO LDA Functionals
+  EPC17_1,
+  EPC17_2,
+  EPC18_1,
+  EPC18_2,
 };
 
 extern BidirectionalMap<std::string, Kernel> kernel_map;

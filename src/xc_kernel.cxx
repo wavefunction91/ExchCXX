@@ -75,7 +75,11 @@ BidirectionalMap<std::string, Kernel> kernel_map{
      {"PW91_LDA", Kernel::PW91_LDA},
      {"PW91_LDA_MOD", Kernel::PW91_LDA_MOD},
      {"PW91_LDA_RPA", Kernel::PW91_LDA_RPA},
-     {"B88", Kernel::B88}}};
+     {"B88", Kernel::B88},
+     {"EPC17_1", Kernel::EPC17_1},
+     {"EPC17_2", Kernel::EPC17_2},
+     {"EPC18_1", Kernel::EPC18_1},
+     {"EPC18_2", Kernel::EPC18_2}}};
 
 std::ostream& operator<<( std::ostream& out, Kernel kern ) {
   out << kernel_map.key(kern);
