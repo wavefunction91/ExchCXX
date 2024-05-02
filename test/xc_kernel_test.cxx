@@ -437,7 +437,8 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
 
     // Get reference values
     auto ref_vals = use_ref_values ?
-      load_lda_reference_values( kern, polar ) :
+      ( func.is_epc() ? load_epc_lda_reference_values( kern, polar ) 
+                      : load_lda_reference_values( kern, polar )   ) :
       gen_lda_reference_values( backend,kern, polar );
 
     size_t  npts     = ref_vals.npts;
@@ -768,8 +769,10 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
 
   const int npts = npts_lda;
 
-  XCKernel func_libxc  ( Backend::libxc,   kern, polar );
   XCKernel func_builtin( Backend::builtin, kern, polar );
+  if( func_builtin.is_epc() ) return;
+  XCKernel func_libxc  ( Backend::libxc,   kern, polar );
+
 
   const int len_rho   = func_libxc.rho_buffer_len( npts );
   const int len_sigma = func_libxc.sigma_buffer_len( npts );

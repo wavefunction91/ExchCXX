@@ -451,6 +451,38 @@ mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bo
   return ref_vals;
 }
 
+lda_reference load_epc_lda_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
+
+  using namespace ExchCXX; 
+
+  lda_reference ref_vals;
+
+  if( p == Spin::Unpolarized ) {
+
+    throw std::runtime_error("EPC Should Always Have Polarized Spin");
+
+  } else {
+
+    copy_iterable( rho_polarized, std::back_inserter(ref_vals.rho) );
+    ref_vals.npts = rho_polarized.size() / 2;
+
+    switch(k) {
+      case Kernel::EPC17_2:
+        copy_iterable( exc_xc_lda_epc172_ref_pol, std::back_inserter(ref_vals.exc) );
+        copy_iterable( vxc_xc_lda_epc172_ref_pol, std::back_inserter(ref_vals.vrho) );
+        break;
+      case Kernel::EPC18_2:
+        copy_iterable( exc_xc_lda_epc182_ref_pol, std::back_inserter(ref_vals.exc) );
+        copy_iterable( vxc_xc_lda_epc182_ref_pol, std::back_inserter(ref_vals.vrho) );
+        break;
+      default: 
+        throw std::runtime_error("No Reference Values for Specified Kernel");
+    }
+
+  }
+
+  return ref_vals;
+}
 
 
 lda_reference gen_lda_reference_values(ExchCXX::Backend backend, 

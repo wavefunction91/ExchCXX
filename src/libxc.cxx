@@ -231,7 +231,7 @@ bool LibxcKernelImpl::is_polarized_() const noexcept {
 }
 
 bool LibxcKernelImpl::is_epc_() const noexcept {
-  EXCHCXX_BOOL_CHECK("Libxc EPC Wrapper NYI", false);
+  //EXCHCXX_BOOL_CHECK("Libxc EPC Wrapper NYI", false);
   return false;
 }
 

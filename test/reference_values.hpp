@@ -81,6 +81,7 @@ struct mgga_reference {
 lda_reference load_lda_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
 gga_reference load_gga_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
 mgga_reference load_mgga_reference_values(ExchCXX::Kernel, ExchCXX::Spin, bool need_lap);
+lda_reference load_epc_lda_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
 
 lda_reference gen_lda_reference_values(ExchCXX::Backend, ExchCXX::Kernel, ExchCXX::Spin);
 gga_reference gen_gga_reference_values(ExchCXX::Backend, ExchCXX::Kernel, ExchCXX::Spin);

@@ -76,7 +76,7 @@ struct XCKernelImpl {
   bool is_mgga()         const noexcept { return is_mgga_();      }
   bool is_hyb()          const noexcept { return is_hyb_();       }
   bool is_polarized()    const noexcept { return is_polarized_(); }
-  bool is_epc()          const noexcept { return is_epc();        }
+  bool is_epc()          const noexcept { return is_epc_();        }
   bool needs_laplacian() const noexcept { return needs_laplacian_();       }
   bool needs_tau() const noexcept { return needs_tau_();       }
 
