@@ -20,6 +20,7 @@ struct kernel_traits<BuiltinB3LYP> {
   static constexpr bool is_lda  = false;
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
+  static constexpr bool is_epc  = false;
   static constexpr double exx_coeff = 0.20;
 
   static constexpr double b3lyp_ax = 0.72; // % GGA X

@@ -230,6 +230,11 @@ bool LibxcKernelImpl::is_polarized_() const noexcept {
   return polar_ == XC_POLARIZED;
 }
 
+bool LibxcKernelImpl::is_epc_() const noexcept {
+  EXCHCXX_BOOL_CHECK("Libxc EPC Wrapper NYI", false);
+  return false;
+}
+
 
 double LibxcKernelImpl::hyb_exx_() const noexcept {
   return is_hyb_() ? xc_hyb_exx_coef(&kernel_) : 0.0;

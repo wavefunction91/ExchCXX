@@ -21,6 +21,7 @@ struct kernel_traits< BuiltinEPC18_2 > :
   static constexpr bool is_mgga = false;
   static constexpr bool needs_laplacian = false;
   static constexpr bool is_kedf = false;
+  static constexpr bool is_epc  = true;
 
   static constexpr double a = 3.90; 
   static constexpr double b = 0.50; 

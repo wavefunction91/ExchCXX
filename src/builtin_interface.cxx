@@ -176,6 +176,9 @@ bool BuiltinKernelInterface::needs_tau_()       const noexcept {
 double BuiltinKernelInterface::hyb_exx_()    const noexcept {
   return impl_->hyb_exx();
 }
+bool BuiltinKernelInterface::is_epc_()       const noexcept {
+  return impl_->is_epc();
+}
 
 bool BuiltinKernelInterface::supports_inc_interface_() const noexcept {
   return true;

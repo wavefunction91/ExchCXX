@@ -155,6 +155,14 @@ public:
     );
   }
 
+  inline bool is_epc() const {
+    throw_if_not_sane();
+    return std::any_of( 
+      kernels_.begin(), kernels_.end(),
+      [](const auto& x) { return x.second.is_epc(); }
+    );
+  }
+
   inline bool needs_laplacian() const {
     throw_if_not_sane();
     return std::any_of( 

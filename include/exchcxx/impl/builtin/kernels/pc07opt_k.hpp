@@ -21,6 +21,7 @@ struct kernel_traits< BuiltinPC07OPT_K > :
   static constexpr bool is_mgga = true;
   static constexpr bool needs_laplacian = true;
   static constexpr bool is_kedf = true;
+  static constexpr bool is_epc  = false;
 
   static constexpr double dens_tol  = 1e-15;
   static constexpr double zeta_tol  = 1e-15;

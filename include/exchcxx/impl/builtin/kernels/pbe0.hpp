@@ -22,6 +22,7 @@ struct kernel_traits<BuiltinPBE0> {
   static constexpr bool is_gga  = true;
   static constexpr bool is_mgga = false;
   static constexpr double exx_coeff = 0.25;
+  static constexpr bool is_epc  = false;
 
 
   BUILTIN_KERNEL_EVAL_RETURN

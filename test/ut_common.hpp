@@ -108,6 +108,13 @@ static std::vector<ExchCXX::Kernel> mgga_kernels = {
   ExchCXX::Kernel::PC07OPT_K
 };
 
+static std::vector<ExchCXX::Kernel> epc_lda_kernels = {
+  ExchCXX::Kernel::EPC17_1,
+  ExchCXX::Kernel::EPC17_2,
+  ExchCXX::Kernel::EPC18_1,
+  ExchCXX::Kernel::EPC18_2
+};
+
 static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::SlaterExchange,
   ExchCXX::Kernel::VWN3,
@@ -138,7 +145,12 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::FT98_X,
 
   ExchCXX::Kernel::PC07_K,
-  ExchCXX::Kernel::PC07OPT_K
+  ExchCXX::Kernel::PC07OPT_K,
+
+  ExchCXX::Kernel::EPC17_1,
+  ExchCXX::Kernel::EPC17_2,
+  ExchCXX::Kernel::EPC18_1,
+  ExchCXX::Kernel::EPC18_2
 };
 
 static std::vector<ExchCXX::Kernel> unstable_small_kernels = {
@@ -150,6 +162,11 @@ static std::vector<ExchCXX::Kernel> unstable_small_kernels = {
 inline bool is_unstable_small(ExchCXX::Kernel kern) {
   return std::find(unstable_small_kernels.begin(), unstable_small_kernels.end(),
                    kern) != unstable_small_kernels.end();
+}
+
+inline bool is_epc(ExchCXX::Kernel kern) {
+  return std::find(epc_lda_kernels.begin(), epc_lda_kernels.end(),
+                   kern) != epc_lda_kernels.end();
 }
 
 static constexpr std::array string_kernal_pairs = {
@@ -176,7 +193,11 @@ static constexpr std::array string_kernal_pairs = {
     std::pair("PW91_LDA", ExchCXX::Kernel::PW91_LDA),
     std::pair("PW91_LDA_MOD", ExchCXX::Kernel::PW91_LDA_MOD),
     std::pair("PW91_LDA_RPA", ExchCXX::Kernel::PW91_LDA_RPA),
-    std::pair("B88", ExchCXX::Kernel::B88)
+    std::pair("B88", ExchCXX::Kernel::B88),
+    std::pair("EPC17_1", ExchCXX::Kernel::EPC17_1),
+    std::pair("EPC17_2", ExchCXX::Kernel::EPC17_2),
+    std::pair("EPC18_1", ExchCXX::Kernel::EPC18_1),
+    std::pair("EPC18_2", ExchCXX::Kernel::EPC18_2)
 };
 
 static constexpr std::array string_functional_pairs = {
@@ -187,5 +208,9 @@ static constexpr std::array string_functional_pairs = {
     std::pair("PBE", ExchCXX::Functional::PBE),
     std::pair("SCAN", ExchCXX::Functional::SCAN),
     std::pair("R2SCANL", ExchCXX::Functional::R2SCANL),
-    std::pair("PBE0", ExchCXX::Functional::PBE0)
+    std::pair("PBE0", ExchCXX::Functional::PBE0),
+    std::pair("EPC17_1", ExchCXX::Functional::EPC17_1),
+    std::pair("EPC17_2", ExchCXX::Functional::EPC17_2),
+    std::pair("EPC18_1", ExchCXX::Functional::EPC18_1),
+    std::pair("EPC18_2", ExchCXX::Functional::EPC18_2)
 };

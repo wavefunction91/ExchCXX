@@ -191,6 +191,8 @@ void check_meta( Backend backend, Spin polar, Args&&... args ) {
     [](const auto& k) { return k.is_lda(); } ) 
     and not should_be_mgga
     and not should_be_gga;
+  bool should_be_epc = std::any_of( kerns.begin(), kerns.end(),
+    [](const auto& k) { return k.is_epc(); } );
 
   bool should_be_polarized = std::any_of( kerns.begin(), kerns.end(),
     [](const auto& k) { return k.is_polarized(); } ); 
@@ -204,6 +206,7 @@ void check_meta( Backend backend, Spin polar, Args&&... args ) {
   CHECK( func.is_lda()        == should_be_lda        );
   CHECK( func.is_polarized()  == should_be_polarized  );
   CHECK( func.is_hyb()        == should_be_hyb        );
+  CHECK( func.is_epc()        == should_be_epc        );
   CHECK( func.needs_laplacian() == should_need_lapl   );
 
   double total_exx = std::accumulate( kerns.begin(), kerns.end(), 0.,

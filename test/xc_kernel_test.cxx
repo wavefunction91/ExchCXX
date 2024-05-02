@@ -57,6 +57,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
   auto mgga_tau_kernel_test  = Kernel::SCAN_C;
   auto mgga_lapl_kernel_test = Kernel::R2SCANL_C;
+  auto epc_lda_kernel_test   = Kernel::EPC17_2;
 
   Backend backend;
 
@@ -305,6 +306,32 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
   }
 
+  SECTION( "EPC LDA Polarized" ) {
+
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    XCKernel lda( backend, epc_lda_kernel_test, Spin::Polarized );
+
+    CHECK( lda.is_lda() );
+    CHECK( lda.is_epc() );
+    CHECK( lda.is_polarized() );
+    CHECK( not lda.is_gga() );
+    CHECK( not lda.is_mgga() );
+    CHECK( not lda.is_hyb() );
+    CHECK( not lda.needs_laplacian() );
+
+    CHECK( lda.rho_buffer_len( npts )    == 2*npts );
+    CHECK( lda.sigma_buffer_len( npts )  == 0      );
+    CHECK( lda.lapl_buffer_len( npts )   == 0      );
+    CHECK( lda.tau_buffer_len( npts )    == 0      );
+    CHECK( lda.exc_buffer_len( npts )    == npts   );
+    CHECK( lda.vrho_buffer_len( npts )   == 2*npts );
+    CHECK( lda.vsigma_buffer_len( npts ) == 0      );
+    CHECK( lda.vlapl_buffer_len( npts )  == 0      );
+    CHECK( lda.vtau_buffer_len( npts )   == 0      );
+
+  }
+
 }
 
 TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
@@ -363,7 +390,23 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
 
   }
 
+  SECTION( "LDA Kernels" ) {
+
+    SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
+
+    for( const auto& kern : epc_lda_kernels ) {
+      XCKernel func( backend, kern, Spin::Polarized );
+      auto exx = load_reference_exx( kern );
+
+      CHECK( func.is_lda() );
+      CHECK( exx == Approx( func.hyb_exx() ) );
+
+      if( std::abs(exx) > 0 ) CHECK( func.is_hyb() );
+    }
+
+  }
 }
+
 
 
 
