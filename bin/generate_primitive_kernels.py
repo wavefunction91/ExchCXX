@@ -489,8 +489,6 @@ class GenMetaData:
 
 #libxc_prefix = '/Users/meji656/Projects/libxc/src/maple2c/' 
 #kernel_prefix = '/Users/meji656/Projects/ExchCXX/include/exchcxx/impl/builtin/kernels/'
-#libxc_prefix = '/Users/aodongliu/Softwares/libxc/src/maple2c/' 
-#kernel_prefix = 'include/exchcxx/impl/builtin/kernels/'
 libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/6.2.0/libxc-6.2.0/src/maple2c/' 
 kernel_prefix = 'include/exchcxx/impl/builtin/kernels/'
 gen_table = {

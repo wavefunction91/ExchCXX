@@ -390,7 +390,7 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
 
   }
 
-  SECTION( "LDA Kernels" ) {
+  SECTION( "EPC LDA Kernels" ) {
 
     SECTION( "Builtin Backend" ) { backend = Backend::builtin; }
 
@@ -406,7 +406,6 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
 
   }
 }
-
 
 
 

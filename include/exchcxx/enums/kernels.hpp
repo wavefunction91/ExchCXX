@@ -64,7 +64,6 @@ enum class Kernel {
   PW91_LDA,
   PW91_LDA_MOD,
   PW91_LDA_RPA,
-
 /*
   Wigner,
   RPA,

@@ -269,6 +269,8 @@ std::vector<double> vtau_xc_mgga_c_r2scanl_ref_pol = {
 0.000000000000, 0.000000000000
 };
 
+// Incorrect EPC Reference Values! 
+// TODO: UPDATE THESE
 std::vector<double> exc_xc_lda_epc172_ref_pol = {
 -0.592191935274, -0.756007107013,
 -0.875625350878, -0.972027141138,
