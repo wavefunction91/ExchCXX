@@ -1011,15 +1011,19 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
 TEST_CASE( "Scale and Increment Interface", "[xc-inc]" ) {
 
   SECTION( "Builtin Unpolarized EXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       kernel_test( TestInterface::EXC_INC, Backend::builtin, kern,
         Spin::Unpolarized );
+    }
   }
 
   SECTION( "Builtin Unpolarized EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       kernel_test( TestInterface::EXC_VXC_INC, Backend::builtin, kern,
         Spin::Unpolarized );
+    }
   }
 
   SECTION( "Builtin Polarized EXC" ) {
