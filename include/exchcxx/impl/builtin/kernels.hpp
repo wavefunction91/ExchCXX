@@ -81,4 +81,8 @@
 #include <exchcxx/impl/builtin/kernels/pc07_k.hpp>
 #include <exchcxx/impl/builtin/kernels/pc07opt_k.hpp>
 
+#include <exchcxx/impl/builtin/kernels/epc17_1.hpp>
+#include <exchcxx/impl/builtin/kernels/epc17_2.hpp>
+#include <exchcxx/impl/builtin/kernels/epc18_1.hpp>
+#include <exchcxx/impl/builtin/kernels/epc18_2.hpp>
 

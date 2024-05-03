@@ -71,6 +71,7 @@ public:
   virtual bool is_gga()       const noexcept = 0;
   virtual bool is_mgga()      const noexcept = 0;
   virtual bool is_hyb()       const noexcept = 0;
+  virtual bool is_epc()       const noexcept = 0;
   virtual bool needs_laplacian()       const noexcept = 0;
   virtual bool needs_tau()    const noexcept = 0;
   virtual double hyb_exx()    const noexcept = 0;
@@ -375,6 +376,7 @@ public:
   inline bool is_lda()  const noexcept override { return traits::is_lda;  }
   inline bool is_gga()  const noexcept override { return traits::is_gga;  }
   inline bool is_mgga() const noexcept override { return traits::is_mgga; }
+  inline bool is_epc()  const noexcept override { return traits::is_epc;  }
 
   inline double hyb_exx() const noexcept override {
     return traits::is_hyb ? traits::exx_coeff : 0.;
@@ -525,6 +527,7 @@ public:
   inline bool is_lda()  const noexcept override { return traits::is_lda;  }
   inline bool is_gga()  const noexcept override { return traits::is_gga;  }
   inline bool is_mgga() const noexcept override { return traits::is_mgga; }
+  inline bool is_epc()  const noexcept override { return traits::is_epc;  }
 
   inline double hyb_exx() const noexcept override {
     return traits::is_hyb ? traits::exx_coeff : 0.;
@@ -676,6 +679,7 @@ public:
   inline bool is_lda()  const noexcept override { return traits::is_lda;  }
   inline bool is_gga()  const noexcept override { return traits::is_gga;  }
   inline bool is_mgga() const noexcept override { return traits::is_mgga; }
+  inline bool is_epc()  const noexcept override { return traits::is_epc;  }
 
   inline double hyb_exx() const noexcept override {
     return traits::is_hyb ? traits::exx_coeff : 0.;

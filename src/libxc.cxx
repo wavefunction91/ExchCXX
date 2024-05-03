@@ -230,6 +230,16 @@ bool LibxcKernelImpl::is_polarized_() const noexcept {
   return polar_ == XC_POLARIZED;
 }
 
+bool LibxcKernelImpl::is_epc_() const noexcept {
+  int xcNumber = xc_info()->number;
+  return
+#if XC_MAJOR_VERSION > 7
+  xcNumber == XC_LDA_C_EPC17 or xcNumber == XC_LDA_C_EPC17_2 or xcNumber == XC_LDA_C_EPC18_1 or xcNumber == XC_LDA_C_EPC18_2;
+#else
+  false;
+#endif
+}
+
 
 double LibxcKernelImpl::hyb_exx_() const noexcept {
   return is_hyb_() ? xc_hyb_exx_coef(&kernel_) : 0.0;

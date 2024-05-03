@@ -88,6 +88,10 @@ struct BuiltinSCANL_C;
 struct BuiltinR2SCANL_X;
 struct BuiltinR2SCANL_C;
 
+struct BuiltinEPC17_1;
+struct BuiltinEPC17_2;
+struct BuiltinEPC18_1;
+struct BuiltinEPC18_2;
 
 template <typename KernelType>
 struct kernel_traits;

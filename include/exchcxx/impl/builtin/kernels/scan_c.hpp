@@ -21,6 +21,7 @@ struct kernel_traits< BuiltinSCAN_C > :
   static constexpr bool is_mgga = true;
   static constexpr bool needs_laplacian = false;
   static constexpr bool is_kedf = false;
+  static constexpr bool is_epc  = false;
 
   static constexpr double dens_tol  = 1e-15;
   static constexpr double zeta_tol  = 1e-15;
@@ -160,7 +161,7 @@ struct kernel_traits< BuiltinSCAN_C > :
     constexpr double t4 = constants::m_cbrt_one_ov_pi;
     constexpr double t6 = constants::m_cbrt_4;
     constexpr double t40 = constants::m_cbrt_2;
-    constexpr double t61 = constants::m_pi * constants::m_pi;
+    constexpr double t61 = constants::m_pi_sq;
     constexpr double t116 = constants::m_cbrt_6;
     constexpr double t118 = constants::m_cbrt_pi_sq;
     constexpr double t5 = t2 * t4;

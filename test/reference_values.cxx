@@ -425,7 +425,6 @@ mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bo
 }
 
 
-
 lda_reference gen_lda_reference_values(ExchCXX::Backend backend, 
   ExchCXX::Kernel kern, ExchCXX::Spin polar) {
   

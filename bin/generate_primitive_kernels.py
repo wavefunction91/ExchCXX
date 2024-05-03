@@ -472,7 +472,7 @@ class XCFunc:
 
 class GenMetaData:
   def __init__( self, local_name, libxc_file, ofname, xc_type, dens_tol, exx_coeff,
-    params = {}, needs_laplacian = False, is_kedf = False ):
+    params = {}, needs_laplacian = False, is_kedf = False, is_epc = False ):
     self.local_name = local_name
     self.libxc_file = libxc_file
     self.ofname     = ofname
@@ -482,6 +482,7 @@ class GenMetaData:
     self.params     = params
     self.needs_laplacian = needs_laplacian
     self.is_kedf = is_kedf
+    self.is_epc  = is_epc
 
     self.is_hyb = abs(float(exx_coeff)) > 1e-10
 
@@ -492,6 +493,46 @@ class GenMetaData:
 libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/6.2.0/libxc-6.2.0/src/maple2c/' 
 kernel_prefix = 'include/exchcxx/impl/builtin/kernels/'
 gen_table = {
+
+  'EPC17_1' : GenMetaData( 'BuiltinEPC17_1', 
+    libxc_prefix + 'lda_exc/lda_c_epc17.c', 
+    kernel_prefix + 'epc17_1.hpp',
+    'LDA', 1e-24, 0.,
+    { 'a': '2.35',
+      'b': '2.40',
+      'c': '3.20' },
+    False, False, True 
+    ),
+
+  'EPC17_2' : GenMetaData( 'BuiltinEPC17_2', 
+    libxc_prefix + 'lda_exc/lda_c_epc17.c', 
+    kernel_prefix + 'epc17_2.hpp',
+    'LDA', 1e-24, 0.,
+    { 'a': '2.35',
+      'b': '2.40',
+      'c': '6.60' },
+    False, False, True 
+    ),
+
+  'EPC18_1' : GenMetaData( 'BuiltinEPC18_1', 
+    libxc_prefix + 'lda_exc/lda_c_epc18.c', 
+    kernel_prefix + 'epc18_1.hpp',
+    'LDA', 1e-24, 0.,
+    { 'a': '1.80',
+      'b': '0.10',
+      'c': '0.03' },
+    False, False, True 
+    ),
+
+  'EPC18_2' : GenMetaData( 'BuiltinEPC18_2', 
+    libxc_prefix + 'lda_exc/lda_c_epc18.c', 
+    kernel_prefix + 'epc18_2.hpp',
+    'LDA', 1e-24, 0.,
+    { 'a': '3.90',
+      'b': '0.50',
+      'c': '0.06' },
+    False, False, True 
+    ),
 
   'SlaterExchange' : GenMetaData( 'BuiltinSlaterExchange', 
     libxc_prefix + 'lda_exc/lda_x.c', 
@@ -734,14 +775,15 @@ struct kernel_traits< {0} > :
   static constexpr bool is_mgga = {4};
   static constexpr bool needs_laplacian = {5};
   static constexpr bool is_kedf = {6};
+  static constexpr bool is_epc  = {7};
 
-  static constexpr double dens_tol  = {7};
+  static constexpr double dens_tol  = {8};
   static constexpr double zeta_tol  = 1e-15;
-  static constexpr double sigma_tol  = {8};
+  static constexpr double sigma_tol  = {9};
   static constexpr double tau_tol = is_kedf ? 0.0 : 1e-20;
 
-  static constexpr bool is_hyb  = {9};
-  static constexpr double exx_coeff = {10};
+  static constexpr bool is_hyb  = {10};
+  static constexpr double exx_coeff = {11};
 """
 
 lda_exc_args_unpolar     = "double rho, double& eps"
@@ -811,11 +853,13 @@ for name, meta_data in gen_table.items():
   is_mgga = xc_type == 'MGGA'
   needs_laplacian = (xc_type == 'MGGA') and meta_data.needs_laplacian
   is_kedf = meta_data.is_kedf
+  is_epc  = meta_data.is_epc
 
   xc_struct_prefix = struct_prefix.format(
     meta_data.local_name, xc_type.lower(), str(is_lda).lower(), 
-    str(is_gga).lower(), str(is_mgga).lower(), str(needs_laplacian).lower(), str(is_kedf).lower(),
-    meta_data.dens_tol, meta_data.dens_tol**(4.0/3.0), str(meta_data.is_hyb).lower(), meta_data.exx_coeff )
+    str(is_gga).lower(), str(is_mgga).lower(), str(needs_laplacian).lower(), 
+    str(is_kedf).lower(), str(is_epc).lower(), meta_data.dens_tol, 
+    meta_data.dens_tol**(4.0/3.0), str(meta_data.is_hyb).lower(), meta_data.exx_coeff )
 
   xc_param_lines = []
   for pname, valstr in meta_data.params.items():
