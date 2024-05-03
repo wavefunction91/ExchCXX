@@ -399,6 +399,7 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
       auto exx = load_reference_exx( kern );
 
       CHECK( func.is_lda() );
+      CHECK( func.is_epc() );
       CHECK( exx == Approx( func.hyb_exx() ) );
 
       if( std::abs(exx) > 0 ) CHECK( func.is_hyb() );
@@ -406,6 +407,7 @@ TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
 
   }
 }
+
 
 
 
@@ -436,8 +438,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
 
     // Get reference values
     auto ref_vals = use_ref_values ?
-      ( func.is_epc() ? load_epc_lda_reference_values( kern, polar ) 
-                      : load_lda_reference_values( kern, polar )   ) :
+      load_lda_reference_values( kern, polar ) :
       gen_lda_reference_values( backend,kern, polar );
 
     size_t  npts     = ref_vals.npts;

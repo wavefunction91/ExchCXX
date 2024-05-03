@@ -28,14 +28,12 @@ struct kernel_traits< BuiltinEPC17_2 > :
   static constexpr double sigma_tol  = 1.000000000000004e-32;
   static constexpr double tau_tol = is_kedf ? 0.0 : 1e-20;
 
-  static constexpr double a = 2.35; 
-  static constexpr double b = 2.40; 
-  static constexpr double c = 6.60; 
-
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;
 
-
+  static constexpr double a = 2.35;
+  static constexpr double b = 2.40;
+  static constexpr double c = 6.60;
 
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar_impl( double rho, double& eps ) {

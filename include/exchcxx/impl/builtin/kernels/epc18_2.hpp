@@ -23,10 +23,6 @@ struct kernel_traits< BuiltinEPC18_2 > :
   static constexpr bool is_kedf = false;
   static constexpr bool is_epc  = true;
 
-  static constexpr double a = 3.90; 
-  static constexpr double b = 0.50; 
-  static constexpr double c = 0.06; 
-
   static constexpr double dens_tol  = 1e-24;
   static constexpr double zeta_tol  = 1e-15;
   static constexpr double sigma_tol  = 1.000000000000004e-32;
@@ -35,7 +31,9 @@ struct kernel_traits< BuiltinEPC18_2 > :
   static constexpr bool is_hyb  = false;
   static constexpr double exx_coeff = 0.0;
 
-
+  static constexpr double a = 3.90;
+  static constexpr double b = 0.50;
+  static constexpr double c = 0.06;
 
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar_impl( double rho, double& eps ) {

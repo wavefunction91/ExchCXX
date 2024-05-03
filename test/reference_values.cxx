@@ -269,35 +269,6 @@ std::vector<double> vtau_xc_mgga_c_r2scanl_ref_pol = {
 0.000000000000, 0.000000000000
 };
 
-// Incorrect EPC Reference Values! 
-// TODO: UPDATE THESE
-std::vector<double> exc_xc_lda_epc172_ref_pol = {
--0.592191935274, -0.756007107013,
--0.875625350878, -0.972027141138,
--1.053486673118
-};
-
-std::vector<double> vxc_xc_lda_epc172_ref_pol = {
--0.642368591061, -0.822909425557,
--0.958799773865, -1.063088704863,
--1.153559630345, -1.228156943455,
--1.296083819945, -1.355697783203,
--1.411287187583, -1.461796825163
-};
-
-std::vector<double> exc_xc_lda_epc182_ref_pol = {
--0.592191935274, -0.756007107013,
--0.875625350878, -0.972027141138,
--1.053486673118
-};
-
-std::vector<double> vxc_xc_lda_epc182_ref_pol = {
--0.642368591061, -0.822909425557,
--0.958799773865, -1.063088704863,
--1.153559630345, -1.228156943455,
--1.296083819945, -1.355697783203,
--1.411287187583, -1.461796825163
-};
 
 template <typename T, typename OutIt>
 void copy_iterable( const T& src, OutIt&& dest ) {
@@ -443,39 +414,6 @@ mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bo
         copy_iterable(vsigma_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vsigma) );
         copy_iterable(vlapl_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vlapl) );
         copy_iterable(vtau_xc_mgga_c_r2scanl_ref_pol, std::back_inserter(ref_vals.vtau) );
-        break;
-      default: 
-        throw std::runtime_error("No Reference Values for Specified Kernel");
-    }
-
-  }
-
-  return ref_vals;
-}
-
-lda_reference load_epc_lda_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
-
-  using namespace ExchCXX; 
-
-  lda_reference ref_vals;
-
-  if( p == Spin::Unpolarized ) {
-
-    throw std::runtime_error("EPC Should Always Have Polarized Spin");
-
-  } else {
-
-    copy_iterable( rho_polarized, std::back_inserter(ref_vals.rho) );
-    ref_vals.npts = rho_polarized.size() / 2;
-
-    switch(k) {
-      case Kernel::EPC17_2:
-        copy_iterable( exc_xc_lda_epc172_ref_pol, std::back_inserter(ref_vals.exc) );
-        copy_iterable( vxc_xc_lda_epc172_ref_pol, std::back_inserter(ref_vals.vrho) );
-        break;
-      case Kernel::EPC18_2:
-        copy_iterable( exc_xc_lda_epc182_ref_pol, std::back_inserter(ref_vals.exc) );
-        copy_iterable( vxc_xc_lda_epc182_ref_pol, std::back_inserter(ref_vals.vrho) );
         break;
       default: 
         throw std::runtime_error("No Reference Values for Specified Kernel");
