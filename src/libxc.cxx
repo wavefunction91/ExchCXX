@@ -236,7 +236,7 @@ bool LibxcKernelImpl::is_epc_() const noexcept {
 #if XC_MAJOR_VERSION > 7
   xcNumber == XC_LDA_C_EPC17 or xcNumber == XC_LDA_C_EPC17_2 or xcNumber == XC_LDA_C_EPC18_1 or xcNumber == XC_LDA_C_EPC18_2;
 #else
-  xcNumber == 328 or xcNumber == 329 or xcNumber == 330 or xcNumber or 331;
+  false;
 #endif
 }
 
