@@ -231,8 +231,8 @@ bool LibxcKernelImpl::is_polarized_() const noexcept {
 }
 
 bool LibxcKernelImpl::is_epc_() const noexcept {
-  //EXCHCXX_BOOL_CHECK("Libxc EPC Wrapper NYI", false);
-  return false;
+  int xcNumber = xc_info()->number;
+  return xcNumber == 328 or xcNumber == 329 or xcNumber == 330 or xcNumber or 331;
 }
 
 

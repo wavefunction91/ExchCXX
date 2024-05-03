@@ -769,9 +769,8 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
 
   const int npts = npts_lda;
 
-  XCKernel func_builtin( Backend::builtin, kern, polar );
-  if( func_builtin.is_epc() ) return;
   XCKernel func_libxc  ( Backend::libxc,   kern, polar );
+  XCKernel func_builtin( Backend::builtin, kern, polar );
 
 
   const int len_rho   = func_libxc.rho_buffer_len( npts );
@@ -902,20 +901,25 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
 TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
 
   SECTION( "Unpolarized Regular Eval : EXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Regular,
         kern, Spin::Unpolarized );
+    }    
   }
 
   SECTION( "Unpolarized Regular Eval : EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Regular,
         kern, Spin::Unpolarized );
+    }    
   }
 
   SECTION( "Unpolarized Small Eval : EXC" ) {
     for( auto kern : builtin_supported_kernels ) {
       if(is_unstable_small(kern)) continue;
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Small,
         kern, Spin::Unpolarized );
     }
@@ -924,21 +928,26 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
   SECTION( "Unpolarized Small Eval : EXC + VXC" ) {
     for( auto kern : builtin_supported_kernels ) {
       if(is_unstable_small(kern)) continue;
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Small,
         kern, Spin::Unpolarized );
     }
   }
 
   SECTION( "Unpolarized Zero Eval : EXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Zero,
         kern, Spin::Unpolarized );
+    }    
   }
 
   SECTION( "Unpolarized Zero Eval : EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Zero,
         kern, Spin::Unpolarized );
+    }    
   }
 
 
@@ -947,20 +956,25 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
 
 
   SECTION( "Polarized Regular Eval : EXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Regular,
         kern, Spin::Polarized );
+    }
   }
 
   SECTION( "Polarized Regular Eval : EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Regular,
         kern, Spin::Polarized );
+    }    
   }
 
   SECTION( "Polarized Small Eval : EXC" ) {
     for( auto kern : builtin_supported_kernels ) {
       if(is_unstable_small(kern)) continue;
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Small,
         kern, Spin::Polarized );
     }
@@ -969,21 +983,26 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
   SECTION( "Polarized Small Eval : EXC + VXC" ) {
     for( auto kern : builtin_supported_kernels ) {
       if(is_unstable_small(kern)) continue;
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Small,
         kern, Spin::Polarized );
     }
   }
 
   SECTION( "Polarized Zero Eval : EXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Zero,
         kern, Spin::Polarized );
+    }    
   }
 
   SECTION( "Polarized Zero Eval : EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) {
+      if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Zero,
         kern, Spin::Polarized );
+    }
   }
 
 }
