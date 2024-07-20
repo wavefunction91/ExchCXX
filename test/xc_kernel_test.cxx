@@ -1613,83 +1613,95 @@ TEST_CASE( "CUDA Interfaces", "[xc-device]" ) {
   SECTION( "Builtin Functionals" ) {
 
     SECTION("EXC Regular: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC, EvalType::Regular,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC, EvalType::Regular,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC + VXC Regular: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Regular,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC_VXC, EvalType::Regular,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC + INC Regular: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_INC, EvalType::Regular,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC_INC, EvalType::Regular,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC + VXC + INC Regular: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Regular,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC_VXC_INC, EvalType::Regular,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels ) {
-        if(is_unstable_small(kern)) continue;
-        test_cuda_interface( TestInterface::EXC, EvalType::Small,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels) {
+        if (is_unstable_small(kern) || !supports_unpolarized(kern))
+          continue;
+        test_cuda_interface(TestInterface::EXC, EvalType::Small,
+                            Backend::builtin, kern, Spin::Unpolarized);
       }
     }
 
     SECTION("EXC + VXC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels ) {
-        if(is_unstable_small(kern)) continue;
-        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Small,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels) {
+        if (is_unstable_small(kern) || !supports_unpolarized(kern))
+          continue;
+        test_cuda_interface(TestInterface::EXC_VXC, EvalType::Small,
+                            Backend::builtin, kern, Spin::Unpolarized);
       }
     }
 
     SECTION("EXC + INC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels ) {
-        if(is_unstable_small(kern)) continue;
-        test_cuda_interface( TestInterface::EXC_INC, EvalType::Small,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels) {
+        if (is_unstable_small(kern) || !supports_unpolarized(kern))
+          continue;
+        test_cuda_interface(TestInterface::EXC_INC, EvalType::Small,
+                            Backend::builtin, kern, Spin::Unpolarized);
       }
     }
 
     SECTION("EXC + VXC + INC Small: Unpolarized") {
-      for( auto kern : builtin_supported_kernels ) {
-        if(is_unstable_small(kern)) continue;
-        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Small,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels) {
+        if (is_unstable_small(kern) || !supports_unpolarized(kern))
+          continue;
+        test_cuda_interface(TestInterface::EXC_VXC_INC, EvalType::Small,
+                            Backend::builtin, kern, Spin::Unpolarized);
       }
     }
 
     SECTION("EXC Zero: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC, EvalType::Zero,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC, EvalType::Zero,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC + VXC Zero: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC, EvalType::Zero,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC_VXC, EvalType::Zero,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC + INC Zero: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_INC, EvalType::Zero,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC_INC, EvalType::Zero,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC + VXC + INC Zero: Unpolarized") {
-      for( auto kern : builtin_supported_kernels )
-        test_cuda_interface( TestInterface::EXC_VXC_INC, EvalType::Zero,
-          Backend::builtin, kern, Spin::Unpolarized );
+      for (auto kern : builtin_supported_kernels)
+        if (supports_unpolarized(kern))
+          test_cuda_interface(TestInterface::EXC_VXC_INC, EvalType::Zero,
+                              Backend::builtin, kern, Spin::Unpolarized);
     }
 
     SECTION("EXC Regular: Polarized") {

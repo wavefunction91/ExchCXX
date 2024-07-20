@@ -109,6 +109,19 @@ enum class Kernel {
   EPC18_2,
 };
 
+inline static bool supports_unpolarized(ExchCXX::Kernel kern) {
+  switch (kern) {
+  case ExchCXX::Kernel::EPC17_1:
+  case ExchCXX::Kernel::EPC17_2:
+  case ExchCXX::Kernel::EPC18_1:
+  case ExchCXX::Kernel::EPC18_2:
+    return false;
+  default:
+    return true;
+  }
+}
+
+
 extern BidirectionalMap<std::string, Kernel> kernel_map;
 
 std::ostream& operator<<( std::ostream& out, Kernel kern );
