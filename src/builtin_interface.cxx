@@ -59,10 +59,9 @@ namespace detail  {
 std::unique_ptr<BuiltinKernel> 
   gen_from_kern( Kernel kern, Spin polar ) {
 
-  if (!supports_unpolarized(kern)) {
-    EXCHCXX_BOOL_CHECK(kernel_map.key(kern) + " Needs to be Spin-Polarized!",
-                       polar == Spin::Polarized);
-  }
+  // Bail if polarized eval is requested and not supported
+  EXCHCXX_BOOL_CHECK(kernel_map.key(kern) + " Needs to be Spin-Polarized!",
+                     (not supports_unpolarized(kern)) and polar == Spin::Polarized);
 
   if( kern == Kernel::SlaterExchange )
     return std::make_unique<BuiltinSlaterExchange>( polar );
