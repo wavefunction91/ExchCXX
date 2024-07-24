@@ -61,7 +61,7 @@ std::unique_ptr<BuiltinKernel>
 
   // Bail if polarized eval is requested and not supported
   EXCHCXX_BOOL_CHECK(kernel_map.key(kern) + " Needs to be Spin-Polarized!",
-                     (not supports_unpolarized(kern)) and polar == Spin::Polarized);
+                     supports_unpolarized(kern) or polar == Spin::Polarized);
 
   if( kern == Kernel::SlaterExchange )
     return std::make_unique<BuiltinSlaterExchange>( polar );
