@@ -79,10 +79,15 @@ public:
   
   XCKernel( const Backend backend, const Kernel kern, 
     const Spin polar );
+#ifdef EXCHCXX_ENABLE_LIBXC
   XCKernel( const libxc_name_string& xc_name, 
     const Spin polar );
   XCKernel( const Kernel kern, const Spin polar ) : 
     XCKernel( Backend::libxc, kern, polar ){ };
+#else
+  XCKernel( const Kernel kern, const Spin polar ) : 
+    XCKernel( Backend::builtin, kern, polar ){ };
+#endif
 
   XCKernel( impl_ptr&& ptr )                     ;
   XCKernel( const XCKernel& )                    ;

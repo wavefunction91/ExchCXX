@@ -49,10 +49,14 @@
 namespace ExchCXX {
 
 enum class Backend {
+#ifdef EXCHCXX_ENABLE_LIBXC
   libxc,
+#endif
   builtin
 };
 
+#ifdef EXCHCXX_ENABLE_LIBXC
 using libxc_name_string = detail::NamedType<std::string, struct LibxcNameString>;
+#endif
 
 }

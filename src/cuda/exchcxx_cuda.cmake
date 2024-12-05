@@ -1,8 +1,10 @@
 set( EXCHCXX_CUDA_SOURCES 
   cuda/xc_functional_device.cu 
-  cuda/libxc_device.cxx 
   cuda/builtin.cu 
 )
+if( EXCHCXX_ENABLE_LIBXC )
+  list(APPEND EXCHCXX_CUDA_SOURCES cuda/libxc_device.cxx)
+endif()
 
 find_package( CUDAToolkit REQUIRED )
 #add_library( exchcxx_device OBJECT ${EXCHCXX_CUDA_SOURCES} )

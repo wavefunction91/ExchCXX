@@ -92,10 +92,12 @@ XCKernel::XCKernel(
   const Spin polar) : 
 XCKernel( kernel_factory( backend, kern, polar ) ) { }
 
+#ifdef EXCHCXX_ENABLE_LIBXC
 XCKernel::XCKernel(
   const libxc_name_string& xc_name,
   const Spin polar) :
 XCKernel( libxc_kernel_factory( xc_name.get(), polar ) ) { }
+#endif
 
 
 XCKernel::XCKernel( impl_ptr&& ptr ) :

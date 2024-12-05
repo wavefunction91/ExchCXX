@@ -1,8 +1,10 @@
 set( EXCHCXX_SYCL_SOURCES
   sycl/xc_functional_device.cxx
-  sycl/libxc_device.cxx
   sycl/builtin_sycl.cxx
 )
+if( EXCHCXX_ENABLE_LIBXC )
+  list(APPEND EXCHCXX_SYCL_SOURCES sycl/libxc_device.cxx)
+endif()
 
 
 target_sources( exchcxx PRIVATE ${EXCHCXX_SYCL_SOURCES} )

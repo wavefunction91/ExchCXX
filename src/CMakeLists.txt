@@ -1,22 +1,24 @@
-
-
-
 set( EXCHCXX_SOURCES
      xc_kernel.cxx
      xc_functional.cxx
-     libxc.cxx
      boilerplate.cxx
      builtin.cxx
      builtin_interface.cxx
      builtin_kernel.cxx
 )
+if(EXCHCXX_ENABLE_LIBXC)
+  list(APPEND EXCHCXX_SOURCES libxc.cxx)
+endif()
+message(STATUS ${EXCHCXX_SOURCES})
 
 add_library( exchcxx ${EXCHCXX_SOURCES} )
 
 # TARGET properties
 
 target_compile_features( exchcxx PUBLIC cxx_std_17 )
-target_link_libraries( exchcxx PUBLIC Libxc::xc )
+if( EXCHCXX_ENABLE_LIBXC )
+  target_link_libraries( exchcxx PUBLIC Libxc::xc )
+endif()
 
 # Generate exchcxx_config.hpp
 configure_file(
