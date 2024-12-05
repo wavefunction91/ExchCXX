@@ -1,8 +1,10 @@
 set( EXCHCXX_HIP_SOURCES 
   hip/xc_functional_device.hip 
-  hip/libxc_device.hip 
   hip/builtin.hip
 )
+if( EXCHCXX_ENABLE_LIBXC )
+  list(APPEND EXCHCXX_HIP_SOURCES hip/libxc_device.hip)
+endif()
 
 find_package( hip REQUIRED )
 

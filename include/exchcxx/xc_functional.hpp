@@ -108,7 +108,11 @@ public:
 
   XCFunctional( const Backend, const Functional, const Spin );
   XCFunctional( const Functional func, const Spin polar) :
+#ifdef EXCHCXX_ENABLE_LIBXC
     XCFunctional( Backend::libxc, func, polar) { };
+#else
+    XCFunctional( Backend::builtin, func, polar) { };
+#endif
 
   XCFunctional( const XCFunctional& )                    ;
   XCFunctional( XCFunctional&& )                 noexcept;

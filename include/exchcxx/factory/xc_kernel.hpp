@@ -54,17 +54,22 @@
 
 namespace ExchCXX {
 
+#ifdef EXCHCXX_ENABLE_LIBXC
 XCKernel libxc_kernel_factory(const Kernel, const Spin );
 XCKernel libxc_kernel_factory(const std::string xc_name, const Spin polar );
+#endif
+
 XCKernel builtin_kernel_factory( Kernel, Spin );
 
 static inline XCKernel kernel_factory( 
   Backend backend, Kernel kern, Spin polar
 ) {
 
+#ifdef EXCHCXX_ENABLE_LIBXC
   if( backend == Backend::libxc )
     return libxc_kernel_factory( kern, polar );
   else
+#endif
     return builtin_kernel_factory( kern, polar );
 
 }
