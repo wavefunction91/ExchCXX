@@ -77,6 +77,8 @@
 #include <exchcxx/impl/builtin/kernels/scanl_x.hpp>
 #include <exchcxx/impl/builtin/kernels/r2scanl_c.hpp>
 #include <exchcxx/impl/builtin/kernels/r2scanl_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_2x_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_2x_c.hpp>
 
 #include <exchcxx/impl/builtin/kernels/pc07_k.hpp>
 #include <exchcxx/impl/builtin/kernels/pc07opt_k.hpp>

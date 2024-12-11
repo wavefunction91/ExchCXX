@@ -66,40 +66,42 @@ add_libxc_support( VWN5           )
 
 std::unordered_map< Kernel, int > libxc_kernel_map {
   // LDA Functionals
-  { Kernel::SlaterExchange, XC_LDA_X            },
-  { Kernel::VWN3,           XC_LDA_C_VWN_3      },
-  { Kernel::VWN5,           XC_LDA_C_VWN_RPA    },
-  { Kernel::PZ81,           XC_LDA_C_PZ         },
-  { Kernel::PZ81_MOD,       XC_LDA_C_PZ_MOD     },
-  { Kernel::PW91_LDA,       XC_LDA_C_PW         },
-  { Kernel::PW91_LDA_MOD,   XC_LDA_C_PW_MOD     },
-  { Kernel::PW91_LDA_RPA,   XC_LDA_C_PW_RPA     },
+  { Kernel::SlaterExchange, XC_LDA_X             },
+  { Kernel::VWN3,           XC_LDA_C_VWN_3       },
+  { Kernel::VWN5,           XC_LDA_C_VWN_RPA     },
+  { Kernel::PZ81,           XC_LDA_C_PZ          },
+  { Kernel::PZ81_MOD,       XC_LDA_C_PZ_MOD      },
+  { Kernel::PW91_LDA,       XC_LDA_C_PW          },
+  { Kernel::PW91_LDA_MOD,   XC_LDA_C_PW_MOD      },
+  { Kernel::PW91_LDA_RPA,   XC_LDA_C_PW_RPA      },
 
   // GGA Functionals
-  { Kernel::PBE_X,          XC_GGA_X_PBE        },
-  { Kernel::PBE_C,          XC_GGA_C_PBE        },
-  { Kernel::revPBE_X,       XC_GGA_X_PBE_R      },
-  { Kernel::B88,            XC_GGA_X_B88        },
-  { Kernel::LYP,            XC_GGA_C_LYP        },
+  { Kernel::PBE_X,          XC_GGA_X_PBE         },
+  { Kernel::PBE_C,          XC_GGA_C_PBE         },
+  { Kernel::revPBE_X,       XC_GGA_X_PBE_R       },
+  { Kernel::B88,            XC_GGA_X_B88         },
+  { Kernel::LYP,            XC_GGA_C_LYP         },
 
   // MGGA Functionals
-  { Kernel::SCAN_C,         XC_MGGA_C_SCAN      },
-  { Kernel::SCAN_X,         XC_MGGA_X_SCAN      },
-  { Kernel::SCANL_C,        XC_MGGA_C_SCANL     },
-  { Kernel::SCANL_X,        XC_MGGA_X_SCANL     },
-  { Kernel::R2SCAN_C,       XC_MGGA_C_R2SCAN    },
-  { Kernel::R2SCAN_X,       XC_MGGA_X_R2SCAN    },
-  { Kernel::R2SCANL_C,      XC_MGGA_C_R2SCANL   },
-  { Kernel::R2SCANL_X,      XC_MGGA_X_R2SCANL   },
-  { Kernel::FT98_X,         XC_MGGA_X_FT98      },
+  { Kernel::SCAN_C,         XC_MGGA_C_SCAN       },
+  { Kernel::SCAN_X,         XC_MGGA_X_SCAN       },
+  { Kernel::SCANL_C,        XC_MGGA_C_SCANL      },
+  { Kernel::SCANL_X,        XC_MGGA_X_SCANL      },
+  { Kernel::R2SCAN_C,       XC_MGGA_C_R2SCAN     },
+  { Kernel::R2SCAN_X,       XC_MGGA_X_R2SCAN     },
+  { Kernel::R2SCANL_C,      XC_MGGA_C_R2SCANL    },
+  { Kernel::R2SCANL_X,      XC_MGGA_X_R2SCANL    },
+  { Kernel::FT98_X,         XC_MGGA_X_FT98       },
+  { Kernel::M062X_X,        XC_HYB_MGGA_X_M06_2X },
+  { Kernel::M062X_C,        XC_MGGA_C_M06_2X     },
 
   // KEDFs
-  { Kernel::PC07_K,         XC_MGGA_K_PC07      },
-  { Kernel::PC07OPT_K,      XC_MGGA_K_PC07_OPT  },
+  { Kernel::PC07_K,         XC_MGGA_K_PC07       },
+  { Kernel::PC07OPT_K,      XC_MGGA_K_PC07_OPT   },
 
   // Hybrid GGA Functionals
-  { Kernel::B3LYP,          XC_HYB_GGA_XC_B3LYP },
-  { Kernel::PBE0,           XC_HYB_GGA_XC_PBEH  },
+  { Kernel::B3LYP,          XC_HYB_GGA_XC_B3LYP  },
+  { Kernel::PBE0,           XC_HYB_GGA_XC_PBEH   },
 };
 
 

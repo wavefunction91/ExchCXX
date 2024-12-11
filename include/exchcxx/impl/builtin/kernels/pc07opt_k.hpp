@@ -313,8 +313,8 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t285 = t276 * t102;
     const double t287 = t187 * t283 - t190 * t285;
     const double t288 = b * t287;
-    const double t292 = piecewise_functor_5( t88, 0.0, t90, 0.0, -t111 * t288 * t195 - t178 * t280 * t184 + t171 * t278 );
-    const double t294 = t273 * t112 + t86 * t292;
+    const double t292 = piecewise_functor_5( t88, 0.0, t90, 0.0, -t111 * t195 * t288 - t178 * t184 * t280 + t171 * t278 );
+    const double t294 = t112 * t273 + t292 * t86;
     const double t298 = piecewise_functor_3( t3, 0.0, 0.3e1 / 0.2e2 * t8 * t24 * t294 );
 
 
@@ -419,7 +419,7 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t113 = 0.1e1 / t112;
     const double t114 = t108 * t113;
     const double t115 = piecewise_functor_5( t91, 0.0, t93, 1.0, t114 );
-    const double t117 = t115 * t89 + t46;
+    const double t117 = t89 * t115 + t46;
     const double t121 = piecewise_functor_3( t2, 0.0, 0.3e1 / 0.2e2 * t7 * t32 * t117 );
     const double t122 = rho_b <= dens_tol;
     const double t123 = -t18;
@@ -579,7 +579,7 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t113 = 0.1e1 / t112;
     const double t114 = t108 * t113;
     const double t115 = piecewise_functor_5( t91, 0.0, t93, 1.0, t114 );
-    const double t117 = t115 * t89 + t46;
+    const double t117 = t89 * t115 + t46;
     const double t121 = piecewise_functor_3( t2, 0.0, 0.3e1 / 0.2e2 * t7 * t32 * t117 );
     const double t122 = rho_b <= dens_tol;
     const double t123 = -t18;
@@ -692,8 +692,8 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t292 = t274 * t105;
     const double t294 = t288 * t289 - t291 * t292;
     const double t296 = 0.1e1 / t111;
-    const double t300 = piecewise_functor_5( t91, 0.0, t93, 0.0, -t114 * t294 * t296 * b - t279 * t282 * t285 + t272 * t277 );
-    const double t302 = t115 * t268 + t300 * t89 - t230;
+    const double t300 = piecewise_functor_5( t91, 0.0, t93, 0.0, -t114 * b * t294 * t296 - t279 * t282 * t285 + t272 * t277 );
+    const double t302 = t268 * t115 + t89 * t300 - t230;
     const double t307 = piecewise_functor_3( t2, 0.0, 0.3e1 / 0.2e2 * t7 * t217 * t117 + t225 + 0.3e1 / 0.2e2 * t7 * t32 * t302 );
     const double t308 = t123 * t210;
     const double t310 = piecewise_functor_5( t16, 0.0, t12, 0.0, -t9 - t308 );
@@ -751,8 +751,8 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t412 = t394 * t192;
     const double t414 = t408 * t409 - t411 * t412;
     const double t416 = 0.1e1 / t198;
-    const double t420 = piecewise_functor_5( t180, 0.0, t181, 0.0, -t201 * t414 * t416 * b - t399 * t402 * t405 + t392 * t397 );
-    const double t422 = t179 * t420 + t202 * t388 - t350;
+    const double t420 = piecewise_functor_5( t180, 0.0, t181, 0.0, -t201 * b * t414 * t416 - t399 * t402 * t405 + t392 * t397 );
+    const double t422 = t179 * t420 + t388 * t202 - t350;
     const double t427 = piecewise_functor_3( t122, 0.0, 0.3e1 / 0.2e2 * t7 * t342 * t204 + t321 + 0.3e1 / 0.2e2 * t7 * t132 * t422 );
     const double t430 = t38 * t43;
     const double t431 = 0.5e1 / 0.72e2 * t430;
@@ -773,8 +773,8 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t460 = t451 * t105;
     const double t462 = t288 * t458 - t291 * t460;
     const double t463 = b * t462;
-    const double t467 = piecewise_functor_5( t91, 0.0, t93, 0.0, -t114 * t296 * t463 - t279 * t285 * t455 + t272 * t453 );
-    const double t469 = t115 * t448 + t467 * t89 + t431;
+    const double t467 = piecewise_functor_5( t91, 0.0, t93, 0.0, -t114 * t463 * t296 - t279 * t455 * t285 + t272 * t453 );
+    const double t469 = t448 * t115 + t89 * t467 + t431;
     const double t473 = piecewise_functor_3( t2, 0.0, 0.3e1 / 0.2e2 * t7 * t32 * t469 );
     const double t474 = t38 * t137;
     const double t475 = 0.5e1 / 0.72e2 * t474;
@@ -795,8 +795,8 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t504 = t495 * t192;
     const double t506 = t408 * t502 - t411 * t504;
     const double t507 = b * t506;
-    const double t511 = piecewise_functor_5( t180, 0.0, t181, 0.0, -t201 * t416 * t507 - t399 * t405 * t499 + t392 * t497 );
-    const double t513 = t179 * t511 + t202 * t492 + t475;
+    const double t511 = piecewise_functor_5( t180, 0.0, t181, 0.0, -t201 * t507 * t416 - t399 * t499 * t405 + t392 * t497 );
+    const double t513 = t179 * t511 + t492 * t202 + t475;
     const double t517 = piecewise_functor_3( t122, 0.0, 0.3e1 / 0.2e2 * t7 * t132 * t513 );
     const double t522 = t56 * lapl_a * t60 / 0.2916e4;
     const double t524 = t56 * t67 / 0.5184e4;
@@ -813,15 +813,15 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t542 = t533 * t105;
     const double t544 = t288 * t540 - t291 * t542;
     const double t545 = b * t544;
-    const double t549 = piecewise_functor_5( t91, 0.0, t93, 0.0, -t114 * t296 * t545 - t279 * t285 * t537 + t272 * t535 );
-    const double t551 = t115 * t530 + t549 * t89;
+    const double t549 = piecewise_functor_5( t91, 0.0, t93, 0.0, -t114 * t545 * t296 - t279 * t537 * t285 + t272 * t535 );
+    const double t551 = t530 * t115 + t89 * t549;
     const double t555 = piecewise_functor_3( t2, 0.0, 0.3e1 / 0.2e2 * t7 * t32 * t551 );
     const double t560 = t56 * lapl_b * t150 / 0.2916e4;
     const double t562 = t56 * t157 / 0.5184e4;
     const double t563 = 0.5e1 / 0.54e2 * t38 * t143 + t560 - t562;
     const double t565 = t560 - t562;
     const double t566 = t373 * t565;
-    const double t568 = t177 * t563 - t372 * t566;
+    const double t568 = t563 * t177 - t372 * t566;
     const double t570 = piecewise_functor_3( t182, 0.0, t568 );
     const double t571 = piecewise_functor_3( t184, t570, 0.0 );
     const double t572 = t571 * t188;
@@ -831,8 +831,8 @@ struct kernel_traits< BuiltinPC07OPT_K > :
     const double t580 = t571 * t192;
     const double t582 = t408 * t578 - t411 * t580;
     const double t583 = b * t582;
-    const double t587 = piecewise_functor_5( t180, 0.0, t181, 0.0, -t201 * t416 * t583 - t399 * t405 * t575 + t392 * t573 );
-    const double t589 = t179 * t587 + t202 * t568;
+    const double t587 = piecewise_functor_5( t180, 0.0, t181, 0.0, -t201 * t583 * t416 - t399 * t575 * t405 + t392 * t573 );
+    const double t589 = t179 * t587 + t568 * t202;
     const double t593 = piecewise_functor_3( t122, 0.0, 0.3e1 / 0.2e2 * t7 * t132 * t589 );
 
 

@@ -116,6 +116,10 @@ std::unique_ptr<BuiltinKernel>
     return std::make_unique<BuiltinR2SCANL_C>( polar );
   else if( kern == Kernel::FT98_X )
     return std::make_unique<BuiltinFT98_X>( polar );
+  else if( kern == Kernel::M062X_X )
+    return std::make_unique<BuiltinM062X_X>( polar );
+  else if( kern == Kernel::M062X_C )
+    return std::make_unique<BuiltinM062X_C>( polar );
 
   else if( kern == Kernel::PC07_K )
     return std::make_unique<BuiltinPC07_K>( polar );

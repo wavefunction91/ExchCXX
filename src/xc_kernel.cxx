@@ -64,6 +64,8 @@ BidirectionalMap<std::string, Kernel> kernel_map{
      {"R2SCAN_C", Kernel::R2SCAN_C},
      {"R2SCANL_X", Kernel::R2SCANL_X},
      {"R2SCANL_C", Kernel::R2SCANL_C},
+     {"M062X_X", Kernel::M062X_X},
+     {"M062X_C", Kernel::M062X_C},
      {"revPBE_X", Kernel::revPBE_X},
      {"LYP", Kernel::LYP},
      {"B3LYP", Kernel::B3LYP},
