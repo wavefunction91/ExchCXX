@@ -60,6 +60,7 @@ enum class Functional {
   SCAN,
   R2SCAN,
   R2SCANL,
+  M062X,
   EPC17_1,
   EPC17_2,
   EPC18_1,

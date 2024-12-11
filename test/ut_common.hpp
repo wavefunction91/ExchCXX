@@ -214,6 +214,7 @@ static constexpr std::array string_functional_pairs = {
     std::pair("PBE", ExchCXX::Functional::PBE),
     std::pair("SCAN", ExchCXX::Functional::SCAN),
     std::pair("R2SCANL", ExchCXX::Functional::R2SCANL),
+    std::pair("M062X", ExchCXX::Functional::M062X),
     std::pair("PBE0", ExchCXX::Functional::PBE0),
     std::pair("EPC17_1", ExchCXX::Functional::EPC17_1),
     std::pair("EPC17_2", ExchCXX::Functional::EPC17_2),

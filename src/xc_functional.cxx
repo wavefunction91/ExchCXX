@@ -57,6 +57,7 @@ BidirectionalMap<std::string, Functional> functional_map{
     {"SCAN", Functional::SCAN},
     {"R2SCAN", Functional::R2SCAN},
     {"R2SCANL", Functional::R2SCANL},
+    {"M062X", Functional::M062X},
     {"revPBE", Functional::revPBE},
     {"PBE0", Functional::PBE0},
     {"EPC17_1", Functional::EPC17_1},
@@ -110,6 +111,11 @@ std::vector< XCKernel > functional_factory(
     kerns = {
         XCKernel( backend, Kernel::R2SCAN_X, polar ),
         XCKernel( backend, Kernel::R2SCAN_C, polar )
+    };
+  else if( func == Functional::M062X )
+    kerns = {
+        XCKernel( backend, Kernel::M062X_X, polar ),
+        XCKernel( backend, Kernel::M062X_C, polar )
     };
   else if( func == Functional::R2SCANL )
     kerns = {
