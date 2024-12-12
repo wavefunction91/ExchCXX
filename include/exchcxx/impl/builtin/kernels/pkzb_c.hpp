@@ -36,7 +36,6 @@ struct kernel_traits< BuiltinPKZB_C > :
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar_impl( double rho, double sigma, double lapl, double tau, double& eps ) {
 
-    printf("exchcxx rho=%.2e sigma=%.2e tau=%.2e\n", rho, sigma, tau);
     (void)(lapl);
     (void)(eps);
     constexpr double t11 = constants::m_cbrt_3;
