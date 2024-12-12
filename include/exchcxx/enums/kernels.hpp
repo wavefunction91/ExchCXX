@@ -95,6 +95,9 @@ enum class Kernel {
   FT98_X,
   M062X_X,
   M062X_C,
+  PKZB_X,
+  PKZB_C,
+  
 
   // KEDFs
   PC07_K,

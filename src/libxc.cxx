@@ -94,6 +94,8 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::FT98_X,         XC_MGGA_X_FT98       },
   { Kernel::M062X_X,        XC_HYB_MGGA_X_M06_2X },
   { Kernel::M062X_C,        XC_MGGA_C_M06_2X     },
+  { Kernel::PKZB_X,         XC_MGGA_X_PKZB       },
+  { Kernel::PKZB_C,         XC_MGGA_C_PKZB       },
 
   // KEDFs
   { Kernel::PC07_K,         XC_MGGA_K_PC07       },

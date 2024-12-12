@@ -78,6 +78,8 @@ struct BuiltinR2SCAN_X;
 struct BuiltinR2SCAN_C;
 struct BuiltinM062X_X;
 struct BuiltinM062X_C;
+struct BuiltinPKZB_X;
+struct BuiltinPKZB_C;
 struct BuiltinFT98_X;
 
 struct BuiltinPC07_K;

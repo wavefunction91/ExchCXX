@@ -744,6 +744,16 @@ gen_table = {
     }
     ), 
 
+  'PKZB_X' : GenMetaData( 'BuiltinPKZB_X',
+    libxc_prefix + 'mgga_exc/mgga_x_pkzb.c',
+    kernel_prefix + 'pkzb_x.hpp',
+    'MGGA', 1e-15, 0., {}),
+
+  'PKZB_C' : GenMetaData( 'BuiltinPKZB_C',
+    libxc_prefix + 'mgga_exc/mgga_c_pkzb.c',
+    kernel_prefix + 'pkzb_c.hpp',
+    'MGGA', 1e-13, 0., {}),
+
   'FT98' : GenMetaData( 'BuiltinFT98_X',
     libxc_prefix + 'mgga_exc/mgga_x_ft98.c',
     kernel_prefix + 'ft98_x.hpp',

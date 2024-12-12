@@ -147,6 +147,8 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::FT98_X,
   ExchCXX::Kernel::M062X_X,
   ExchCXX::Kernel::M062X_C,
+  ExchCXX::Kernel::PKZB_X,
+  ExchCXX::Kernel::PKZB_C,
 
   ExchCXX::Kernel::PC07_K,
   ExchCXX::Kernel::PC07OPT_K,
@@ -160,7 +162,8 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
 static std::vector<ExchCXX::Kernel> unstable_small_kernels = {
   ExchCXX::Kernel::SCAN_C,
   ExchCXX::Kernel::SCANL_C,
-  ExchCXX::Kernel::SCANL_X
+  ExchCXX::Kernel::SCANL_X,
+  ExchCXX::Kernel::PKZB_C
 };
 
 inline bool is_unstable_small(ExchCXX::Kernel kern) {
@@ -189,6 +192,8 @@ static constexpr std::array string_kernal_pairs = {
     std::pair("R2SCAN_C", ExchCXX::Kernel::R2SCAN_C),
     std::pair("M062X_X",ExchCXX::Kernel::M062X_X),
     std::pair("M062X_C", ExchCXX::Kernel::M062X_C),
+    std::pair("PKZB_X",ExchCXX::Kernel::PKZB_X),
+    std::pair("PKZB_C", ExchCXX::Kernel::PKZB_C),
     std::pair("LYP", ExchCXX::Kernel::LYP),
     std::pair("B3LYP", ExchCXX::Kernel::B3LYP),
     std::pair("PBE0", ExchCXX::Kernel::PBE0),
@@ -215,6 +220,7 @@ static constexpr std::array string_functional_pairs = {
     std::pair("SCAN", ExchCXX::Functional::SCAN),
     std::pair("R2SCANL", ExchCXX::Functional::R2SCANL),
     std::pair("M062X", ExchCXX::Functional::M062X),
+    std::pair("PKZB", ExchCXX::Functional::PKZB),
     std::pair("PBE0", ExchCXX::Functional::PBE0),
     std::pair("EPC17_1", ExchCXX::Functional::EPC17_1),
     std::pair("EPC17_2", ExchCXX::Functional::EPC17_2),

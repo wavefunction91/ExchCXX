@@ -58,6 +58,7 @@ BidirectionalMap<std::string, Functional> functional_map{
     {"R2SCAN", Functional::R2SCAN},
     {"R2SCANL", Functional::R2SCANL},
     {"M062X", Functional::M062X},
+    {"PKZB", Functional::PKZB},
     {"revPBE", Functional::revPBE},
     {"PBE0", Functional::PBE0},
     {"EPC17_1", Functional::EPC17_1},
