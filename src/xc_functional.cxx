@@ -113,6 +113,11 @@ std::vector< XCKernel > functional_factory(
         XCKernel( backend, Kernel::R2SCAN_X, polar ),
         XCKernel( backend, Kernel::R2SCAN_C, polar )
     };
+  else if( func == Functional::PKZB )
+    kerns = {
+        XCKernel( backend, Kernel::PKZB_X, polar ),
+        XCKernel( backend, Kernel::PKZB_C, polar )
+    };
   else if( func == Functional::M062X )
     kerns = {
         XCKernel( backend, Kernel::M062X_X, polar ),
