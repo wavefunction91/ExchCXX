@@ -490,7 +490,8 @@ class GenMetaData:
 
 #libxc_prefix = '/Users/meji656/Projects/libxc/src/maple2c/' 
 #kernel_prefix = '/Users/meji656/Projects/ExchCXX/include/exchcxx/impl/builtin/kernels/'
-libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/6.2.0/libxc-6.2.0/src/maple2c/' 
+#libxc_prefix = '/home/dbwy/Software/Chemistry/libxc/6.2.0/libxc-6.2.0/src/maple2c/' 
+libxc_prefix = '/home/davidwillia/Development/ExchCXX/libxc-7.0.0/src/maple2c/'
 kernel_prefix = 'include/exchcxx/impl/builtin/kernels/'
 gen_table = {
 
@@ -687,6 +688,71 @@ gen_table = {
     'MGGA', 1e-15, 0.,
     {'eta': '0.001'}
     ),
+
+  'M062X_X' : GenMetaData( 'BuiltinM062X_X',
+    libxc_prefix + 'mgga_exc/hyb_mgga_x_m05.c',
+    kernel_prefix + 'm06_2x_x.hpp',
+    'MGGA', 1e-15, 0.54,
+    {'a_0' : '0.46',
+     'a_1' : '-0.2206052',
+     'a_2' : '-9.431788e-02',  
+     'a_3' : '2.164494e+00', 
+     'a_4' : '-2.556466e+00', 
+     'a_5' : '-1.422133e+01',
+     'a_6' : '1.555044e+01',  
+     'a_7' : '3.598078e+01', 
+     'a_8' : '-2.722754e+01', 
+     'a_9' : '-3.924093e+01',  
+     'a_10': '1.522808e+01',  
+     'a_11': '1.522227e+01',
+     'csi_HF': '1.0',
+     'cx':     '0.54'}
+    ), 
+
+  'M062X_C' : GenMetaData( 'BuiltinM062X_C',
+    libxc_prefix + 'mgga_exc/mgga_c_m06l.c',
+    kernel_prefix + 'm06_2x_c.hpp',
+    'MGGA', 1e-12, 0.0,
+    {
+      'gamma_ss':  '0.06', 
+      'gamma_ab':  '0.0031', 
+      'alpha_ss':  '0.00515088', 
+      'alpha_ab':  '0.00304966',
+      'css_0':     '3.097855e-01', 
+      'css_1':    '-5.528642e+00',  
+      'css_2':     '1.347420e+01', 
+      'css_3':    '-3.213623e+01',  
+      'css_4':     '2.846742e+01',
+      'cab_0':     '8.833596e-01',  
+      'cab_1':     '3.357972e+01', 
+      'cab_2':    '-7.043548e+01',  
+      'cab_3':     '4.978271e+01', 
+      'cab_4':    '-1.852891e+01',
+      'dss_0':     '6.902145e-01',  
+      'dss_1':     '9.847204e-02',  
+      'dss_2':     '2.214797e-01', 
+      'dss_3':    '-1.968264e-03', 
+      'dss_4':    '-6.775479e-03',  
+      'dss_5':     '0.000000e+00',
+      'dab_0':     '1.166404e-01', 
+      'dab_1':    '-9.120847e-02', 
+      'dab_2':    '-6.726189e-02',  
+      'dab_3':     '6.720580e-05',  
+      'dab_4':     '8.448011e-04',  
+      'dab_5':     '0.000000e+00',
+      'Fermi_D_cnst': '1e-10'
+    }
+    ), 
+
+  'PKZB_X' : GenMetaData( 'BuiltinPKZB_X',
+    libxc_prefix + 'mgga_exc/mgga_x_pkzb.c',
+    kernel_prefix + 'pkzb_x.hpp',
+    'MGGA', 1e-15, 0., {}),
+
+  'PKZB_C' : GenMetaData( 'BuiltinPKZB_C',
+    libxc_prefix + 'mgga_exc/mgga_c_pkzb.c',
+    kernel_prefix + 'pkzb_c.hpp',
+    'MGGA', 1e-13, 0., {}),
 
   'FT98' : GenMetaData( 'BuiltinFT98_X',
     libxc_prefix + 'mgga_exc/mgga_x_ft98.c',
