@@ -706,7 +706,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     const double t315 = t102 * t102;
     const double t316 = 0.1e1 / t315;
     const double t317 = t316 * t312;
-    const double t319 = -t103 * t312 * c1 - t101 * t317;
+    const double t319 = -c1 * t312 * t103 - t101 * t317;
     const double t320 = t319 * t105;
     const double t321 = piecewise_functor_3( t98, 0.0, t320 );
     const double t323 = t116 * t116;
@@ -766,7 +766,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     const double t442 = t208 * t208;
     const double t443 = 0.1e1 / t442;
     const double t444 = t443 * t439;
-    const double t446 = -t209 * t439 * c1 - t207 * t444;
+    const double t446 = -c1 * t439 * t209 - t207 * t444;
     const double t447 = t446 * t211;
     const double t448 = piecewise_functor_3( t204, 0.0, t447 );
     const double t449 = t215 * t215;
@@ -796,7 +796,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     const double t508 = piecewise_functor_3( t99, -t507, 0.0 );
     const double t509 = c1 * t508;
     const double t511 = t316 * t508;
-    const double t513 = -t101 * t511 - t103 * t509;
+    const double t513 = -t101 * t511 - t509 * t103;
     const double t514 = t513 * t105;
     const double t515 = piecewise_functor_3( t98, 0.0, t514 );
     const double t516 = piecewise_functor_3( t114, 0.0, -t507 );
@@ -820,7 +820,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     const double t565 = piecewise_functor_3( t205, -t564, 0.0 );
     const double t566 = c1 * t565;
     const double t568 = t443 * t565;
-    const double t570 = -t207 * t568 - t209 * t566;
+    const double t570 = -t207 * t568 - t566 * t209;
     const double t571 = t570 * t211;
     const double t572 = piecewise_functor_3( t204, 0.0, t571 );
     const double t573 = piecewise_functor_3( t213, 0.0, -t564 );
@@ -838,7 +838,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     const double t606 = 0.5e1 / 0.9e1 * t71 * t29 * t33;
     const double t607 = piecewise_functor_3( t99, t606, 0.0 );
     const double t608 = c1 * t607;
-    const double t612 = -t101 * t316 * t607 - t103 * t608;
+    const double t612 = -t101 * t316 * t607 - t608 * t103;
     const double t613 = t612 * t105;
     const double t614 = piecewise_functor_3( t98, 0.0, t613 );
     const double t615 = piecewise_functor_3( t114, 0.0, t606 );
@@ -854,7 +854,7 @@ struct kernel_traits< BuiltinSCAN_X > :
     const double t641 = 0.5e1 / 0.9e1 * t181 * t29 * t33;
     const double t642 = piecewise_functor_3( t205, t641, 0.0 );
     const double t643 = c1 * t642;
-    const double t647 = -t207 * t443 * t642 - t209 * t643;
+    const double t647 = -t207 * t443 * t642 - t643 * t209;
     const double t648 = t647 * t211;
     const double t649 = piecewise_functor_3( t204, 0.0, t648 );
     const double t650 = piecewise_functor_3( t213, 0.0, t641 );

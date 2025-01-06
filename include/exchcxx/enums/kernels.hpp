@@ -93,6 +93,11 @@ enum class Kernel {
   R2SCANL_C,
   R2SCANL_X,
   FT98_X,
+  M062X_X,
+  M062X_C,
+  PKZB_X,
+  PKZB_C,
+  
 
   // KEDFs
   PC07_K,

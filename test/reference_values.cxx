@@ -572,9 +572,10 @@ double load_reference_exx( ExchCXX::Kernel kern ) {
 
   double exx;
   switch(kern) {
-    case Kernel::B3LYP: exx = 0.2;  break;
-    case Kernel::PBE0:  exx = 0.25; break;
-    default:            exx = 0;
+    case Kernel::B3LYP:    exx = 0.2;  break;
+    case Kernel::PBE0:     exx = 0.25; break;
+    case Kernel::M062X_X:  exx = 0.54; break;
+    default:               exx = 0;
   }
 
   return exx;
