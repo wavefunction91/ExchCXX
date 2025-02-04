@@ -68,6 +68,7 @@ BidirectionalMap<std::string, Kernel> kernel_map{
      {"M062X_C", Kernel::M062X_C},
      {"PKZB_X", Kernel::PKZB_X},
      {"PKZB_C", Kernel::PKZB_C},
+     {"TPSS_X", Kernel::TPSS_X},
      {"revPBE_X", Kernel::revPBE_X},
      {"LYP", Kernel::LYP},
      {"B3LYP", Kernel::B3LYP},

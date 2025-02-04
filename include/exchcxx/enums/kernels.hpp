@@ -97,6 +97,7 @@ enum class Kernel {
   M062X_C,
   PKZB_X,
   PKZB_C,
+  TPSS_X,
   
 
   // KEDFs

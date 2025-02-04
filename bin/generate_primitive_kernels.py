@@ -783,6 +783,19 @@ gen_table = {
     { 'a': '1.784720',
       'b': '0.258304' },
     True, True
+    ),
+
+   'TPSS_X' : GenMetaData( 'BuiltinTPSS_X',
+     libxc_prefix + 'mgga_exc/mgga_x_tpss.c',
+     kernel_prefix + 'tpss_x.hpp',
+     'MGGA', 1e-15, 0.,
+     { 'b': '0.40', 
+       'c': '1.59096', 
+       'e': '1.537', 
+       'kappa' : '0.804', 
+       'mu' : '0.21951',
+       'BLOC_a' : '2.0',
+       'BLOC_b' : '0.0' }
     )
 
   #'R2SCANL_X' : GenMetaData( 'BuiltinR2SCANL_X',

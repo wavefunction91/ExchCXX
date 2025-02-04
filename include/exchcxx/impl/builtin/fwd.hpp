@@ -81,6 +81,7 @@ struct BuiltinM062X_C;
 struct BuiltinPKZB_X;
 struct BuiltinPKZB_C;
 struct BuiltinFT98_X;
+struct BuiltinTPSS_X;
 
 struct BuiltinPC07_K;
 struct BuiltinPC07OPT_K;

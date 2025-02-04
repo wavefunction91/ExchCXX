@@ -124,6 +124,8 @@ std::unique_ptr<BuiltinKernel>
     return std::make_unique<BuiltinPKZB_X>( polar );
   else if( kern == Kernel::PKZB_C )
     return std::make_unique<BuiltinPKZB_C>( polar );
+  else if( kern == Kernel::TPSS_X )
+    return std::make_unique<BuiltinTPSS_X>( polar );
 
   else if( kern == Kernel::PC07_K )
     return std::make_unique<BuiltinPC07_K>( polar );

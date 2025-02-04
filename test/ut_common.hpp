@@ -107,7 +107,8 @@ static std::vector<ExchCXX::Kernel> mgga_kernels = {
   ExchCXX::Kernel::M062X_C,
   ExchCXX::Kernel::FT98_X,
   ExchCXX::Kernel::PC07_K,
-  ExchCXX::Kernel::PC07OPT_K
+  ExchCXX::Kernel::PC07OPT_K,
+  ExchCXX::Kernel::TPSS_X
 };
 
 static std::vector<ExchCXX::Kernel> epc_lda_kernels = {
@@ -149,6 +150,7 @@ static std::vector<ExchCXX::Kernel> builtin_supported_kernels = {
   ExchCXX::Kernel::M062X_C,
   ExchCXX::Kernel::PKZB_X,
   ExchCXX::Kernel::PKZB_C,
+  ExchCXX::Kernel::TPSS_X,
 
   ExchCXX::Kernel::PC07_K,
   ExchCXX::Kernel::PC07OPT_K,
@@ -194,6 +196,7 @@ static constexpr std::array string_kernal_pairs = {
     std::pair("M062X_C", ExchCXX::Kernel::M062X_C),
     std::pair("PKZB_X",ExchCXX::Kernel::PKZB_X),
     std::pair("PKZB_C", ExchCXX::Kernel::PKZB_C),
+    std::pair("TPSS_X", ExchCXX::Kernel::TPSS_X),
     std::pair("LYP", ExchCXX::Kernel::LYP),
     std::pair("B3LYP", ExchCXX::Kernel::B3LYP),
     std::pair("PBE0", ExchCXX::Kernel::PBE0),

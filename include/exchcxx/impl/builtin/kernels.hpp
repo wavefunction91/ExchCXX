@@ -81,6 +81,7 @@
 #include <exchcxx/impl/builtin/kernels/m06_2x_c.hpp>
 #include <exchcxx/impl/builtin/kernels/pkzb_x.hpp>
 #include <exchcxx/impl/builtin/kernels/pkzb_c.hpp>
+#include <exchcxx/impl/builtin/kernels/tpss_x.hpp>
 
 #include <exchcxx/impl/builtin/kernels/pc07_k.hpp>
 #include <exchcxx/impl/builtin/kernels/pc07opt_k.hpp>
