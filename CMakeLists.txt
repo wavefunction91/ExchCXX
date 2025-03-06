@@ -72,6 +72,7 @@ else()
     libxc
     GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
     GIT_TAG 7.0.0
+    GIT_SHALLOW 1
     PATCH_COMMAND sed -i -e "s/p->info->family != XC_KINETIC/p->info->kind != XC_KINETIC/g" src/work_mgga_inc.c
   )
   set( Libxc_VERSION 7.0.0 )
