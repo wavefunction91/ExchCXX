@@ -68,11 +68,14 @@ if( ${Libxc_FOUND} )
 
 else()
 
+  option( FETCHCONTENT_LIBXC_GIT_SHALLOW      "Whether to use GIT_SHALLOW for FetchContent'ing libxc"     ON )
+  
   FetchContent_Declare(
     libxc
     GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
+    # if pinning to specific SHA change the FETCHCONTENT_LIBXC_GIT_SHALLOW default to OFF, https://cmake.org/cmake/help/latest/module/ExternalProject.html#git
     GIT_TAG 7.0.0
-    GIT_SHALLOW 1
+    GIT_SHALLOW ${FETCHCONTENT_LIBXC_GIT_SHALLOW}
     PATCH_COMMAND sed -i -e "s/p->info->family != XC_KINETIC/p->info->kind != XC_KINETIC/g" src/work_mgga_inc.c
   )
   set( Libxc_VERSION 7.0.0 )
