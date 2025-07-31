@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -53,6 +59,7 @@
 #include <exchcxx/impl/builtin/kernels/slater_exchange.hpp>
 #include <exchcxx/impl/builtin/kernels/vwn3.hpp>
 #include <exchcxx/impl/builtin/kernels/vwn_rpa.hpp>
+#include <exchcxx/impl/builtin/kernels/vwn.hpp>
 #include <exchcxx/impl/builtin/kernels/pw91_lda.hpp>
 #include <exchcxx/impl/builtin/kernels/pw91_lda_mod.hpp>
 #include <exchcxx/impl/builtin/kernels/pw91_lda_rpa.hpp>
@@ -64,9 +71,36 @@
 #include <exchcxx/impl/builtin/kernels/pbe_x.hpp>
 #include <exchcxx/impl/builtin/kernels/rev_pbe_x.hpp>
 #include <exchcxx/impl/builtin/kernels/pbe_c.hpp>
-
-#include <exchcxx/impl/builtin/kernels/pbe0.hpp>
-#include <exchcxx/impl/builtin/kernels/b3lyp.hpp>
+#include <exchcxx/impl/builtin/kernels/b97_d.hpp>
+#include <exchcxx/impl/builtin/kernels/ityh_x.hpp>
+#include <exchcxx/impl/builtin/kernels/ityh_x_033.hpp>
+#include <exchcxx/impl/builtin/kernels/ityh_x_015.hpp>
+#include <exchcxx/impl/builtin/kernels/p86_c.hpp>
+#include <exchcxx/impl/builtin/kernels/p86vwn_ft_c.hpp>
+#include <exchcxx/impl/builtin/kernels/pw91_c.hpp>
+#include <exchcxx/impl/builtin/kernels/pbe_sol_c.hpp>
+#include <exchcxx/impl/builtin/kernels/bmk_c.hpp>
+#include <exchcxx/impl/builtin/kernels/n12_c.hpp>
+#include <exchcxx/impl/builtin/kernels/n12_sx_c.hpp>
+#include <exchcxx/impl/builtin/kernels/sogga11_x_c.hpp>
+#include <exchcxx/impl/builtin/kernels/pw91_x.hpp>
+#include <exchcxx/impl/builtin/kernels/mpw91_x.hpp>
+#include <exchcxx/impl/builtin/kernels/optx_x.hpp>
+#include <exchcxx/impl/builtin/kernels/rpbe_x.hpp>
+#include <exchcxx/impl/builtin/kernels/sogga11_x_x.hpp>
+#include <exchcxx/impl/builtin/kernels/pw86_x.hpp>
+#include <exchcxx/impl/builtin/kernels/wb97_xc.hpp>
+#include <exchcxx/impl/builtin/kernels/wb97x_xc.hpp>
+#include <exchcxx/impl/builtin/kernels/wb97x_v_xc.hpp>
+#include <exchcxx/impl/builtin/kernels/wb97x_d_xc.hpp>
+#include <exchcxx/impl/builtin/kernels/wb97x_d3_xc.hpp>
+#include <exchcxx/impl/builtin/kernels/hjs_pbe_x.hpp>
+#include <exchcxx/impl/builtin/kernels/lcwpbe_wpbeh_x.hpp>
+#include <exchcxx/impl/builtin/kernels/lrcwpbe_hjs_pbe_x.hpp>
+#include <exchcxx/impl/builtin/kernels/lrcwpbeh_hjs_pbe_x.hpp>
+#include <exchcxx/impl/builtin/kernels/wpbeh_x_default0.hpp>
+#include <exchcxx/impl/builtin/kernels/hse03_wpbeh_x.hpp>
+#include <exchcxx/impl/builtin/kernels/hse06_wpbeh_x.hpp>
 
 #include <exchcxx/impl/builtin/kernels/scan_x.hpp>
 #include <exchcxx/impl/builtin/kernels/scan_c.hpp>
@@ -81,6 +115,45 @@
 #include <exchcxx/impl/builtin/kernels/m06_2x_c.hpp>
 #include <exchcxx/impl/builtin/kernels/pkzb_x.hpp>
 #include <exchcxx/impl/builtin/kernels/pkzb_c.hpp>
+#include <exchcxx/impl/builtin/kernels/tpss_x.hpp>
+#include <exchcxx/impl/builtin/kernels/revtpss_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_l_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_hf_x.hpp>
+#include <exchcxx/impl/builtin/kernels/rev_m06_l_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_sx_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_l_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_hf_c.hpp>
+#include <exchcxx/impl/builtin/kernels/rev_m06_l_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m06_sx_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m05_2x_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m05_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m08_hx_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m08_so_c.hpp>
+#include <exchcxx/impl/builtin/kernels/cf22d_c.hpp>
+#include <exchcxx/impl/builtin/kernels/m11_c.hpp>
+#include <exchcxx/impl/builtin/kernels/mn12_l_c.hpp>
+#include <exchcxx/impl/builtin/kernels/mn12_sx_c.hpp>
+#include <exchcxx/impl/builtin/kernels/mn15_c.hpp>
+#include <exchcxx/impl/builtin/kernels/mn15_l_c.hpp>
+#include <exchcxx/impl/builtin/kernels/tpss_c.hpp>
+#include <exchcxx/impl/builtin/kernels/revtpss_c.hpp>
+#include <exchcxx/impl/builtin/kernels/rscan_c.hpp>
+#include <exchcxx/impl/builtin/kernels/bc95_c.hpp>
+#include <exchcxx/impl/builtin/kernels/mbeef_x.hpp>
+#include <exchcxx/impl/builtin/kernels/rscan_x.hpp>
+#include <exchcxx/impl/builtin/kernels/bmk_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m08_hx_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m08_so_x.hpp>
+#include <exchcxx/impl/builtin/kernels/mn12_l_x.hpp>
+#include <exchcxx/impl/builtin/kernels/mn15_l_x.hpp>
+#include <exchcxx/impl/builtin/kernels/mn15_x.hpp>
+#include <exchcxx/impl/builtin/kernels/cf22d_x.hpp>
+#include <exchcxx/impl/builtin/kernels/mn12_sx_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m11_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m05_x.hpp>
+#include <exchcxx/impl/builtin/kernels/m05_2x_x.hpp>
 
 #include <exchcxx/impl/builtin/kernels/pc07_k.hpp>
 #include <exchcxx/impl/builtin/kernels/pc07opt_k.hpp>

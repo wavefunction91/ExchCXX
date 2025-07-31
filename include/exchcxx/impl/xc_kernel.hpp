@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -74,13 +80,10 @@ struct XCKernelImpl {
   bool is_lda()          const noexcept { return is_lda_();       }
   bool is_gga()          const noexcept { return is_gga_();       }
   bool is_mgga()         const noexcept { return is_mgga_();      }
-  bool is_hyb()          const noexcept { return is_hyb_();       }
   bool is_polarized()    const noexcept { return is_polarized_(); }
   bool is_epc()          const noexcept { return is_epc_();       }
   bool needs_laplacian() const noexcept { return needs_laplacian_();       }
   bool needs_tau() const noexcept { return needs_tau_();       }
-
-  double hyb_exx() const noexcept { return hyb_exx_(); };
 
   bool supports_inc_interface() const noexcept {
     return supports_inc_interface_();
@@ -118,6 +121,37 @@ struct XCKernelImpl {
     return tau_buffer_len( npts );
   }
 
+  inline size_t v2rho2_buffer_len( size_t npts ) const noexcept {
+    return is_polarized() ? 3*npts : npts;
+  }
+  inline size_t v2rhosigma_buffer_len( size_t npts ) const noexcept {
+    return is_lda() ? 0 : is_polarized() ? 6*npts : npts;
+  }
+  inline size_t v2sigma2_buffer_len( size_t npts ) const noexcept {
+    return is_lda() ? 0 : is_polarized() ? 6*npts : npts;
+  }
+  inline size_t v2rholapl_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? (is_polarized() ? 4*npts : npts) : 0;
+  }
+  inline size_t v2rhotau_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? (is_polarized() ? 4*npts : npts) : 0;
+  }
+  inline size_t v2sigmalapl_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? v2rhosigma_buffer_len(npts) : 0;
+  }
+  inline size_t v2sigmatau_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? v2rhosigma_buffer_len(npts) : 0;
+  }
+  inline size_t v2lapl2_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? v2rho2_buffer_len(npts) : 0;
+  }
+  inline size_t v2lapltau_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? (is_polarized() ? 4*npts : npts) : 0;
+  }
+  inline size_t v2tau2_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? v2rho2_buffer_len(npts) : 0;
+  }
+
   template <typename... Args>
   void eval_exc( Args&&... args ) {
     eval_exc_( std::forward<Args>(args)... );
@@ -136,6 +170,26 @@ struct XCKernelImpl {
   template <typename... Args>
   void eval_exc_vxc_inc( Args&&... args ) {
     eval_exc_vxc_inc_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_fxc( Args&&... args ) {
+    eval_fxc_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_fxc_inc( Args&&... args ) {
+    eval_fxc_inc_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc( Args&&... args ) {
+    eval_vxc_fxc_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc_inc( Args&&... args ) {
+    eval_vxc_fxc_inc_( std::forward<Args>(args)... );
   }
  
        
@@ -163,6 +217,26 @@ struct XCKernelImpl {
     eval_exc_vxc_inc_device_( std::forward<Args>(args)... );
   }
 
+  template <typename... Args>
+  void eval_fxc_device( Args&&... args ) {
+    eval_fxc_device_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_fxc_inc_device( Args&&... args ) {
+    eval_fxc_inc_device_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc_device( Args&&... args ) {
+    eval_vxc_fxc_device_( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc_inc_device( Args&&... args ) {
+    eval_vxc_fxc_inc_device_( std::forward<Args>(args)... );
+  }
+
 #endif
 
 protected:
@@ -176,13 +250,10 @@ private:
   virtual bool is_lda_()        const noexcept = 0;
   virtual bool is_gga_()        const noexcept = 0;
   virtual bool is_mgga_()       const noexcept = 0;
-  virtual bool is_hyb_()        const noexcept = 0;
   virtual bool is_polarized_()  const noexcept = 0;
   virtual bool is_epc_()        const noexcept = 0;
   virtual bool needs_laplacian_() const noexcept = 0;
   virtual bool needs_tau_() const noexcept = 0;
-
-  virtual double hyb_exx_() const noexcept = 0;
 
   virtual bool supports_inc_interface_() const noexcept = 0;
 
@@ -191,18 +262,30 @@ private:
   virtual LDA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const = 0;
   virtual LDA_EXC_INC_GENERATOR( eval_exc_inc_ )         const = 0;
   virtual LDA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const = 0;
+  virtual LDA_FXC_GENERATOR( eval_fxc_ )                 const = 0;
+  virtual LDA_FXC_INC_GENERATOR( eval_fxc_inc_ )         const = 0;
+  virtual LDA_VXC_FXC_GENERATOR( eval_vxc_fxc_ )         const = 0;
+  virtual LDA_VXC_FXC_INC_GENERATOR( eval_vxc_fxc_inc_ ) const = 0;
 
   // GGA interface
   virtual GGA_EXC_GENERATOR( eval_exc_ )                 const = 0;
   virtual GGA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const = 0;
   virtual GGA_EXC_INC_GENERATOR( eval_exc_inc_ )         const = 0;
   virtual GGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const = 0;
+  virtual GGA_FXC_GENERATOR( eval_fxc_ )                 const = 0;
+  virtual GGA_FXC_INC_GENERATOR( eval_fxc_inc_ )         const = 0;
+  virtual GGA_VXC_FXC_GENERATOR( eval_vxc_fxc_ )         const = 0;
+  virtual GGA_VXC_FXC_INC_GENERATOR( eval_vxc_fxc_inc_ ) const = 0;
 
   // MGGA interface
   virtual MGGA_EXC_GENERATOR( eval_exc_ )                 const = 0;
   virtual MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const = 0;
   virtual MGGA_EXC_INC_GENERATOR( eval_exc_inc_ )         const = 0;
   virtual MGGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const = 0;
+  virtual MGGA_FXC_GENERATOR( eval_fxc_ )                 const = 0;
+  virtual MGGA_FXC_INC_GENERATOR( eval_fxc_inc_ )         const = 0;
+  virtual MGGA_VXC_FXC_GENERATOR( eval_vxc_fxc_ )         const = 0;
+  virtual MGGA_VXC_FXC_INC_GENERATOR( eval_vxc_fxc_inc_ ) const = 0;
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
@@ -211,18 +294,30 @@ private:
   virtual LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const = 0;
   virtual LDA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const = 0;
   virtual LDA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const = 0;
+  virtual LDA_FXC_GENERATOR_DEVICE( eval_fxc_device_ )                 const = 0;
+  virtual LDA_FXC_INC_GENERATOR_DEVICE( eval_fxc_inc_device_ )         const = 0;
+  virtual LDA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device_ )         const = 0;
+  virtual LDA_VXC_FXC_INC_GENERATOR_DEVICE( eval_vxc_fxc_inc_device_ ) const = 0;
 
   // GGA interface
   virtual GGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )                 const = 0;
   virtual GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const = 0;
   virtual GGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const = 0;
   virtual GGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const = 0;
+  virtual GGA_FXC_GENERATOR_DEVICE( eval_fxc_device_ )                 const = 0;
+  virtual GGA_FXC_INC_GENERATOR_DEVICE( eval_fxc_inc_device_ )         const = 0;
+  virtual GGA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device_ )         const = 0;
+  virtual GGA_VXC_FXC_INC_GENERATOR_DEVICE( eval_vxc_fxc_inc_device_ ) const = 0;
 
   // MGGA interface
   virtual MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )                 const = 0;
   virtual MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const = 0;
   virtual MGGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const = 0;
   virtual MGGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const = 0;
+  virtual MGGA_FXC_GENERATOR_DEVICE( eval_fxc_device_ )                 const = 0;
+  virtual MGGA_FXC_INC_GENERATOR_DEVICE( eval_fxc_inc_device_ )         const = 0;
+  virtual MGGA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device_ )         const = 0;
+  virtual MGGA_VXC_FXC_INC_GENERATOR_DEVICE( eval_vxc_fxc_inc_device_ ) const = 0;
 
 #endif
     

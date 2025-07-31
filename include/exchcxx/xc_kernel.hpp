@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -103,15 +109,12 @@ public:
   bool is_lda()       const noexcept { return pimpl_->is_lda();       }
   bool is_gga()       const noexcept { return pimpl_->is_gga();       }
   bool is_mgga()      const noexcept { return pimpl_->is_mgga();      }
-  bool is_hyb()       const noexcept { return pimpl_->is_hyb();       }
   bool is_polarized() const noexcept { return pimpl_->is_polarized(); }
   bool is_epc()       const noexcept { return pimpl_->is_epc();       }
 
   bool needs_laplacian() const noexcept { return pimpl_->needs_laplacian(); }
   bool needs_tau()    const noexcept { return pimpl_->needs_tau(); }
   
-  double hyb_exx() const noexcept { return pimpl_->hyb_exx(); }
-
   bool supports_inc_interface() const noexcept {
     return pimpl_->supports_inc_interface();
   }
@@ -144,6 +147,36 @@ public:
   inline size_t vtau_buffer_len( size_t npts ) const noexcept {
     return pimpl_->vtau_buffer_len( npts );
   }
+  inline size_t v2rho2_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2rho2_buffer_len( npts );
+  }
+  inline size_t v2rhosigma_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2rhosigma_buffer_len( npts );
+  }
+  inline size_t v2rholapl_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2rholapl_buffer_len( npts );
+  }
+  inline size_t v2rhotau_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2rhotau_buffer_len( npts );
+  }
+  inline size_t v2sigma2_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2sigma2_buffer_len( npts );
+  }
+  inline size_t v2sigmalapl_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2sigmalapl_buffer_len( npts );
+  }
+  inline size_t v2sigmatau_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2sigmatau_buffer_len( npts );
+  }
+  inline size_t v2lapl2_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2lapl2_buffer_len( npts );
+  }
+  inline size_t v2lapltau_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2lapltau_buffer_len( npts );
+  }
+  inline size_t v2tau2_buffer_len( size_t npts ) const noexcept {
+    return pimpl_->v2tau2_buffer_len( npts );
+  }
 
 
   template <typename... Args>
@@ -164,6 +197,26 @@ public:
   template <typename... Args>
   void eval_exc_vxc_inc( Args&&... args ) const {
     pimpl_->eval_exc_vxc_inc( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_fxc( Args&&... args ) const {
+    pimpl_->eval_fxc( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_fxc_inc( Args&&... args ) const {
+    pimpl_->eval_fxc_inc( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc( Args&&... args ) const {
+    pimpl_->eval_vxc_fxc( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc_inc( Args&&... args ) const {
+    pimpl_->eval_vxc_fxc_inc( std::forward<Args>(args)... );
   }
 
   // Device code
@@ -187,6 +240,26 @@ public:
   template <typename... Args>
   void eval_exc_vxc_inc_device( Args&&... args ) const {
     pimpl_->eval_exc_vxc_inc_device( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_fxc_device( Args&&... args ) const {
+    pimpl_->eval_fxc_device( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_fxc_inc_device( Args&&... args ) const {
+    pimpl_->eval_fxc_inc_device( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc_device( Args&&... args ) const {
+    pimpl_->eval_vxc_fxc_device( std::forward<Args>(args)... );
+  }
+
+  template <typename... Args>
+  void eval_vxc_fxc_inc_device( Args&&... args ) const {
+    pimpl_->eval_vxc_fxc_inc_device( std::forward<Args>(args)... );
   }
 
 #endif

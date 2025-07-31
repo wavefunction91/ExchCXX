@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -73,6 +79,8 @@ namespace ExchCXX {
 #define TYPED_LDA_OPARAMS_KXC(BUFFER)       BUFFER kxc
 #define TYPED_LDA_OPARAMS_EXC_VXC(BUFFER) \
   TYPED_LDA_OPARAMS_EXC(BUFFER), TYPED_LDA_OPARAMS_VXC(BUFFER)
+#define TYPED_LDA_OPARAMS_VXC_FXC(BUFFER) \
+  TYPED_LDA_OPARAMS_VXC(BUFFER), TYPED_LDA_OPARAMS_FXC(BUFFER)
 
 #define LDA_IPARAMS         TYPED_LDA_IPARAMS(int,const_host_buffer_type)
 #define LDA_OPARAMS_EXC     TYPED_LDA_OPARAMS_EXC(host_buffer_type)
@@ -80,6 +88,7 @@ namespace ExchCXX {
 #define LDA_OPARAMS_FXC     TYPED_LDA_OPARAMS_FXC(host_buffer_type)
 #define LDA_OPARAMS_KXC     TYPED_LDA_OPARAMS_KXC(host_buffer_type)
 #define LDA_OPARAMS_EXC_VXC TYPED_LDA_OPARAMS_EXC_VXC(host_buffer_type)
+#define LDA_OPARAMS_VXC_FXC TYPED_LDA_OPARAMS_VXC_FXC(host_buffer_type)
 
 #define DEV_LDA_IPARAMS         TYPED_LDA_IPARAMS(int,const_device_buffer_type)
 #define DEV_LDA_OPARAMS_EXC     TYPED_LDA_OPARAMS_EXC(device_buffer_type)
@@ -87,6 +96,7 @@ namespace ExchCXX {
 #define DEV_LDA_OPARAMS_FXC     TYPED_LDA_OPARAMS_FXC(device_buffer_type)
 #define DEV_LDA_OPARAMS_KXC     TYPED_LDA_OPARAMS_KXC(device_buffer_type)
 #define DEV_LDA_OPARAMS_EXC_VXC TYPED_LDA_OPARAMS_EXC_VXC(device_buffer_type)
+#define DEV_LDA_OPARAMS_VXC_FXC TYPED_LDA_OPARAMS_VXC_FXC(device_buffer_type)
 
 #define LDA_IPARAMS_NOTYPE         TYPED_LDA_IPARAMS(NOTYPE,NOTYPE)
 #define LDA_OPARAMS_EXC_NOTYPE     TYPED_LDA_OPARAMS_EXC(NOTYPE)
@@ -94,6 +104,7 @@ namespace ExchCXX {
 #define LDA_OPARAMS_FXC_NOTYPE     TYPED_LDA_OPARAMS_FXC(NOTYPE)
 #define LDA_OPARAMS_KXC_NOTYPE     TYPED_LDA_OPARAMS_KXC(NOTYPE)
 #define LDA_OPARAMS_EXC_VXC_NOTYPE TYPED_LDA_OPARAMS_EXC_VXC(NOTYPE)
+#define LDA_OPARAMS_VXC_FXC_NOTYPE TYPED_LDA_OPARAMS_VXC_FXC(NOTYPE)
 
 
 
@@ -108,6 +119,8 @@ namespace ExchCXX {
 
 #define TYPED_GGA_OPARAMS_EXC_VXC(BUFFER) \
   TYPED_GGA_OPARAMS_EXC(BUFFER), TYPED_GGA_OPARAMS_VXC(BUFFER)
+#define TYPED_GGA_OPARAMS_VXC_FXC(BUFFER) \
+  TYPED_GGA_OPARAMS_VXC(BUFFER), TYPED_GGA_OPARAMS_FXC(BUFFER)
 
 
 
@@ -117,6 +130,7 @@ namespace ExchCXX {
 #define GGA_OPARAMS_FXC     TYPED_GGA_OPARAMS_FXC(host_buffer_type)
 #define GGA_OPARAMS_KXC     TYPED_GGA_OPARAMS_KXC(host_buffer_type)
 #define GGA_OPARAMS_EXC_VXC TYPED_GGA_OPARAMS_EXC_VXC(host_buffer_type)
+#define GGA_OPARAMS_VXC_FXC TYPED_GGA_OPARAMS_VXC_FXC(host_buffer_type)
 
 #define DEV_GGA_IPARAMS         TYPED_GGA_IPARAMS(int,const_device_buffer_type)
 #define DEV_GGA_OPARAMS_EXC     TYPED_GGA_OPARAMS_EXC(device_buffer_type)
@@ -124,6 +138,7 @@ namespace ExchCXX {
 #define DEV_GGA_OPARAMS_FXC     TYPED_GGA_OPARAMS_FXC(device_buffer_type)
 #define DEV_GGA_OPARAMS_KXC     TYPED_GGA_OPARAMS_KXC(device_buffer_type)
 #define DEV_GGA_OPARAMS_EXC_VXC TYPED_GGA_OPARAMS_EXC_VXC(device_buffer_type)
+#define DEV_GGA_OPARAMS_VXC_FXC TYPED_GGA_OPARAMS_VXC_FXC(device_buffer_type)
 
 #define GGA_IPARAMS_NOTYPE         TYPED_GGA_IPARAMS(NOTYPE,NOTYPE)
 #define GGA_OPARAMS_EXC_NOTYPE     TYPED_GGA_OPARAMS_EXC(NOTYPE)
@@ -131,6 +146,7 @@ namespace ExchCXX {
 #define GGA_OPARAMS_FXC_NOTYPE     TYPED_GGA_OPARAMS_FXC(NOTYPE)
 #define GGA_OPARAMS_KXC_NOTYPE     TYPED_GGA_OPARAMS_KXC(NOTYPE)
 #define GGA_OPARAMS_EXC_VXC_NOTYPE TYPED_GGA_OPARAMS_EXC_VXC(NOTYPE)
+#define GGA_OPARAMS_VXC_FXC_NOTYPE TYPED_GGA_OPARAMS_VXC_FXC(NOTYPE)
 
 
 // MGGA Parameters
@@ -139,21 +155,33 @@ namespace ExchCXX {
 #define TYPED_MGGA_OPARAMS_EXC(BUFFER) BUFFER eps
 #define TYPED_MGGA_OPARAMS_VXC(BUFFER) \
   BUFFER vrho, BUFFER vsigma, BUFFER vlapl, BUFFER vtau
+#define TYPED_MGGA_OPARAMS_FXC(BUFFER) \
+  BUFFER v2rho2, BUFFER v2rhosigma, BUFFER v2rholapl, BUFFER v2rhotau, \
+  BUFFER v2sigma2, BUFFER v2sigmalapl, BUFFER v2sigmatau, BUFFER v2lapl2, \
+  BUFFER v2lapltau, BUFFER v2tau2
 
 #define TYPED_MGGA_OPARAMS_EXC_VXC(BUFFER) \
   TYPED_MGGA_OPARAMS_EXC(BUFFER), TYPED_MGGA_OPARAMS_VXC(BUFFER)
+#define TYPED_MGGA_OPARAMS_VXC_FXC(BUFFER) \
+  TYPED_MGGA_OPARAMS_VXC(BUFFER), TYPED_MGGA_OPARAMS_FXC(BUFFER)
 
 #define MGGA_IPARAMS         TYPED_MGGA_IPARAMS(int,const_host_buffer_type)
 #define MGGA_OPARAMS_EXC     TYPED_MGGA_OPARAMS_EXC(host_buffer_type)
 #define MGGA_OPARAMS_VXC     TYPED_MGGA_OPARAMS_VXC(host_buffer_type)
+#define MGGA_OPARAMS_FXC     TYPED_MGGA_OPARAMS_FXC(host_buffer_type)
 #define MGGA_OPARAMS_EXC_VXC TYPED_MGGA_OPARAMS_EXC_VXC(host_buffer_type)
+#define MGGA_OPARAMS_VXC_FXC TYPED_MGGA_OPARAMS_VXC_FXC(host_buffer_type)
 
 #define DEV_MGGA_IPARAMS         TYPED_MGGA_IPARAMS(int,const_device_buffer_type)
 #define DEV_MGGA_OPARAMS_EXC     TYPED_MGGA_OPARAMS_EXC(device_buffer_type)
 #define DEV_MGGA_OPARAMS_VXC     TYPED_MGGA_OPARAMS_VXC(device_buffer_type)
+#define DEV_MGGA_OPARAMS_FXC     TYPED_MGGA_OPARAMS_FXC(device_buffer_type)
 #define DEV_MGGA_OPARAMS_EXC_VXC TYPED_MGGA_OPARAMS_EXC_VXC(device_buffer_type)
+#define DEV_MGGA_OPARAMS_VXC_FXC TYPED_MGGA_OPARAMS_VXC_FXC(device_buffer_type)
 
 #define MGGA_IPARAMS_NOTYPE         TYPED_MGGA_IPARAMS(NOTYPE,NOTYPE)
 #define MGGA_OPARAMS_EXC_NOTYPE     TYPED_MGGA_OPARAMS_EXC(NOTYPE)
 #define MGGA_OPARAMS_VXC_NOTYPE     TYPED_MGGA_OPARAMS_VXC(NOTYPE)
+#define MGGA_OPARAMS_FXC_NOTYPE     TYPED_MGGA_OPARAMS_FXC(NOTYPE)
 #define MGGA_OPARAMS_EXC_VXC_NOTYPE TYPED_MGGA_OPARAMS_EXC_VXC(NOTYPE)
+#define MGGA_OPARAMS_VXC_FXC_NOTYPE TYPED_MGGA_OPARAMS_VXC_FXC(NOTYPE)

@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -71,12 +77,10 @@ class BuiltinKernelInterface : public XCKernelImpl {
   bool is_lda_()       const noexcept override;
   bool is_gga_()       const noexcept override;
   bool is_mgga_()      const noexcept override;
-  bool is_hyb_()       const noexcept override;
   bool is_epc_()       const noexcept override;
   bool needs_laplacian_()       const noexcept override;
   bool needs_tau_()    const noexcept override;
   bool is_polarized_() const noexcept override;
-  double hyb_exx_()    const noexcept override;
 
   bool supports_inc_interface_() const noexcept override;
 
@@ -85,18 +89,30 @@ class BuiltinKernelInterface : public XCKernelImpl {
   LDA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const override;
   LDA_EXC_INC_GENERATOR( eval_exc_inc_ )         const override;
   LDA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const override;
+  LDA_FXC_GENERATOR( eval_fxc_ )                 const override;
+  LDA_FXC_INC_GENERATOR( eval_fxc_inc_ )         const override;
+  LDA_VXC_FXC_GENERATOR( eval_vxc_fxc_ )         const override;
+  LDA_VXC_FXC_INC_GENERATOR( eval_vxc_fxc_inc_ ) const override;
 
   // GGA interface
   GGA_EXC_GENERATOR( eval_exc_ )                 const override;
   GGA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const override;
   GGA_EXC_INC_GENERATOR( eval_exc_inc_ )         const override;
   GGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const override;
+  GGA_FXC_GENERATOR( eval_fxc_ )                 const override;
+  GGA_FXC_INC_GENERATOR( eval_fxc_inc_ )         const override;
+  GGA_VXC_FXC_GENERATOR( eval_vxc_fxc_ )         const override;
+  GGA_VXC_FXC_INC_GENERATOR( eval_vxc_fxc_inc_ ) const override;
 
   // MGGA interface
   MGGA_EXC_GENERATOR( eval_exc_ )                 const override;
   MGGA_EXC_VXC_GENERATOR( eval_exc_vxc_ )         const override;
   MGGA_EXC_INC_GENERATOR( eval_exc_inc_ )         const override;
   MGGA_EXC_VXC_INC_GENERATOR( eval_exc_vxc_inc_ ) const override;
+  MGGA_FXC_GENERATOR( eval_fxc_ )                 const override;
+  MGGA_FXC_INC_GENERATOR( eval_fxc_inc_ )         const override;
+  MGGA_VXC_FXC_GENERATOR( eval_vxc_fxc_ )         const override;
+  MGGA_VXC_FXC_INC_GENERATOR( eval_vxc_fxc_inc_ ) const override;
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 
@@ -105,18 +121,30 @@ class BuiltinKernelInterface : public XCKernelImpl {
   LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const override;
   LDA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const override;
   LDA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const override;
+  LDA_FXC_GENERATOR_DEVICE( eval_fxc_device_ )                 const override;
+  LDA_FXC_INC_GENERATOR_DEVICE( eval_fxc_inc_device_ )         const override;
+  LDA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device_ )         const override;
+  LDA_VXC_FXC_INC_GENERATOR_DEVICE( eval_vxc_fxc_inc_device_ ) const override;
 
   // GGA interface
   GGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )                 const override;
   GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const override;
   GGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const override;
   GGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const override;
+  GGA_FXC_GENERATOR_DEVICE( eval_fxc_device_ )                 const override;
+  GGA_FXC_INC_GENERATOR_DEVICE( eval_fxc_inc_device_ )         const override;
+  GGA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device_ )         const override;
+  GGA_VXC_FXC_INC_GENERATOR_DEVICE( eval_vxc_fxc_inc_device_ ) const override;
 
   // MGGA interface
   MGGA_EXC_GENERATOR_DEVICE( eval_exc_device_ )                 const override;
   MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device_ )         const override;
   MGGA_EXC_INC_GENERATOR_DEVICE( eval_exc_inc_device_ )         const override;
   MGGA_EXC_VXC_INC_GENERATOR_DEVICE( eval_exc_vxc_inc_device_ ) const override;
+  MGGA_FXC_GENERATOR_DEVICE( eval_fxc_device_ )                 const override;
+  MGGA_FXC_INC_GENERATOR_DEVICE( eval_fxc_inc_device_ )         const override;
+  MGGA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device_ )         const override;
+  MGGA_VXC_FXC_INC_GENERATOR_DEVICE( eval_vxc_fxc_inc_device_ ) const override;
 
 #endif
 

@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -65,6 +71,9 @@ constexpr double m_pi_sq     = 9.869604401089357992305e+00;
 //constexpr double m_cbrt_one_ov_pi = 6.82784063255295725625e-01;
 constexpr double m_cbrt_one_ov_pi = 6.82784063255295503581e-01;
 constexpr double m_cbrt_pi_sq     = 2.145029397111025470934e+00;
+
+constexpr double X2S       = 0.1282782438530421943003109254455883701296L;
+constexpr double X_FACTOR_C    = 0.9305257363491000250020102180716672510262L;
 
 }
 }
