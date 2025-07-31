@@ -4,10 +4,6 @@ ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
 through Lawrence Berkeley National Laboratory (subject to receipt of
 any required approvals from the U.S. Dept. of Energy). All rights reserved.
 
-If you have questions about your rights to use or distribute this software,
-please contact Berkeley Lab's Intellectual Property Office at
-IPO@lbl.gov.
-
 NOTICE.  This Software was developed under funding from the U.S. Department
 of Energy and the U.S. Government consequently retains certain rights.  As
 such, the U.S. Government has been granted for itself and others acting on
@@ -156,8 +152,6 @@ b3lyp.eval_exc_vxc_device( npts, rho_device, gamma_device, exc_device, vrho_devi
 | Perdew-Zunger 86 Modified            | `XC_LDA_C_PZ_MOD`     | `Kernel::PZ86_LDA_MOD`   |    Y    |
 | Becke Exchange 88                    | `XC_GGA_X_B88`        | `Kernel::B88`            |    Y    |
 | Lee-Yang-Parr                        | `XC_GGA_C_LYP`        | `Kernel::LYP`            |    Y    |
-| PBE0                                 | `XC_HYB_GGA_XC_PBEH`  | `Kernel::PBE0`           |    Y    |
-| B3LYP                                | `XC_HYB_GGA_XC_B3LYP` | `Kernel::B3LYP`          |    Y    |
 
 
 

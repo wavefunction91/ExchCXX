@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -69,6 +75,7 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::SlaterExchange, XC_LDA_X             },
   { Kernel::VWN3,           XC_LDA_C_VWN_3       },
   { Kernel::VWN5,           XC_LDA_C_VWN_RPA     },
+  { Kernel::VWN,            XC_LDA_C_VWN         },
   { Kernel::PZ81,           XC_LDA_C_PZ          },
   { Kernel::PZ81_MOD,       XC_LDA_C_PZ_MOD      },
   { Kernel::PW91_LDA,       XC_LDA_C_PW          },
@@ -81,6 +88,29 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::revPBE_X,       XC_GGA_X_PBE_R       },
   { Kernel::B88,            XC_GGA_X_B88         },
   { Kernel::LYP,            XC_GGA_C_LYP         },
+  { Kernel::B97_D,          XC_GGA_XC_B97_D      },
+  { Kernel::ITYH_X,         XC_GGA_X_ITYH        },
+  { Kernel::P86_C,          XC_GGA_C_P86         },
+  { Kernel::P86VWN_FT_C,    XC_GGA_C_P86VWN_FT   },
+  { Kernel::PW91_C,         XC_GGA_C_PW91        },
+  { Kernel::PBE_SOL_C,      XC_GGA_C_PBE_SOL     },
+  { Kernel::BMK_C,          XC_GGA_C_BMK         },
+  { Kernel::N12_C,          XC_GGA_C_N12         },
+  { Kernel::N12_SX_C,       XC_GGA_C_N12_SX      },
+  { Kernel::SOGGA11_X_C,    XC_GGA_C_SOGGA11_X   },
+  { Kernel::PW91_X,         XC_GGA_X_PW91        },
+  { Kernel::MPW91_X,        XC_GGA_X_MPW91       },
+  { Kernel::OPTX_X,         XC_GGA_X_OPTX        },
+  { Kernel::RPBE_X,         XC_GGA_X_RPBE        },
+  { Kernel::SOGGA11_X_X,    XC_HYB_GGA_X_SOGGA11_X },
+  { Kernel::PW86_X,         XC_GGA_X_PW86        },
+  { Kernel::wB97_XC,        XC_HYB_GGA_XC_WB97   },
+  { Kernel::wB97X_XC,       XC_HYB_GGA_XC_WB97X  },
+  { Kernel::wB97X_V_XC,     XC_HYB_GGA_XC_WB97X_V},
+  { Kernel::wB97X_D_XC,     XC_HYB_GGA_XC_WB97X_D},
+  { Kernel::wB97X_D3_XC,    XC_HYB_GGA_XC_WB97X_D3},
+  { Kernel::HJS_PBE_X,      XC_GGA_X_HJS_PBE },
+  { Kernel::wPBEh_X_default0, XC_GGA_X_WPBEH },
 
   // MGGA Functionals
   { Kernel::SCAN_C,         XC_MGGA_C_SCAN       },
@@ -96,14 +126,50 @@ std::unordered_map< Kernel, int > libxc_kernel_map {
   { Kernel::M062X_C,        XC_MGGA_C_M06_2X     },
   { Kernel::PKZB_X,         XC_MGGA_X_PKZB       },
   { Kernel::PKZB_C,         XC_MGGA_C_PKZB       },
+  { Kernel::TPSS_X,         XC_MGGA_X_TPSS       },
+  { Kernel::revTPSS_X,      XC_MGGA_X_REVTPSS    },
+  { Kernel::M06_L_X,        XC_MGGA_X_M06_L      },
+  { Kernel::M06_X,          XC_HYB_MGGA_X_M06    },
+  { Kernel::revM06_L_X,     XC_MGGA_X_REVM06_L   },
+  { Kernel::M06_HF_X,       XC_HYB_MGGA_X_M06_HF },
+  { Kernel::M06_SX_X,       XC_HYB_MGGA_X_M06_SX },
+  { Kernel::M06_L_C,        XC_MGGA_C_M06_L      },
+  { Kernel::M06_C,          XC_MGGA_C_M06        },
+  { Kernel::revM06_L_C,     XC_MGGA_C_REVM06_L   },
+  { Kernel::M06_HF_C,       XC_MGGA_C_M06_HF     },
+  { Kernel::M06_SX_C,       XC_MGGA_C_M06_SX     },
+  { Kernel::M05_2X_C,       XC_MGGA_C_M05_2X     },
+  { Kernel::M05_C,          XC_MGGA_C_M05        },
+  { Kernel::M08_HX_C,       XC_MGGA_C_M08_HX     },
+  { Kernel::M08_SO_C,       XC_MGGA_C_M08_SO     },
+  { Kernel::CF22D_C,        XC_MGGA_C_CF22D      },
+  { Kernel::M11_C,          XC_MGGA_C_M11        },
+  { Kernel::MN12_L_C,       XC_MGGA_C_MN12_L     },
+  { Kernel::MN12_SX_C,      XC_MGGA_C_MN12_SX    },
+  { Kernel::MN15_C,         XC_MGGA_C_MN15       },
+  { Kernel::MN15_L_C,       XC_MGGA_C_MN15_L     },
+  { Kernel::TPSS_C,         XC_MGGA_C_TPSS       },
+  { Kernel::revTPSS_C,      XC_MGGA_C_REVTPSS    },
+  { Kernel::RSCAN_C,        XC_MGGA_C_RSCAN      },
+  { Kernel::BC95_C,         XC_MGGA_C_BC95       },
+  { Kernel::mBEEF_X,        XC_MGGA_X_MBEEF      },
+  { Kernel::RSCAN_X,        XC_MGGA_X_RSCAN      },
+  { Kernel::BMK_X,          XC_HYB_MGGA_X_BMK    },
+  { Kernel::M08_HX_X,       XC_HYB_MGGA_X_M08_HX },
+  { Kernel::M08_SO_X,       XC_HYB_MGGA_X_M08_SO },
+  { Kernel::MN12_L_X,       XC_MGGA_X_MN12_L     },
+  { Kernel::MN15_L_X,       XC_MGGA_X_MN15_L     },
+  { Kernel::MN15_X,         XC_HYB_MGGA_X_MN15   },
+  { Kernel::CF22D_X,        XC_HYB_MGGA_X_CF22D  },
+  { Kernel::MN12_SX_X,      XC_HYB_MGGA_X_MN12_SX},
+  { Kernel::M11_X,          XC_HYB_MGGA_X_M11    },
+  { Kernel::M05_X,          XC_HYB_MGGA_X_M05    },
+  { Kernel::M05_2X_X,       XC_HYB_MGGA_X_M05_2X },
 
   // KEDFs
   { Kernel::PC07_K,         XC_MGGA_K_PC07       },
   { Kernel::PC07OPT_K,      XC_MGGA_K_PC07_OPT   },
 
-  // Hybrid GGA Functionals
-  { Kernel::B3LYP,          XC_HYB_GGA_XC_B3LYP  },
-  { Kernel::PBE0,           XC_HYB_GGA_XC_PBEH   },
 };
 
 
@@ -207,16 +273,6 @@ bool LibxcKernelImpl::is_mgga_() const noexcept {
     or (kernel_.info->family == XC_FAMILY_HYB_MGGA);
 }
 
-bool LibxcKernelImpl::is_hyb_() const noexcept {
-  return
-    (kernel_.info->family == XC_FAMILY_HYB_GGA ) or
-    (kernel_.info->family == XC_FAMILY_HYB_MGGA)
-#if XC_MAJOR_VERSION > 6
-    or (kernel_.info->family == XC_FAMILY_HYB_LDA)
-#endif
-  ;
-}
-
 bool LibxcKernelImpl::needs_laplacian_() const noexcept {
   return kernel_.info->flags & XC_FLAGS_NEEDS_LAPLACIAN;
 }
@@ -245,9 +301,7 @@ bool LibxcKernelImpl::is_epc_() const noexcept {
 }
 
 
-double LibxcKernelImpl::hyb_exx_() const noexcept {
-  return is_hyb_() ? xc_hyb_exx_coef(&kernel_) : 0.0;
-}
+// }
 
 bool LibxcKernelImpl::supports_inc_interface_() const noexcept {
   return false;
@@ -272,10 +326,30 @@ LDA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
 }
 
+LDA_FXC_GENERATOR( LibxcKernelImpl::eval_fxc_ ) const {
+
+  throw_if_uninitialized();
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
+  xc_lda_fxc( &kernel_, N, rho, fxc);
+
+}
+
+LDA_VXC_FXC_GENERATOR( LibxcKernelImpl::eval_vxc_fxc_ ) const {
+
+  throw_if_uninitialized();
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT LDA",  is_lda() );
+  xc_lda_vxc_fxc( &kernel_, N, rho, vxc, fxc );
+
+}
+
 
 UNUSED_INC_INTERFACE_GENERATOR( LDA, EXC, LibxcKernelImpl::eval_exc_inc_,     
                                 const )
 UNUSED_INC_INTERFACE_GENERATOR( LDA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_, 
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( LDA, FXC, LibxcKernelImpl::eval_fxc_inc_,
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( LDA, VXC_FXC, LibxcKernelImpl::eval_vxc_fxc_inc_,
                                 const )
 
 
@@ -297,11 +371,30 @@ GGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
 }
 
+GGA_FXC_GENERATOR( LibxcKernelImpl::eval_fxc_ ) const {
+
+  throw_if_uninitialized();
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
+  xc_gga_fxc( &kernel_, N, rho, sigma, v2rho2, v2rhosigma, v2sigma2 );
+
+}
+
+GGA_VXC_FXC_GENERATOR( LibxcKernelImpl::eval_vxc_fxc_ ) const {
+
+  throw_if_uninitialized();
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
+  xc_gga_vxc_fxc( &kernel_, N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2 );
+
+}
+
 UNUSED_INC_INTERFACE_GENERATOR( GGA, EXC, LibxcKernelImpl::eval_exc_inc_,     
                                 const )
 UNUSED_INC_INTERFACE_GENERATOR( GGA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_, 
                                 const )
-
+UNUSED_INC_INTERFACE_GENERATOR( GGA, FXC, LibxcKernelImpl::eval_fxc_inc_,
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( GGA, VXC_FXC, LibxcKernelImpl::eval_vxc_fxc_inc_,
+                                const )
   
 // mGGA interface
 MGGA_EXC_GENERATOR( LibxcKernelImpl::eval_exc_ ) const {
@@ -321,10 +414,32 @@ MGGA_EXC_VXC_GENERATOR( LibxcKernelImpl::eval_exc_vxc_ ) const {
 
 }
 
+MGGA_FXC_GENERATOR( LibxcKernelImpl::eval_fxc_ ) const {
+
+  throw_if_uninitialized();
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
+  xc_mgga_fxc( &kernel_, N, rho, sigma, lapl, tau, v2rho2, v2rhosigma, v2rholapl, v2rhotau,
+               v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2 );
+
+}
+
+MGGA_VXC_FXC_GENERATOR( LibxcKernelImpl::eval_vxc_fxc_ ) const {
+
+  throw_if_uninitialized();
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
+  xc_mgga_vxc_fxc( &kernel_, N, rho, sigma, lapl, tau, vrho, vsigma, vlapl, vtau,
+                   v2rho2, v2rhosigma, v2rholapl, v2rhotau, v2sigma2, 
+                   v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2 );
+
+}
 
 UNUSED_INC_INTERFACE_GENERATOR( MGGA, EXC, LibxcKernelImpl::eval_exc_inc_,     
                                 const )
 UNUSED_INC_INTERFACE_GENERATOR( MGGA, EXC_VXC, LibxcKernelImpl::eval_exc_vxc_inc_, 
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( MGGA, FXC, LibxcKernelImpl::eval_fxc_inc_,
+                                const )
+UNUSED_INC_INTERFACE_GENERATOR( MGGA, VXC_FXC, LibxcKernelImpl::eval_vxc_fxc_inc_,
                                 const )
 
 

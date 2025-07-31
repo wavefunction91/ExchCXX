@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -66,6 +72,70 @@ enum class Functional {
   EPC17_2,
   EPC18_1,
   EPC18_2,
+
+  B97D,
+  B97D3ZERO,
+  CAMB3LYP,
+  LDA,
+  M06L,
+  SCAN0,
+  SPW92,
+  TPSS,
+  TPSSh,
+  TPSS0,
+  VWN3,
+  VWN5,
+  LRCwPBE,
+  LRCwPBEh,
+  BP86,
+  HSE03,
+  HSE06,
+  revB3LYP,
+  revPBE0,
+  revTPSS,
+  revTPSSh,
+  PW91,
+  mBEEF,
+  B3PW91,
+  O3LYP,
+  OLYP,
+  OPBE,
+  MPW1K,
+  RPBE,
+  B88,
+  MPW91,
+  RSCAN,
+  TUNEDCAMB3LYP,
+  wB97,
+  wB97X,
+  wB97XD,
+  wB97XD3,
+  LCwPBE,
+  X3LYP,
+  XLYP,
+  BHANDH,
+  BMK,
+  BP86VWN,
+  PW86B95,
+  PW86PBE,
+  R2SCAN0,
+  R2SCANh,
+  R2SCAN50,
+  M05,
+  M06,
+  M08HX,
+  M08SO,
+  M052X,
+  M06SX,
+  CF22D,
+  SOGGA11X,
+  M06HF,
+  M11,
+  MN12L,
+  MN12SX,
+  MN15,
+  MN15L,
+  revM06L,
 };
 
 extern BidirectionalMap<std::string, Functional> functional_map;

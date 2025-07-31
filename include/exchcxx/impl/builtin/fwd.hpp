@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -57,6 +63,7 @@ class BuiltinKernel;
 struct BuiltinSlaterExchange;
 struct BuiltinVWN3;
 struct BuiltinVWN_RPA;
+struct BuiltinVWN;
 struct BuiltinPW91_LDA;
 struct BuiltinPW91_LDA_MOD;
 struct BuiltinPW91_LDA_RPA;
@@ -68,9 +75,37 @@ struct BuiltinLYP;
 struct BuiltinPBE_X;
 struct BuiltinRevPBE_X;
 struct BuiltinPBE_C;
+struct BuiltinB97_D;
+struct BuiltinITYH_X;
+struct BuiltinITYH_X_033;
+struct BuiltinITYH_X_015;
+struct BuiltinP86_C;
+struct BuiltinP86VWN_FT_C;
+struct BuiltinPW91_C;
+struct BuiltinPBE_SOL_C;
+struct BuiltinBMK_C;
+struct BuiltinN12_C;
+struct BuiltinN12_SX_C;
+struct BuiltinSOGGA11_X_C;
+struct BuiltinPW91_X;
+struct BuiltinMPW91_X;
+struct BuiltinOPTX_X;
+struct BuiltinRPBE_X;
+struct BuiltinSOGGA11_X_X;
+struct BuiltinPW86_X;
+struct BuiltinWB97_XC;
+struct BuiltinWB97X_XC;
+struct BuiltinWB97X_V_XC;
+struct BuiltinWB97X_D_XC;
+struct BuiltinWB97X_D3_XC;
+struct BuiltinHJS_PBE_X;
+struct BuiltinLCwPBE_wPBEh_X;
+struct BuiltinLRCwPBE_HJS_PBE_X;
+struct BuiltinLRCwPBEh_HJS_PBE_X;
+struct BuiltinWPBEh_X_default0;
+struct BuiltinHSE03_wPBEh_X;
+struct BuiltinHSE06_wPBEh_X;
 
-struct BuiltinB3LYP;
-struct BuiltinPBE0;
 
 struct BuiltinSCAN_X;
 struct BuiltinSCAN_C;
@@ -81,6 +116,46 @@ struct BuiltinM062X_C;
 struct BuiltinPKZB_X;
 struct BuiltinPKZB_C;
 struct BuiltinFT98_X;
+struct BuiltinTPSS_X;
+struct BuiltinRevTPSS_X;
+struct BuiltinM06_L_X;
+struct BuiltinM06_X;
+struct BuiltinM06_HF_X;
+struct BuiltinRevM06_L_X;
+struct BuiltinM06_SX_X;
+struct BuiltinM06_L_C;
+struct BuiltinM06_C;
+struct BuiltinM06_HF_C;
+struct BuiltinRevM06_L_C;
+struct BuiltinM06_SX_C;
+struct BuiltinM05_2X_C;
+struct BuiltinM05_C;
+struct BuiltinM08_HX_C;
+struct BuiltinM08_SO_C;
+struct BuiltinCF22D_C;
+struct BuiltinM11_C;
+struct BuiltinMN12_L_C;
+struct BuiltinMN12_SX_C;
+struct BuiltinMN15_C;
+struct BuiltinMN15_L_C;
+struct BuiltinTPSS_C;
+struct BuiltinRevTPSS_C;
+struct BuiltinRSCAN_C;
+struct BuiltinBC95_C;
+struct BuiltinMBEEF_X;
+struct BuiltinRSCAN_X;
+struct BuiltinBMK_X;
+struct BuiltinM08_HX_X;
+struct BuiltinM08_SO_X;
+struct BuiltinMN12_L_X;
+struct BuiltinMN15_L_X;
+struct BuiltinMN15_X;
+struct BuiltinCF22D_X;
+struct BuiltinMN12_SX_X;
+struct BuiltinM11_X;
+struct BuiltinM05_X;
+struct BuiltinM05_2X_X;
+
 
 struct BuiltinPC07_K;
 struct BuiltinPC07OPT_K;

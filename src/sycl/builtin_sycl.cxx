@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -600,8 +606,6 @@ GGA_GENERATE_DEVICE_HELPERS( BuiltinPBE_X );
 GGA_GENERATE_DEVICE_HELPERS( BuiltinRevPBE_X );
 GGA_GENERATE_DEVICE_HELPERS( BuiltinPBE_C );
 
-GGA_GENERATE_DEVICE_HELPERS( BuiltinB3LYP );
-GGA_GENERATE_DEVICE_HELPERS( BuiltinPBE0  );
 
 MGGA_GENERATE_DEVICE_HELPERS( BuiltinSCAN_X );
 MGGA_GENERATE_DEVICE_HELPERS( BuiltinSCAN_C );

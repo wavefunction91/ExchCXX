@@ -2,7 +2,7 @@ cmake_minimum_required( VERSION 3.21 FATAL_ERROR ) # Require CMake 3.21+
 include(FetchContent)
 
 # Set up project definition + version information
-project( ExchCXX VERSION 0.1.0 LANGUAGES C CXX )
+project( ExchCXX VERSION 1.0.0 LANGUAGES C CXX )
 
 # ExchCXX Options
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )

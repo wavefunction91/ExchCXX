@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,6 +51,7 @@
 
 #pragma once
 #include <exchcxx/enums/enums.hpp>
+#include <exchcxx/xc_functional.hpp>
 #include <array>
 #include <vector>
 
@@ -54,6 +61,7 @@ struct lda_reference {
   std::vector<double> rho;
   std::vector<double> exc;
   std::vector<double> vrho;
+  std::vector<double> v2rho2;
 };
 
 struct gga_reference {
@@ -63,6 +71,9 @@ struct gga_reference {
   std::vector<double> exc;
   std::vector<double> vrho;
   std::vector<double> vsigma;
+  std::vector<double> v2rho2;
+  std::vector<double> v2sigma2;
+  std::vector<double> v2rhosigma;
 };
 
 struct mgga_reference {
@@ -76,6 +87,17 @@ struct mgga_reference {
   std::vector<double> vsigma;
   std::vector<double> vlapl;
   std::vector<double> vtau;
+
+  std::vector<double> v2rho2;
+  std::vector<double> v2rhosigma;
+  std::vector<double> v2rholapl;
+  std::vector<double> v2rhotau;
+  std::vector<double> v2sigma2;
+  std::vector<double> v2sigmalapl;
+  std::vector<double> v2sigmatau;
+  std::vector<double> v2lapl2;
+  std::vector<double> v2lapltau;
+  std::vector<double> v2tau2;
 };
 
 lda_reference load_lda_reference_values(ExchCXX::Kernel, ExchCXX::Spin);
@@ -91,4 +113,4 @@ std::pair<int,std::vector<double>> load_reference_sigma(ExchCXX::Spin);
 std::pair<int,std::vector<double>> load_reference_lapl(ExchCXX::Spin);
 std::pair<int,std::vector<double>> load_reference_tau(ExchCXX::Spin);
 
-double load_reference_exx( ExchCXX::Kernel );
+ExchCXX::HybCoeffs load_reference_exx( ExchCXX::Functional func );

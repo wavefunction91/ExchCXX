@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -196,8 +202,6 @@ void check_meta( Backend backend, Spin polar, Args&&... args ) {
 
   bool should_be_polarized = std::any_of( kerns.begin(), kerns.end(),
     [](const auto& k) { return k.is_polarized(); } ); 
-  bool should_be_hyb = std::any_of( kerns.begin(), kerns.end(),
-    [](const auto& k) { return k.is_hyb(); } );
   bool should_need_lapl = std::any_of( kerns.begin(), kerns.end(),
     [](const auto& k) { return k.needs_laplacian(); } );
 
@@ -205,18 +209,29 @@ void check_meta( Backend backend, Spin polar, Args&&... args ) {
   CHECK( func.is_gga()        == should_be_gga        );
   CHECK( func.is_lda()        == should_be_lda        );
   CHECK( func.is_polarized()  == should_be_polarized  );
-  CHECK( func.is_hyb()        == should_be_hyb        );
   CHECK( func.is_epc()        == should_be_epc        );
   CHECK( func.needs_laplacian() == should_need_lapl   );
 
-  double total_exx = std::accumulate( kerns.begin(), kerns.end(), 0.,
-    [](const auto &a, const auto &b){ return a + b.hyb_exx(); } );
-  CHECK( func.hyb_exx() == Approx( total_exx ) );
 
 }
 
 
 TEST_CASE( "XC Functional Metadata", "[xc-meta]" ) {
+
+  SECTION("XCFunctional hyb_coef ref comparison") {
+
+    for (auto pair : string_functional_pairs) {
+      auto func_enum = pair.second;
+      XCFunctional func( Backend::builtin, func_enum, Spin::Polarized );
+      auto exx = load_reference_exx(func_enum);
+      INFO( "hyb_coef check Fails: functional is " << func_enum );
+      CHECK( exx ==  func.hyb_exx() );
+      if( exx != HybCoeffs({0.0, 0.0, 0.0})) CHECK( func.is_hyb() );
+      if (exx.beta != 0.0 || exx.omega != 0.0) CHECK( func.is_range_separated() );
+    }
+
+  }
+
 
   SECTION( "LDA" ) {
     check_meta( Backend::libxc, Spin::Unpolarized, 
@@ -242,25 +257,9 @@ TEST_CASE( "XC Functional Metadata", "[xc-meta]" ) {
   }
 
 
-  SECTION( "Hyb" ) {
-    check_meta( Backend::libxc, Spin::Unpolarized, 
-      Kernel::B3LYP
-    );
-  }
-  SECTION( "Hyb + Hyb" ) {
-    check_meta( Backend::libxc, Spin::Unpolarized, 
-      Kernel::B3LYP, Kernel::PBE0
-    );
-  }
-
   SECTION( "LDA + GGA" ) {
     check_meta( Backend::libxc, Spin::Unpolarized, 
       Kernel::B88, Kernel::VWN3 
-    );
-  }
-  SECTION( "Hyb + Pure" ) {
-    check_meta( Backend::libxc, Spin::Unpolarized, 
-      Kernel::B3LYP, Kernel::LYP
     );
   }
 
@@ -810,3 +809,5 @@ TEST_CASE( "functional_map Test", "[xc-functional-map]") {
   }
 
 }
+
+

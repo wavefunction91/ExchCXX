@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,6 +50,7 @@
  */
 
 #include "reference_values.hpp"
+#include "ut_common.hpp"
 #include <exchcxx/exchcxx.hpp>
 
 std::vector<double> rho = {0.1, 0.2, 0.3, 0.4, 0.5};
@@ -436,9 +443,14 @@ lda_reference gen_lda_reference_values(ExchCXX::Backend backend,
 
   ref_vals.exc.resize( func.exc_buffer_len( ref_vals.npts ) );
   ref_vals.vrho.resize( func.vrho_buffer_len( ref_vals.npts ) );
+  ref_vals.v2rho2.resize( func.v2rho2_buffer_len( ref_vals.npts ) );
 
   func.eval_exc_vxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.exc.data(),
     ref_vals.vrho.data() );
+
+  if(!is_deorbitalized(kern))
+    func.eval_fxc( ref_vals.npts, ref_vals.rho.data(), 
+      ref_vals.v2rho2.data() );
 
   return ref_vals;
 
@@ -457,9 +469,15 @@ gga_reference gen_gga_reference_values(ExchCXX::Backend backend,
   ref_vals.exc.resize( func.exc_buffer_len( ref_vals.npts ) );
   ref_vals.vrho.resize( func.vrho_buffer_len( ref_vals.npts ) );
   ref_vals.vsigma.resize( func.vsigma_buffer_len( ref_vals.npts ) );
+  ref_vals.v2rho2.resize( func.v2rho2_buffer_len( ref_vals.npts ) );
+  ref_vals.v2sigma2.resize( func.v2sigma2_buffer_len( ref_vals.npts ) );
+  ref_vals.v2rhosigma.resize( func.v2rhosigma_buffer_len( ref_vals.npts ) );
 
   func.eval_exc_vxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.sigma.data(), 
     ref_vals.exc.data(), ref_vals.vrho.data(), ref_vals.vsigma.data() );
+  if(!is_deorbitalized(kern))
+    func.eval_fxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.sigma.data(),
+      ref_vals.v2rho2.data(), ref_vals.v2rhosigma.data() , ref_vals.v2sigma2.data());
 
   return ref_vals;
 
@@ -486,10 +504,30 @@ mgga_reference gen_mgga_reference_values(ExchCXX::Backend backend,
   ref_vals.vlapl.resize( func.vlapl_buffer_len( ref_vals.npts ) );
   ref_vals.vtau.resize( func.vtau_buffer_len( ref_vals.npts ) );
 
+  ref_vals.v2rho2.resize( func.v2rho2_buffer_len( ref_vals.npts ) );
+  ref_vals.v2rhosigma.resize( func.v2rhosigma_buffer_len( ref_vals.npts ) );
+  ref_vals.v2rholapl.resize( func.v2rholapl_buffer_len( ref_vals.npts ) );
+  ref_vals.v2rhotau.resize( func.v2rhotau_buffer_len( ref_vals.npts ) );
+  ref_vals.v2sigma2.resize( func.v2sigma2_buffer_len( ref_vals.npts ) );
+  ref_vals.v2sigmalapl.resize( func.v2sigmalapl_buffer_len( ref_vals.npts ) );
+  ref_vals.v2sigmatau.resize( func.v2sigmatau_buffer_len( ref_vals.npts ) );
+  ref_vals.v2lapl2.resize( func.v2lapl2_buffer_len( ref_vals.npts ) );
+  ref_vals.v2lapltau.resize( func.v2lapltau_buffer_len( ref_vals.npts ) );
+  ref_vals.v2tau2.resize( func.v2tau2_buffer_len( ref_vals.npts ) );
+
   func.eval_exc_vxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.sigma.data(), 
     ref_vals.lapl.data(), ref_vals.tau.data(), ref_vals.exc.data(), 
     ref_vals.vrho.data(), ref_vals.vsigma.data(), ref_vals.vlapl.data(),
     ref_vals.vtau.data() );
+
+  if(!is_deorbitalized(kern))
+    func.eval_fxc( ref_vals.npts, ref_vals.rho.data(), ref_vals.sigma.data(),
+      ref_vals.lapl.data(), ref_vals.tau.data(), ref_vals.v2rho2.data(),
+      ref_vals.v2rhosigma.data(), ref_vals.v2rholapl.data(), 
+      ref_vals.v2rhotau.data(), ref_vals.v2sigma2.data(), 
+      ref_vals.v2sigmalapl.data(), ref_vals.v2sigmatau.data(),
+      ref_vals.v2lapl2.data(), ref_vals.v2lapltau.data(),
+      ref_vals.v2tau2.data() );
 
   return ref_vals;
 
@@ -566,16 +604,56 @@ std::pair<int,std::vector<double>> load_reference_tau(ExchCXX::Spin s) {
 }
 
 
-double load_reference_exx( ExchCXX::Kernel kern ) {
+ExchCXX::HybCoeffs load_reference_exx( ExchCXX::Functional func ) {
 
   using namespace ExchCXX;
 
-  double exx;
-  switch(kern) {
-    case Kernel::B3LYP:    exx = 0.2;  break;
-    case Kernel::PBE0:     exx = 0.25; break;
-    case Kernel::M062X_X:  exx = 0.54; break;
-    default:               exx = 0;
+  HybCoeffs exx;
+  switch(func) {
+    case Functional::B3LYP:    exx = {0.2,0.0,0.0}; break;
+    case Functional::PBE0:     exx = {0.25,0.0,0.0}; break;
+    case Functional::M062X:  exx = {0.54,0.0,0.0}; break;
+    
+    case Functional::CAMB3LYP:  exx = {0.65, -0.46, 0.33}; break;
+    case Functional::SCAN0:  exx = {0.25, 0, 0.0}; break;
+    case Functional::TPSSh:  exx = {0.1, 0, 0.0}; break;
+    case Functional::TPSS0:  exx = {0.25, 0, 0.0}; break;
+    case Functional::LRCwPBE:  exx = {1.0, -1.0, 0.3}; break;
+    case Functional::LRCwPBEh:  exx = {1.0, -0.8, 0.2}; break;
+    case Functional::HSE03:  exx = {0.0, 0.25, 0.10606601717798213}; break;
+    case Functional::HSE06:  exx = {0.0, 0.25, 0.11}; break;
+    case Functional::revB3LYP:  exx = {0.2, 0, 0.0}; break;
+    case Functional::revPBE0:  exx = {0.25, 0, 0.0}; break;
+    case Functional::revTPSSh:  exx = {0.1, 0, 0.0}; break;
+    case Functional::B3PW91:  exx = {0.2, 0, 0.0}; break;
+    case Functional::O3LYP:  exx = {0.1161, 0, 0.0}; break;
+    case Functional::MPW1K:  exx = {0.428, 0, 0.0}; break;
+    case Functional::TUNEDCAMB3LYP:  exx = {1.0, -0.9201, 0.15}; break;
+    case Functional::wB97:  exx = {1.0, -1.0, 0.4}; break;
+    case Functional::wB97X:  exx = {1.0, -0.842294, 0.3}; break;
+    case Functional::wB97XD:  exx = {1.0, -0.777964, 0.2}; break;
+    case Functional::wB97XD3:  exx = {1.0, -0.804272, 0.25}; break;
+    case Functional::LCwPBE:  exx = {1.0, -1.0, 0.4}; break;
+    case Functional::X3LYP:  exx = {0.218, 0, 0.0}; break;
+    case Functional::BHANDH:  exx = {0.5, 0, 0.0}; break;
+    case Functional::BMK:  exx = {0.42, 0, 0.0}; break;
+    case Functional::PW86B95:  exx = {0.29, 0, 0.0}; break;
+    case Functional::R2SCAN0:  exx = {0.25, 0, 0.0}; break;
+    case Functional::R2SCANh:  exx = {0.1, 0, 0.0}; break;
+    case Functional::R2SCAN50:  exx = {0.5, 0, 0.0}; break;
+    case Functional::M05:  exx = {0.28, 0, 0.0}; break;
+    case Functional::M06:  exx = {0.27, 0, 0.0}; break;
+    case Functional::M08HX:  exx = {0.5223, 0, 0.0}; break;
+    case Functional::M08SO:  exx = {0.5679, 0, 0.0}; break;
+    case Functional::M052X:  exx = {0.56, 0, 0.0}; break;
+    case Functional::M06SX:  exx = {0.0, 0.335, 0.1}; break;
+    case Functional::CF22D:  exx = {0.462806, 0.0, 0.0}; break;
+    case Functional::SOGGA11X:  exx = {0.4015, 0, 0.0}; break;
+    case Functional::M06HF:  exx = {1.0, 0, 0.0}; break;
+    case Functional::M11:  exx = {1.0, -0.572, 0.25}; break;
+    case Functional::MN12SX:  exx = {0.0, 0.25, 0.11}; break;
+    case Functional::MN15:  exx = {0.44, 0, 0.0}; break;
+    default:               exx = {0.0,0.0,0.0};
   }
 
   return exx;

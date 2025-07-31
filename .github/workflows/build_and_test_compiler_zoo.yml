@@ -40,7 +40,8 @@ jobs:
 
     - name: Test
       shell: bash
-      run: cmake --build ${{runner.workspace}}/build --target test
+      run: ${{runner.workspace}}/build/test/xc_kernel_test && 
+           ${{runner.workspace}}/build/test/xc_functional_test 
 
   debug_build:
     runs-on: ubuntu-latest
@@ -83,7 +84,7 @@ jobs:
         image: dbwy/compiler-zoo
     strategy:
       matrix:
-        libxc_version: [ 6.2.0 ]
+        libxc_version: [ 7.0.0 ]
 
     steps:
     - uses: actions/checkout@v3

@@ -1,7 +1,13 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX 
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
+ * any required approvals from the U.S. Dept. of Energy). 
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -57,12 +63,31 @@
 
 namespace ExchCXX {
 
+
+struct HybCoeffs {
+  double alpha = 0.0; // the coefficient of HF part for global hybrid functionals or the coefficient of long-range HF part for range-separated functionals
+  double beta = 0.0; // The deduction of the short-range part. Following the notation of libxc. So the real coefficient of short-range HF is alpha - beta
+  double omega = 0.0; // the range-separation parameter
+
+  bool operator==(const HybCoeffs& other) const {
+    return alpha == other.alpha &&
+         beta == other.beta &&
+         omega == other.omega;
+  }
+
+  bool operator!=(const HybCoeffs& other) const {
+    return !(*this == other);
+  }
+
+};
+
 class XCFunctional {
 
   using value_type = std::pair<double, XCKernel>;
 private:
 
   std::vector< value_type > kernels_;
+  HybCoeffs hyb_coefs_= {0.0, 0.0, 0.0};
 
   inline bool sanity_check() const {
 
@@ -102,9 +127,14 @@ public:
 
   XCFunctional();
   explicit XCFunctional( const std::vector< XCKernel >& );
+  explicit XCFunctional( const std::vector< XCKernel >&, const HybCoeffs& );
+  explicit XCFunctional( const std::pair<std::vector< XCKernel >, HybCoeffs>& );
   explicit XCFunctional( const std::initializer_list< value_type >& list );
+  explicit XCFunctional( const std::initializer_list< value_type >& list , const HybCoeffs& hyb );
   explicit XCFunctional( const std::vector<value_type>& ks );
+  explicit XCFunctional( const std::vector<value_type>& ks , const HybCoeffs& hyb );
   explicit XCFunctional( std::vector<value_type>&& ks );
+  explicit XCFunctional( std::vector<value_type>&& ks , HybCoeffs&& hyb );
 
   XCFunctional( const Backend, const Functional, const Spin );
   XCFunctional( const Functional func, const Spin polar) :
@@ -153,10 +183,13 @@ public:
 
   inline bool is_hyb() const {
     throw_if_not_sane();
-    return std::any_of( 
-      kernels_.begin(), kernels_.end(),
-      [](const auto& x) { return x.second.is_hyb(); }
-    );
+    // return true if any hyb_coefs_ is not 0
+    return hyb_coefs_.alpha != 0.0 || hyb_coefs_.beta != 0.0 || hyb_coefs_.omega != 0.0;
+  }
+
+  inline bool is_range_separated() const {
+    throw_if_not_sane();
+    return hyb_coefs_.omega != 0.0 || hyb_coefs_.beta != 0.0;
   }
 
   inline bool is_epc() const {
@@ -184,14 +217,9 @@ public:
   }
 
 
-  inline double hyb_exx() const {
+  inline HybCoeffs hyb_exx() const {
     throw_if_not_sane();
-    return std::accumulate( 
-      kernels_.begin(), kernels_.end(), 0.,
-      [](const auto& x, const auto &y) { 
-        return x + y.second.hyb_exx(); 
-      }
-    );
+    return  hyb_coefs_;
   }
 
 
@@ -226,20 +254,58 @@ public:
     return tau_buffer_len( npts );
   }
 
+  inline size_t v2rho2_buffer_len( size_t npts ) const noexcept {
+    return is_polarized() ? 3*npts : npts;
+  }
+  inline size_t v2rhosigma_buffer_len( size_t npts ) const noexcept {
+    return is_lda() ? 0 : is_polarized() ? 6*npts : npts;
+  }
+  inline size_t v2sigma2_buffer_len( size_t npts ) const noexcept {
+    return is_lda() ? 0 : is_polarized() ? 6*npts : npts;
+  }
+  inline size_t v2rholapl_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? (is_polarized() ? 4*npts : npts) : 0;
+  }
+  inline size_t v2rhotau_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? (is_polarized() ? 4*npts : npts) : 0;
+  }
+  inline size_t v2sigmalapl_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? v2rhosigma_buffer_len(npts) : 0;
+  }
+  inline size_t v2sigmatau_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? v2rhosigma_buffer_len(npts) : 0;
+  }
+  inline size_t v2lapl2_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? v2rho2_buffer_len(npts) : 0;
+  }
+  inline size_t v2lapltau_buffer_len( size_t npts ) const noexcept {
+    return needs_laplacian() ? (is_polarized() ? 4*npts : npts) : 0;
+  }
+  inline size_t v2tau2_buffer_len( size_t npts ) const noexcept {
+    return is_mgga() ? v2rho2_buffer_len(npts) : 0;
+  }
+
+
 
 
 
   // LDA Interfaces
   LDA_EXC_GENERATOR(     eval_exc     ) const;
   LDA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
+  LDA_FXC_GENERATOR(     eval_fxc     ) const;
+  LDA_VXC_FXC_GENERATOR( eval_vxc_fxc ) const;
 
   // GGA Interfaces
   GGA_EXC_GENERATOR(     eval_exc     ) const;
   GGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
+  GGA_FXC_GENERATOR(     eval_fxc     ) const;
+  GGA_VXC_FXC_GENERATOR( eval_vxc_fxc ) const;
 
   // mGGA interface
   MGGA_EXC_GENERATOR(     eval_exc     ) const;
   MGGA_EXC_VXC_GENERATOR( eval_exc_vxc ) const;
+  MGGA_FXC_GENERATOR(     eval_fxc     ) const;
+  MGGA_VXC_FXC_GENERATOR( eval_vxc_fxc ) const;
 
 
   // Device code
@@ -248,14 +314,20 @@ public:
   // LDA Interfaces
   LDA_EXC_GENERATOR_DEVICE(     eval_exc_device     ) const;
   LDA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
+  LDA_FXC_GENERATOR_DEVICE(     eval_fxc_device     ) const;
+  LDA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device ) const;
 
   // GGA Interfaces
   GGA_EXC_GENERATOR_DEVICE(     eval_exc_device     ) const;
   GGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
+  GGA_FXC_GENERATOR_DEVICE(     eval_fxc_device     ) const;
+  GGA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device ) const;
 
   // mGGA interface
   MGGA_EXC_GENERATOR_DEVICE(     eval_exc_device     ) const;
   MGGA_EXC_VXC_GENERATOR_DEVICE( eval_exc_vxc_device ) const;
+  MGGA_FXC_GENERATOR_DEVICE(     eval_fxc_device     ) const;
+  MGGA_VXC_FXC_GENERATOR_DEVICE( eval_vxc_fxc_device ) const;
 
 #endif
 
