@@ -1,30 +1,30 @@
 /**
- * ExchCXX 
+ * ExchCXX
  *
  * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). 
+ * any required approvals from the U.S. Dept. of Energy).
  *
  * Portions Copyright (c) Microsoft Corporation.
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * (1) Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
- * 
+ *
  * (2) Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * (3) Neither the name of the University of California, Lawrence Berkeley
  * National Laboratory, U.S. Dept. of Energy nor the names of its contributors
  * may be used to endorse or promote products derived from this software
  * without specific prior written permission.
- * 
- * 
+ *
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * You are under no obligation whatsoever to provide any bug fixes, patches,
  * or upgrades to the features, functionality or performance of the source
  * code ("Enhancements") to anyone; however, if you choose to make your
@@ -118,7 +118,7 @@ SAFE_INLINE(auto) erf( T x ) { return sm::erf(x); }
 template <typename T, typename U>
 SAFE_INLINE(auto) pow( T x, U e ) { return sm::pow(x,e); }
 template <typename T>
-SAFE_INLINE(auto) xc_erfcx( T x ) { return sm::exp(x*x)*sm::erfc(x); } 
+SAFE_INLINE(auto) xc_erfcx( T x ) { return sm::exp(x*x)*sm::erfc(x); }
 
 
 
@@ -139,11 +139,16 @@ SAFE_INLINE(auto) xc_cheb_eval(const double x, const double *cs, const int N)
 
   return 0.5*(b0 - b2);
 }
+
 // The following data is taken from libxc
 #if defined(__CUDACC__) || defined(__HIPCC__)
-__device__
+__device__ static
+#elif defined(__SYCL_DEVICE_ONLY__)
+inline constexpr
+#else
+static
 #endif
-static double AE11_data[39] = {
+double AE11_data[39] = {
    0.121503239716065790, -0.065088778513550150,  0.004897651357459670, -0.000649237843027216,  0.000093840434587471,
    0.000000420236380882, -0.000008113374735904,  0.000002804247688663,  0.000000056487164441, -0.000000344809174450,
    0.000000058209273578,  0.000000038711426349, -0.000000012453235014, -0.000000005118504888,  0.000000002148771527,
@@ -155,9 +160,13 @@ static double AE11_data[39] = {
 };
 
 #if defined(__CUDACC__) || defined(__HIPCC__)
-__device__
+__device__ static
+#elif defined(__SYCL_DEVICE_ONLY__)
+inline constexpr
+#else
+static
 #endif
-static double AE12_data[25] = {
+double AE12_data[25] = {
    0.582417495134726740, -0.158348850905782750, -0.006764275590323141,  0.005125843950185725,  0.000435232492169391,
   -0.000143613366305483, -0.000041801320556301, -0.000002713395758640,  0.000001151381913647,  0.000000420650022012,
    0.000000066581901391,  0.000000000662143777, -0.000000002844104870, -0.000000000940724197, -0.000000000177476602,
@@ -166,9 +175,13 @@ static double AE12_data[25] = {
 };
 
 #if defined(__CUDACC__) || defined(__HIPCC__)
-__device__
+__device__ static
+#elif defined(__SYCL_DEVICE_ONLY__)
+inline constexpr
+#else
+static
 #endif
-static double E11_data[19] = {
+double E11_data[19] = {
   -16.11346165557149402600,   7.79407277874268027690,  -1.95540581886314195070,   0.37337293866277945612,  -0.05692503191092901938,
     0.00721107776966009185,  -0.00078104901449841593,   0.00007388093356262168,  -0.00000620286187580820,   0.00000046816002303176,
    -0.00000003209288853329,   0.00000000201519974874,  -0.00000000011673686816,   0.00000000000627627066,  -0.00000000000031481541,
@@ -176,9 +189,13 @@ static double E11_data[19] = {
 };
 
 #if defined(__CUDACC__) || defined(__HIPCC__)
-__device__
+__device__ static
+#elif defined(__SYCL_DEVICE_ONLY__)
+inline constexpr
+#else
+static
 #endif
-static double E12_data[16] = {
+double E12_data[16] = {
   -0.03739021479220279500,  0.04272398606220957700, -0.13031820798497005440,  0.01441912402469889073, -0.00134617078051068022,
    0.00010731029253063780, -0.00000742999951611943,  0.00000045377325690753, -0.00000002476417211390,  0.00000000122076581374,
   -0.00000000005485141480,  0.00000000000226362142, -0.00000000000008635897,  0.00000000000000306291, -0.00000000000000010148,
@@ -186,9 +203,13 @@ static double E12_data[16] = {
 };
 
 #if defined(__CUDACC__) || defined(__HIPCC__)
-__device__
+__device__ static
+#elif defined(__SYCL_DEVICE_ONLY__)
+inline constexpr
+#else
+static
 #endif
-static double AE13_data[25] = {
+double AE13_data[25] = {
   -0.605773246640603460, -0.112535243483660900,  0.013432266247902779, -0.001926845187381145,  0.000309118337720603,
   -0.000053564132129618,  0.000009827812880247, -0.000001885368984916,  0.000000374943193568, -0.000000076823455870,
    0.000000016143270567, -0.000000003466802211,  0.000000000758754209, -0.000000000168864333,  0.000000000038145706,
@@ -197,9 +218,13 @@ static double AE13_data[25] = {
 };
 
 #if defined(__CUDACC__) || defined(__HIPCC__)
-__device__
+__device__ static
+#elif defined(__SYCL_DEVICE_ONLY__)
+inline constexpr
+#else
+static
 #endif
-static double AE14_data[26] = {
+double AE14_data[26] = {
   -0.18929180007530170, -0.08648117855259871,  0.00722410154374659, -0.00080975594575573,  0.00010999134432661,
   -0.00001717332998937,  0.00000298562751447, -0.00000056596491457,  0.00000011526808397, -0.00000002495030440,
    0.00000000569232420, -0.00000000135995766,  0.00000000033846628, -0.00000000008737853,  0.00000000002331588,
