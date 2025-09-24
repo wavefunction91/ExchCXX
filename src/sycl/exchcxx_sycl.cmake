@@ -13,6 +13,19 @@ list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 find_package( SYCL REQUIRED )
 target_link_libraries( exchcxx PUBLIC SYCL::SYCL )
 
+# --- AoT-builds SYCL target alias pass-through ---
+if(EXCHCXX_ENABLE_SYCL)
+  if(NOT EXCHCXX_SYCL_TARGET)
+    message(FATAL_ERROR
+      "EXCHCXX_SYCL_TARGET is required. Examples: "
+      "intel_gpu_pvc | nvidia_gpu_sm_80 | nvidia_gpu_sm_90 | amd_gpu_gfx90a | amd_gpu_gfx942")
+  endif()
+
+  # Apply ONLY to this target (both compile & link)
+  target_compile_options(exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET})
+  target_link_options(  exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET})
+endif()
+
 target_compile_options(exchcxx PRIVATE  $<$<COMPILE_LANGUAGE:CXX>:-ffp-model=precise>)
 target_link_options(exchcxx PRIVATE -fsycl-max-parallel-link-jobs=20)
 
