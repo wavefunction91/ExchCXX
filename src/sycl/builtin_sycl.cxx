@@ -979,7 +979,7 @@ __attribute__((always_inline)) MGGA_VXC_FXC_INC_GENERATOR_SYCL_KERNEL(device_eva
 template <typename KernelType>
 LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_helper_unpolar_kernel<KernelType>(
             N, rho, eps, tid);
     });
@@ -989,7 +989,7 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 template <typename KernelType>
 LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_helper_polar_kernel<KernelType>(
             N, rho, eps, tid);
     });
@@ -999,7 +999,7 @@ LDA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
             N, rho, eps, vxc, tid);
     });
@@ -1009,7 +1009,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 template <typename KernelType>
 LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
             N, rho, eps, vxc, tid);
     });
@@ -1019,7 +1019,7 @@ LDA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 template <typename KernelType>
 LDA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_helper_unpolar_kernel<KernelType>(
             N, rho, fxc, tid);
     });
@@ -1029,7 +1029,7 @@ LDA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_unpolar ) {
 template <typename KernelType>
 LDA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_helper_polar_kernel<KernelType>(
             N, rho, fxc, tid);
     });
@@ -1038,7 +1038,7 @@ LDA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_polar ) {
 template <typename KernelType>
 LDA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_helper_unpolar_kernel<KernelType>(
             N, rho, vxc, fxc, tid);
     });
@@ -1048,7 +1048,7 @@ LDA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_unpolar ) {
 template <typename KernelType>
 LDA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_helper_polar_kernel<KernelType>(
             N, rho, vxc, fxc, tid);
     });
@@ -1058,7 +1058,7 @@ LDA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_polar ) {
 template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, eps, tid);
     });
@@ -1068,7 +1068,7 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 template <typename KernelType>
 LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, eps, tid);
     });
@@ -1078,7 +1078,7 @@ LDA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, eps, vxc, tid);
     });
@@ -1088,7 +1088,7 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 template <typename KernelType>
 LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, eps, vxc, tid);
     });
@@ -1098,7 +1098,7 @@ LDA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 template <typename KernelType>
 LDA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, fxc, tid);
     });
@@ -1108,7 +1108,7 @@ LDA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_unpolar ) {
 template <typename KernelType>
 LDA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, fxc, tid);
     });
@@ -1118,7 +1118,7 @@ LDA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_polar ) {
 template <typename KernelType>
 LDA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, vxc, fxc, tid);
     });
@@ -1128,7 +1128,7 @@ LDA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_unpolar ) {
 template <typename KernelType>
 LDA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, vxc, fxc, tid);
     });
@@ -1141,7 +1141,7 @@ LDA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_polar ) {
 template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, eps, tid);
     });
@@ -1151,7 +1151,7 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 template <typename KernelType>
 GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_helper_polar_kernel<KernelType>(
             N, rho, sigma, eps, tid);
     });
@@ -1161,7 +1161,7 @@ GGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, eps, vrho, vsigma, tid);
     });
@@ -1171,7 +1171,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 template <typename KernelType>
 GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
             N, rho, sigma, eps, vrho, vsigma, tid);
     });
@@ -1181,7 +1181,7 @@ GGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 template <typename KernelType>
 GGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1191,7 +1191,7 @@ GGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_unpolar ) {
 template <typename KernelType>
 GGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_helper_polar_kernel<KernelType>(
             N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1201,7 +1201,7 @@ GGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_polar ) {
 template <typename KernelType>
 GGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1211,7 +1211,7 @@ GGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_unpolar ) {
 template <typename KernelType>
 GGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_helper_polar_kernel<KernelType>(
             N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1221,7 +1221,7 @@ GGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_polar ) {
 template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, eps, tid);
     });
@@ -1231,7 +1231,7 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 template <typename KernelType>
 GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, sigma, eps, tid);
     });
@@ -1241,7 +1241,7 @@ GGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, eps, vrho, vsigma, tid);
     });
@@ -1251,7 +1251,7 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 template <typename KernelType>
 GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, sigma, eps, vrho, vsigma, tid);
     });
@@ -1262,7 +1262,7 @@ GGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 template <typename KernelType>
 GGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1271,7 +1271,7 @@ GGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_unpolar ) {
 template <typename KernelType>
 GGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1280,7 +1280,7 @@ GGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_polar ) {
 template <typename KernelType>
 GGA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1289,7 +1289,7 @@ GGA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_unpolar ) {
 template <typename KernelType>
 GGA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2, tid);
     });
@@ -1299,7 +1299,7 @@ GGA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_polar ) {
 template <typename KernelType>
 MGGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, eps, tid);
     });
@@ -1309,7 +1309,7 @@ MGGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_helper_polar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, eps, tid);
     });
@@ -1319,7 +1319,7 @@ MGGA_EXC_GENERATOR_DEVICE( device_eval_exc_helper_polar ) {
 template <typename KernelType>
 MGGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau, tid);
     });
@@ -1329,7 +1329,7 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_helper_polar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau, tid);
     });
@@ -1339,7 +1339,7 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( device_eval_exc_vxc_helper_polar ) {
 template <typename KernelType>
 MGGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, v2rho2, v2rhosigma, v2rholapl, v2rhotau,
             v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2, tid);
@@ -1350,7 +1350,7 @@ MGGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_helper_polar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, v2rho2, v2rhosigma, v2rholapl, v2rhotau,
             v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2, tid);
@@ -1361,7 +1361,7 @@ MGGA_FXC_GENERATOR_DEVICE( device_eval_fxc_helper_polar ) {
 template <typename KernelType>
 MGGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_helper_unpolar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, vrho, vsigma, vlapl, vtau,
             v2rho2, v2rhosigma, v2rholapl, v2rhotau,
@@ -1374,7 +1374,7 @@ MGGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_polar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_helper_polar_kernel<KernelType>(
             N, rho, sigma, lapl, tau, vrho, vsigma, vlapl, vtau,
             v2rho2, v2rhosigma, v2rholapl, v2rhotau,
@@ -1387,7 +1387,7 @@ MGGA_VXC_FXC_GENERATOR_DEVICE( device_eval_vxc_fxc_helper_polar ) {
 template <typename KernelType>
 MGGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, lapl, tau, eps, tid);
     });
@@ -1397,7 +1397,7 @@ MGGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, sigma, lapl, tau, eps, tid);
     });
@@ -1407,7 +1407,7 @@ MGGA_EXC_INC_GENERATOR_DEVICE( device_eval_exc_inc_helper_polar ) {
 template <typename KernelType>
 MGGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau, tid);
     });
@@ -1417,7 +1417,7 @@ MGGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_exc_vxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_exc_vxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_exc_vxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, sigma, lapl, tau, eps, vrho, vsigma, vlapl, vtau, tid);
     });
@@ -1427,7 +1427,7 @@ MGGA_EXC_VXC_INC_GENERATOR_DEVICE( device_eval_exc_vxc_inc_helper_polar ) {
 template <typename KernelType>
 MGGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, lapl, tau,
             v2rho2, v2rhosigma, v2rholapl, v2rhotau,
@@ -1440,7 +1440,7 @@ MGGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_polar ) {
 
-    queue->parallel_for<device_eval_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_fxc_inc_helper_polar_kernel<KernelType>(
             scal_fact, N, rho, sigma, lapl, tau,
             v2rho2, v2rhosigma, v2rholapl, v2rhotau,
@@ -1453,7 +1453,7 @@ MGGA_FXC_INC_GENERATOR_DEVICE( device_eval_fxc_inc_helper_polar ) {
 template <typename KernelType>
 MGGA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_unpolar ) {
 
-    queue->parallel_for<device_eval_vxc_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+    queue->parallel_for<class device_eval_vxc_fxc_inc_helper_unpolar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
         device_eval_vxc_fxc_inc_helper_unpolar_kernel<KernelType>(
             scal_fact, N, rho, sigma, lapl, tau,
             vrho, vsigma, vlapl, vtau,
@@ -1467,7 +1467,7 @@ MGGA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_unpolar ) {
 template <typename KernelType>
 MGGA_VXC_FXC_INC_GENERATOR_DEVICE( device_eval_vxc_fxc_inc_helper_polar ) {
 
-  queue->parallel_for<device_eval_vxc_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
+  queue->parallel_for<class device_eval_vxc_fxc_inc_helper_polar_kernel_name<KernelType>>( sycl::range<1>(N), [=](sycl::id<1> tid) {
       device_eval_vxc_fxc_inc_helper_polar_kernel<KernelType>(
           scal_fact, N, rho, sigma, lapl, tau,
           vrho, vsigma, vlapl, vtau,
