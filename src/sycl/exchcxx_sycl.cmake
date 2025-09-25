@@ -14,16 +14,29 @@ find_package( SYCL REQUIRED )
 target_link_libraries( exchcxx PUBLIC SYCL::SYCL )
 
 # --- AoT-builds SYCL target alias pass-through ---
-if(EXCHCXX_ENABLE_SYCL)
-  if(NOT EXCHCXX_SYCL_TARGET)
+set(_EXCHCXX_SYCL_ALLOWED
+    intel_gpu_pvc
+    nvidia_gpu_sm_80
+    nvidia_gpu_sm_90
+    amd_gpu_gfx90a
+    amd_gpu_gfx942)
+
+if(DEFINED EXCHCXX_SYCL_TARGET AND NOT EXCHCXX_SYCL_TARGET STREQUAL "")
+  list(FIND _EXCHCXX_SYCL_ALLOWED "${EXCHCXX_SYCL_TARGET}" _exchcxx_sycl_idx)
+  if(_exchcxx_sycl_idx EQUAL -1)
     message(FATAL_ERROR
-      "EXCHCXX_SYCL_TARGET is required. Examples: "
-      "intel_gpu_pvc | nvidia_gpu_sm_80 | nvidia_gpu_sm_90 | amd_gpu_gfx90a | amd_gpu_gfx942")
+      "Invalid EXCHCXX_SYCL_TARGET='${EXCHCXX_SYCL_TARGET}'. "
+      "Allowed values: ${_EXCHCXX_SYCL_ALLOWED}")
   endif()
 
   # Apply ONLY to this target (both compile & link)
-  target_compile_options(exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET})
-  target_link_options(  exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET})
+  target_compile_options( exchcxx PRIVATE -fsycl-device-only -fsycl-targets=${EXCHCXX_SYCL_TARGET} )
+  target_link_options( exchcxx PRIVATE -fsycl-device-only -fsycl-targets=${EXCHCXX_SYCL_TARGET} )
+  message(STATUS "ExchCXX SYCL AoT enabled for target: ${EXCHCXX_SYCL_TARGET}")
+
+  # target_compile_options( exchcxx PRIVATE -Wno-unused-parameter -Wno-unused-variable -fsycl-device-only -fsycl-targets=spir64_gen -Xsycl-target-backend "-device pvc" )
+  # target_link_options( exchcxx PRIVATE -fsycl-device-only -fsycl-targets=spir64_gen -Xsycl-target-backend "-device pvc" )
+
 endif()
 
 target_compile_options(exchcxx PRIVATE  $<$<COMPILE_LANGUAGE:CXX>:-ffp-model=precise>)
