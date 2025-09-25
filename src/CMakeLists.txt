@@ -28,6 +28,7 @@ configure_file(
 target_compile_definitions( exchcxx PUBLIC "EXCHCXX_HAS_CONFIG_H=1" )
 
 
+include( host/exchcxx_host.cmake )
 
 # Device specific
 if( EXCHCXX_ENABLE_CUDA )
