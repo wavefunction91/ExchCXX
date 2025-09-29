@@ -12,6 +12,13 @@ option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"    OFF )
 option( EXCHCXX_ENABLE_LIBXC     "Enable Libxc Backend"         ON  )
 option( BUILD_SHARED_LIBS        "Build Shared Libs"            OFF )
 
+# --- SYCL Architecture Options (mutually exclusive) ---
+option(EXCHCXX_SYCL_INTEL_PVC_ARCH   "Target Intel PVC (Ponte Vecchio)" OFF)
+option(EXCHCXX_SYCL_NV_SM_80_ARCH    "Target NVIDIA SM_80 (A100)"       OFF)
+option(EXCHCXX_SYCL_NV_SM_90_ARCH    "Target NVIDIA SM_90 (H100/H200)"  OFF)
+option(EXCHCXX_SYCL_AMD_GFX90A_ARCH  "Target AMD gfx90a (MI200)"        OFF)
+option(EXCHCXX_SYCL_AMD_GFX942_ARCH  "Target AMD gfx942 (MI300A/X)"     OFF)
+
 
 # Decided if we're compiling device bindings
 if( EXCHCXX_ENABLE_CUDA OR EXCHCXX_ENABLE_SYCL OR EXCHCXX_ENABLE_HIP )
@@ -31,9 +38,60 @@ endif()
 
 
 if(EXCHCXX_ENABLE_SYCL)
-  # e.g. intel_gpu_pvc | nvidia_gpu_sm_80 | nvidia_gpu_sm_90 | amd_gpu_gfx90a | amd_gpu_gfx942
-  set(EXCHCXX_SYCL_TARGET "" CACHE STRING "Alias for -fsycl-targets (see Users Manual)")
-endif()
+  # Allowed alias strings (as consumed by -fsycl-targets)
+  set(_EXCHCXX_SYCL_ALLOWED
+    intel_gpu_pvc
+    nvidia_gpu_sm_80
+    nvidia_gpu_sm_90
+    amd_gpu_gfx90a
+    amd_gpu_gfx942
+  )
+
+  # Collect selections from booleans
+  set(_EXCHCXX_SYCL_FROM_BOOLEANS "")
+  if(EXCHCXX_SYCL_INTEL_PVC_ARCH)
+    list(APPEND _EXCHCXX_SYCL_FROM_BOOLEANS intel_gpu_pvc)
+  endif()
+  if(EXCHCXX_SYCL_NV_SM_80_ARCH)
+    list(APPEND _EXCHCXX_SYCL_FROM_BOOLEANS nvidia_gpu_sm_80)
+  endif()
+  if(EXCHCXX_SYCL_NV_SM_90_ARCH)
+    list(APPEND _EXCHCXX_SYCL_FROM_BOOLEANS nvidia_gpu_sm_90)
+  endif()
+  if(EXCHCXX_SYCL_AMD_GFX90A_ARCH)
+    list(APPEND _EXCHCXX_SYCL_FROM_BOOLEANS amd_gpu_gfx90a)
+  endif()
+  if(EXCHCXX_SYCL_AMD_GFX942_ARCH)
+    list(APPEND _EXCHCXX_SYCL_FROM_BOOLEANS amd_gpu_gfx942)
+  endif()
+  
+  # Resolve the selected target (prefer booleans; fall back to user-provided EXCHCXX_SYCL_TARGET)
+  set(_EXCHCXX_SELECTED "")
+  list(LENGTH _EXCHCXX_SYCL_FROM_BOOLEANS _exchcxx_bool_count)
+  if(_exchcxx_bool_count GREATER 1)
+    message(FATAL_ERROR
+      "Multiple SYCL arch options enabled (${_EXCHCXX_SYCL_FROM_BOOLEANS}). Enable exactly one.")
+  elseif(_exchcxx_bool_count EQUAL 1)
+    list(GET _EXCHCXX_SYCL_FROM_BOOLEANS 0 _EXCHCXX_SELECTED)
+  elseif(DEFINED EXCHCXX_SYCL_TARGET AND NOT EXCHCXX_SYCL_TARGET STREQUAL "")
+    set(_EXCHCXX_SELECTED "${EXCHCXX_SYCL_TARGET}")  # backward compat
+  endif()
+
+  # Validate & cache the resolved target (or leave empty for JIT)
+  if(NOT _EXCHCXX_SELECTED STREQUAL "")
+    list(FIND _EXCHCXX_SYCL_ALLOWED "${_EXCHCXX_SELECTED}" _exchcxx_sycl_idx)
+    if(_exchcxx_sycl_idx EQUAL -1)
+      message(FATAL_ERROR
+        "Invalid SYCL AoT target '${_EXCHCXX_SELECTED}'. "
+        "Allowed values: ${_EXCHCXX_SYCL_ALLOWED}")
+    endif()
+    set(EXCHCXX_SYCL_TARGET "${_EXCHCXX_SELECTED}" CACHE STRING "Resolved SYCL target alias" FORCE)
+  else()
+    set(EXCHCXX_SYCL_TARGET "" CACHE STRING "Resolved SYCL target alias (empty => JIT)" FORCE)
+    message(STATUS "ExchCXX SYCL AoT disabled (no target selected) — will JIT at runtime.")
+  endif()
+  
+endif(EXCHCXX_ENABLE_SYCL)
 
 
 # Append local cmake directory to find CMAKE Modules
