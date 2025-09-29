@@ -75,7 +75,7 @@ if( ${Libxc_FOUND} )
 else()
 
   option( FETCHCONTENT_LIBXC_GIT_SHALLOW      "Whether to use GIT_SHALLOW for FetchContent'ing libxc"     ON )
-
+  
   FetchContent_Declare(
     libxc
     GIT_REPOSITORY https://gitlab.com/libxc/libxc.git
@@ -91,8 +91,8 @@ else()
 
   FetchContent_MakeAvailable( libxc )
   add_library( Libxc::xc ALIAS xc )
-  target_include_directories( xc
-    PUBLIC
+  target_include_directories( xc 
+    PUBLIC 
       $<BUILD_INTERFACE:${libxc_SOURCE_DIR}/src>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/src>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}>
@@ -104,7 +104,7 @@ else()
     set_target_properties(xc PROPERTIES UNITY_BUILD OFF)
     message(STATUS "Will disable unity-build for Libxc::xc")
   endif()
-
+  
   set( BUILD_TESTING ${OLD_BUILD_TESTING} CACHE BOOL "" FORCE )
 
 endif()
@@ -112,7 +112,7 @@ endif()
 else( EXCHCXX_ENABLE_LIBXC )
   set( Libxc_FOUND FALSE )
 endif( EXCHCXX_ENABLE_LIBXC )
-
+        
 add_subdirectory( src )
 
 # Testing

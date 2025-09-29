@@ -3637,5 +3637,3 @@ TEST_CASE( "GPU Interfaces", "[xc-device]" ) {
 
 }
 #endif // EXCHCXX_ENABLE_DEVICE
-
-#endif
