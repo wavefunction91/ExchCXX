@@ -1,30 +1,30 @@
 /**
- * ExchCXX
+ * ExchCXX 
  *
  * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy).
+ * any required approvals from the U.S. Dept. of Energy). 
  *
  * Portions Copyright (c) Microsoft Corporation.
  *
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * (1) Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
- *
+ * 
  * (2) Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- *
+ * 
  * (3) Neither the name of the University of California, Lawrence Berkeley
  * National Laboratory, U.S. Dept. of Energy nor the names of its contributors
  * may be used to endorse or promote products derived from this software
  * without specific prior written permission.
- *
- *
+ * 
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
+ * 
  * You are under no obligation whatsoever to provide any bug fixes, patches,
  * or upgrades to the features, functionality or performance of the source
  * code ("Enhancements") to anyone; however, if you choose to make your
@@ -49,7 +49,7 @@
  * in binary and source code form.
  */
 
-#pragma once
+#pragma once 
 #include <exchcxx/impl/builtin/fwd.hpp>
 #include <exchcxx/impl/builtin/kernel_type.hpp>
 #include <exchcxx/impl/builtin/kernels/screening_interface.hpp>
@@ -165,9 +165,9 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
                        double& v2rhotau_a_a, double& v2rhotau_a_b, double& v2rhotau_b_a, double& v2rhotau_b_b,
                        double& v2sigma2_aa_aa, double& v2sigma2_aa_ab, double& v2sigma2_aa_bb,
                        double& v2sigma2_ab_ab, double& v2sigma2_ab_bb, double& v2sigma2_bb_bb,
-                       double& v2sigmalapl_aa_a, double& v2sigmalapl_aa_b, double& v2sigmalapl_ab_a,
+                       double& v2sigmalapl_aa_a, double& v2sigmalapl_aa_b, double& v2sigmalapl_ab_a, 
                        double& v2sigmalapl_ab_b, double& v2sigmalapl_bb_a, double& v2sigmalapl_bb_b,
-                       double& v2sigmatau_aa_a, double& v2sigmatau_aa_b, double& v2sigmatau_ab_a,
+                       double& v2sigmatau_aa_a, double& v2sigmatau_aa_b, double& v2sigmatau_ab_a, 
                        double& v2sigmatau_ab_b, double& v2sigmatau_bb_a, double& v2sigmatau_bb_b,
                        double& v2lapl2_aa, double& v2lapl2_ab, double& v2lapl2_bb,
                        double& v2lapltau_a_a, double& v2lapltau_a_b, double& v2lapltau_b_a, double& v2lapltau_b_b,
@@ -185,8 +185,8 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
 
   BUILTIN_KERNEL_EVAL_RETURN
     eval_fxc_unpolar( double rho, double sigma, double lapl, double tau,
-                     double& v2rho2, double& v2rhosigma, double& v2rholapl, double& v2rhotau,
-                     double& v2sigma2, double& v2sigmalapl, double& v2sigmatau,
+                     double& v2rho2, double& v2rhosigma, double& v2rholapl, double& v2rhotau, 
+                     double& v2sigma2, double& v2sigmalapl, double& v2sigmatau, 
                      double& v2lapl2, double& v2lapltau, double& v2tau2 ) {
     #if defined(__CUDACC__) || defined(__HIPCC__)
     printf("eval_fxc_unpolar not implemented for deorbitalized kernels\n");
@@ -199,8 +199,8 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   }
 
   BUILTIN_KERNEL_EVAL_RETURN
-    eval_fxc_polar( double rho_a, double rho_b,
-                   double sigma_aa, double sigma_ab, double sigma_bb,
+    eval_fxc_polar( double rho_a, double rho_b, 
+                   double sigma_aa, double sigma_ab, double sigma_bb, 
                    double lapl_a, double lapl_b, double tau_a, double tau_b,
                    double& v2rho2_aa, double& v2rho2_ab, double& v2rho2_bb,
                    double& v2rhosigma_a_aa, double& v2rhosigma_a_ab, double& v2rhosigma_a_bb,
@@ -209,9 +209,9 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
                    double& v2rhotau_a_a, double& v2rhotau_a_b, double& v2rhotau_b_a, double& v2rhotau_b_b,
                    double& v2sigma2_aa_aa, double& v2sigma2_aa_ab, double& v2sigma2_aa_bb,
                    double& v2sigma2_ab_ab, double& v2sigma2_ab_bb, double& v2sigma2_bb_bb,
-                   double& v2sigmalapl_aa_a, double& v2sigmalapl_aa_b, double& v2sigmalapl_ab_a,
+                   double& v2sigmalapl_aa_a, double& v2sigmalapl_aa_b, double& v2sigmalapl_ab_a, 
                    double& v2sigmalapl_ab_b, double& v2sigmalapl_bb_a, double& v2sigmalapl_bb_b,
-                   double& v2sigmatau_aa_a, double& v2sigmatau_aa_b, double& v2sigmatau_ab_a,
+                   double& v2sigmatau_aa_a, double& v2sigmatau_aa_b, double& v2sigmatau_ab_a, 
                    double& v2sigmatau_ab_b, double& v2sigmatau_bb_a, double& v2sigmatau_bb_b,
                    double& v2lapl2_aa, double& v2lapl2_ab, double& v2lapl2_bb,
                    double& v2lapltau_a_a, double& v2lapltau_a_b, double& v2lapltau_b_a, double& v2lapltau_b_b,

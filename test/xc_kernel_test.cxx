@@ -1,30 +1,30 @@
 /**
- * ExchCXX
+ * ExchCXX 
  *
  * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy).
+ * any required approvals from the U.S. Dept. of Energy). 
  *
  * Portions Copyright (c) Microsoft Corporation.
  *
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * (1) Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
- *
+ * 
  * (2) Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- *
+ * 
  * (3) Neither the name of the University of California, Lawrence Berkeley
  * National Laboratory, U.S. Dept. of Energy nor the names of its contributors
  * may be used to endorse or promote products derived from this software
  * without specific prior written permission.
- *
- *
+ * 
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
+ * 
  * You are under no obligation whatsoever to provide any bug fixes, patches,
  * or upgrades to the features, functionality or performance of the source
  * code ("Enhancements") to anyone; however, if you choose to make your
@@ -462,7 +462,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
   const double fill_val_vs = 50.;
   const double fill_val_vl = 3.;
   const double fill_val_vt = 5.;
-
+  
   const double fill_val_v2rho2 = 10.;
   const double fill_val_v2rhosigma = 11.;
   const double fill_val_v2rholapl = 12.;
@@ -476,7 +476,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
 
   const bool use_ref_values =
     (interface != TestInterface::EXC_INC) and
-    (interface != TestInterface::EXC_VXC_INC) and
+    (interface != TestInterface::EXC_VXC_INC) and 
     (interface != TestInterface::FXC_INC) and
     (interface != TestInterface::VXC_FXC_INC);
 
@@ -692,7 +692,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
     auto ref_vals = use_ref_values ?
       load_mgga_reference_values( kern, polar, func.needs_laplacian() ) :
       gen_mgga_reference_values( backend,kern, polar );
-    //auto ref_vals =
+    //auto ref_vals = 
     //  gen_mgga_reference_values( backend,kern, polar );
 
     size_t  npts       = ref_vals.npts;
@@ -937,7 +937,7 @@ TEST_CASE( "Libxc Correctness Check", "[xc-libxc]" ) {
     kernel_test( TestInterface::EXC_VXC, Backend::libxc, Kernel::SCAN_X,
       Spin::Polarized );
   }
-
+  
 
   SECTION( "R2SCANL Unpolarized: EXC" ) {
     kernel_test( TestInterface::EXC, Backend::libxc, Kernel::R2SCANL_X,
@@ -984,7 +984,7 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   const int len_sigma = func_libxc.sigma_buffer_len( npts );
   const int len_lapl = func_libxc.lapl_buffer_len( npts );
   const int len_tau = func_libxc.tau_buffer_len( npts );
-
+  
   const int len_v2rho2 = func_libxc.v2rho2_buffer_len( npts );
   const int len_v2rhosigma = func_libxc.v2rhosigma_buffer_len( npts );
   const int len_v2rholapl = func_libxc.v2rholapl_buffer_len( npts );
@@ -1029,14 +1029,14 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
     tau_use = tau_zero;
   }
 
-
+  
 
   std::vector<double> exc_libxc( func_builtin.exc_buffer_len(npts) );
   std::vector<double> vrho_libxc( func_builtin.vrho_buffer_len(npts) );
   std::vector<double> vsigma_libxc( func_builtin.vsigma_buffer_len(npts) );
   std::vector<double> vlapl_libxc( func_builtin.vlapl_buffer_len(npts) );
   std::vector<double> vtau_libxc( func_builtin.vtau_buffer_len(npts) );
-
+  
   std::vector<double> v2rho2_libxc      ( len_v2rho2 );
   std::vector<double> v2rhosigma_libxc  ( len_v2rhosigma );
   std::vector<double> v2rholapl_libxc   ( len_v2rholapl );
@@ -1053,7 +1053,7 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   std::vector<double> vsigma_builtin( func_builtin.vsigma_buffer_len(npts) );
   std::vector<double> vlapl_builtin( func_builtin.vlapl_buffer_len(npts) );
   std::vector<double> vtau_builtin( func_builtin.vtau_buffer_len(npts) );
-
+  
   std::vector<double> v2rho2_builtin      ( func_builtin.v2rho2_buffer_len(npts) );
   std::vector<double> v2rhosigma_builtin  ( func_builtin.v2rhosigma_buffer_len(npts) );
   std::vector<double> v2rholapl_builtin   ( func_builtin.v2rholapl_buffer_len(npts) );
@@ -1080,15 +1080,15 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
         vrho_builtin.data() );
 
     } else if( interface == TestInterface::FXC ) {
-
+    
       func_libxc.eval_fxc( npts, rho_use.data(), v2rho2_libxc.data() );
       func_builtin.eval_fxc( npts, rho_use.data(), v2rho2_builtin.data() );
-
+      
     } else if( interface == TestInterface::VXC_FXC ) {
-
+    
       func_libxc.eval_vxc_fxc( npts, rho_use.data(), vrho_libxc.data(), v2rho2_libxc.data() );
       func_builtin.eval_vxc_fxc( npts, rho_use.data(), vrho_builtin.data(), v2rho2_builtin.data() );
-
+        
     }
 
   } else if( func_libxc.is_gga() ) {
@@ -1108,19 +1108,19 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
         exc_builtin.data(), vrho_builtin.data(), vsigma_builtin.data() );
 
     } else if( interface == TestInterface::FXC ) {
-
+    
       func_libxc.eval_fxc( npts, rho_use.data(), sigma_use.data(),
         v2rho2_libxc.data(), v2rhosigma_libxc.data(), v2sigma2_libxc.data() );
       func_builtin.eval_fxc( npts, rho_use.data(), sigma_use.data(),
         v2rho2_builtin.data(), v2rhosigma_builtin.data(), v2sigma2_builtin.data() );
-
+        
     } else if( interface == TestInterface::VXC_FXC ) {
-
+    
       func_libxc.eval_vxc_fxc( npts, rho_use.data(), sigma_use.data(), vrho_libxc.data(), vsigma_libxc.data(),
         v2rho2_libxc.data(), v2rhosigma_libxc.data(), v2sigma2_libxc.data() );
       func_builtin.eval_vxc_fxc( npts, rho_use.data(), sigma_use.data(), vrho_builtin.data(), vsigma_builtin.data(),
         v2rho2_builtin.data(), v2rhosigma_builtin.data(), v2sigma2_builtin.data() );
-
+        
     }
 
   } else if( func_libxc.is_mgga() ) {
@@ -1140,7 +1140,7 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
         lapl_use.data(), tau_use.data(), exc_builtin.data(), vrho_builtin.data(), vsigma_builtin.data(), vlapl_builtin.data(), vtau_builtin.data() );
 
     } else if( interface == TestInterface::FXC ) {
-
+    
       func_libxc.eval_fxc( npts, rho_use.data(), sigma_use.data(),
         lapl_use.data(), tau_use.data(),
         v2rho2_libxc.data(), v2rhosigma_libxc.data(), v2rholapl_libxc.data(),
@@ -1153,9 +1153,9 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
         v2rhotau_builtin.data(), v2sigma2_builtin.data(), v2sigmalapl_builtin.data(),
         v2sigmatau_builtin.data(), v2lapl2_builtin.data(), v2lapltau_builtin.data(),
         v2tau2_builtin.data() );
-
+        
     } else if( interface == TestInterface::VXC_FXC ) {
-
+    
       func_libxc.eval_vxc_fxc( npts, rho_use.data(), sigma_use.data(),
         lapl_use.data(), tau_use.data(), vrho_libxc.data(), vsigma_libxc.data(),
         vlapl_libxc.data(), vtau_libxc.data(),
@@ -1170,7 +1170,7 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
         v2rhotau_builtin.data(), v2sigma2_builtin.data(), v2sigmalapl_builtin.data(),
         v2sigmatau_builtin.data(), v2lapl2_builtin.data(), v2lapltau_builtin.data(),
         v2tau2_builtin.data() );
-
+        
     }
 
   }
@@ -1201,7 +1201,7 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
       CHECK( vtau_builtin[i] == Approx(vtau_libxc[i]) );
     }
   }
-
+  
   if( interface == TestInterface::FXC || interface == TestInterface::VXC_FXC ) {
     for( auto i = 0ul; i < len_v2rho2; ++i ) {
       INFO( "V2RHO2 Fails: Kernel is " << kern << ", builtin = " << v2rho2_builtin[i] << ", libxc = " << v2rho2_libxc[i] );
@@ -1264,7 +1264,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Regular,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
   SECTION( "Unpolarized Regular Eval : EXC + VXC" ) {
@@ -1272,7 +1272,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Regular,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
   SECTION( "Unpolarized Regular Eval : FXC" ) {
@@ -1281,7 +1281,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::FXC, EvalType::Regular,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
   SECTION( "Unpolarized Regular Eval : VXC + FXC" ) {
@@ -1290,14 +1290,14 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::VXC_FXC, EvalType::Regular,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
   SECTION( "Unpolarized Small Eval : EXC" ) {
     for( auto kern : builtin_supported_kernels ) {
       if(is_unstable_small(kern)) continue;
       if(is_epc(kern)) continue;
-
+      
       compare_libxc_builtin( TestInterface::EXC, EvalType::Small,
         kern, Spin::Unpolarized );
     }
@@ -1337,7 +1337,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Zero,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
   SECTION( "Unpolarized Zero Eval : EXC + VXC" ) {
@@ -1345,7 +1345,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Zero,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
   SECTION( "Unpolarized Zero Eval : FXC" ) {
@@ -1354,7 +1354,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::FXC, EvalType::Zero,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
   SECTION( "Unpolarized Zero Eval : VXC + FXC" ) {
@@ -1363,7 +1363,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::VXC_FXC, EvalType::Zero,
         kern, Spin::Unpolarized );
-    }
+    }    
   }
 
 
@@ -1383,7 +1383,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC_VXC, EvalType::Regular,
         kern, Spin::Polarized );
-    }
+    }    
   }
 
   SECTION( "Polarized Regular Eval : FXC" ) {
@@ -1401,7 +1401,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::VXC_FXC, EvalType::Regular,
         kern, Spin::Polarized );
-    }
+    }    
   }
 
   SECTION( "Polarized Small Eval : EXC" ) {
@@ -1449,7 +1449,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::EXC, EvalType::Zero,
         kern, Spin::Polarized );
-    }
+    }    
   }
 
   SECTION( "Polarized Zero Eval : EXC + VXC" ) {
@@ -1466,7 +1466,7 @@ TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
       if(is_epc(kern)) continue;
       compare_libxc_builtin( TestInterface::FXC, EvalType::Zero,
         kern, Spin::Polarized );
-    }
+    }    
   }
 
   SECTION( "Polarized Zero Eval : VXC + FXC" ) {
@@ -1523,7 +1523,7 @@ TEST_CASE( "Scale and Increment Interface", "[xc-inc]" ) {
   }
 
   SECTION( "Builtin Polarized EXC + VXC" ) {
-    for( auto kern : builtin_supported_kernels )
+    for( auto kern : builtin_supported_kernels ) 
       kernel_test( TestInterface::EXC_VXC_INC, Backend::builtin, kern,
         Spin::Polarized );
   }
@@ -1861,7 +1861,7 @@ void test_device_interface( TestInterface interface, EvalType evaltype,
     safe_cuda_cpy( v2lapltau_device, v2lapltau.data(), len_v2lapltau );
   }
 
-
+  
   // Evaluate functional on device
   cudaStream_t stream = 0;
   if( interface == TestInterface::EXC ) {
@@ -1907,7 +1907,7 @@ void test_device_interface( TestInterface interface, EvalType evaltype,
         exc_device, vrho_device, vsigma_device, stream );
     else if( func.is_mgga() )
       func.eval_exc_vxc_inc_device( alpha, npts, rho_device, sigma_device,
-        lapl_device, tau_device, exc_device, vrho_device, vsigma_device,
+        lapl_device, tau_device, exc_device, vrho_device, vsigma_device, 
         vlapl_device, vtau_device, stream );
 
   } else if( interface == TestInterface::FXC ) {
@@ -2144,8 +2144,10 @@ void test_device_interface( TestInterface interface, EvalType evaltype,
 
 }
 
-#endif // EXCHCXX_ENABLE_CUDA/HIP
 
+
+
+#endif
 
 
 #ifdef EXCHCXX_ENABLE_SYCL
@@ -2706,6 +2708,8 @@ void test_device_interface( TestInterface interface, EvalType evaltype,
 }
 
 #endif // EXCHCXX_ENABLE_SYCL
+
+
 
 #ifdef EXCHCXX_ENABLE_DEVICE
 TEST_CASE( "GPU Interfaces", "[xc-device]" ) {
@@ -3591,7 +3595,7 @@ TEST_CASE( "GPU Interfaces", "[xc-device]" ) {
           Backend::builtin, kern, Spin::Polarized );
       }
     }
-
+    
     SECTION("VXC + FXC Zero: Polarized") {
       for( auto kern : builtin_supported_kernels ) {
         if(is_deorbitalized(kern)) continue;
@@ -3632,5 +3636,6 @@ TEST_CASE( "GPU Interfaces", "[xc-device]" ) {
 
 
 }
-
 #endif // EXCHCXX_ENABLE_DEVICE
+
+#endif
