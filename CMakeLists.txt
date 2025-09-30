@@ -12,7 +12,6 @@ option( EXCHCXX_ENABLE_SYCL      "Enable Device Code (SYCL)"    OFF )
 option( EXCHCXX_ENABLE_LIBXC     "Enable Libxc Backend"         ON  )
 option( BUILD_SHARED_LIBS        "Build Shared Libs"            OFF )
 
-
 # Decided if we're compiling device bindings
 if( EXCHCXX_ENABLE_CUDA OR EXCHCXX_ENABLE_SYCL OR EXCHCXX_ENABLE_HIP )
   set( EXCHCXX_ENABLE_DEVICE TRUE CACHE BOOL "Enable Device Code" )
@@ -27,6 +26,12 @@ if( EXCHCXX_ENABLE_CUDA AND EXCHCXX_ENABLE_HIP )
 endif()
 if( EXCHCXX_ENABLE_SYCL AND EXCHCXX_ENABLE_HIP )
   message( FATAL_ERROR "SYCL / HIP bindings are mutually exclusive" )
+endif()
+
+
+if(EXCHCXX_ENABLE_SYCL)
+  # e.g. intel_gpu_pvc | nvidia_gpu_sm_80 | nvidia_gpu_sm_90 | amd_gpu_gfx90a | amd_gpu_gfx942
+  set(EXCHCXX_SYCL_TARGET "" CACHE STRING "Alias for -fsycl-targets (see Users Manual)")
 endif()
 
 

@@ -79,7 +79,7 @@
   #define DEVICE_PARAMS sycl::queue* queue
   #define DEVICE_PARAMS_NOTYPE queue
 
-  #define SYCL_KERNEL_PARAMS sycl::id<1> idx
+  #define SYCL_KERNEL_PARAMS sycl::id<1> tid
 
 #endif
 

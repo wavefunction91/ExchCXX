@@ -13,9 +13,33 @@ list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 find_package( SYCL REQUIRED )
 target_link_libraries( exchcxx PUBLIC SYCL::SYCL )
 
+
+# --- AoT-builds SYCL target alias pass-through ---
+set(_EXCHCXX_SYCL_ALLOWED
+  intel_gpu_pvc
+  nvidia_gpu_sm_80
+  nvidia_gpu_sm_90
+  amd_gpu_gfx90a
+  amd_gpu_gfx942
+)
+if(DEFINED EXCHCXX_SYCL_TARGET AND NOT EXCHCXX_SYCL_TARGET STREQUAL "")
+  list(FIND _EXCHCXX_SYCL_ALLOWED "${EXCHCXX_SYCL_TARGET}" _exchcxx_sycl_idx)
+  if(_exchcxx_sycl_idx EQUAL -1)
+    message(FATAL_ERROR "Invalid EXCHCXX_SYCL_TARGET='${EXCHCXX_SYCL_TARGET}'. " "Allowed values: ${_EXCHCXX_SYCL_ALLOWED}")
+  endif()
+
+  target_compile_options( exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET} )
+  target_link_options( exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET} )
+  message(STATUS "ExchCXX SYCL AoT enabled for target: ${EXCHCXX_SYCL_TARGET}")
+endif()
+
+
+target_compile_options(exchcxx PRIVATE  $<$<COMPILE_LANGUAGE:CXX>:-ffp-model=precise>)
+target_link_options(exchcxx PRIVATE -fsycl-max-parallel-link-jobs=20)
+
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-fno-sycl-id-queries-fit-in-int"     EXCHCXX_SYCL_ID_QUERIES_FIT_IN_INT )
-check_cxx_compiler_flag("-fsycl-device-code-split=per_kernel" EXCHCXX_SYCL_DEVICE_CODE_SPLIT_PER_KERNEL )
+check_cxx_compiler_flag("-fsycl-device-code-split=per_source" EXCHCXX_SYCL_DEVICE_CODE_SPLIT_PER_SOURCE )
 check_cxx_compiler_flag("-fno-sycl-early-optimizations"       EXCHCXX_SYCL_HAS_NO_EARLY_OPTIMIZATIONS )
 
 
@@ -25,9 +49,9 @@ if( EXCHCXX_SYCL_ID_QUERIES_FIT_IN_INT )
   )
 endif()
 
-if( EXCHCXX_SYCL_DEVICE_CODE_SPLIT_PER_KERNEL )
+if( EXCHCXX_SYCL_DEVICE_CODE_SPLIT_PER_SOURCE )
   target_compile_options( exchcxx PRIVATE
-    $<$<COMPILE_LANGUAGE:CXX>: -fsycl-device-code-split=per_kernel>
+    $<$<COMPILE_LANGUAGE:CXX>: -fsycl-device-code-split=per_source>
   )
 endif()
 
