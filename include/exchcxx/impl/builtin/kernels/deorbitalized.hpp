@@ -141,8 +141,10 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
                          double& v2rho2, double& v2rhosigma, double& v2rholapl, double& v2rhotau,
                          double& v2sigma2, double& v2sigmalapl, double& v2sigmatau,
                          double& v2lapl2, double& v2lapltau, double& v2tau2 ) {
-    #if defined(__CUDACC__) || defined(__HIPCC__) ||  defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    #if defined(__CUDACC__) || defined(__HIPCC__)
     printf("eval_vxc_fxc_unpolar not implemented for deorbitalized kernels\n");
+    #elif defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    sycl::ext::oneapi::experimental::printf("eval_vxc_fxc_unpolar not implemented for deorbitalized kernels\n");
     #else
     unused(rho, sigma, lapl, tau, vrho, vsigma, vlapl, vtau, v2rho2, v2rhosigma, v2rholapl, v2rhotau, v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2);
     throw std::runtime_error("eval_vxc_fxc_unpolar not implemented for deorbitalized kernels");
@@ -170,8 +172,10 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
                        double& v2lapl2_aa, double& v2lapl2_ab, double& v2lapl2_bb,
                        double& v2lapltau_a_a, double& v2lapltau_a_b, double& v2lapltau_b_a, double& v2lapltau_b_b,
                        double& v2tau2_aa, double& v2tau2_ab, double& v2tau2_bb ) {
-    #if defined(__CUDACC__) || defined(__HIPCC__) ||  defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    #if defined(__CUDACC__) || defined(__HIPCC__)
     printf("eval_vxc_fxc_polar not implemented for deorbitalized kernels\n");
+    #elif defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    sycl::ext::oneapi::experimental::printf("eval_vxc_fxc_polar not implemented for deorbitalized kernels\n");
     #else
       unused(rho_a, rho_b, sigma_aa, sigma_ab, sigma_bb, lapl_a, lapl_b, tau_a, tau_b, vrho_a, vrho_b, vsigma_aa, vsigma_ab, vsigma_bb, vlapl_a, vlapl_b, vtau_a, vtau_b, v2rho2_aa, v2rho2_ab, v2rho2_bb, v2rhosigma_a_aa, v2rhosigma_a_ab, v2rhosigma_a_bb, v2rhosigma_b_aa, v2rhosigma_b_ab, v2rhosigma_b_bb, v2rholapl_a_a, v2rholapl_a_b, v2rholapl_b_a, v2rholapl_b_b, v2rhotau_a_a, v2rhotau_a_b, v2rhotau_b_a, v2rhotau_b_b, v2sigma2_aa_aa, v2sigma2_aa_ab, v2sigma2_aa_bb, v2sigma2_ab_ab, v2sigma2_ab_bb, v2sigma2_bb_bb, v2sigmalapl_aa_a, v2sigmalapl_aa_b, v2sigmalapl_ab_a, v2sigmalapl_ab_b, v2sigmalapl_bb_a, v2sigmalapl_bb_b, v2sigmatau_aa_a, v2sigmatau_aa_b, v2sigmatau_ab_a, v2sigmatau_ab_b, v2sigmatau_bb_a, v2sigmatau_bb_b, v2lapl2_aa, v2lapl2_ab, v2lapl2_bb, v2lapltau_a_a, v2lapltau_a_b, v2lapltau_b_a, v2lapltau_b_b, v2tau2_aa, v2tau2_ab, v2tau2_bb);
       throw std::runtime_error("eval_vxc_fxc_polar not implemented for deorbitalized kernels");
@@ -184,8 +188,10 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
                      double& v2rho2, double& v2rhosigma, double& v2rholapl, double& v2rhotau, 
                      double& v2sigma2, double& v2sigmalapl, double& v2sigmatau, 
                      double& v2lapl2, double& v2lapltau, double& v2tau2 ) {
-    #if defined(__CUDACC__) || defined(__HIPCC__) ||  defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    #if defined(__CUDACC__) || defined(__HIPCC__)
     printf("eval_fxc_unpolar not implemented for deorbitalized kernels\n");
+    #elif defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    sycl::ext::oneapi::experimental::printf("eval_fxc_unpolar not implemented for deorbitalized kernels\n");
     #else
     unused(rho, sigma, lapl, tau, v2rho2, v2rhosigma, v2rholapl, v2rhotau, v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2);
     throw std::runtime_error("eval_fxc_unpolar not implemented for deorbitalized kernels");
@@ -210,8 +216,10 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
                    double& v2lapl2_aa, double& v2lapl2_ab, double& v2lapl2_bb,
                    double& v2lapltau_a_a, double& v2lapltau_a_b, double& v2lapltau_b_a, double& v2lapltau_b_b,
                    double& v2tau2_aa, double& v2tau2_ab, double& v2tau2_bb ) {
-    #if defined(__CUDACC__) || defined(__HIPCC__) ||  defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    #if defined(__CUDACC__) || defined(__HIPCC__)
     printf("eval_fxc_polar not implemented for deorbitalized kernels\n");
+    #elif defined(__SYCL_DEVICE_ONLY__) || defined(EXCHCXX_ENABLE_SYCL)
+    sycl::ext::oneapi::experimental::printf("eval_fxc_polar not implemented for deorbitalized kernels\n");
     #else
     unused(rho_a, rho_b, sigma_aa, sigma_ab, sigma_bb, lapl_a, lapl_b, tau_a, tau_b, v2rho2_aa, v2rho2_ab, v2rho2_bb, v2rhosigma_a_aa, v2rhosigma_a_ab, v2rhosigma_a_bb, v2rhosigma_b_aa, v2rhosigma_b_ab, v2rhosigma_b_bb, v2rholapl_a_a, v2rholapl_a_b, v2rholapl_b_a, v2rholapl_b_b, v2rhotau_a_a, v2rhotau_a_b, v2rhotau_b_a, v2rhotau_b_b, v2sigma2_aa_aa, v2sigma2_aa_ab, v2sigma2_aa_bb, v2sigma2_ab_ab, v2sigma2_ab_bb, v2sigma2_bb_bb, v2sigmalapl_aa_a, v2sigmalapl_aa_b, v2sigmalapl_ab_a, v2sigmalapl_ab_b, v2sigmalapl_bb_a, v2sigmalapl_bb_b, v2sigmatau_aa_a, v2sigmatau_aa_b, v2sigmatau_ab_a, v2sigmatau_ab_b, v2sigmatau_bb_a, v2sigmatau_bb_b, v2lapl2_aa, v2lapl2_ab, v2lapl2_bb, v2lapltau_a_a, v2lapltau_a_b, v2lapltau_b_a, v2lapltau_b_b, v2tau2_aa, v2tau2_ab, v2tau2_bb);
     throw std::runtime_error("eval_fxc_polar not implemented for deorbitalized kernels");
