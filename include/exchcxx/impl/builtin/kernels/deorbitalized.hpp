@@ -57,6 +57,7 @@
 
 namespace ExchCXX {
 
+
 template <typename XCEF, typename KEDF>
 struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
 
