@@ -14,7 +14,20 @@ find_package( SYCL REQUIRED )
 target_link_libraries( exchcxx PUBLIC SYCL::SYCL )
 
 
+# --- AoT-builds SYCL target alias pass-through ---
+set(_EXCHCXX_SYCL_ALLOWED
+  intel_gpu_pvc
+  nvidia_gpu_sm_80
+  nvidia_gpu_sm_90
+  amd_gpu_gfx90a
+  amd_gpu_gfx942
+)
 if(DEFINED EXCHCXX_SYCL_TARGET AND NOT EXCHCXX_SYCL_TARGET STREQUAL "")
+  list(FIND _EXCHCXX_SYCL_ALLOWED "${EXCHCXX_SYCL_TARGET}" _exchcxx_sycl_idx)
+  if(_exchcxx_sycl_idx EQUAL -1)
+    message(FATAL_ERROR "Invalid EXCHCXX_SYCL_TARGET='${EXCHCXX_SYCL_TARGET}'. " "Allowed values: ${_EXCHCXX_SYCL_ALLOWED}")
+  endif()
+
   target_compile_options( exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET} )
   target_link_options( exchcxx PRIVATE -fsycl-targets=${EXCHCXX_SYCL_TARGET} )
   message(STATUS "ExchCXX SYCL AoT enabled for target: ${EXCHCXX_SYCL_TARGET}")
