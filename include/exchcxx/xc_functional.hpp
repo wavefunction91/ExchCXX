@@ -66,7 +66,7 @@ namespace ExchCXX {
 
 struct HybCoeffs {
   double alpha = 0.0; // the coefficient of HF part for global hybrid functionals or the coefficient of long-range HF part for range-separated functionals
-  double beta = 0.0; // The deduction of the short-range part. Following the notation of libxc. So the real coefficient of short-range HF is alpha - beta
+  double beta = 0.0; // The deduction of the short-range part. Following the notation of libxc. So the real coefficient of short-range HF is alpha + beta
   double omega = 0.0; // the range-separation parameter
 
   bool operator==(const HybCoeffs& other) const {
