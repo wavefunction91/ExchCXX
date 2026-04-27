@@ -256,7 +256,7 @@ std::unique_ptr< XCKernelImpl > LibxcKernelImpl::clone_() const {
 bool LibxcKernelImpl::is_lda_() const noexcept {
   return (kernel_.info->family == XC_FAMILY_LDA) 
 #if XC_MAJOR_VERSION > 6
-  or (kernel_.info->family == XC_FAMILY_HYB_LDA)
+  || (kernel_.info->family == XC_FAMILY_HYB_LDA)
 #endif
   ;
 }
@@ -264,13 +264,13 @@ bool LibxcKernelImpl::is_lda_() const noexcept {
 bool LibxcKernelImpl::is_gga_() const noexcept {
   return 
     (kernel_.info->family == XC_FAMILY_GGA    ) 
-    or (kernel_.info->family == XC_FAMILY_HYB_GGA);
+    || (kernel_.info->family == XC_FAMILY_HYB_GGA);
 }
 
 bool LibxcKernelImpl::is_mgga_() const noexcept {
   return 
     (kernel_.info->family == XC_FAMILY_MGGA    )
-    or (kernel_.info->family == XC_FAMILY_HYB_MGGA);
+    || (kernel_.info->family == XC_FAMILY_HYB_MGGA);
 }
 
 bool LibxcKernelImpl::needs_laplacian_() const noexcept {
@@ -294,7 +294,7 @@ bool LibxcKernelImpl::is_epc_() const noexcept {
   int xcNumber = xc_info()->number;
   return
 #if XC_MAJOR_VERSION > 7
-  xcNumber == XC_LDA_C_EPC17 or xcNumber == XC_LDA_C_EPC17_2 or xcNumber == XC_LDA_C_EPC18_1 or xcNumber == XC_LDA_C_EPC18_2;
+  xcNumber == XC_LDA_C_EPC17 || xcNumber == XC_LDA_C_EPC17_2 || xcNumber == XC_LDA_C_EPC18_1 || xcNumber == XC_LDA_C_EPC18_2;
 #else
   false;
 #endif

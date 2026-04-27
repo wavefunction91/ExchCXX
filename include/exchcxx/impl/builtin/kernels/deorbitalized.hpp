@@ -70,7 +70,6 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   static constexpr bool needs_laplacian = true;
   static constexpr bool is_kedf = false;
   static constexpr bool is_epc  = false;
-  static constexpr double exx_coeff = xc_traits::exx_coeff + ke_traits::exx_coeff;
 
   BUILTIN_KERNEL_EVAL_RETURN
     eval_exc_unpolar( double rho, double sigma, double lapl, double tau, double& eps ) {

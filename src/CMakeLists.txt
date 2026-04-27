@@ -16,6 +16,9 @@ add_library( exchcxx ${EXCHCXX_SOURCES} )
 # TARGET properties
 
 target_compile_features( exchcxx PUBLIC cxx_std_17 )
+if(MSVC)
+  target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
+endif()
 if( EXCHCXX_ENABLE_LIBXC )
   target_link_libraries( exchcxx PUBLIC Libxc::xc )
 endif()

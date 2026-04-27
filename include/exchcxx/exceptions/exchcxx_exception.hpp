@@ -77,7 +77,7 @@ public:
 };
 
 #define EXCHCXX_BOOL_CHECK( MSG, V ) \
-  if( not (V) ) \
+  if( !(V) ) \
     throw exchcxx_exception( __FILE__, __LINE__, MSG );
 
 }

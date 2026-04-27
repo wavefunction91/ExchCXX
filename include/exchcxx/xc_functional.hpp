@@ -92,7 +92,7 @@ private:
   inline bool sanity_check() const {
 
     // Must have one kernel
-    if( not kernels_.size() ) return false;
+    if( !kernels_.size() ) return false;
 
     // Polarization is all or nothing
     int polar_one = kernels_.at(0).second.is_polarized();
@@ -103,7 +103,7 @@ private:
       }
     ); 
 
-    if( not polar_all ) return false;
+    if( !polar_all ) return false;
 
     // If we made it, kernel is sane
     return true;
@@ -164,7 +164,7 @@ public:
     return std::any_of( 
       kernels_.begin(), kernels_.end(),
       [](const auto& x) { return x.second.is_gga(); }
-    ) and not is_mgga();
+    ) && !is_mgga();
   }
 
   inline bool is_mgga() const {

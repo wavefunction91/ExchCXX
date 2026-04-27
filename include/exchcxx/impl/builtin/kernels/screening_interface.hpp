@@ -394,7 +394,7 @@ struct mgga_screening_interface {
       constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
       sigma = safe_max(sigma, sigma_tol_sq); 
       tau   = safe_max(tau, traits::tau_tol);
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
       }
 
@@ -421,7 +421,7 @@ struct mgga_screening_interface {
       sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
       tau_a = safe_max(tau_a, traits::tau_tol);
       tau_b = safe_max(tau_b, traits::tau_tol);
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
         sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
       }
@@ -450,7 +450,7 @@ struct mgga_screening_interface {
       constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
       sigma = safe_max(sigma, sigma_tol_sq); 
       tau   = safe_max(tau, traits::tau_tol);
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
       }
       traits::eval_exc_vxc_unpolar_impl(rho, sigma, lapl, tau, 
@@ -489,7 +489,7 @@ struct mgga_screening_interface {
       sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
       tau_a = safe_max(tau_a, traits::tau_tol);
       tau_b = safe_max(tau_b, traits::tau_tol);
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
         sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
       }
@@ -519,7 +519,7 @@ BUILTIN_KERNEL_EVAL_RETURN
       constexpr auto sigma_tol_sq = traits::sigma_tol * traits::sigma_tol;
       sigma = safe_max(sigma, sigma_tol_sq); 
       tau   = safe_max(tau, traits::tau_tol);
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
       }
       traits::eval_fxc_unpolar_impl(rho, sigma, lapl, tau, 
@@ -575,7 +575,7 @@ BUILTIN_KERNEL_EVAL_RETURN
       sigma_bb = safe_max(sigma_bb, sigma_tol_sq); 
       tau_a = safe_max(tau_a, traits::tau_tol);
       tau_b = safe_max(tau_b, traits::tau_tol);
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
         sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
       }
@@ -621,7 +621,7 @@ BUILTIN_KERNEL_EVAL_RETURN
       sigma = safe_max(sigma, sigma_tol_sq); 
       tau = safe_max(tau, traits::tau_tol);
       
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma = enforce_fermi_hole_curvature(sigma, rho, tau);
       }
       
@@ -686,7 +686,7 @@ BUILTIN_KERNEL_EVAL_RETURN
       tau_a = safe_max(tau_a, traits::tau_tol);
       tau_b = safe_max(tau_b, traits::tau_tol);
       
-      if constexpr (not traits::is_kedf) {
+      if constexpr (!traits::is_kedf) {
         sigma_aa = enforce_fermi_hole_curvature(sigma_aa, rho_a, tau_a);
         sigma_bb = enforce_fermi_hole_curvature(sigma_bb, rho_b, tau_b);
       }

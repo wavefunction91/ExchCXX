@@ -711,7 +711,7 @@ LDA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
   const size_t len_exc_buffer = exc_buffer_len(N);
 
   std::vector<double> eps_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) 
+  if( kernels_.size() > 1 && !supports_inc_interface() ) 
     eps_scr.resize( len_exc_buffer );
 
   std::fill_n( eps, len_exc_buffer, 0. );
@@ -749,7 +749,7 @@ LDA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
   const size_t len_vxc_buffer = vrho_buffer_len(N);
 
   std::vector<double> eps_scr, vxc_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) {
+  if( kernels_.size() > 1 && !supports_inc_interface() ) {
     eps_scr.resize( len_exc_buffer );
     vxc_scr.resize( len_vxc_buffer );
   }
@@ -869,7 +869,7 @@ GGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
   const size_t len_exc_buffer = exc_buffer_len(N);
 
   std::vector<double> eps_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) 
+  if( kernels_.size() > 1 && !supports_inc_interface() ) 
     eps_scr.resize( len_exc_buffer );
 
   std::fill_n( eps, len_exc_buffer, 0. );
@@ -919,7 +919,7 @@ GGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
   const size_t len_vsigma_buffer = vsigma_buffer_len(N);
 
   std::vector<double> eps_scr, vrho_scr, vsigma_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) {
+  if( kernels_.size() > 1 && !supports_inc_interface() ) {
     eps_scr.resize( len_exc_buffer );
     vrho_scr.resize( len_vrho_buffer );
     vsigma_scr.resize( len_vsigma_buffer );
@@ -988,7 +988,7 @@ GGA_FXC_GENERATOR( XCFunctional::eval_fxc ) const {
   const size_t len_v2sigma2_buffer = v2sigma2_buffer_len(N);
 
   std::vector<double> v2sigma2_scr, v2rhosigma_scr, v2rho2_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) {
+  if( kernels_.size() > 1 && !supports_inc_interface() ) {
     v2rho2_scr.resize( len_v2rho2_buffer );
     v2rhosigma_scr.resize( len_v2rhosigma_buffer );
     v2sigma2_scr.resize( len_v2sigma2_buffer );
@@ -1053,7 +1053,7 @@ GGA_VXC_FXC_GENERATOR( XCFunctional::eval_vxc_fxc ) const {
   const size_t len_v2sigma2_buffer   = v2sigma2_buffer_len(N);
 
   std::vector<double> vrho_scr, vsigma_scr, v2rho2_scr, v2rhosigma_scr, v2sigma2_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) {
+  if( kernels_.size() > 1 && !supports_inc_interface() ) {
     vrho_scr.resize( len_vrho_buffer );
     vsigma_scr.resize( len_vsigma_buffer );
     v2rho2_scr.resize( len_v2rho2_buffer );
@@ -1130,7 +1130,7 @@ MGGA_EXC_GENERATOR( XCFunctional::eval_exc ) const {
   const size_t len_exc_buffer = exc_buffer_len(N);
 
   std::vector<double> eps_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) 
+  if( kernels_.size() > 1 && !supports_inc_interface() ) 
     eps_scr.resize( len_exc_buffer );
 
   std::fill_n( eps, len_exc_buffer, 0. );
@@ -1188,7 +1188,7 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
   const size_t len_vtau_buffer   = vtau_buffer_len(N);
 
   std::vector<double> eps_scr, vrho_scr, vsigma_scr, vlapl_scr, vtau_scr;
-  if( kernels_.size() > 1 and not supports_inc_interface() ) {
+  if( kernels_.size() > 1 && !supports_inc_interface() ) {
     eps_scr.resize( len_exc_buffer );
     vrho_scr.resize( len_vrho_buffer );
     vsigma_scr.resize( len_vsigma_buffer );
@@ -1244,7 +1244,7 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
         _addscal( len_exc_buffer,    kernels_[i].first, eps,    eps_eval  );
         _addscal( len_vrho_buffer,   kernels_[i].first, vrho,   vrho_eval );
    
-        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        if( kernels_[i].second.is_gga() || kernels_[i].second.is_mgga() )
           _addscal( len_vsigma_buffer, kernels_[i].first, vsigma, vsigma_eval );
 
         if( kernels_[i].second.needs_laplacian() ) 
@@ -1258,7 +1258,7 @@ MGGA_EXC_VXC_GENERATOR( XCFunctional::eval_exc_vxc ) const {
         _scal( len_exc_buffer,    kernels_[i].first, eps  );
         _scal( len_vrho_buffer,   kernels_[i].first, vrho );
 
-        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
+        if( kernels_[i].second.is_gga() || kernels_[i].second.is_mgga() )
           _scal( len_vsigma_buffer, kernels_[i].first, vsigma );
 
         if( kernels_[i].second.needs_laplacian() ) 
@@ -1361,7 +1361,7 @@ MGGA_FXC_GENERATOR( XCFunctional::eval_fxc ) const {
       if (i) {
         _addscal(len_v2rho2_buffer, kernels_[i].first, v2rho2, v2rho2_eval);
 
-        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() ){
+        if( kernels_[i].second.is_gga() || kernels_[i].second.is_mgga() ){
           _addscal(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma, v2rhosigma_eval);
           _addscal(len_v2sigma2_buffer, kernels_[i].first, v2sigma2, v2sigma2_eval);
         }
@@ -1384,7 +1384,7 @@ MGGA_FXC_GENERATOR( XCFunctional::eval_fxc ) const {
 
         _scal(len_v2rho2_buffer, kernels_[i].first, v2rho2);
 
-        if (kernels_[i].second.is_gga() or kernels_[i].second.is_mgga()) {
+        if (kernels_[i].second.is_gga() || kernels_[i].second.is_mgga()) {
           _scal(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma);
           _scal(len_v2sigma2_buffer, kernels_[i].first, v2sigma2);
         }
