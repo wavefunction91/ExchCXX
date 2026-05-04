@@ -18,7 +18,38 @@ add_library( exchcxx ${EXCHCXX_SOURCES} )
 target_compile_features( exchcxx PUBLIC cxx_std_17 )
 if(MSVC)
   target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
-  target_compile_options( exchcxx PUBLIC /wd4003 /wd4061 /wd4244 /wd4266 /wd4267 /wd4365 /wd4514 /wd4267 /wd4710 /wd4711 /wd4800 /wd4820 /wd5246 )
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # clang-cl
+    target_compile_options( exchcxx PUBLIC
+      -Wno-c++98-compat
+      -Wno-c++98-compat-local-type-template-args
+      -Wno-c++98-compat-pedantic
+      -Wno-deprecated-declarations
+      -Wno-exit-time-destructors
+      -Wno-extra-semi
+      -Wno-extra-semi-stmt
+      -Wno-float-conversion
+      -Wno-float-equal
+      -Wno-global-constructors
+      -Wno-inconsistent-missing-destructor-override
+      -Wno-missing-prototypes
+      -Wno-missing-variable-declarations
+      -Wno-old-style-cast
+      -Wno-pre-c++14-compat
+      -Wno-pre-c++17-compat
+      -Wno-reserved-macro-identifier
+      -Wno-sign-conversion
+      -Wno-suggest-destructor-override
+      -Wno-switch-enum
+      -Wno-undefined-func-template
+      -Wno-unsafe-buffer-usage
+      -Wno-unsafe-buffer-usage-in-libc-call
+      -Wno-unused-macros
+      -Wno-unused-parameter
+      -Wno-unused-variable
+    )
+  else()  # cl
+    target_compile_options( exchcxx PUBLIC /wd4003 /wd4061 /wd4244 /wd4266 /wd4267 /wd4365 /wd4514 /wd4267 /wd4710 /wd4711 /wd4800 /wd4820 /wd5246 )
+  endif()
 endif()
 if( EXCHCXX_ENABLE_LIBXC )
   target_link_libraries( exchcxx PUBLIC Libxc::xc )
