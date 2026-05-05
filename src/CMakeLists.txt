@@ -48,7 +48,21 @@ if(MSVC)
       -Wno-unused-variable
     )
   else()  # cl
-    target_compile_options( exchcxx PUBLIC /wd4003 /wd4061 /wd4244 /wd4266 /wd4267 /wd4365 /wd4514 /wd4267 /wd4710 /wd4711 /wd4800 /wd4820 /wd5246 )
+    target_compile_options( exchcxx PUBLIC 
+      /wd4003  # not enough actual parameters for macro 'identifier'
+      /wd4061  # enumerator 'enumerator' in switch of enum 'enumeration' is not explicitly handled by a case label
+      /wd4244  # conversion from 'type1' to 'type2', possible loss of data
+      /wd4266  # no override available for virtual member function from base 'class'; function is hidden
+      /wd4267  # conversion from 'size_t' to 'type', possible loss of data
+      /wd4365  # conversion from 'type1' to 'type2', signed/unsigned mismatch
+      /wd4514  # unreferenced inline function has been removed
+      /wd4267  # conversion from 'size_t' to 'type', possible loss of data
+      /wd4710  # function 'function' not inlined
+      /wd4711  # function 'function' selected for automatic inline expansion
+      /wd4800  # forcing value to bool 'true' or 'false' (performance warning)
+      /wd4820  # 'bytes' bytes padding added after construct 'member_name'
+      /wd5246  # C-style struct initialization may not be portable
+    )
   endif()
 endif()
 if( EXCHCXX_ENABLE_LIBXC )
