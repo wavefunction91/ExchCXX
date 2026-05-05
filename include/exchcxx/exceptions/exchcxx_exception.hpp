@@ -66,7 +66,7 @@ class exchcxx_exception : public std::exception {
 
      auto msg = ss.str();
 
-     return strdup( msg.c_str() );
+     return _strdup( msg.c_str() );
   }
 
 public:
