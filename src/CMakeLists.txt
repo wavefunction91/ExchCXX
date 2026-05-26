@@ -17,7 +17,7 @@ add_library( exchcxx ${EXCHCXX_SOURCES} )
 
 target_compile_features( exchcxx PUBLIC cxx_std_17 )
 if(MSVC)
-  target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
+  target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES _CRT_NONSTDC_NO_DEPRECATE )
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # clang-cl
     target_compile_options( exchcxx PUBLIC
       -Wno-c++98-compat
@@ -56,7 +56,6 @@ if(MSVC)
       /wd4267  # conversion from 'size_t' to 'type', possible loss of data
       /wd4365  # conversion from 'type1' to 'type2', signed/unsigned mismatch
       /wd4514  # unreferenced inline function has been removed
-      /wd4267  # conversion from 'size_t' to 'type', possible loss of data
       /wd4710  # function 'function' not inlined
       /wd4711  # function 'function' selected for automatic inline expansion
       /wd4800  # forcing value to bool 'true' or 'false' (performance warning)
