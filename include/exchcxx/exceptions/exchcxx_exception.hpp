@@ -47,7 +47,6 @@
 
 #include <stdexcept>
 #include <string>
-#include <string.h>
 #include <sstream>
 
 namespace ExchCXX {
@@ -57,22 +56,22 @@ class exchcxx_exception : public std::exception {
   std::string file_;
   int         line_;
   std::string msg_prefix_;
+  std::string what_msg_;
 
   const char* what() const noexcept override {
-     std::stringstream ss;
-     ss << "EXCHCXX Exception (" << msg_prefix_ << ")" << std::endl
-        << "  File       " << file_ << std::endl
-        << "  Line       " << line_ << std::endl;
-
-     auto msg = ss.str();
-
-     return _strdup( msg.c_str() );
+    return what_msg_.c_str();
   }
 
 public:
 
   exchcxx_exception( std::string file, int line, std::string msg) :
-    file_(file), line_(line), msg_prefix_(msg) { }
+    file_(std::move(file)), line_(line), msg_prefix_(std::move(msg)) {
+    std::stringstream ss;
+    ss << "EXCHCXX Exception (" << msg_prefix_ << ")" << std::endl
+       << "  File       " << file_ << std::endl
+       << "  Line       " << line_ << std::endl;
+    what_msg_ = ss.str();
+  }
 
 };
 
