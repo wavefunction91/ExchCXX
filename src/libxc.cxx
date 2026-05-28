@@ -291,12 +291,11 @@ bool LibxcKernelImpl::is_polarized_() const noexcept {
 }
 
 bool LibxcKernelImpl::is_epc_() const noexcept {
-  int xcNumber = xc_info()->number;
-  return
 #if XC_MAJOR_VERSION > 7
-  xcNumber == XC_LDA_C_EPC17 || xcNumber == XC_LDA_C_EPC17_2 || xcNumber == XC_LDA_C_EPC18_1 || xcNumber == XC_LDA_C_EPC18_2;
+  int xcNumber = xc_info()->number;
+  return xcNumber == XC_LDA_C_EPC17 || xcNumber == XC_LDA_C_EPC17_2 || xcNumber == XC_LDA_C_EPC18_1 || xcNumber == XC_LDA_C_EPC18_2;
 #else
-  false;
+  return false;
 #endif
 }
 
