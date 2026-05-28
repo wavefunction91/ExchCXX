@@ -20,32 +20,35 @@ if(MSVC)
   target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # clang-cl
     target_compile_options( exchcxx PUBLIC
-      -Wno-c++98-compat
-      -Wno-c++98-compat-local-type-template-args
-      -Wno-c++98-compat-pedantic
-      -Wno-deprecated-declarations
-      -Wno-exit-time-destructors
-      -Wno-extra-semi
-      -Wno-extra-semi-stmt
-      -Wno-float-conversion
-      -Wno-float-equal
-      -Wno-global-constructors
-      -Wno-inconsistent-missing-destructor-override
-      -Wno-missing-prototypes
-      -Wno-missing-variable-declarations
-      -Wno-old-style-cast
-      -Wno-pre-c++14-compat
-      -Wno-pre-c++17-compat
-      -Wno-reserved-macro-identifier
-      -Wno-sign-conversion
-      -Wno-suggest-destructor-override
-      -Wno-switch-enum
-      -Wno-undefined-func-template
-      -Wno-unsafe-buffer-usage
-      -Wno-unsafe-buffer-usage-in-libc-call
-      -Wno-unused-macros
-      -Wno-unused-parameter
-      -Wno-unused-variable
+      # --- active: mirror the /wd* suppressions used for cl ---
+      -Wno-sign-conversion   # mirrors /wd4365: signed/unsigned in STL-heavy code
+      -Wno-switch-enum       # mirrors /wd4061: intentional default: covers all kernels
+
+      # --- under review: clang-specific, no cl counterpart ---
+      # -Wno-c++98-compat
+      # -Wno-c++98-compat-local-type-template-args
+      # -Wno-c++98-compat-pedantic
+      # -Wno-deprecated-declarations
+      # -Wno-exit-time-destructors
+      # -Wno-extra-semi
+      # -Wno-extra-semi-stmt
+      # -Wno-float-conversion
+      # -Wno-float-equal
+      # -Wno-global-constructors
+      # -Wno-inconsistent-missing-destructor-override
+      # -Wno-missing-prototypes
+      # -Wno-missing-variable-declarations
+      # -Wno-old-style-cast
+      # -Wno-pre-c++14-compat
+      # -Wno-pre-c++17-compat
+      # -Wno-reserved-macro-identifier
+      # -Wno-suggest-destructor-override
+      # -Wno-undefined-func-template
+      # -Wno-unsafe-buffer-usage
+      # -Wno-unsafe-buffer-usage-in-libc-call
+      # -Wno-unused-macros
+      # -Wno-unused-parameter
+      # -Wno-unused-variable
     )
   else()  # cl
     target_compile_options( exchcxx PUBLIC
