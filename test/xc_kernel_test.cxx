@@ -980,21 +980,21 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   XCKernel func_builtin( Backend::builtin, kern, polar );
 
 
-  const int len_rho   = func_libxc.rho_buffer_len( npts );
-  const int len_sigma = func_libxc.sigma_buffer_len( npts );
-  const int len_lapl = func_libxc.lapl_buffer_len( npts );
-  const int len_tau = func_libxc.tau_buffer_len( npts );
-  
-  const int len_v2rho2 = func_libxc.v2rho2_buffer_len( npts );
-  const int len_v2rhosigma = func_libxc.v2rhosigma_buffer_len( npts );
-  const int len_v2rholapl = func_libxc.v2rholapl_buffer_len( npts );
-  const int len_v2rhotau = func_libxc.v2rhotau_buffer_len( npts );
-  const int len_v2sigma2 = func_libxc.v2sigma2_buffer_len( npts );
-  const int len_v2sigmalapl = func_libxc.v2sigmalapl_buffer_len( npts );
-  const int len_v2sigmatau  = func_libxc.v2sigmatau_buffer_len( npts );
-  const int len_v2lapl2     = func_libxc.v2lapl2_buffer_len( npts );
-  const int len_v2lapltau = func_libxc.v2lapltau_buffer_len( npts );
-  const int len_v2tau2 = func_libxc.v2tau2_buffer_len( npts );
+  const size_t len_rho   = func_libxc.rho_buffer_len( npts );
+  const size_t len_sigma = func_libxc.sigma_buffer_len( npts );
+  const size_t len_lapl = func_libxc.lapl_buffer_len( npts );
+  const size_t len_tau = func_libxc.tau_buffer_len( npts );
+
+  const size_t len_v2rho2 = func_libxc.v2rho2_buffer_len( npts );
+  const size_t len_v2rhosigma = func_libxc.v2rhosigma_buffer_len( npts );
+  const size_t len_v2rholapl = func_libxc.v2rholapl_buffer_len( npts );
+  const size_t len_v2rhotau = func_libxc.v2rhotau_buffer_len( npts );
+  const size_t len_v2sigma2 = func_libxc.v2sigma2_buffer_len( npts );
+  const size_t len_v2sigmalapl = func_libxc.v2sigmalapl_buffer_len( npts );
+  const size_t len_v2sigmatau  = func_libxc.v2sigmatau_buffer_len( npts );
+  const size_t len_v2lapl2     = func_libxc.v2lapl2_buffer_len( npts );
+  const size_t len_v2lapltau = func_libxc.v2lapltau_buffer_len( npts );
+  const size_t len_v2tau2 = func_libxc.v2tau2_buffer_len( npts );
 
   std::vector<double> rho_small(len_rho, 1e-13);
   std::vector<double> sigma_small(len_sigma, 1e-14);

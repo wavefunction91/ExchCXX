@@ -306,7 +306,7 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     [&](const auto& a){ coeffs.emplace_back( a.first ); } 
   );
 
-  size_t npts = 1024;
+  int npts = 1024;
 
   std::vector<double>
     rho( func.rho_buffer_len(npts) ),

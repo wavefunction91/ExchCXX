@@ -292,7 +292,7 @@ lda_reference load_lda_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
   if( p == Spin::Unpolarized ) {
 
     copy_iterable( rho, std::back_inserter(ref_vals.rho) );
-    ref_vals.npts = rho.size();
+    ref_vals.npts = static_cast<int>(rho.size());
 
     switch(k) {
       case Kernel::SlaterExchange:
@@ -306,7 +306,7 @@ lda_reference load_lda_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
   } else {
 
     copy_iterable( rho_polarized, std::back_inserter(ref_vals.rho) );
-    ref_vals.npts = rho_polarized.size() / 2;
+    ref_vals.npts = static_cast<int>(rho_polarized.size() / 2);
 
     switch(k) {
       case Kernel::SlaterExchange:
@@ -333,7 +333,7 @@ gga_reference load_gga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
 
   if( p == Spin::Unpolarized ) {
 
-    ref_vals.npts = rho.size();
+    ref_vals.npts = static_cast<int>(rho.size());
     copy_iterable( rho, std::back_inserter(ref_vals.rho) );
     copy_iterable( sigma, std::back_inserter(ref_vals.sigma) );
 
@@ -349,7 +349,7 @@ gga_reference load_gga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p) {
 
   } else {
 
-    ref_vals.npts = rho_polarized.size() / 2;
+    ref_vals.npts = static_cast<int>(rho_polarized.size() / 2);
     copy_iterable(  rho_polarized, std::back_inserter(ref_vals.rho) );
     copy_iterable(  sigma_polarized, std::back_inserter(ref_vals.sigma) );
 
@@ -380,7 +380,7 @@ mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bo
     copy_iterable( sigma, std::back_inserter(ref_vals.sigma) );
     copy_iterable( tau, std::back_inserter(ref_vals.tau) );
     if(need_lap) copy_iterable( lapl, std::back_inserter(ref_vals.lapl) );
-    ref_vals.npts = rho.size();
+    ref_vals.npts = static_cast<int>(rho.size());
 
     switch(k) {
       case Kernel::SCAN_X:
@@ -406,7 +406,7 @@ mgga_reference load_mgga_reference_values(ExchCXX::Kernel k, ExchCXX::Spin p, bo
     copy_iterable( sigma_polarized, std::back_inserter(ref_vals.sigma) );
     copy_iterable( tau_polarized, std::back_inserter(ref_vals.tau) );
     if(need_lap) copy_iterable( lapl_polarized, std::back_inserter(ref_vals.lapl) );
-    ref_vals.npts = rho_polarized.size() / 2;
+    ref_vals.npts = static_cast<int>(rho_polarized.size() / 2);
 
     switch(k) {
       case Kernel::SCAN_X:
@@ -544,10 +544,10 @@ std::pair<int,std::vector<double>> load_reference_density(ExchCXX::Spin s) {
   int npts;
 
   if( s == ExchCXX::Spin::Polarized ) {
-    npts = rho_polarized.size() / 2;
+    npts = static_cast<int>(rho_polarized.size() / 2);
     copy_iterable( rho_polarized, std::back_inserter(ref_rho) );
   } else {
-    npts = rho.size();
+    npts = static_cast<int>(rho.size());
     copy_iterable( rho, std::back_inserter(ref_rho) );
   }
   return std::make_pair(npts, ref_rho);
@@ -561,10 +561,10 @@ std::pair<int,std::vector<double>> load_reference_sigma(ExchCXX::Spin s) {
   int npts;
 
   if( s == ExchCXX::Spin::Polarized ) {
-    npts = sigma_polarized.size() / 3;
+    npts = static_cast<int>(sigma_polarized.size() / 3);
     copy_iterable( sigma_polarized, std::back_inserter(ref_sigma) );
   } else {
-    npts = sigma.size();
+    npts = static_cast<int>(sigma.size());
     copy_iterable( sigma, std::back_inserter(ref_sigma) );
   }
   return std::make_pair(npts, ref_sigma);
@@ -577,10 +577,10 @@ std::pair<int,std::vector<double>> load_reference_lapl(ExchCXX::Spin s) {
   int npts;
 
   if( s == ExchCXX::Spin::Polarized ) {
-    npts = lapl_polarized.size() / 2;
+    npts = static_cast<int>(lapl_polarized.size() / 2);
     copy_iterable( lapl_polarized, std::back_inserter(ref_lapl) );
   } else {
-    npts = lapl.size();
+    npts = static_cast<int>(lapl.size());
     copy_iterable( lapl, std::back_inserter(ref_lapl) );
   }
   return std::make_pair(npts, ref_lapl);
@@ -593,10 +593,10 @@ std::pair<int,std::vector<double>> load_reference_tau(ExchCXX::Spin s) {
   int npts;
 
   if( s == ExchCXX::Spin::Polarized ) {
-    npts = tau_polarized.size() / 2;
+    npts = static_cast<int>(tau_polarized.size() / 2);
     copy_iterable( tau_polarized, std::back_inserter(ref_tau) );
   } else {
-    npts = tau.size();
+    npts = static_cast<int>(tau.size());
     copy_iterable( tau, std::back_inserter(ref_tau) );
   }
   return std::make_pair(npts, ref_tau);
