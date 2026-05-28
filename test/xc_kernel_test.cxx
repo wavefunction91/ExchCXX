@@ -65,7 +65,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
   auto mgga_lapl_kernel_test = Kernel::R2SCANL_C;
   auto epc_lda_kernel_test   = Kernel::EPC17_2;
 
-  Backend backend;
+  Backend backend = Backend::builtin;
 
   SECTION( "Pure LDA Unpolarized" ) {
 
@@ -392,7 +392,7 @@ TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
 TEST_CASE( "XCKernel Metadata Correctness", "[xc-kernel]" ) {
 
-  Backend backend;
+  Backend backend = Backend::builtin;
   SECTION( "LDA Kernels" ) {
 
     SECTION( "Libxc Backend" )   { backend = Backend::libxc; }
