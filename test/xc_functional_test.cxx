@@ -306,7 +306,7 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     [&](const auto& a){ coeffs.emplace_back( a.first ); } 
   );
 
-  int npts = 1024;
+  size_t npts = 1024;
 
   std::vector<double>
     rho( func.rho_buffer_len(npts) ),
@@ -382,13 +382,13 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     vtau( func.vtau_buffer_len( npts ) );
 
   if( func.is_lda() )
-    func.eval_exc_vxc( npts, rho.data(), eps.data(), vrho.data() );
+    func.eval_exc_vxc( static_cast<int>(npts), rho.data(), eps.data(), vrho.data() );
   else if( func.is_gga() )
-    func.eval_exc_vxc( npts, rho.data(), sigma.data(), 
+    func.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
       eps.data(), vrho.data(), vsigma.data() );
   else if( func.is_mgga() )
-    func.eval_exc_vxc( npts, rho.data(), sigma.data(), 
-      lapl.data(), tau.data(), eps.data(), vrho.data(), 
+    func.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
+      lapl.data(), tau.data(), eps.data(), vrho.data(),
       vsigma.data(), vlapl.data(), vtau.data() );
 
 
