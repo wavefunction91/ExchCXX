@@ -47,22 +47,22 @@ if(MSVC)
       -Wno-unused-parameter
       -Wno-unused-variable
     )
-  # else()  # cl
-  #   target_compile_options( exchcxx PUBLIC 
-  #     /wd4003  # not enough actual parameters for macro 'identifier'
-  #     /wd4061  # enumerator 'enumerator' in switch of enum 'enumeration' is not explicitly handled by a case label
-  #     /wd4244  # conversion from 'type1' to 'type2', possible loss of data
-  #     /wd4266  # no override available for virtual member function from base 'class'; function is hidden
-  #     /wd4267  # conversion from 'size_t' to 'type', possible loss of data
-  #     /wd4365  # conversion from 'type1' to 'type2', signed/unsigned mismatch
-  #     /wd4514  # unreferenced inline function has been removed
-  #     /wd4267  # conversion from 'size_t' to 'type', possible loss of data
-  #     /wd4710  # function 'function' not inlined
-  #     /wd4711  # function 'function' selected for automatic inline expansion
-  #     /wd4800  # forcing value to bool 'true' or 'false' (performance warning)
-  #     /wd4820  # 'bytes' bytes padding added after construct 'member_name'
-  #     /wd5246  # C-style struct initialization may not be portable
-  #   )
+  else()  # cl
+    target_compile_options( exchcxx PUBLIC
+      /EHsc           # enable standard C++ exception-handling model (fixes C4577)
+      /Zc:preprocessor  # conforming preprocessor: empty macro args are valid (fixes C4003 via NOTYPE)
+      /wd4800  # implicit double-to-bool: fires in auto-generated kernel headers, intentional
+      /wd4514  # unreferenced inline removed: informational, level 4, linker dead-strips correctly
+      /wd4710  # function not inlined: informational, level 4, optimizer decision
+      /wd4711  # function auto-inlined: informational, level 4, optimizer decision
+      /wd4061  # enumerator not in switch case: intentional default: handler covers all kernels
+      /wd4266  # no override for virtual function: by-design partial override in APPROX specialisations
+      /wd4702  # unreachable code: macro-expanded dispatch tables, not real dead code
+      /wd4365  # signed/unsigned in STL code: safe, values always non-negative
+      /wd5045  # Spectre mitigation remark: informational, /Qspectre not in use
+      /wd4820  # struct padding: ABI layout decision, informational
+      /wd4626  # assignment operator deleted: by-design non-copyable classes with reference members
+    )
   endif()
 endif()
 if( EXCHCXX_ENABLE_LIBXC )
