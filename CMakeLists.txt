@@ -4,6 +4,12 @@ include(FetchContent)
 # Set up project definition + version information
 project( ExchCXX VERSION 1.0.0 LANGUAGES C CXX )
 
+if(MSVC AND NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  # Standard C++ exception-handling model — required by the STL and noexcept
+  # specifiers; must be global so FetchContent targets (Catch2, libxc) also get it.
+  add_compile_options(/EHsc)
+endif()
+
 # ExchCXX Options
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )

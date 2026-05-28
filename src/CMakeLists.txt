@@ -49,7 +49,6 @@ if(MSVC)
     )
   else()  # cl
     target_compile_options( exchcxx PUBLIC
-      /EHsc           # enable standard C++ exception-handling model (fixes C4577)
       /Zc:preprocessor  # conforming preprocessor: empty macro args are valid (fixes C4003 via NOTYPE)
       /wd4800  # implicit double-to-bool: fires in auto-generated kernel headers, intentional
       /wd4514  # unreferenced inline removed: informational, level 4, linker dead-strips correctly
