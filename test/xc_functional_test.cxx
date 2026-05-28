@@ -345,26 +345,26 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     if( interface == TestInterface::EXC ) {
 
       if( kern.is_lda() )
-        kern.eval_exc( npts, rho.data(), eps_refs.back().data() );
+        kern.eval_exc( static_cast<int>(npts), rho.data(), eps_refs.back().data() );
       else if( kern.is_gga() )
-        kern.eval_exc( npts, rho.data(), sigma.data(), 
+        kern.eval_exc( static_cast<int>(npts), rho.data(), sigma.data(),
           eps_refs.back().data() );
       else if( kern.is_mgga() )
-        kern.eval_exc( npts, rho.data(), sigma.data(), lapl.data(), tau.data(),
+        kern.eval_exc( static_cast<int>(npts), rho.data(), sigma.data(), lapl.data(), tau.data(),
           eps_refs.back().data() );
 
     } else if( interface == TestInterface::EXC_VXC ) {
 
       if( kern.is_lda() )
-        kern.eval_exc_vxc( npts, rho.data(), eps_refs.back().data(), 
+        kern.eval_exc_vxc( static_cast<int>(npts), rho.data(), eps_refs.back().data(),
           vrho_refs.back().data() );
       else if( kern.is_gga() )
-        kern.eval_exc_vxc( npts, rho.data(), sigma.data(), 
+        kern.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
           eps_refs.back().data(), vrho_refs.back().data(),
           vsigma_refs.back().data() );
       else if( kern.is_mgga() )
-        kern.eval_exc_vxc( npts, rho.data(), sigma.data(), 
-          lapl.data(), tau.data(), eps_refs.back().data(), 
+        kern.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
+          lapl.data(), tau.data(), eps_refs.back().data(),
           vrho_refs.back().data(), vsigma_refs.back().data(),
           vlapl_refs.back().data(), vtau_refs.back().data() );
 

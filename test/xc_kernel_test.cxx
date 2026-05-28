@@ -974,7 +974,7 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
   REQUIRE( npts_lda == npts_mgga );
   REQUIRE( npts_lda == npts_lapl );
 
-  const int npts = npts_lda;
+  const int npts = static_cast<int>(npts_lda);
 
   XCKernel func_libxc  ( Backend::libxc,   kern, polar );
   XCKernel func_builtin( Backend::builtin, kern, polar );
