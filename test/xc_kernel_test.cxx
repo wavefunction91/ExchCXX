@@ -488,7 +488,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
       load_lda_reference_values( kern, polar ) :
       gen_lda_reference_values( backend,kern, polar );
 
-    size_t  npts     = ref_vals.npts;
+    int     npts     = ref_vals.npts;
     const auto&   rho      = ref_vals.rho;
     const auto&   exc_ref  = ref_vals.exc;
     const auto&   vrho_ref = ref_vals.vrho;
@@ -577,7 +577,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
       load_gga_reference_values( kern, polar ) :
       gen_gga_reference_values( backend,kern, polar );
 
-    size_t  npts       = ref_vals.npts;
+    int     npts       = ref_vals.npts;
     const auto&   sigma      = ref_vals.sigma;
     const auto&   rho        = ref_vals.rho;
     const auto&   exc_ref    = ref_vals.exc;
@@ -695,7 +695,7 @@ void kernel_test( TestInterface interface, Backend backend, Kernel kern,
     //auto ref_vals = 
     //  gen_mgga_reference_values( backend,kern, polar );
 
-    size_t  npts       = ref_vals.npts;
+    int     npts       = ref_vals.npts;
     const auto&   rho        = ref_vals.rho;
     const auto&   sigma      = ref_vals.sigma;
     const auto&   lapl       = ref_vals.lapl;
