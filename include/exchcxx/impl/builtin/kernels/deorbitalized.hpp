@@ -72,7 +72,7 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   static constexpr bool is_epc  = false;
 
   BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_unpolar( double rho, double sigma, double lapl, double tau, double& eps ) {
+    eval_exc_unpolar( double rho, double sigma, double lapl, [[maybe_unused]] double tau, double& eps ) {
 
     double TAU;
     ke_traits::eval_exc_unpolar(rho, sigma, lapl, 0.0, TAU);
@@ -83,7 +83,7 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   }
 
   BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_vxc_unpolar( double rho, double sigma, double lapl, double tau, double& eps, double& vrho, double& vsigma, double& vlapl, double& vtau ) {
+    eval_exc_vxc_unpolar( double rho, double sigma, double lapl, [[maybe_unused]] double tau, double& eps, double& vrho, double& vsigma, double& vlapl, double& vtau ) {
 
     double TAU, vrho_k, vsigma_k, vlapl_k, dummy;
     ke_traits::eval_exc_vxc_unpolar(rho, sigma, lapl, 0.0, TAU, vrho_k, vsigma_k, vlapl_k, dummy);
@@ -100,7 +100,7 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   }
 
   BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_polar( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double lapl_a, double lapl_b, double tau_a, double tau_b, double& eps ) {
+    eval_exc_polar( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double lapl_a, double lapl_b, [[maybe_unused]] double tau_a, [[maybe_unused]] double tau_b, double& eps ) {
 
     double TAU_A, TAU_B;
     ke_traits::eval_exc_polar(rho_a, 0.0, sigma_aa, 0.0, 0.0, lapl_a, 0.0, 0.0, 0.0, TAU_A);
@@ -113,9 +113,9 @@ struct kernel_traits<Deorbitalized<XCEF,KEDF>> {
   }
 
   BUILTIN_KERNEL_EVAL_RETURN
-    eval_exc_vxc_polar( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double lapl_a, double lapl_b, double tau_a, double tau_b, double& eps, double& vrho_a, double& vrho_b, double& vsigma_aa, double& vsigma_ab, double& vsigma_bb, double& vlapl_a, double& vlapl_b, double& vtau_a, double& vtau_b ) {
+    eval_exc_vxc_polar( double rho_a, double rho_b, double sigma_aa, double sigma_ab, double sigma_bb, double lapl_a, double lapl_b, [[maybe_unused]] double tau_a, [[maybe_unused]] double tau_b, double& eps, double& vrho_a, double& vrho_b, double& vsigma_aa, double& vsigma_ab, double& vsigma_bb, double& vlapl_a, double& vlapl_b, double& vtau_a, double& vtau_b ) {
 
-    double TAU_A, TAU_B, vrho_a_k, vrho_b_k, vsigma_aa_k, vsigma_bb_k, vlapl_a_k, vlapl_b_k, vtau_k, dummy;
+    double TAU_A, TAU_B, vrho_a_k, vrho_b_k, vsigma_aa_k, vsigma_bb_k, vlapl_a_k, vlapl_b_k, dummy;
     ke_traits::eval_exc_vxc_polar(rho_a, 0.0, sigma_aa, 0.0, 0.0, lapl_a, 0.0, 0.0, 0.0, TAU_A, vrho_a_k, dummy, vsigma_aa_k, dummy, dummy, vlapl_a_k, dummy, dummy, dummy);
     ke_traits::eval_exc_vxc_polar(rho_b, 0.0, sigma_bb, 0.0, 0.0, lapl_b, 0.0, 0.0, 0.0, TAU_B, vrho_b_k, dummy, vsigma_bb_k, dummy, dummy, vlapl_b_k, dummy, dummy, dummy);
 
