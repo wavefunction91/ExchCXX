@@ -20,50 +20,24 @@ if(MSVC)
   target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # clang-cl
     target_compile_options( exchcxx PUBLIC
-      # --- active: mirror the /wd* suppressions used for cl ---
       -Wno-sign-conversion   # mirrors /wd4365: signed/unsigned in STL-heavy code
       -Wno-switch-enum       # mirrors /wd4061: intentional default: covers all kernels
-
-      # --- under review: clang-specific, no cl counterpart ---
-      # -Wno-c++98-compat
-      # -Wno-c++98-compat-local-type-template-args
-      # -Wno-c++98-compat-pedantic
-      # -Wno-deprecated-declarations
-      # -Wno-exit-time-destructors
-      # -Wno-extra-semi
-      # -Wno-extra-semi-stmt
-      # -Wno-float-conversion
-      # -Wno-float-equal
-      # -Wno-global-constructors
-      # -Wno-inconsistent-missing-destructor-override
-      # -Wno-missing-prototypes
-      # -Wno-missing-variable-declarations
-      # -Wno-old-style-cast
-      # -Wno-pre-c++14-compat
-      # -Wno-pre-c++17-compat
-      # -Wno-reserved-macro-identifier
-      # -Wno-suggest-destructor-override
-      # -Wno-undefined-func-template
-      # -Wno-unsafe-buffer-usage
-      # -Wno-unsafe-buffer-usage-in-libc-call
-      # -Wno-unused-macros
-      # -Wno-unused-parameter
-      # -Wno-unused-variable
     )
   else()  # cl
+    # silence noisy level-4 warnings that appear because STL raises the level to 4 during template instantiations
     target_compile_options( exchcxx PUBLIC
       /Zc:preprocessor  # conforming preprocessor: empty macro args are valid (fixes C4003 via NOTYPE)
-      /wd4800  # implicit double-to-bool: fires in auto-generated kernel headers, intentional
-      /wd4514  # unreferenced inline removed: informational, level 4, linker dead-strips correctly
-      /wd4710  # function not inlined: informational, level 4, optimizer decision
-      /wd4711  # function auto-inlined: informational, level 4, optimizer decision
       /wd4061  # enumerator not in switch case: intentional default: handler covers all kernels
       /wd4266  # no override for virtual function: by-design partial override in APPROX specialisations
-      /wd4702  # unreachable code: macro-expanded dispatch tables, not real dead code
       /wd4365  # signed/unsigned in STL code: safe, values always non-negative
-      /wd5045  # Spectre mitigation remark: informational, /Qspectre not in use
-      /wd4820  # struct padding: ABI layout decision, informational
+      /wd4514  # unreferenced inline removed: informational, linker dead-strips correctly
       /wd4626  # assignment operator deleted: by-design non-copyable classes with reference members
+      /wd4702  # unreachable code: macro-expanded dispatch tables, not real dead code
+      /wd4710  # function not inlined: informational, optimizer decision
+      /wd4711  # function auto-inlined: informational, optimizer decision
+      /wd4800  # implicit double-to-bool: fires in auto-generated kernel headers, intentional
+      /wd4820  # struct padding: ABI layout decision, informational
+      /wd5045  # Spectre mitigation remark: informational, /Qspectre not in use
     )
   endif()
 endif()
@@ -77,7 +51,6 @@ configure_file(
   ${PROJECT_BINARY_DIR}/include/exchcxx/exchcxx_config.hpp
 )
 target_compile_definitions( exchcxx PUBLIC "EXCHCXX_HAS_CONFIG_H=1" )
-
 
 
 # Device specific
@@ -94,7 +67,6 @@ if( EXCHCXX_ENABLE_SYCL )
 endif()
 
 
-
 target_include_directories( exchcxx
   PUBLIC
     $<INSTALL_INTERFACE:include>
@@ -103,38 +75,38 @@ target_include_directories( exchcxx
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
 
+include( CheckCXXCompilerFlag )
 if(NOT MSVC)  # under clang-cl, -Wall maps to /Wall (= -Weverything)
-  include( CheckCXXCompilerFlag )
   check_cxx_compiler_flag( -Wall              EXCHCXX_CXX_HAS_WALL              )
-  check_cxx_compiler_flag( -Wextra            EXCHCXX_CXX_HAS_WEXTRA            )
-  check_cxx_compiler_flag( -Wpedantic         EXCHCXX_CXX_HAS_WPEDANTIC         )
-  check_cxx_compiler_flag( -Wnon-virtual-dtor EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
-  check_cxx_compiler_flag( -Wshadow           EXCHCXX_CXX_HAS_WSHADOW           )
-
-  if( EXCHCXX_CXX_HAS_WALL )
-    target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wall> )
-  endif()
-
-  if( EXCHCXX_CXX_HAS_WEXTRA )
-    target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wextra> )
-  endif()
-
-  if( EXCHCXX_CXX_HAS_WPEDANTIC )
-    target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wpedantic> )
-  endif()
-
-  if( EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
-    target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wnon-virtual-dtor -Werror=non-virtual-dtor> )
-  endif()
-
-  if( EXCHCXX_CXX_HAS_WSHADOW )
-    target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wshadow -Werror=shadow> )
-  endif()
 endif()
+check_cxx_compiler_flag( -Wextra            EXCHCXX_CXX_HAS_WEXTRA            )
+check_cxx_compiler_flag( -Wpedantic         EXCHCXX_CXX_HAS_WPEDANTIC         )
+check_cxx_compiler_flag( -Wnon-virtual-dtor EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
+check_cxx_compiler_flag( -Wshadow           EXCHCXX_CXX_HAS_WSHADOW           )
+
+if( EXCHCXX_CXX_HAS_WALL )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wall> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WEXTRA )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wextra> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WPEDANTIC )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wpedantic> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WNON_VIRTUAL_DTOR )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wnon-virtual-dtor -Werror=non-virtual-dtor> )
+endif()
+
+if( EXCHCXX_CXX_HAS_WSHADOW )
+  target_compile_options( exchcxx PRIVATE $<$<COMPILE_LANGUAGE:CXX>: -Wshadow -Werror=shadow> )
+endif()
+
 
 # INSTALL rules
 add_library( ExchCXX::ExchCXX ALIAS exchcxx )
-
 
 include( GNUInstallDirs )
 set( INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/ExchCXX )
@@ -145,7 +117,6 @@ install(TARGETS exchcxx
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
-
 
 set_target_properties( exchcxx PROPERTIES EXPORT_NAME ExchCXX )
 
