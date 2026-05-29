@@ -19,14 +19,16 @@ target_compile_features( exchcxx PUBLIC cxx_std_17 )
 if(MSVC)
   target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # clang-cl
-    target_compile_options( exchcxx PUBLIC
+    target_compile_options( exchcxx PRIVATE
       -Wno-sign-conversion   # mirrors /wd4365: signed/unsigned in STL-heavy code
       -Wno-switch-enum       # mirrors /wd4061: intentional default: covers all kernels
     )
   else()  # cl
-    # silence noisy level-4 warnings that appear because STL raises the level to 4 during template instantiations
     target_compile_options( exchcxx PUBLIC
-      /Zc:preprocessor  # conforming preprocessor: empty macro args are valid (fixes C4003 via NOTYPE)
+      /Zc:preprocessor  # PUBLIC: public headers use NOTYPE empty macro; consumers need conforming preprocessor
+    )
+    # silence noisy level-4 warnings that appear because STL raises the level to 4 during template instantiations
+    target_compile_options( exchcxx PRIVATE
       /wd4061  # enumerator not in switch case: intentional default: handler covers all kernels
       /wd4266  # no override for virtual function: by-design partial override in APPROX specialisations
       /wd4365  # signed/unsigned in STL code: safe, values always non-negative
