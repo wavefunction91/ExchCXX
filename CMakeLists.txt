@@ -4,9 +4,10 @@ include(FetchContent)
 # Set up project definition + version information
 project( ExchCXX VERSION 1.0.0 LANGUAGES C CXX )
 
-if(MSVC AND NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if(MSVC)
   # Standard C++ exception-handling model — required by the STL and noexcept
   # specifiers; must be global so FetchContent targets (Catch2, libxc) also get it.
+  # Both cl and clang-cl accept /EHsc.
   add_compile_options(/EHsc)
 endif()
 
