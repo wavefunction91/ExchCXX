@@ -99,12 +99,16 @@ else()
 
   FetchContent_MakeAvailable( libxc )
   add_library( Libxc::xc ALIAS xc )
-  target_include_directories( xc 
-    PUBLIC 
+  target_include_directories( xc
+    PUBLIC
       $<BUILD_INTERFACE:${libxc_SOURCE_DIR}/src>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}/src>
       $<BUILD_INTERFACE:${libxc_BINARY_DIR}>
   )
+  if(MSVC)
+    # Suppress CRT deprecation warnings (strcpy, sscanf, etc.) in libxc C sources
+    target_compile_definitions( xc PRIVATE _CRT_SECURE_NO_WARNINGS )
+  endif()
   message( STATUS "Libxc Source: ${libxc_SOURCE_DIR}" )
 
   # disable unity builds for libxc
