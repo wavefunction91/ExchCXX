@@ -3,6 +3,8 @@ include(FetchContent)
 
 # Set up project definition + version information
 project( ExchCXX VERSION 1.0.0 LANGUAGES C CXX )
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(MSVC)
   # Standard C++ exception-handling model — required by the STL and noexcept
