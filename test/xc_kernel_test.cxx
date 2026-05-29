@@ -56,7 +56,7 @@ using namespace ExchCXX;
 
 TEST_CASE( "XCKernel Metadata Validity", "[xc-kernel]" ) {
 
-  const int npts = 1024;
+  const size_t npts = 1024;
 
   auto lda_kernel_test = Kernel::SlaterExchange;
   auto gga_kernel_test = Kernel::LYP;
