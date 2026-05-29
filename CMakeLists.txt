@@ -7,10 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(MSVC)
-  # Standard C++ exception-handling model — required by the STL and noexcept
-  # specifiers; must be global so FetchContent targets (Catch2, libxc) also get it.
-  # Both cl and clang-cl accept /EHsc.
-  add_compile_options(/EHsc)
+  # /EHsc: standard C++ exception-handling model (required by STL and noexcept).
+  # /permissive-: conformance mode — recognises C++ alternative tokens (not, and, or, …).
+  # Both flags are accepted by cl and clang-cl; applied globally so FetchContent
+  # targets (Catch2, libxc) inherit them too.
+  add_compile_options(/EHsc /permissive-)
 endif()
 
 # ExchCXX Options
