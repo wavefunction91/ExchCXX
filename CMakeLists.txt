@@ -9,9 +9,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(MSVC)
   # /EHsc: standard C++ exception-handling model (required by STL and noexcept).
   # /permissive-: conformance mode — recognises C++ alternative tokens (not, and, or, …).
-  # Both flags are accepted by cl and clang-cl; applied globally so FetchContent
-  # targets (Catch2, libxc) inherit them too.
-  add_compile_options(/EHsc /permissive-)
+  # Scoped to CXX only so libxc's C sources are not affected.
+  add_compile_options(
+    $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
+    $<$<COMPILE_LANGUAGE:CXX>:/permissive->
+  )
 endif()
 
 # ExchCXX Options
