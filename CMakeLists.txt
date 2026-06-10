@@ -6,16 +6,6 @@ project( ExchCXX VERSION 1.0.0 LANGUAGES C CXX )
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(MSVC)
-  # /EHsc: standard C++ exception-handling model (required by STL and noexcept).
-  # /permissive-: conformance mode — recognises C++ alternative tokens (not, and, or, …).
-  # Scoped to CXX only so libxc's C sources are not affected.
-  add_compile_options(
-    $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
-    $<$<COMPILE_LANGUAGE:CXX>:/permissive->
-  )
-endif()
-
 # ExchCXX Options
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
 option( EXCHCXX_ENABLE_CUDA      "Enable Device Code (CUDA)"    OFF )

@@ -18,28 +18,11 @@ add_library( exchcxx ${EXCHCXX_SOURCES} )
 target_compile_features( exchcxx PUBLIC cxx_std_17 )
 if(MSVC)
   target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # clang-cl
-    target_compile_options( exchcxx PRIVATE
-      -Wno-sign-conversion   # mirrors /wd4365: signed/unsigned in STL-heavy code
-      -Wno-switch-enum       # mirrors /wd4061: intentional default: covers all kernels
-    )
-  else()  # cl
+  target_compile_options( exchcxx PUBLIC /EHsc )  # standard C++ exception-handling model (required by STL and noexcept)
+  if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # cl only, not clang-cl
     target_compile_options( exchcxx PUBLIC
+      /permissive-   # conformance mode — recognises C++ alternative tokens (not, and, or, …)
       /Zc:preprocessor  # PUBLIC: public headers use NOTYPE empty macro; consumers need conforming preprocessor
-    )
-    # silence noisy level-4 warnings that appear because STL raises the level to 4 during template instantiations
-    target_compile_options( exchcxx PRIVATE
-      /wd4061  # enumerator not in switch case: intentional default: handler covers all kernels
-      /wd4266  # no override for virtual function: by-design partial override in APPROX specialisations
-      /wd4365  # signed/unsigned in STL code: safe, values always non-negative
-      /wd4514  # unreferenced inline removed: informational, linker dead-strips correctly
-      /wd4626  # assignment operator deleted: by-design non-copyable classes with reference members
-      /wd4702  # unreachable code: macro-expanded dispatch tables, not real dead code
-      /wd4710  # function not inlined: informational, optimizer decision
-      /wd4711  # function auto-inlined: informational, optimizer decision
-      /wd4800  # implicit double-to-bool: fires in auto-generated kernel headers, intentional
-      /wd4820  # struct padding: ABI layout decision, informational
-      /wd5045  # Spectre mitigation remark: informational, /Qspectre not in use
     )
   endif()
 endif()
