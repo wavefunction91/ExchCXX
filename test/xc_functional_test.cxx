@@ -307,6 +307,7 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
   );
 
   size_t npts = 1024;
+  const int npts_i = npts_i;
 
   std::vector<double>
     rho( func.rho_buffer_len(npts) ),
@@ -345,25 +346,25 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     if( interface == TestInterface::EXC ) {
 
       if( kern.is_lda() )
-        kern.eval_exc( static_cast<int>(npts), rho.data(), eps_refs.back().data() );
+        kern.eval_exc( npts_i, rho.data(), eps_refs.back().data() );
       else if( kern.is_gga() )
-        kern.eval_exc( static_cast<int>(npts), rho.data(), sigma.data(),
+        kern.eval_exc( npts_i, rho.data(), sigma.data(),
           eps_refs.back().data() );
       else if( kern.is_mgga() )
-        kern.eval_exc( static_cast<int>(npts), rho.data(), sigma.data(), lapl.data(), tau.data(),
+        kern.eval_exc( npts_i, rho.data(), sigma.data(), lapl.data(), tau.data(),
           eps_refs.back().data() );
 
     } else if( interface == TestInterface::EXC_VXC ) {
 
       if( kern.is_lda() )
-        kern.eval_exc_vxc( static_cast<int>(npts), rho.data(), eps_refs.back().data(),
+        kern.eval_exc_vxc( npts_i, rho.data(), eps_refs.back().data(),
           vrho_refs.back().data() );
       else if( kern.is_gga() )
-        kern.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
+        kern.eval_exc_vxc( npts_i, rho.data(), sigma.data(),
           eps_refs.back().data(), vrho_refs.back().data(),
           vsigma_refs.back().data() );
       else if( kern.is_mgga() )
-        kern.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
+        kern.eval_exc_vxc( npts_i, rho.data(), sigma.data(),
           lapl.data(), tau.data(), eps_refs.back().data(),
           vrho_refs.back().data(), vsigma_refs.back().data(),
           vlapl_refs.back().data(), vtau_refs.back().data() );
@@ -382,12 +383,12 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
     vtau( func.vtau_buffer_len( npts ) );
 
   if( func.is_lda() )
-    func.eval_exc_vxc( static_cast<int>(npts), rho.data(), eps.data(), vrho.data() );
+    func.eval_exc_vxc( npts_i, rho.data(), eps.data(), vrho.data() );
   else if( func.is_gga() )
-    func.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
+    func.eval_exc_vxc( npts_i, rho.data(), sigma.data(),
       eps.data(), vrho.data(), vsigma.data() );
   else if( func.is_mgga() )
-    func.eval_exc_vxc( static_cast<int>(npts), rho.data(), sigma.data(),
+    func.eval_exc_vxc( npts_i, rho.data(), sigma.data(),
       lapl.data(), tau.data(), eps.data(), vrho.data(),
       vsigma.data(), vlapl.data(), vtau.data() );
 

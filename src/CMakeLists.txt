@@ -20,10 +20,8 @@ if(MSVC)
   target_compile_definitions( exchcxx PUBLIC _USE_MATH_DEFINES )
   target_compile_options( exchcxx PUBLIC /EHsc )  # standard C++ exception-handling model (required by STL and noexcept)
   if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")  # cl only, not clang-cl
-    target_compile_options( exchcxx PUBLIC
-      /permissive-   # conformance mode — recognises C++ alternative tokens (not, and, or, …)
-      /Zc:preprocessor  # PUBLIC: public headers use NOTYPE empty macro; consumers need conforming preprocessor
-    )
+    target_compile_options( exchcxx PRIVATE /permissive- )  # conformance mode — recognises C++ alternative tokens (not, and, or, …)
+    target_compile_options( exchcxx PUBLIC  /Zc:preprocessor )  # PUBLIC: public headers use NOTYPE empty macro; consumers need conforming preprocessor
   endif()
 endif()
 if( EXCHCXX_ENABLE_LIBXC )

@@ -48,6 +48,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <utility>
 
 namespace ExchCXX {
 
