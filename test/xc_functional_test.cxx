@@ -307,7 +307,7 @@ void check_correctness( TestInterface interface, Backend backend, Spin polar,
   );
 
   size_t npts = 1024;
-  const int npts_i = npts_i;
+  const int npts_i = static_cast<int>(npts);
 
   std::vector<double>
     rho( func.rho_buffer_len(npts) ),
