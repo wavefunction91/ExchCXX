@@ -61,8 +61,8 @@ XCKernel libxc_kernel_factory(const std::string xc_name, const Spin polar );
 
 XCKernel builtin_kernel_factory( Kernel, Spin );
 
-static inline XCKernel kernel_factory( 
-  Backend backend, Kernel kern, Spin polar
+static inline XCKernel kernel_factory(
+  [[maybe_unused]] Backend backend, Kernel kern, Spin polar
 ) {
 
 #ifdef EXCHCXX_ENABLE_LIBXC
