@@ -114,7 +114,14 @@ else()
       )
     else()
       # Suppress warnings in auto-generated and upstream libxc C sources (cl.exe)
-      target_compile_options( xc PRIVATE /wd4100 /wd4146 /wd4244 /wd4267 /wd4701 /wd4703 )
+      target_compile_options( xc PRIVATE
+        /wd4100  # unreferenced formal parameter
+        /wd4146  # unary minus on unsigned type
+        /wd4244  # conversion with possible loss of data (long double to double)
+        /wd4267  # conversion from size_t to int, possible loss of data
+        /wd4701  # potentially uninitialized local variable used
+        /wd4703  # potentially uninitialized local pointer variable used
+      )
     endif()
   endif()
   message( STATUS "Libxc Source: ${libxc_SOURCE_DIR}" )
