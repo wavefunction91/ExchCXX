@@ -101,6 +101,7 @@ else()
   if(MSVC)
     # Suppress CRT deprecation warnings (strcpy, sscanf, etc.) in libxc C sources
     target_compile_definitions( xc PRIVATE _CRT_SECURE_NO_WARNINGS )
+    target_compile_definitions( xc-threshold PRIVATE _CRT_SECURE_NO_WARNINGS )
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
       # Suppress warnings in auto-generated and upstream libxc C sources (clang-cl)
       target_compile_options( xc PRIVATE
@@ -122,7 +123,6 @@ else()
         /wd4267  # conversion from size_t to int, possible loss of data
         /wd4701  # potentially uninitialized local variable used
         /wd4703  # potentially uninitialized local pointer variable used
-        /wd4996  # deprecated function (sprintf) — _CRT_SECURE_NO_WARNINGS alone is not enough when /w14996 is set by the consumer
       )
     endif()
   endif()
