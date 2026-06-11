@@ -102,7 +102,7 @@ else()
     # Suppress CRT deprecation warnings (strcpy, sscanf, etc.) in libxc C sources
     target_compile_definitions( xc PRIVATE _CRT_SECURE_NO_WARNINGS )
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-      # Suppress warnings in auto-generated and upstream libxc C sources
+      # Suppress warnings in auto-generated and upstream libxc C sources (clang-cl)
       target_compile_options( xc PRIVATE
         -Wno-logical-op-parentheses
         -Wno-sometimes-uninitialized
@@ -112,6 +112,9 @@ else()
         -Wno-unused-function
         -Wno-unused-variable
       )
+    else()
+      # Suppress warnings in auto-generated and upstream libxc C sources (cl.exe)
+      target_compile_options( xc PRIVATE /wd4100 )
     endif()
   endif()
   message( STATUS "Libxc Source: ${libxc_SOURCE_DIR}" )
