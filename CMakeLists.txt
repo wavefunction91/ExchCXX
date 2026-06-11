@@ -116,11 +116,13 @@ else()
       # Suppress warnings in auto-generated and upstream libxc C sources (cl.exe)
       target_compile_options( xc PRIVATE
         /wd4100  # unreferenced formal parameter
+        /wd4101  # unreferenced local variable
         /wd4146  # unary minus on unsigned type
         /wd4244  # conversion with possible loss of data (long double to double)
         /wd4267  # conversion from size_t to int, possible loss of data
         /wd4701  # potentially uninitialized local variable used
         /wd4703  # potentially uninitialized local pointer variable used
+        /wd4996  # deprecated function (sprintf) — _CRT_SECURE_NO_WARNINGS alone is not enough when /w14996 is set by the consumer
       )
     endif()
   endif()
