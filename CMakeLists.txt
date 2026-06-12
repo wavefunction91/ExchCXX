@@ -3,8 +3,6 @@ include(FetchContent)
 
 # Set up project definition + version information
 project( ExchCXX VERSION 1.0.0 LANGUAGES C CXX )
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ExchCXX Options
 option( EXCHCXX_ENABLE_BENCHMARK "Enable Performance Benchmark" OFF )
