@@ -306,10 +306,39 @@ UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA, EXC,
   LibxcKernelImpl::eval_exc_inc_device_, const )
 UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA, EXC_VXC, 
   LibxcKernelImpl::eval_exc_vxc_inc_device_, const )
-UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC, 
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC,
   LibxcKernelImpl::eval_exc_inc_device_, const )
-UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC_VXC, 
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, EXC_VXC,
   LibxcKernelImpl::eval_exc_vxc_inc_device_, const )
+
+// ExchCXX's HIP backend does not implement Fxc/vxc_fxc device evaluation
+// for Libxc-backed kernels (unlike CUDA and SYCL); disable rather than
+// leave the LibxcKernelImpl vtable unresolved at link time.
+UNUSED_DEVICE_INTERFACE_GENERATOR( LDA, FXC,
+  LibxcKernelImpl::eval_fxc_device_, const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( LDA, VXC_FXC,
+  LibxcKernelImpl::eval_vxc_fxc_device_, const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( GGA, FXC,
+  LibxcKernelImpl::eval_fxc_device_, const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( GGA, VXC_FXC,
+  LibxcKernelImpl::eval_vxc_fxc_device_, const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( MGGA, FXC,
+  LibxcKernelImpl::eval_fxc_device_, const )
+UNUSED_DEVICE_INTERFACE_GENERATOR( MGGA, VXC_FXC,
+  LibxcKernelImpl::eval_vxc_fxc_device_, const )
+
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( LDA, FXC,
+  LibxcKernelImpl::eval_fxc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA, FXC,
+  LibxcKernelImpl::eval_fxc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, FXC,
+  LibxcKernelImpl::eval_fxc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( LDA, VXC_FXC,
+  LibxcKernelImpl::eval_vxc_fxc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( GGA, VXC_FXC,
+  LibxcKernelImpl::eval_vxc_fxc_inc_device_, const )
+UNUSED_DEVICE_INC_INTERFACE_GENERATOR( MGGA, VXC_FXC,
+  LibxcKernelImpl::eval_vxc_fxc_inc_device_, const )
 
 }
 }

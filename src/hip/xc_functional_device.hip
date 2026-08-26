@@ -46,6 +46,7 @@
 #include <exchcxx/xc_functional.hpp>
 #include <exchcxx/util/div_ceil.hpp>
 #include <string>
+#include <stdexcept>
 
 
 __global__ void scal_kernel( const int N, const double fact, const double* X_device, double* Y_device ) {
@@ -486,6 +487,31 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   if( vsigma_scr ) hipFree( vsigma_scr );
   if( vlapl_scr )  hipFree( vlapl_scr );
   if( vtau_scr )   hipFree( vtau_scr );
+}
+
+// ExchCXX's HIP backend does not implement Fxc/vxc_fxc device evaluation
+// (unlike CUDA and SYCL); XCFunctional::eval_fxc_device/eval_vxc_fxc_device
+// forward to each constituent kernel's eval_fxc_device/eval_vxc_fxc_device,
+// which are themselves stubbed (see hip/builtin.hip, hip/libxc_device.hip),
+// so stub these aggregators the same way rather than leave them unresolved
+// at link time.
+LDA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
+  throw std::runtime_error("LDA Fxc device evaluation NYI for HIP backend");
+}
+LDA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
+  throw std::runtime_error("LDA Fxc device evaluation NYI for HIP backend");
+}
+GGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
+  throw std::runtime_error("GGA Fxc device evaluation NYI for HIP backend");
+}
+GGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
+  throw std::runtime_error("GGA Fxc device evaluation NYI for HIP backend");
+}
+MGGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
+  throw std::runtime_error("MGGA Fxc device evaluation NYI for HIP backend");
+}
+MGGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
+  throw std::runtime_error("MGGA Fxc device evaluation NYI for HIP backend");
 }
 
 }
