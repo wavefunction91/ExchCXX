@@ -1257,7 +1257,7 @@ void compare_libxc_builtin( TestInterface interface, EvalType evaltype,
 
 }
 
-TEST_CASE( "Builtin Corectness Test", "[xc-builtin]" ) {
+TEST_CASE( "Builtin Correctness Test", "[xc-builtin]" ) {
 
   SECTION( "Unpolarized Regular Eval : EXC" ) {
     for( auto kern : builtin_supported_kernels ) {
@@ -2166,7 +2166,7 @@ T* safe_sycl_malloc( size_t n, sycl::queue& q ) {
 template <typename T>
 void safe_sycl_cpy( T* dest, const T* src, size_t len, sycl::queue& q ) {
 
-    q.memcpy( (void*)dest, (const void*)src, len*sizeof(T) );
+    q.memcpy( (void*)dest, (const void*)src, len*sizeof(T) ).wait();
 
 }
 
@@ -2183,7 +2183,7 @@ void sycl_free_all( sycl::queue& q, T* ptr, Args&&... args ) {
 }
 
 void device_synchronize( sycl::queue& q ) {
-q.wait_and_throw();
+  q.wait_and_throw();
 }
 
 

@@ -1,24 +1,30 @@
 /**
- * ExchCXX Copyright (c) 2020-2022, The Regents of the University of California,
+ * ExchCXX
+ *
+ * Copyright (c) 2020-2024, The Regents of the University of California,
  * through Lawrence Berkeley National Laboratory (subject to receipt of
- * any required approvals from the U.S. Dept. of Energy). All rights reserved.
- * 
+ * any required approvals from the U.S. Dept. of Energy).
+ *
+ * Portions Copyright (c) Microsoft Corporation.
+ *
+ * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * (1) Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
- * 
+ *
  * (2) Redistributions in binary form must reproduce the above copyright
  * notice, this list of conditions and the following disclaimer in the
  * documentation and/or other materials provided with the distribution.
- * 
+ *
  * (3) Neither the name of the University of California, Lawrence Berkeley
  * National Laboratory, U.S. Dept. of Energy nor the names of its contributors
  * may be used to endorse or promote products derived from this software
  * without specific prior written permission.
- * 
- * 
+ *
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,7 +36,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * You are under no obligation whatsoever to provide any bug fixes, patches,
  * or upgrades to the features, functionality or performance of the source
  * code ("Enhancements") to anyone; however, if you choose to make your
@@ -44,31 +50,40 @@
  */
 
 #include <exchcxx/xc_functional.hpp>
+#include <exchcxx/util/div_ceil.hpp>
 #include <string>
 
 template <typename T> class scal_device_tag;
 template <typename T> class add_scal_device_tag;
 
 
-void scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* queue ) {
-  queue->parallel_for<scal_device_tag<double>>( sycl::range<1>(N),
-    [=]( sycl::id<1> idx ) { Y_device[idx] = fact * X_device[idx]; });
+void scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* stream ) {
+  sycl::range<1> threads(512);
+  sycl::range<1> blocks(ExchCXX::util::div_ceil(N,512));
+  stream->parallel_for<scal_device_tag<double>>( sycl::nd_range<1>(blocks * threads, threads), [=](auto item) {
+      int tid = item.get_global_id(0);
+      if( tid < N ) Y_device[tid] = X_device[tid] * fact;
+    });
 }
 
-void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* queue ) {
-  queue->parallel_for<add_scal_device_tag<double>>( sycl::range<1>(N),
-    [=]( sycl::id<1> idx ) { Y_device[idx] += fact * X_device[idx]; });
+void add_scal_device( const int N, const double fact, const double* X_device, double* Y_device, sycl::queue* stream ) {
+  sycl::range<1> threads(512);
+  sycl::range<1> blocks(ExchCXX::util::div_ceil(N,512));
+  stream->parallel_for<add_scal_device_tag<double>>( sycl::nd_range<1>(blocks * threads, threads), [=](auto item) {
+      int tid = item.get_global_id(0);
+      if( tid < N ) Y_device[tid] += X_device[tid] * fact;
+    });
 }
 
 
 template <typename T = double>
-T* safe_sycl_malloc( size_t N, sycl::queue* queue ) {
-  return sycl::malloc_device<T>( N, *queue );
+T* safe_cuda_malloc( size_t N, sycl::queue* stream ) {
+  return sycl::malloc_device<T>( N, *stream );
 }
 
 template <typename T>
-void safe_zero( size_t len, T* ptr, sycl::queue* queue ) {
-  queue->memset( ptr, 0, len*sizeof(T) );
+void safe_zero( size_t len, T* ptr, sycl::queue* stream ) {
+  stream->memset( ptr, 0, len*sizeof(T) );
 }
 
 namespace ExchCXX {
@@ -87,9 +102,9 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() )
-    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
+    eps_scr = safe_cuda_malloc( len_exc_buffer, stream );
 
-  safe_zero( len_exc_buffer, eps, queue );
+  safe_zero( len_exc_buffer, eps, stream );
 
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
@@ -97,24 +112,25 @@ LDA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
     if( supports_inc_interface() ) {
 
       kernels_[i].second.eval_exc_inc_device(
-        kernels_[i].first, N, rho, eps, queue
+        kernels_[i].first, N, rho, eps, stream
       );
 
     } else {
 
       double* eps_eval = i ? eps_scr : eps;
-      kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
+      kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
 
       if( i )
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
       else
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
 
     }
 
   }
 
-  if( eps_scr ) sycl::free( eps_scr, *queue );
+  stream->wait();
+  if( eps_scr ) sycl::free( eps_scr, *stream );
 
 }
 
@@ -129,36 +145,36 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   double* eps_scr(nullptr), *vxc_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
-    vxc_scr = safe_sycl_malloc( len_vxc_buffer, queue );
+    eps_scr = safe_cuda_malloc( len_exc_buffer, stream );
+    vxc_scr = safe_cuda_malloc( len_vxc_buffer, stream );
   }
 
-  safe_zero( len_exc_buffer, eps, queue );
-  safe_zero( len_vxc_buffer, vxc, queue );
+  safe_zero( len_exc_buffer, eps, stream );
+  safe_zero( len_vxc_buffer, vxc, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
     if( supports_inc_interface() ) {
 
       kernels_[i].second.eval_exc_vxc_inc_device(
-        kernels_[i].first, N, rho, eps, vxc, queue
+        kernels_[i].first, N, rho, eps, vxc, stream
       );
 
     } else {
 
       double* eps_eval = i ? eps_scr : eps;
       double* vxc_eval = i ? vxc_scr : vxc;
-      kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vxc_eval, queue);
+      kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vxc_eval, stream);
 
       if( i ) {
 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-        add_scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, queue );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        add_scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, stream );
 
       } else {
 
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-        scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, queue );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, stream );
 
       }
 
@@ -166,8 +182,9 @@ LDA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   }
 
-  if( eps_scr ) sycl::free( eps_scr, *queue );
-  if( vxc_scr ) sycl::free( vxc_scr, *queue );
+  stream->wait();
+  if( eps_scr ) sycl::free( eps_scr, *stream );
+  if( vxc_scr ) sycl::free( vxc_scr, *stream );
 
 }
 
@@ -182,27 +199,28 @@ LDA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
   double* fxc_scr = nullptr;
   bool use_inc = supports_inc_interface();
   if( kernels_.size() > 1 && !use_inc )
-    fxc_scr = safe_sycl_malloc( len_fxc_buffer, queue );
+    fxc_scr = safe_cuda_malloc( len_fxc_buffer, stream );
 
-  safe_zero( len_fxc_buffer, fxc, queue );
+  safe_zero( len_fxc_buffer, fxc, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
     if (use_inc) {
       kernels_[i].second.eval_fxc_inc_device(
-        kernels_[i].first, N, rho, fxc, queue
+        kernels_[i].first, N, rho, fxc, stream
       );
     } else {
       double* fxc_eval = i ? fxc_scr : fxc;
-      kernels_[i].second.eval_fxc_device(N, rho, fxc_eval, queue);
+      kernels_[i].second.eval_fxc_device(N, rho, fxc_eval, stream);
 
       if( i )
-        add_scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, queue );
+        add_scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, stream );
       else
-        scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, queue );
+        scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, stream );
     }
   }
 
-  if( fxc_scr ) sycl::free( fxc_scr, *queue );
+  stream->wait();
+  if( fxc_scr ) sycl::free( fxc_scr, *stream );
 }
 
 LDA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
@@ -216,35 +234,36 @@ LDA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
   double* vxc_scr(nullptr), *fxc_scr(nullptr);
   bool use_inc = supports_inc_interface();
   if( kernels_.size() > 1 && !use_inc ) {
-    vxc_scr = safe_sycl_malloc( len_vxc_buffer, queue );
-    fxc_scr = safe_sycl_malloc( len_fxc_buffer, queue );
+    vxc_scr = safe_cuda_malloc( len_vxc_buffer, stream );
+    fxc_scr = safe_cuda_malloc( len_fxc_buffer, stream );
   }
 
-  safe_zero( len_vxc_buffer, vxc, queue );
-  safe_zero( len_fxc_buffer, fxc, queue );
+  safe_zero( len_vxc_buffer, vxc, stream );
+  safe_zero( len_fxc_buffer, fxc, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
     if (use_inc) {
       kernels_[i].second.eval_vxc_fxc_inc_device(
-        kernels_[i].first, N, rho, vxc, fxc, queue
+        kernels_[i].first, N, rho, vxc, fxc, stream
       );
     } else {
       double* vxc_eval = i ? vxc_scr : vxc;
       double* fxc_eval = i ? fxc_scr : fxc;
-      kernels_[i].second.eval_vxc_fxc_device(N, rho, vxc_eval, fxc_eval, queue);
+      kernels_[i].second.eval_vxc_fxc_device(N, rho, vxc_eval, fxc_eval, stream);
 
       if( i ) {
-        add_scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, queue );
-        add_scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, queue );
+        add_scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, stream );
+        add_scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, stream );
       } else {
-        scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, queue );
-        scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, queue );
+        scal_device( len_vxc_buffer, kernels_[i].first, vxc_eval, vxc, stream );
+        scal_device( len_fxc_buffer, kernels_[i].first, fxc_eval, fxc, stream );
       }
     }
   }
 
-  if( vxc_scr ) sycl::free( vxc_scr, *queue );
-  if( fxc_scr ) sycl::free( fxc_scr, *queue );
+  stream->wait();
+  if( vxc_scr ) sycl::free( vxc_scr, *stream );
+  if( fxc_scr ) sycl::free( fxc_scr, *stream );
 }
 
 
@@ -259,9 +278,9 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() )
-    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
+    eps_scr = safe_cuda_malloc( len_exc_buffer, stream );
 
-  safe_zero( len_exc_buffer, eps, queue );
+  safe_zero( len_exc_buffer, eps, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -269,11 +288,11 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, sigma, eps, queue
+          kernels_[i].first, N, rho, sigma, eps, stream
         );
       else
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, eps, queue
+          kernels_[i].first, N, rho, eps, stream
         );
 
     } else {
@@ -281,19 +300,20 @@ GGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       double* eps_eval = i ? eps_scr : eps;
 
       if( kernels_[i].second.is_gga() )
-        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, queue);
+        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, stream);
       else
-        kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
+        kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
 
       if( i )
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
       else
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
 
     }
   }
 
-  if( eps_scr ) sycl::free( eps_scr, *queue );
+  stream->wait();
+  if( eps_scr ) sycl::free( eps_scr, *stream );
 
 }
 
@@ -309,14 +329,14 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr    = safe_sycl_malloc( len_exc_buffer, queue );
-    vrho_scr   = safe_sycl_malloc( len_vrho_buffer, queue );
-    vsigma_scr = safe_sycl_malloc( len_vsigma_buffer, queue );
+    eps_scr    = safe_cuda_malloc( len_exc_buffer, stream );
+    vrho_scr   = safe_cuda_malloc( len_vrho_buffer, stream );
+    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer, stream );
   }
 
-  safe_zero( len_exc_buffer,    eps,    queue );
-  safe_zero( len_vrho_buffer,   vrho,   queue );
-  safe_zero( len_vsigma_buffer, vsigma, queue );
+  safe_zero( len_exc_buffer,    eps,    stream );
+  safe_zero( len_vrho_buffer,   vrho,   stream );
+  safe_zero( len_vsigma_buffer, vsigma, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -325,11 +345,11 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
           kernels_[i].first, N, rho, sigma, eps, vrho,
-          vsigma, queue
+          vsigma, stream
         );
       else
         kernels_[i].second.eval_exc_vxc_inc_device(
-          kernels_[i].first, N, rho, eps, vrho, queue
+          kernels_[i].first, N, rho, eps, vrho, stream
         );
 
     } else {
@@ -340,32 +360,34 @@ GGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval,
-          vsigma_eval, queue );
+          vsigma_eval, stream );
       else
-        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, queue);
+        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, stream);
 
       if( i ) {
 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue);
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream);
         if( kernels_[i].second.is_gga() )
-          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
+          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
 
       } else {
 
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
         if( kernels_[i].second.is_gga() )
-          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
+          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
 
       }
 
     }
   }
 
-  if( eps_scr ) sycl::free( eps_scr, *queue );
-  if( vrho_scr ) sycl::free( vrho_scr, *queue );
-  if( vsigma_scr ) sycl::free( vsigma_scr, *queue );
+  stream->wait();
+  if( eps_scr )    sycl::free( eps_scr, *stream );
+  if( vrho_scr )   sycl::free( vrho_scr, *stream );
+  if( vsigma_scr ) sycl::free( vsigma_scr, *stream );
+
 }
 
 GGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
@@ -380,24 +402,24 @@ GGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
   double* v2rho2_scr(nullptr), *v2rhosigma_scr(nullptr), *v2sigma2_scr(nullptr);
   bool use_inc = supports_inc_interface();
   if( kernels_.size() > 1 && !use_inc ) {
-    v2rho2_scr = safe_sycl_malloc( len_v2rho2_buffer, queue );
-    v2rhosigma_scr = safe_sycl_malloc( len_v2rhosigma_buffer, queue );
-    v2sigma2_scr = safe_sycl_malloc( len_v2sigma2_buffer, queue );
+    v2rho2_scr = safe_cuda_malloc( len_v2rho2_buffer, stream );
+    v2rhosigma_scr = safe_cuda_malloc( len_v2rhosigma_buffer, stream );
+    v2sigma2_scr = safe_cuda_malloc( len_v2sigma2_buffer, stream );
   }
 
-  safe_zero( len_v2rho2_buffer, v2rho2, queue );
-  safe_zero( len_v2rhosigma_buffer, v2rhosigma, queue );
-  safe_zero( len_v2sigma2_buffer, v2sigma2, queue );
+  safe_zero( len_v2rho2_buffer, v2rho2, stream );
+  safe_zero( len_v2rhosigma_buffer, v2rhosigma, stream );
+  safe_zero( len_v2sigma2_buffer, v2sigma2, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
     if (use_inc) {
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_fxc_inc_device(
-          kernels_[i].first, N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, queue
+          kernels_[i].first, N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, stream
         );
       else
         kernels_[i].second.eval_fxc_inc_device(
-          kernels_[i].first, N, rho, v2rho2, queue
+          kernels_[i].first, N, rho, v2rho2, stream
         );
     } else {
       double* v2rho2_eval    = i ? v2rho2_scr    : v2rho2;
@@ -406,30 +428,31 @@ GGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
 
       if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_fxc_device(N, rho, sigma, v2rho2_eval,
-          v2rhosigma_eval, v2sigma2_eval, queue );
+          v2rhosigma_eval, v2sigma2_eval, stream );
       else
-        kernels_[i].second.eval_fxc_device(N, rho, v2rho2_eval, queue);
+        kernels_[i].second.eval_fxc_device(N, rho, v2rho2_eval, stream);
 
       if( i ) {
-        add_scal_device( len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue );
+        add_scal_device( len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream );
         if( kernels_[i].second.is_gga() ){
-          add_scal_device( len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue );
-          add_scal_device( len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue );
+          add_scal_device( len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream );
+          add_scal_device( len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream );
         }
 
       } else {
-        scal_device( len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue );
+        scal_device( len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream );
         if( kernels_[i].second.is_gga() ){
-          scal_device( len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue );
-          scal_device( len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue );
+          scal_device( len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream );
+          scal_device( len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream );
         }
       }
     }
   }
 
-  if( v2rho2_scr ) sycl::free( v2rho2_scr, *queue);
-  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *queue);
-  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *queue);
+  stream->wait();
+  if( v2rho2_scr ) sycl::free( v2rho2_scr, *stream );
+  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *stream );
+  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *stream );
 }
 
 GGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
@@ -447,28 +470,28 @@ GGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
   double* v2rho2_scr(nullptr), *v2rhosigma_scr(nullptr), *v2sigma2_scr(nullptr);
   bool use_inc = supports_inc_interface();
   if( kernels_.size() > 1 && !use_inc ) {
-    vrho_scr = safe_sycl_malloc( len_vrho_buffer, queue );
-    vsigma_scr = safe_sycl_malloc( len_vsigma_buffer, queue );
-    v2rho2_scr = safe_sycl_malloc( len_v2rho2_buffer, queue );
-    v2rhosigma_scr = safe_sycl_malloc( len_v2rhosigma_buffer, queue );
-    v2sigma2_scr = safe_sycl_malloc( len_v2sigma2_buffer, queue );
+    vrho_scr = safe_cuda_malloc( len_vrho_buffer, stream );
+    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer, stream );
+    v2rho2_scr = safe_cuda_malloc( len_v2rho2_buffer, stream );
+    v2rhosigma_scr = safe_cuda_malloc( len_v2rhosigma_buffer, stream );
+    v2sigma2_scr = safe_cuda_malloc( len_v2sigma2_buffer, stream );
   }
 
-  safe_zero( len_vrho_buffer, vrho, queue );
-  safe_zero( len_vsigma_buffer, vsigma, queue );
-  safe_zero( len_v2rho2_buffer, v2rho2, queue );
-  safe_zero( len_v2rhosigma_buffer, v2rhosigma, queue );
-  safe_zero( len_v2sigma2_buffer, v2sigma2, queue );
+  safe_zero( len_vrho_buffer, vrho, stream );
+  safe_zero( len_vsigma_buffer, vsigma, stream );
+  safe_zero( len_v2rho2_buffer, v2rho2, stream );
+  safe_zero( len_v2rhosigma_buffer, v2rhosigma, stream );
+  safe_zero( len_v2sigma2_buffer, v2sigma2, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
     if (use_inc) {
       if (kernels_[i].second.is_gga()) {
         kernels_[i].second.eval_vxc_fxc_inc_device(
-          kernels_[i].first, N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2, queue
+          kernels_[i].first, N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma, v2sigma2, stream
         );
       } else {
         kernels_[i].second.eval_vxc_fxc_inc_device(
-          kernels_[i].first, N, rho, vrho, v2rho2, queue
+          kernels_[i].first, N, rho, vrho, v2rho2, stream
         );
       }
     } else {
@@ -480,38 +503,39 @@ GGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
 
       if (kernels_[i].second.is_gga()) {
         kernels_[i].second.eval_vxc_fxc_device(
-          N, rho, sigma, vrho_eval, vsigma_eval, v2rho2_eval, v2rhosigma_eval, v2sigma2_eval, queue);
+          N, rho, sigma, vrho_eval, vsigma_eval, v2rho2_eval, v2rhosigma_eval, v2sigma2_eval, stream);
       } else {
-        kernels_[i].second.eval_vxc_fxc_device(N, rho, vrho_eval, v2rho2_eval, queue);
+        kernels_[i].second.eval_vxc_fxc_device(N, rho, vrho_eval, v2rho2_eval, stream);
       }
 
       if (i) {
-        add_scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue);
-        add_scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue);
+        add_scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream);
+        add_scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream);
 
         if (kernels_[i].second.is_gga()) {
-          add_scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue);
-          add_scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue);
-          add_scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue);
+          add_scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream);
+          add_scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream);
+          add_scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream);
         }
       } else {
-        scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue);
-        scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue);
+        scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream);
+        scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream);
 
         if (kernels_[i].second.is_gga()) {
-          scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue);
-          scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue);
-          scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue);
+          scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream);
+          scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream);
+          scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream);
         }
       }
     }
   }
 
-  if( vrho_scr ) sycl::free( vrho_scr, *queue);
-  if( vsigma_scr ) sycl::free( vsigma_scr, *queue);
-  if( v2rho2_scr ) sycl::free( v2rho2_scr, *queue);
-  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *queue);
-  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *queue);
+  stream->wait();
+  if( vrho_scr ) sycl::free( vrho_scr, *stream );
+  if( vsigma_scr ) sycl::free( vsigma_scr, *stream );
+  if( v2rho2_scr ) sycl::free( v2rho2_scr, *stream );
+  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *stream );
+  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *stream );
 }
 
 // mGGA Interfaces
@@ -525,9 +549,9 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
   double* eps_scr = nullptr;
   if( kernels_.size() > 1 and not supports_inc_interface() )
-    eps_scr = safe_sycl_malloc( len_exc_buffer, queue );
+    eps_scr = safe_cuda_malloc( len_exc_buffer, stream );
 
-  safe_zero( len_exc_buffer,    eps,    queue );
+  safe_zero( len_exc_buffer,    eps,    stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -535,15 +559,15 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, sigma, lapl, tau, eps, queue
+          kernels_[i].first, N, rho, sigma, lapl, tau, eps, stream
         );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, sigma, eps, queue
+          kernels_[i].first, N, rho, sigma, eps, stream
         );
       else
         kernels_[i].second.eval_exc_inc_device(
-          kernels_[i].first, N, rho, eps, queue
+          kernels_[i].first, N, rho, eps, stream
         );
 
     } else {
@@ -551,21 +575,22 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
       double* eps_eval = i ? eps_scr : eps;
 
       if( kernels_[i].second.is_mgga() )
-        kernels_[i].second.eval_exc_device(N, rho, sigma, lapl, tau, eps_eval, queue);
+        kernels_[i].second.eval_exc_device(N, rho, sigma, lapl, tau, eps_eval, stream);
       else if( kernels_[i].second.is_gga() )
-        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, queue);
+        kernels_[i].second.eval_exc_device(N, rho, sigma, eps_eval, stream);
       else
-        kernels_[i].second.eval_exc_device(N, rho, eps_eval, queue);
+        kernels_[i].second.eval_exc_device(N, rho, eps_eval, stream);
 
       if( i )
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
       else
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
 
     }
   }
 
-  if( eps_scr ) sycl::free( eps_scr, *queue );
+  stream->wait();
+  if( eps_scr ) sycl::free( eps_scr, *stream );
 
 }
 
@@ -573,7 +598,7 @@ MGGA_EXC_GENERATOR_DEVICE( XCFunctional::eval_exc_device ) const {
 MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
   throw_if_not_sane();
-  EXCHCXX_BOOL_CHECK("KERNEL IS NOT GGA",  is_gga() );
+  EXCHCXX_BOOL_CHECK("KERNEL IS NOT MGGA",  is_mgga() );
 
   size_t len_exc_buffer    = exc_buffer_len(N);
   size_t len_vrho_buffer   = vrho_buffer_len(N);
@@ -584,19 +609,21 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
   double* eps_scr(nullptr), *vrho_scr(nullptr), *vsigma_scr(nullptr),
     *vlapl_scr(nullptr), *vtau_scr(nullptr);
   if( kernels_.size() > 1 and not supports_inc_interface() ) {
-    eps_scr    = safe_sycl_malloc( len_exc_buffer, queue );
-    vrho_scr   = safe_sycl_malloc( len_vrho_buffer, queue );
-    vsigma_scr = safe_sycl_malloc( len_vsigma_buffer, queue );
-    vlapl_scr  = safe_sycl_malloc( len_vlapl_buffer, queue );
-    vtau_scr   = safe_sycl_malloc( len_vtau_buffer, queue );
+    eps_scr    = safe_cuda_malloc( len_exc_buffer, stream );
+    vrho_scr   = safe_cuda_malloc( len_vrho_buffer, stream );
+    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer, stream );
+    vtau_scr   = safe_cuda_malloc( len_vtau_buffer, stream );
+    if(needs_laplacian())
+      vlapl_scr  = safe_cuda_malloc( len_vlapl_buffer, stream );
   }
 
-  safe_zero( len_exc_buffer, eps, queue );
-  safe_zero( len_vrho_buffer, vrho, queue );
-  safe_zero( len_vsigma_buffer, vsigma, queue );
-  safe_zero( len_vlapl_buffer, vlapl, queue );
-  safe_zero( len_vtau_buffer, vtau, queue );
+  safe_zero( len_exc_buffer, eps, stream );
+  safe_zero( len_vrho_buffer, vrho, stream );
+  safe_zero( len_vsigma_buffer, vsigma, stream );
+  safe_zero( len_vtau_buffer, vtau, stream );
 
+  if(needs_laplacian())
+    safe_zero( len_vlapl_buffer, vlapl, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -605,16 +632,16 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
           kernels_[i].first, N, rho, sigma, lapl, tau, eps,
-          vrho, vsigma, vlapl, vtau, queue
+          vrho, vsigma, vlapl, vtau, stream
         );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_inc_device(
           kernels_[i].first, N, rho, sigma, eps, vrho,
-          vsigma, queue
+          vsigma, stream
         );
       else
         kernels_[i].second.eval_exc_vxc_inc_device(
-          kernels_[i].first, N, rho, eps, vrho, queue
+          kernels_[i].first, N, rho, eps, vrho, stream
         );
 
     } else {
@@ -627,48 +654,57 @@ MGGA_EXC_VXC_GENERATOR_DEVICE( XCFunctional::eval_exc_vxc_device ) const {
 
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, lapl, tau, eps_eval,
-          vrho_eval, vsigma_eval, vlapl_eval, vtau_eval, queue );
+          vrho_eval, vsigma_eval, vlapl_eval, vtau_eval, stream );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_exc_vxc_device(N, rho, sigma, eps_eval, vrho_eval,
-          vsigma_eval, queue );
+          vsigma_eval, stream );
       else
-        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, queue);
+        kernels_[i].second.eval_exc_vxc_device(N, rho, eps_eval, vrho_eval, stream);
 
       if( i ) {
 
-        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue );
+        add_scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        add_scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
 
-        if( kernels_[i].second.is_gga() )
-          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() ) {
+          add_scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+        }
 
         if( kernels_[i].second.is_mgga() ) {
-          add_scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, queue );
-          add_scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, queue  );
+          add_scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, stream  );
+        }
+
+        if( kernels_[i].second.needs_laplacian() ) {
+          add_scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
         }
 
       } else {
 
-        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, queue );
-        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue );
+        scal_device( len_exc_buffer, kernels_[i].first, eps_eval, eps, stream );
+        scal_device( len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream );
 
-        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() )
-          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue );
+        if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() ) {
+          scal_device( len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream );
+        }
 
         if( kernels_[i].second.is_mgga() ) {
-          scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, queue );
-          scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, queue  );
+          scal_device( len_vtau_buffer,  kernels_[i].first, vtau_eval,  vtau, stream  );
+        }
+
+        if( kernels_[i].second.needs_laplacian() ) {
+          scal_device( len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream );
         }
 
       }
     }
   }
 
-  if( eps_scr ) sycl::free( eps_scr, *queue );
-  if( vrho_scr ) sycl::free( vrho_scr, *queue );
-  if( vsigma_scr ) sycl::free( vsigma_scr, *queue );
-  if( vlapl_scr ) sycl::free( vlapl_scr, *queue );
-  if( vtau_scr ) sycl::free( vtau_scr, *queue );
+  stream->wait();
+  if( eps_scr )    sycl::free( eps_scr, *stream );
+  if( vrho_scr )   sycl::free( vrho_scr, *stream );
+  if( vsigma_scr ) sycl::free( vsigma_scr, *stream );
+  if( vlapl_scr )  sycl::free( vlapl_scr, *stream );
+  if( vtau_scr )   sycl::free( vtau_scr, *stream );
 }
 
 MGGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
@@ -693,28 +729,28 @@ MGGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
 
   bool use_inc = supports_inc_interface();
   if( kernels_.size() > 1 && !use_inc ) {
-    v2rho2_scr = safe_sycl_malloc( len_v2rho2_buffer, queue );
-    v2rhosigma_scr = safe_sycl_malloc( len_v2rhosigma_buffer, queue );
-    v2rholapl_scr = safe_sycl_malloc( len_v2rholapl_buffer, queue );
-    v2rhotau_scr = safe_sycl_malloc( len_v2rhotau_buffer, queue );
-    v2sigma2_scr = safe_sycl_malloc( len_v2sigma2_buffer, queue );
-    v2sigmalapl_scr = safe_sycl_malloc( len_v2sigmalapl_buffer, queue );
-    v2sigmatau_scr = safe_sycl_malloc( len_v2sigmatau_buffer, queue );
-    v2lapl2_scr = safe_sycl_malloc( len_v2lapl2_buffer, queue );
-    v2lapltau_scr = safe_sycl_malloc( len_v2lapltau_buffer, queue );
-    v2tau2_scr = safe_sycl_malloc( len_v2tau2_buffer, queue );
+    v2rho2_scr = safe_cuda_malloc( len_v2rho2_buffer, stream );
+    v2rhosigma_scr = safe_cuda_malloc( len_v2rhosigma_buffer, stream );
+    v2rholapl_scr = safe_cuda_malloc( len_v2rholapl_buffer, stream );
+    v2rhotau_scr = safe_cuda_malloc( len_v2rhotau_buffer, stream );
+    v2sigma2_scr = safe_cuda_malloc( len_v2sigma2_buffer, stream );
+    v2sigmalapl_scr = safe_cuda_malloc( len_v2sigmalapl_buffer, stream );
+    v2sigmatau_scr = safe_cuda_malloc( len_v2sigmatau_buffer, stream );
+    v2lapl2_scr = safe_cuda_malloc( len_v2lapl2_buffer, stream );
+    v2lapltau_scr = safe_cuda_malloc( len_v2lapltau_buffer, stream );
+    v2tau2_scr = safe_cuda_malloc( len_v2tau2_buffer, stream );
   }
 
-  safe_zero( len_v2rho2_buffer, v2rho2, queue );
-  safe_zero( len_v2rhosigma_buffer, v2rhosigma, queue );
-  safe_zero( len_v2rholapl_buffer, v2rholapl, queue );
-  safe_zero( len_v2rhotau_buffer, v2rhotau, queue );
-  safe_zero( len_v2sigma2_buffer, v2sigma2, queue );
-  safe_zero( len_v2sigmalapl_buffer, v2sigmalapl, queue );
-  safe_zero( len_v2sigmatau_buffer, v2sigmatau, queue );
-  safe_zero( len_v2lapl2_buffer, v2lapl2, queue );
-  safe_zero( len_v2lapltau_buffer, v2lapltau, queue );
-  safe_zero( len_v2tau2_buffer, v2tau2, queue );
+  safe_zero( len_v2rho2_buffer, v2rho2, stream );
+  safe_zero( len_v2rhosigma_buffer, v2rhosigma, stream );
+  safe_zero( len_v2rholapl_buffer, v2rholapl, stream );
+  safe_zero( len_v2rhotau_buffer, v2rhotau, stream );
+  safe_zero( len_v2sigma2_buffer, v2sigma2, stream );
+  safe_zero( len_v2sigmalapl_buffer, v2sigmalapl, stream );
+  safe_zero( len_v2sigmatau_buffer, v2sigmatau, stream );
+  safe_zero( len_v2lapl2_buffer, v2lapl2, stream );
+  safe_zero( len_v2lapltau_buffer, v2lapltau, stream );
+  safe_zero( len_v2tau2_buffer, v2tau2, stream );
 
   for( auto i = 0ul; i < kernels_.size(); ++i ) {
 
@@ -722,15 +758,15 @@ MGGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_fxc_inc_device(
           kernels_[i].first, N, rho, sigma, lapl, tau, v2rho2, v2rhosigma, v2rholapl, v2rhotau,
-          v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2, queue
+          v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2, v2lapltau, v2tau2, stream
         );
       else if( kernels_[i].second.is_gga() )
         kernels_[i].second.eval_fxc_inc_device(
-          kernels_[i].first, N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, queue
+          kernels_[i].first, N, rho, sigma, v2rho2, v2rhosigma, v2sigma2, stream
         );
       else
         kernels_[i].second.eval_fxc_inc_device(
-          kernels_[i].first, N, rho, v2rho2, queue
+          kernels_[i].first, N, rho, v2rho2, stream
         );
     } else {
       double* v2rho2_eval    = i ? v2rho2_scr    : v2rho2;
@@ -747,74 +783,75 @@ MGGA_FXC_GENERATOR_DEVICE( XCFunctional::eval_fxc_device ) const {
       if( kernels_[i].second.is_mgga() )
         kernels_[i].second.eval_fxc_device(N, rho, sigma, lapl, tau, v2rho2_eval,
           v2rhosigma_eval, v2rholapl_eval, v2rhotau_eval, v2sigma2_eval, v2sigmalapl_eval,
-          v2sigmatau_eval, v2lapl2_eval, v2lapltau_eval, v2tau2_eval, queue);
+          v2sigmatau_eval, v2lapl2_eval, v2lapltau_eval, v2tau2_eval, stream);
       else if( kernels_[i].second.is_gga() )
-        kernels_[i].second.eval_fxc_device(N, rho, sigma, v2rho2_eval, v2rhosigma_eval, v2sigma2_eval, queue);
+        kernels_[i].second.eval_fxc_device(N, rho, sigma, v2rho2_eval, v2rhosigma_eval, v2sigma2_eval, stream);
       else
-        kernels_[i].second.eval_fxc_device(N, rho, v2rho2_eval, queue);
+        kernels_[i].second.eval_fxc_device(N, rho, v2rho2_eval, stream);
 
       if (i) {
-        add_scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue);
+        add_scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream);
 
         if( kernels_[i].second.is_gga() or kernels_[i].second.is_mgga() ){
-          add_scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue);
-          add_scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue);
+          add_scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream);
+          add_scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream);
         }
 
         if( kernels_[i].second.needs_laplacian() ) {
-          add_scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, queue);
-          add_scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, queue);
-          add_scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, queue);
+          add_scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, stream);
+          add_scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, stream);
+          add_scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, stream);
         }
 
         if( kernels_[i].second.is_mgga() ) {
-          add_scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, queue);
-          add_scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, queue);
-          add_scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, queue);
+          add_scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, stream);
+          add_scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, stream);
+          add_scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, stream);
         }
 
         if ( kernels_[i].second.needs_laplacian() && kernels_[i].second.is_mgga() ) {
-          add_scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, queue);
+          add_scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, stream);
         }
 
       } else{
 
-        scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue);
+        scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream);
 
         if (kernels_[i].second.is_gga() or kernels_[i].second.is_mgga()) {
-          scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue);
-          scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue);
+          scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream);
+          scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream);
         }
 
         if (kernels_[i].second.needs_laplacian()) {
-          scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, queue);
-          scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, queue);
-          scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, queue);
+          scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, stream);
+          scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, stream);
+          scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, stream);
         }
 
         if (kernels_[i].second.is_mgga()) {
-          scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, queue);
-          scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, queue);
-          scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, queue);
+          scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, stream);
+          scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, stream);
+          scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, stream);
         }
 
         if (kernels_[i].second.needs_laplacian() && kernels_[i].second.is_mgga()) {
-          scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, queue);
+          scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, stream);
         }
       }
     }
   }
 
-  if( v2rho2_scr ) sycl::free( v2rho2_scr, *queue);
-  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *queue);
-  if( v2rholapl_scr ) sycl::free( v2rholapl_scr, *queue);
-  if( v2rhotau_scr ) sycl::free( v2rhotau_scr, *queue);
-  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *queue);
-  if( v2sigmalapl_scr ) sycl::free( v2sigmalapl_scr, *queue);
-  if( v2sigmatau_scr ) sycl::free( v2sigmatau_scr, *queue);
-  if( v2lapl2_scr ) sycl::free( v2lapl2_scr, *queue);
-  if( v2lapltau_scr ) sycl::free( v2lapltau_scr, *queue);
-  if( v2tau2_scr ) sycl::free( v2tau2_scr, *queue);
+  stream->wait();
+  if( v2rho2_scr ) sycl::free( v2rho2_scr, *stream );
+  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *stream );
+  if( v2rholapl_scr ) sycl::free( v2rholapl_scr, *stream );
+  if( v2rhotau_scr ) sycl::free( v2rhotau_scr, *stream );
+  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *stream );
+  if( v2sigmalapl_scr ) sycl::free( v2sigmalapl_scr, *stream );
+  if( v2sigmatau_scr ) sycl::free( v2sigmatau_scr, *stream );
+  if( v2lapl2_scr ) sycl::free( v2lapl2_scr, *stream );
+  if( v2lapltau_scr ) sycl::free( v2lapltau_scr, *stream );
+  if( v2tau2_scr ) sycl::free( v2tau2_scr, *stream );
 }
 
 MGGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
@@ -844,36 +881,36 @@ MGGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
 
   bool use_inc = supports_inc_interface();
   if( kernels_.size() > 1 && !use_inc ) {
-    vrho_scr = safe_sycl_malloc( len_vrho_buffer, queue );
-    vsigma_scr = safe_sycl_malloc( len_vsigma_buffer, queue );
-    vlapl_scr = safe_sycl_malloc( len_vlapl_buffer, queue );
-    vtau_scr = safe_sycl_malloc( len_vtau_buffer, queue );
-    v2rho2_scr = safe_sycl_malloc( len_v2rho2_buffer, queue );
-    v2rhosigma_scr = safe_sycl_malloc( len_v2rhosigma_buffer, queue );
-    v2rholapl_scr = safe_sycl_malloc( len_v2rholapl_buffer, queue );
-    v2rhotau_scr = safe_sycl_malloc(len_v2rhotau_buffer, queue);
-    v2sigma2_scr = safe_sycl_malloc(len_v2sigma2_buffer, queue);
-    v2sigmalapl_scr = safe_sycl_malloc(len_v2sigmalapl_buffer, queue);
-    v2sigmatau_scr = safe_sycl_malloc(len_v2sigmatau_buffer, queue);
-    v2lapl2_scr = safe_sycl_malloc(len_v2lapl2_buffer, queue);
-    v2lapltau_scr = safe_sycl_malloc(len_v2lapltau_buffer, queue);
-    v2tau2_scr = safe_sycl_malloc(len_v2tau2_buffer, queue);
+    vrho_scr = safe_cuda_malloc( len_vrho_buffer, stream );
+    vsigma_scr = safe_cuda_malloc( len_vsigma_buffer, stream );
+    vlapl_scr = safe_cuda_malloc( len_vlapl_buffer, stream );
+    vtau_scr = safe_cuda_malloc( len_vtau_buffer, stream );
+    v2rho2_scr = safe_cuda_malloc( len_v2rho2_buffer, stream );
+    v2rhosigma_scr = safe_cuda_malloc( len_v2rhosigma_buffer, stream );
+    v2rholapl_scr = safe_cuda_malloc( len_v2rholapl_buffer, stream );
+    v2rhotau_scr = safe_cuda_malloc(len_v2rhotau_buffer, stream );
+    v2sigma2_scr = safe_cuda_malloc(len_v2sigma2_buffer, stream );
+    v2sigmalapl_scr = safe_cuda_malloc(len_v2sigmalapl_buffer, stream );
+    v2sigmatau_scr = safe_cuda_malloc(len_v2sigmatau_buffer, stream );
+    v2lapl2_scr = safe_cuda_malloc(len_v2lapl2_buffer, stream );
+    v2lapltau_scr = safe_cuda_malloc(len_v2lapltau_buffer, stream );
+    v2tau2_scr = safe_cuda_malloc(len_v2tau2_buffer, stream );
   }
 
-  safe_zero(len_vrho_buffer, vrho, queue);
-  safe_zero(len_vsigma_buffer, vsigma, queue);
-  safe_zero(len_vlapl_buffer, vlapl, queue);
-  safe_zero(len_vtau_buffer, vtau, queue);
-  safe_zero(len_v2rho2_buffer, v2rho2, queue);
-  safe_zero(len_v2rhosigma_buffer, v2rhosigma, queue);
-  safe_zero(len_v2rholapl_buffer, v2rholapl, queue);
-  safe_zero(len_v2rhotau_buffer, v2rhotau, queue);
-  safe_zero(len_v2sigma2_buffer, v2sigma2, queue);
-  safe_zero(len_v2sigmalapl_buffer, v2sigmalapl, queue);
-  safe_zero(len_v2sigmatau_buffer, v2sigmatau, queue);
-  safe_zero(len_v2lapl2_buffer, v2lapl2, queue);
-  safe_zero(len_v2lapltau_buffer, v2lapltau, queue);
-  safe_zero(len_v2tau2_buffer, v2tau2, queue);
+  safe_zero(len_vrho_buffer, vrho, stream);
+  safe_zero(len_vsigma_buffer, vsigma, stream);
+  safe_zero(len_vlapl_buffer, vlapl, stream);
+  safe_zero(len_vtau_buffer, vtau, stream);
+  safe_zero(len_v2rho2_buffer, v2rho2, stream);
+  safe_zero(len_v2rhosigma_buffer, v2rhosigma, stream);
+  safe_zero(len_v2rholapl_buffer, v2rholapl, stream);
+  safe_zero(len_v2rhotau_buffer, v2rhotau, stream);
+  safe_zero(len_v2sigma2_buffer, v2sigma2, stream);
+  safe_zero(len_v2sigmalapl_buffer, v2sigmalapl, stream);
+  safe_zero(len_v2sigmatau_buffer, v2sigmatau, stream);
+  safe_zero(len_v2lapl2_buffer, v2lapl2, stream);
+  safe_zero(len_v2lapltau_buffer, v2lapltau, stream);
+  safe_zero(len_v2tau2_buffer, v2tau2, stream);
 
   for (auto i = 0ul; i < kernels_.size(); ++i) {
     if( use_inc ) {
@@ -882,14 +919,14 @@ MGGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
           kernels_[i].first, N, rho, sigma, lapl, tau, vrho, vsigma, vlapl, vtau,
           v2rho2, v2rhosigma, v2rholapl, v2rhotau,
           v2sigma2, v2sigmalapl, v2sigmatau, v2lapl2,
-          v2lapltau, v2tau2, queue);
+          v2lapltau, v2tau2, stream);
       } else if (kernels_[i].second.is_gga()) {
         kernels_[i].second.eval_vxc_fxc_inc_device(
           kernels_[i].first, N, rho, sigma, vrho, vsigma, v2rho2, v2rhosigma,
-          v2sigma2, queue);
+          v2sigma2, stream);
       } else {
         kernels_[i].second.eval_vxc_fxc_inc_device(
-          kernels_[i].first, N, rho, vrho, v2rho2, queue);
+          kernels_[i].first, N, rho, vrho, v2rho2, stream);
       }
     } else {
       double* vrho_eval = i ? vrho_scr : vrho;
@@ -912,87 +949,88 @@ MGGA_VXC_FXC_GENERATOR_DEVICE( XCFunctional::eval_vxc_fxc_device ) const {
           N, rho, sigma, lapl, tau, vrho_eval, vsigma_eval, vlapl_eval, vtau_eval,
           v2rho2_eval, v2rhosigma_eval, v2rholapl_eval, v2rhotau_eval,
           v2sigma2_eval, v2sigmalapl_eval, v2sigmatau_eval, v2lapl2_eval,
-          v2lapltau_eval, v2tau2_eval, queue);
+          v2lapltau_eval, v2tau2_eval, stream);
       } else if (kernels_[i].second.is_gga()) {
         kernels_[i].second.eval_vxc_fxc_device(
           N, rho, sigma, vrho_eval, vsigma_eval, v2rho2_eval, v2rhosigma_eval,
-          v2sigma2_eval, queue);
+          v2sigma2_eval, stream);
       } else {
-        kernels_[i].second.eval_vxc_fxc_device(N, rho, vrho_eval, v2rho2_eval, queue);
+        kernels_[i].second.eval_vxc_fxc_device(N, rho, vrho_eval, v2rho2_eval, stream);
       }
 
       if (i) {
-        add_scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue);
-        add_scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue);
+        add_scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream);
+        add_scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream);
 
         if (kernels_[i].second.is_gga() || kernels_[i].second.is_mgga()) {
-          add_scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue);
-          add_scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue);
-          add_scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue);
+          add_scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream);
+          add_scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream);
+          add_scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream);
         }
 
         if (kernels_[i].second.needs_laplacian()) {
-          add_scal_device(len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, queue);
-          add_scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, queue);
-          add_scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, queue);
-          add_scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, queue);
+          add_scal_device(len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream);
+          add_scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, stream);
+          add_scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, stream);
+          add_scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, stream);
         }
 
         if (kernels_[i].second.is_mgga()) {
-          add_scal_device(len_vtau_buffer, kernels_[i].first, vtau_eval, vtau, queue);
-          add_scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, queue);
-          add_scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, queue);
-          add_scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, queue);
+          add_scal_device(len_vtau_buffer, kernels_[i].first, vtau_eval, vtau, stream);
+          add_scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, stream);
+          add_scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, stream);
+          add_scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, stream);
         }
 
         if (kernels_[i].second.needs_laplacian() && kernels_[i].second.is_mgga()) {
-          add_scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, queue);
+          add_scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, stream);
         }
       } else {
-        scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, queue);
-        scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, queue);
+        scal_device(len_vrho_buffer, kernels_[i].first, vrho_eval, vrho, stream);
+        scal_device(len_v2rho2_buffer, kernels_[i].first, v2rho2_eval, v2rho2, stream);
 
         if (kernels_[i].second.is_gga() || kernels_[i].second.is_mgga()) {
-          scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, queue);
-          scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, queue);
-          scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, queue);
+          scal_device(len_vsigma_buffer, kernels_[i].first, vsigma_eval, vsigma, stream);
+          scal_device(len_v2rhosigma_buffer, kernels_[i].first, v2rhosigma_eval, v2rhosigma, stream);
+          scal_device(len_v2sigma2_buffer, kernels_[i].first, v2sigma2_eval, v2sigma2, stream);
         }
 
         if (kernels_[i].second.needs_laplacian()) {
-          scal_device(len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, queue);
-          scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, queue);
-          scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, queue);
-          scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, queue);
+          scal_device(len_vlapl_buffer, kernels_[i].first, vlapl_eval, vlapl, stream);
+          scal_device(len_v2rholapl_buffer, kernels_[i].first, v2rholapl_eval, v2rholapl, stream);
+          scal_device(len_v2sigmalapl_buffer, kernels_[i].first, v2sigmalapl_eval, v2sigmalapl, stream);
+          scal_device(len_v2lapl2_buffer, kernels_[i].first, v2lapl2_eval, v2lapl2, stream);
         }
 
         if (kernels_[i].second.is_mgga()) {
-          scal_device(len_vtau_buffer, kernels_[i].first, vtau_eval, vtau, queue);
-          scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, queue);
-          scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, queue);
-          scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, queue);
+          scal_device(len_vtau_buffer, kernels_[i].first, vtau_eval, vtau, stream);
+          scal_device(len_v2rhotau_buffer, kernels_[i].first, v2rhotau_eval, v2rhotau, stream);
+          scal_device(len_v2sigmatau_buffer, kernels_[i].first, v2sigmatau_eval, v2sigmatau, stream);
+          scal_device(len_v2tau2_buffer, kernels_[i].first, v2tau2_eval, v2tau2, stream);
         }
 
         if (kernels_[i].second.needs_laplacian() && kernels_[i].second.is_mgga()) {
-          scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, queue);
+          scal_device(len_v2lapltau_buffer, kernels_[i].first, v2lapltau_eval, v2lapltau, stream);
         }
       }
     }
   }
 
-  if( vrho_scr ) sycl::free( vrho_scr, *queue);
-  if( vsigma_scr ) sycl::free( vsigma_scr, *queue);
-  if( vlapl_scr ) sycl::free( vlapl_scr, *queue);
-  if( vtau_scr ) sycl::free( vtau_scr, *queue);
-  if( v2rho2_scr ) sycl::free( v2rho2_scr, *queue);
-  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *queue);
-  if( v2rholapl_scr ) sycl::free( v2rholapl_scr, *queue);
-  if( v2rhotau_scr ) sycl::free( v2rhotau_scr, *queue);
-  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *queue);
-  if( v2sigmalapl_scr ) sycl::free( v2sigmalapl_scr, *queue);
-  if( v2sigmatau_scr ) sycl::free( v2sigmatau_scr, *queue);
-  if( v2lapl2_scr ) sycl::free( v2lapl2_scr, *queue);
-  if( v2lapltau_scr ) sycl::free( v2lapltau_scr, *queue);
-  if( v2tau2_scr ) sycl::free( v2tau2_scr, *queue);
+  stream->wait();
+  if( vrho_scr ) sycl::free( vrho_scr, *stream );
+  if( vsigma_scr ) sycl::free( vsigma_scr, *stream );
+  if( vlapl_scr ) sycl::free( vlapl_scr, *stream );
+  if( vtau_scr ) sycl::free( vtau_scr, *stream );
+  if( v2rho2_scr ) sycl::free( v2rho2_scr, *stream );
+  if( v2rhosigma_scr ) sycl::free( v2rhosigma_scr, *stream );
+  if( v2rholapl_scr ) sycl::free( v2rholapl_scr, *stream );
+  if( v2rhotau_scr ) sycl::free( v2rhotau_scr, *stream );
+  if( v2sigma2_scr ) sycl::free( v2sigma2_scr, *stream );
+  if( v2sigmalapl_scr ) sycl::free( v2sigmalapl_scr, *stream );
+  if( v2sigmatau_scr ) sycl::free( v2sigmatau_scr, *stream );
+  if( v2lapl2_scr ) sycl::free( v2lapl2_scr, *stream );
+  if( v2lapltau_scr ) sycl::free( v2lapltau_scr, *stream );
+  if( v2tau2_scr ) sycl::free( v2tau2_scr, *stream );
 }
 
 

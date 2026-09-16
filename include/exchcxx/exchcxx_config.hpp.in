@@ -62,4 +62,5 @@
 
 #ifdef EXCHCXX_ENABLE_SYCL
   #include <sycl/sycl.hpp>
+  namespace syclex = sycl::ext::oneapi;
 #endif

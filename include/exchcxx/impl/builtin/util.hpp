@@ -111,9 +111,16 @@ namespace sm = std;
 template <typename T>
 SAFE_INLINE(auto) sqrt( T x ) { return sm::sqrt(x); }
 
-// Apparently C / C++ cbrt differ ever-so-slightly
+// Apparently C / C++ cbrt differ ever-so-slightly. ::cbrt is used instead of
+// sm::cbrt on Host/CUDA/HIP for that reason; SYCL is the exception because
+// ::cbrt (host libm) has no SPIR-V device image, so sycl::cbrt is required
+// there for AoT device compilation to link.
 template <typename T>
+#ifdef EXCHCXX_ENABLE_SYCL
+SAFE_INLINE(double) cbrt( T x ) { return sm::cbrt(x); }
+#else
 SAFE_INLINE(double) cbrt( T x ) { return ::cbrt(x); }
+#endif
 template <typename T>
 SAFE_INLINE(auto) log( T x ) { return sm::log(x); }
 template <typename T>

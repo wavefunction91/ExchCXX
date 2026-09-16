@@ -1,0 +1,82 @@
+# .github/workflows/sycl-ci.yml
+#
+# Builds and tests ExchCXX SYCL backend on CPU using Intel oneAPI.
+#
+# Triggers:
+#   1. PR title contains "[SYCL]"
+#   2. "SYCL" label is added to a PR
+#   3. Manually via "Run workflow" button
+
+name: SYCL CI
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, labeled]
+
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch or commit SHA to test'
+        required: false
+        default: ''
+
+jobs:
+  build-and-test-sycl:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'SYCL') ||
+      (github.event_name == 'pull_request' && github.event.action != 'labeled' && contains(github.event.pull_request.title, '[SYCL]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.event.pull_request.head.sha || github.sha }}
+
+      - name: Add Intel oneAPI apt repository
+        run: |
+          wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \
+            | sudo gpg --dearmor -o /usr/share/keyrings/oneapi-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" \
+            | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt-get update
+
+      - name: Install Intel oneAPI DPC++/C++ compiler and OpenCL CPU runtime
+        run: |
+          sudo apt-get install -y \
+            intel-oneapi-compiler-dpcpp-cpp \
+            intel-oneapi-runtime-opencl \
+            ninja-build
+
+      - name: Configure
+        run: |
+          source /opt/intel/oneapi/setvars.sh
+
+          cmake -H. -Bbuild_sycl_cpu -G Ninja \
+            -DCMAKE_C_COMPILER=icx \
+            -DCMAKE_CXX_COMPILER=icpx \
+            -DEXCHCXX_ENABLE_SYCL=ON \
+            -DEXCHCXX_SYCL_TARGET=spir64_x86_64 \
+            -DBUILD_SHARED_LIBS=ON \
+            -DEXCHCXX_ENABLE_TESTS=ON \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          source /opt/intel/oneapi/setvars.sh
+          cmake --build build_sycl_cpu -j $(nproc)
+
+      - name: List SYCL devices
+        run: |
+          source /opt/intel/oneapi/setvars.sh
+          sycl-ls || true
+
+      - name: Test
+        run: |
+          source /opt/intel/oneapi/setvars.sh
+          export ONEAPI_DEVICE_SELECTOR=opencl:cpu
+          cd build_sycl_cpu
+          ctest --output-on-failure -j $(nproc)

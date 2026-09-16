@@ -30,8 +30,20 @@ endif()
 
 
 if(EXCHCXX_ENABLE_SYCL)
-  # e.g. intel_gpu_pvc | nvidia_gpu_sm_80 | nvidia_gpu_sm_90 | amd_gpu_gfx90a | amd_gpu_gfx942
+  # e.g. intel_gpu_pvc | spir64_x86_64 | nvidia_gpu_sm_80 | nvidia_gpu_sm_90 | amd_gpu_gfx90a | amd_gpu_gfx942
   set(EXCHCXX_SYCL_TARGET "" CACHE STRING "Alias for -fsycl-targets (see Users Manual)")
+
+  include( CheckCCompilerFlag )
+  include( CheckCXXCompilerFlag )
+  check_c_compiler_flag  ( "-fp-model=precise" EXCHCXX_C_HAS_FP_MODEL_PRECISE   )
+  check_cxx_compiler_flag( "-fp-model=precise" EXCHCXX_CXX_HAS_FP_MODEL_PRECISE )
+
+  if( EXCHCXX_C_HAS_FP_MODEL_PRECISE )
+    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fp-model=precise" )
+  endif()
+  if( EXCHCXX_CXX_HAS_FP_MODEL_PRECISE )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fp-model=precise" )
+  endif()
 endif()
 
 
@@ -89,6 +101,14 @@ else()
   set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
 
   FetchContent_MakeAvailable( libxc )
+
+  #Note: Missing this would cause test failures
+  if(CMAKE_C_COMPILER_ID STREQUAL "IntelLLVM")
+    target_compile_options(xc PRIVATE
+      $<$<COMPILE_LANGUAGE:C>:-fp-model=precise>
+    )
+  endif()
+
   add_library( Libxc::xc ALIAS xc )
   target_include_directories( xc
     PUBLIC
